@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA0A931229DEE64600596FA0 /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931129DEE64600596FA0 /* Avatar.swift */; };
+		EA0A931529DEE79300596FA0 /* HeaderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931429DEE79300596FA0 /* HeaderButton.swift */; };
+		EA0A931729DEE7FF00596FA0 /* NavigationBarBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */; };
+		EA0A931929DEE88000596FA0 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931829DEE88000596FA0 /* Message.swift */; };
+		EA0A931D29DEE8B600596FA0 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931C29DEE8B600596FA0 /* MessageCell.swift */; };
+		EA0A932029DEE90700596FA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A931F29DEE90700596FA0 /* AppDelegate.swift */; };
+		EA0A932429DEE96400596FA0 /* TextingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932329DEE96400596FA0 /* TextingView.swift */; };
+		EA0A932629DEE97800596FA0 /* TextRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932529DEE97800596FA0 /* TextRow.swift */; };
+		EA0A932829DEE98500596FA0 /* TextList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932729DEE98500596FA0 /* TextList.swift */; };
+		EA0A932A29DEE99C00596FA0 /* ChatRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932929DEE99C00596FA0 /* ChatRoomView.swift */; };
+		EA0A932C29DEE9A600596FA0 /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932B29DEE9A600596FA0 /* MessageBubble.swift */; };
+		EA0A932E29DEE9B700596FA0 /* MessageInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932D29DEE9B700596FA0 /* MessageInputField.swift */; };
+		EA0A933029DEE9C300596FA0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932F29DEE9C300596FA0 /* ChatView.swift */; };
 		EA76CE7229DED63D009EC960 /* FingerCrossedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CE7129DED63D009EC960 /* FingerCrossedApp.swift */; };
 		EA76CE7629DED63E009EC960 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE7529DED63E009EC960 /* Assets.xcassets */; };
 		EA76CE7929DED63E009EC960 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE7829DED63E009EC960 /* Preview Assets.xcassets */; };
@@ -16,7 +29,6 @@
 		EA76CEA029DED925009EC960 /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE9F29DED925009EC960 /* Countries.geojson */; };
 		EA76CEA329DEDA18009EC960 /* AzoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */; };
 		EA76CEA529DEDA2E009EC960 /* AzoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */; };
-		EA76CEA729DEDA37009EC960 /* AzoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA76CEA629DEDA37009EC960 /* AzoSans-Bold.ttf */; };
 		EA76CEA929DEDA5F009EC960 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEA829DEDA5F009EC960 /* Extensions.swift */; };
 		EA76CEB129DEDBF9009EC960 /* EntryLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */; };
 		EA76CEBD29DEDC56009EC960 /* Countries.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEB229DEDC55009EC960 /* Countries.swift */; };
@@ -61,6 +73,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EA0A931129DEE64600596FA0 /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
+		EA0A931329DEE73D00596FA0 /* AzoSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AzoSans-Bold.ttf"; sourceTree = "<group>"; };
+		EA0A931429DEE79300596FA0 /* HeaderButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderButton.swift; sourceTree = "<group>"; };
+		EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarBackButton.swift; sourceTree = "<group>"; };
+		EA0A931829DEE88000596FA0 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		EA0A931C29DEE8B600596FA0 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		EA0A931F29DEE90700596FA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		EA0A932329DEE96400596FA0 /* TextingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextingView.swift; sourceTree = "<group>"; };
+		EA0A932529DEE97800596FA0 /* TextRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRow.swift; sourceTree = "<group>"; };
+		EA0A932729DEE98500596FA0 /* TextList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextList.swift; sourceTree = "<group>"; };
+		EA0A932929DEE99C00596FA0 /* ChatRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomView.swift; sourceTree = "<group>"; };
+		EA0A932B29DEE9A600596FA0 /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
+		EA0A932D29DEE9B700596FA0 /* MessageInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputField.swift; sourceTree = "<group>"; };
+		EA0A932F29DEE9C300596FA0 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		EA76CE6E29DED63D009EC960 /* FingerCrossed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FingerCrossed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA76CE7129DED63D009EC960 /* FingerCrossedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerCrossedApp.swift; sourceTree = "<group>"; };
 		EA76CE7529DED63E009EC960 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -73,7 +99,6 @@
 		EA76CE9F29DED925009EC960 /* Countries.geojson */ = {isa = PBXFileReference; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
 		EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AzoSans-Medium.ttf"; path = "../../../../../fccode-frontend/FingerCrossed/FingerCrossed/Resources/Font/AzoSans-Medium.ttf"; sourceTree = "<group>"; };
 		EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AzoSans-Regular.ttf"; path = "../../../../../fccode-frontend/FingerCrossed/FingerCrossed/Resources/Font/AzoSans-Regular.ttf"; sourceTree = "<group>"; };
-		EA76CEA629DEDA37009EC960 /* AzoSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AzoSans-Bold.ttf"; path = "../../../../../fccode-frontend/FingerCrossed/FingerCrossed/Resources/Font/AzoSans-Bold.ttf"; sourceTree = "<group>"; };
 		EA76CEA829DEDA5F009EC960 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EA76CEAA29DEDAC5009EC960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryLogo.swift; sourceTree = "<group>"; };
@@ -126,6 +151,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA0A931A29DEE89000596FA0 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				EA0A931829DEE88000596FA0 /* Message.swift */,
+				EA0A931C29DEE8B600596FA0 /* MessageCell.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		EA0A931B29DEE89C00596FA0 /* Country */ = {
+			isa = PBXGroup;
+			children = (
+				EA76CEB229DEDC55009EC960 /* Countries.swift */,
+			);
+			path = Country;
+			sourceTree = "<group>";
+		};
+		EA0A931E29DEE8DD00596FA0 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				EA0A931F29DEE90700596FA0 /* AppDelegate.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		EA0A932129DEE94800596FA0 /* Texting */ = {
+			isa = PBXGroup;
+			children = (
+				EA0A932329DEE96400596FA0 /* TextingView.swift */,
+				EA0A932529DEE97800596FA0 /* TextRow.swift */,
+				EA0A932729DEE98500596FA0 /* TextList.swift */,
+				EA0A932929DEE99C00596FA0 /* ChatRoomView.swift */,
+				EA0A932B29DEE9A600596FA0 /* MessageBubble.swift */,
+				EA0A932D29DEE9B700596FA0 /* MessageInputField.swift */,
+				EA0A932F29DEE9C300596FA0 /* ChatView.swift */,
+			);
+			path = Texting;
+			sourceTree = "<group>";
+		};
 		EA76CE6529DED63D009EC960 = {
 			isa = PBXGroup;
 			children = (
@@ -149,12 +213,14 @@
 		EA76CE7029DED63D009EC960 /* FingerCrossed */ = {
 			isa = PBXGroup;
 			children = (
-				EA76CEAA29DEDAC5009EC960 /* Info.plist */,
 				EA76CE9B29DED81E009EC960 /* App */,
 				EA76CE9C29DED864009EC960 /* Core */,
 				EA76CE9E29DED87E009EC960 /* Extensions */,
+				EA76CEAA29DEDAC5009EC960 /* Info.plist */,
+				EA76CEE029DEE052009EC960 /* Model */,
 				EA76CE7729DED63E009EC960 /* Preview Content */,
 				EA76CE9D29DED86D009EC960 /* Resources */,
+				EA0A931E29DEE8DD00596FA0 /* Util */,
 			);
 			path = FingerCrossed;
 			sourceTree = "<group>";
@@ -195,9 +261,9 @@
 		EA76CE9C29DED864009EC960 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				EA0A932129DEE94800596FA0 /* Texting */,
 				EA76CEAB29DEDB3B009EC960 /* Component */,
 				EA76CEAC29DEDB46009EC960 /* Entry */,
-				EA76CEE029DEE052009EC960 /* Model */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -223,7 +289,7 @@
 		EA76CEA129DED9EB009EC960 /* Font */ = {
 			isa = PBXGroup;
 			children = (
-				EA76CEA629DEDA37009EC960 /* AzoSans-Bold.ttf */,
+				EA0A931329DEE73D00596FA0 /* AzoSans-Bold.ttf */,
 				EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */,
 				EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */,
 			);
@@ -233,12 +299,15 @@
 		EA76CEAB29DEDB3B009EC960 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				EA0A931129DEE64600596FA0 /* Avatar.swift */,
 				EA76CEB529DEDC55009EC960 /* DatePickerTextField.swift */,
 				EA76CEBB29DEDC56009EC960 /* DividerWithLabel.swift */,
 				EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */,
+				EA0A931429DEE79300596FA0 /* HeaderButton.swift */,
 				EA76CEB729DEDC55009EC960 /* IconButton.swift */,
 				EA76CEB429DEDC55009EC960 /* InputHelper.swift */,
 				EA76CEBA29DEDC56009EC960 /* NationalityPickerView.swift */,
+				EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */,
 				EA76CEB829DEDC55009EC960 /* PrimaryButton.swift */,
 				EA76CEB929DEDC56009EC960 /* PrimaryInputBar.swift */,
 				EA76CEB629DEDC55009EC960 /* RadioButton.swift */,
@@ -285,7 +354,8 @@
 		EA76CEE029DEE052009EC960 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				EA76CEB229DEDC55009EC960 /* Countries.swift */,
+				EA0A931B29DEE89C00596FA0 /* Country */,
+				EA0A931A29DEE89000596FA0 /* Message */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -395,7 +465,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA76CEA029DED925009EC960 /* Countries.geojson in Resources */,
-				EA76CEA729DEDA37009EC960 /* AzoSans-Bold.ttf in Resources */,
 				EA76CE7929DED63E009EC960 /* Preview Assets.xcassets in Resources */,
 				EA76CEA529DEDA2E009EC960 /* AzoSans-Regular.ttf in Resources */,
 				EA76CE7629DED63E009EC960 /* Assets.xcassets in Resources */,
@@ -424,29 +493,42 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0A933029DEE9C300596FA0 /* ChatView.swift in Sources */,
 				EA76CED429DEDCFA009EC960 /* SignUpGenderView.swift in Sources */,
 				EA76CEC229DEDC56009EC960 /* IconButton.swift in Sources */,
 				EA76CEC629DEDC56009EC960 /* DividerWithLabel.swift in Sources */,
 				EA76CEA929DEDA5F009EC960 /* Extensions.swift in Sources */,
+				EA0A931929DEE88000596FA0 /* Message.swift in Sources */,
 				EA76CED129DEDCFA009EC960 /* SignUpNationalityView.swift in Sources */,
 				EA76CEC329DEDC56009EC960 /* PrimaryButton.swift in Sources */,
 				EA76CEC529DEDC56009EC960 /* NationalityPickerView.swift in Sources */,
+				EA0A931529DEE79300596FA0 /* HeaderButton.swift in Sources */,
 				EA76CEB129DEDBF9009EC960 /* EntryLogo.swift in Sources */,
+				EA0A932429DEE96400596FA0 /* TextingView.swift in Sources */,
+				EA0A931229DEE64600596FA0 /* Avatar.swift in Sources */,
+				EA0A931D29DEE8B600596FA0 /* MessageCell.swift in Sources */,
 				EA76CEBD29DEDC56009EC960 /* Countries.swift in Sources */,
+				EA0A932629DEE97800596FA0 /* TextRow.swift in Sources */,
 				EA76CE7229DED63D009EC960 /* FingerCrossedApp.swift in Sources */,
+				EA0A932829DEE98500596FA0 /* TextList.swift in Sources */,
 				EA76CEC729DEDC56009EC960 /* ViewLink.swift in Sources */,
 				EA76CEC429DEDC56009EC960 /* PrimaryInputBar.swift in Sources */,
 				EA76CEDE29DEDD3A009EC960 /* LandingView.swift in Sources */,
 				EA76CEC029DEDC56009EC960 /* DatePickerTextField.swift in Sources */,
 				EA76CED529DEDCFA009EC960 /* SignUpNameView.swift in Sources */,
 				EA76CEBF29DEDC56009EC960 /* InputHelper.swift in Sources */,
+				EA0A931729DEE7FF00596FA0 /* NavigationBarBackButton.swift in Sources */,
 				EA76CEDD29DEDD3A009EC960 /* SignInView.swift in Sources */,
+				EA0A932029DEE90700596FA0 /* AppDelegate.swift in Sources */,
 				EA76CEBE29DEDC56009EC960 /* SSOButton.swift in Sources */,
 				EA76CED029DEDCFA009EC960 /* SignUpAccountView.swift in Sources */,
 				EA76CED329DEDCFA009EC960 /* SignUpAvatarView.swift in Sources */,
 				EA76CED229DEDCFA009EC960 /* SignUpBirthdateView.swift in Sources */,
 				EA76CEC129DEDC56009EC960 /* RadioButton.swift in Sources */,
+				EA0A932C29DEE9A600596FA0 /* MessageBubble.swift in Sources */,
 				EA76CEDF29DEDD3A009EC960 /* ResetPasswordView.swift in Sources */,
+				EA0A932E29DEE9B700596FA0 /* MessageInputField.swift in Sources */,
+				EA0A932A29DEE99C00596FA0 /* ChatRoomView.swift in Sources */,
 				EA76CEDB29DEDD3A009EC960 /* ResetPasswordEmailCheckView.swift in Sources */,
 				EA76CEDC29DEDD3A009EC960 /* EntryView.swift in Sources */,
 			);

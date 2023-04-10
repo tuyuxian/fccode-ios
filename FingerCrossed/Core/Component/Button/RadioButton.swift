@@ -3,16 +3,18 @@
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/3/23.
+//  Modified by Sam on 4/8/23.
 //
 
 import SwiftUI
 
 struct RadioButton: View {
-    var label: String = "Male"
+    @State var label: String
+    @State var isSelected: Bool = false
     
     var body: some View {
         HStack (spacing: 6) {
-            Image("RadioDefault")
+            isSelected ? Image("RadioSelected") : Image("RadioDefault")
             
             Text(label)
                 .font(.pMedium)
@@ -23,6 +25,6 @@ struct RadioButton: View {
 
 struct RadioButton_Previews: PreviewProvider {
     static var previews: some View {
-        RadioButton()
+        RadioButton(label: "Label")
     }
 }

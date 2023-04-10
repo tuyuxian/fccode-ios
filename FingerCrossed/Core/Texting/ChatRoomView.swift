@@ -30,24 +30,19 @@ struct ChatRoomView: View {
     ]
     
     var body: some View {
-        VStack {
-            VStack(spacing: 0) {
-                // message bubble area
-                ChatView(
-                    avatarUrl: $avatarUrl,
-                    messageCellList: $messageCellList
-                )
-                
-                // message input
-                MessageInputField()
-
-            }
-            .background(Color.white)
-            .cornerRadius(16, corners: [.topLeft, .topRight])
-            .onTapGesture {
-                UIApplication.shared.closeKeyboard()
-            }
+        Box {
+            // message bubble area
+            ChatView(
+                avatarUrl: $avatarUrl,
+                messageCellList: $messageCellList
+            )
             
+            // message input
+            MessageInputField()
+
+        }
+        .onTapGesture {
+            UIApplication.shared.closeKeyboard()
         }
         .navigationBarItems(leading:
             HStack(alignment: .center, spacing: 13.88) {

@@ -3,7 +3,7 @@
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/4/23.
-//  Modified by Yu-Hsien Tu on 4/6/23.
+//  Modified by Sam on 4/6/23.
 //
 
 import SwiftUI

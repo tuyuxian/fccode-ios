@@ -3,6 +3,7 @@
 //  FingerCrossed
 //
 //  Created by Lawrence on 3/31/23.
+//  Modified by Sam on 4/8/23.
 //
 
 import SwiftUI
@@ -22,26 +23,10 @@ struct PrimaryInputBar: View {
                 .foregroundColor(Color.text)
                 .frame(height: 56)
             
-            if hasButton {
-                Button {
-                    print("hasButton")
-                } label: {
-                    Image(iconName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 24)
-                        .rotationEffect(.degrees(-90)) //TODO(Lawrence): new icon replacement
-                }
-            }else {
-                Button {
-                    print("hasNoButton")
-                } label: {
-                    Image(iconName)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 0)
-                }
-            }
+            hasButton
+            ? IconButton(name: "ArrowDownCircleBased", action: {})
+                .rotationEffect(.degrees(-90)) //TODO(Lawrence): new icon replacement
+            : nil
             
         }
         .padding(.horizontal, 16)

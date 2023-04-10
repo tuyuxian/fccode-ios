@@ -39,7 +39,7 @@ struct SignUpGenderView: View {
                 
                 HStack {
                     VStack (alignment: .leading){
-                        RadioButton()
+                        RadioButton(label: "Male")
                         RadioButton(label: "Female")
                         RadioButton(label: "Non-binary")
                         RadioButton(label: "Prefer not to say")

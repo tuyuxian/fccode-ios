@@ -20,6 +20,26 @@
 		EA0A932C29DEE9A600596FA0 /* MessageBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932B29DEE9A600596FA0 /* MessageBubble.swift */; };
 		EA0A932E29DEE9B700596FA0 /* MessageInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932D29DEE9B700596FA0 /* MessageInputField.swift */; };
 		EA0A933029DEE9C300596FA0 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A932F29DEE9C300596FA0 /* ChatView.swift */; };
+		EA0A933A29DF011900596FA0 /* AzoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA0A933729DF011800596FA0 /* AzoSans-Medium.ttf */; };
+		EA0A933B29DF011900596FA0 /* AzoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA0A933829DF011800596FA0 /* AzoSans-Bold.ttf */; };
+		EA0A933C29DF011900596FA0 /* AzoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA0A933929DF011800596FA0 /* AzoSans-Regular.ttf */; };
+		EA65A2ED29E202970080E471 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A2EC29E202970080E471 /* TabBar.swift */; };
+		EA65A2F029E21A1E0080E471 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A2EF29E21A1E0080E471 /* Box.swift */; };
+		EA65A2F429E224BE0080E471 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A2F329E224BE0080E471 /* ProfileView.swift */; };
+		EA65A2FC29E23E400080E471 /* BasicInfoSelfIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A2FB29E23E400080E471 /* BasicInfoSelfIntroView.swift */; };
+		EA65A30029E26F150080E471 /* BasicInfoNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A2FF29E26F150080E471 /* BasicInfoNameView.swift */; };
+		EA65A30229E2707B0080E471 /* NavigationHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30129E2707B0080E471 /* NavigationHeader.swift */; };
+		EA65A30429E27D110080E471 /* BasicInfoBirthdayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30329E27D110080E471 /* BasicInfoBirthdayView.swift */; };
+		EA65A30629E28A150080E471 /* BasicInfoGenderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30529E28A150080E471 /* BasicInfoGenderView.swift */; };
+		EA65A30829E28A260080E471 /* BasicInfoEthnicityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30729E28A260080E471 /* BasicInfoEthnicityView.swift */; };
+		EA65A30A29E2CD320080E471 /* CheckboxButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30929E2CD320080E471 /* CheckboxButton.swift */; };
+		EA65A30D29E2CEF30080E471 /* PreferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30C29E2CEF30080E471 /* PreferenceView.swift */; };
+		EA65A30F29E2D9110080E471 /* PreferenceSexOrientationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A30E29E2D9110080E471 /* PreferenceSexOrientationView.swift */; };
+		EA65A31129E2D92D0080E471 /* PreferenceGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A31029E2D92D0080E471 /* PreferenceGoalView.swift */; };
+		EA65A31329E2D9390080E471 /* PreferenceEthnicityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A31229E2D9390080E471 /* PreferenceEthnicityView.swift */; };
+		EA65A31529E2D9620080E471 /* PreferenceDistanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A31429E2D9620080E471 /* PreferenceDistanceView.swift */; };
+		EA65A31729E2FC8A0080E471 /* MenuList.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A31629E2FC8A0080E471 /* MenuList.swift */; };
+		EA65A31B29E306E60080E471 /* ListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA65A31A29E306E60080E471 /* ListRow.swift */; };
 		EA76CE7229DED63D009EC960 /* FingerCrossedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CE7129DED63D009EC960 /* FingerCrossedApp.swift */; };
 		EA76CE7629DED63E009EC960 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE7529DED63E009EC960 /* Assets.xcassets */; };
 		EA76CE7929DED63E009EC960 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE7829DED63E009EC960 /* Preview Assets.xcassets */; };
@@ -27,8 +47,6 @@
 		EA76CE8D29DED63E009EC960 /* FingerCrossedUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CE8C29DED63E009EC960 /* FingerCrossedUITests.swift */; };
 		EA76CE8F29DED63E009EC960 /* FingerCrossedUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CE8E29DED63E009EC960 /* FingerCrossedUITestsLaunchTests.swift */; };
 		EA76CEA029DED925009EC960 /* Countries.geojson in Resources */ = {isa = PBXBuildFile; fileRef = EA76CE9F29DED925009EC960 /* Countries.geojson */; };
-		EA76CEA329DEDA18009EC960 /* AzoSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */; };
-		EA76CEA529DEDA2E009EC960 /* AzoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */; };
 		EA76CEA929DEDA5F009EC960 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEA829DEDA5F009EC960 /* Extensions.swift */; };
 		EA76CEB129DEDBF9009EC960 /* EntryLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */; };
 		EA76CEBD29DEDC56009EC960 /* Countries.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEB229DEDC55009EC960 /* Countries.swift */; };
@@ -53,6 +71,8 @@
 		EA76CEDD29DEDD3A009EC960 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CED829DEDD3A009EC960 /* SignInView.swift */; };
 		EA76CEDE29DEDD3A009EC960 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CED929DEDD3A009EC960 /* LandingView.swift */; };
 		EA76CEDF29DEDD3A009EC960 /* ResetPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA76CEDA29DEDD3A009EC960 /* ResetPasswordView.swift */; };
+		EAD0165E29E3CCEC00FA9DEB /* ContainerWithLogoHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD0165D29E3CCEC00FA9DEB /* ContainerWithLogoHeaderView.swift */; };
+		EAD0166029E3CCFC00FA9DEB /* ContainerWithHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD0165F29E3CCFC00FA9DEB /* ContainerWithHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,7 +94,6 @@
 
 /* Begin PBXFileReference section */
 		EA0A931129DEE64600596FA0 /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
-		EA0A931329DEE73D00596FA0 /* AzoSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AzoSans-Bold.ttf"; sourceTree = "<group>"; };
 		EA0A931429DEE79300596FA0 /* HeaderButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderButton.swift; sourceTree = "<group>"; };
 		EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarBackButton.swift; sourceTree = "<group>"; };
 		EA0A931829DEE88000596FA0 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -87,6 +106,26 @@
 		EA0A932B29DEE9A600596FA0 /* MessageBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubble.swift; sourceTree = "<group>"; };
 		EA0A932D29DEE9B700596FA0 /* MessageInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageInputField.swift; sourceTree = "<group>"; };
 		EA0A932F29DEE9C300596FA0 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		EA0A933729DF011800596FA0 /* AzoSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AzoSans-Medium.ttf"; sourceTree = "<group>"; };
+		EA0A933829DF011800596FA0 /* AzoSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AzoSans-Bold.ttf"; sourceTree = "<group>"; };
+		EA0A933929DF011800596FA0 /* AzoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AzoSans-Regular.ttf"; sourceTree = "<group>"; };
+		EA65A2EC29E202970080E471 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		EA65A2EF29E21A1E0080E471 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
+		EA65A2F329E224BE0080E471 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		EA65A2FB29E23E400080E471 /* BasicInfoSelfIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoSelfIntroView.swift; sourceTree = "<group>"; };
+		EA65A2FF29E26F150080E471 /* BasicInfoNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoNameView.swift; sourceTree = "<group>"; };
+		EA65A30129E2707B0080E471 /* NavigationHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationHeader.swift; sourceTree = "<group>"; };
+		EA65A30329E27D110080E471 /* BasicInfoBirthdayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoBirthdayView.swift; sourceTree = "<group>"; };
+		EA65A30529E28A150080E471 /* BasicInfoGenderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoGenderView.swift; sourceTree = "<group>"; };
+		EA65A30729E28A260080E471 /* BasicInfoEthnicityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoEthnicityView.swift; sourceTree = "<group>"; };
+		EA65A30929E2CD320080E471 /* CheckboxButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckboxButton.swift; sourceTree = "<group>"; };
+		EA65A30C29E2CEF30080E471 /* PreferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceView.swift; sourceTree = "<group>"; };
+		EA65A30E29E2D9110080E471 /* PreferenceSexOrientationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceSexOrientationView.swift; sourceTree = "<group>"; };
+		EA65A31029E2D92D0080E471 /* PreferenceGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceGoalView.swift; sourceTree = "<group>"; };
+		EA65A31229E2D9390080E471 /* PreferenceEthnicityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceEthnicityView.swift; sourceTree = "<group>"; };
+		EA65A31429E2D9620080E471 /* PreferenceDistanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceDistanceView.swift; sourceTree = "<group>"; };
+		EA65A31629E2FC8A0080E471 /* MenuList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuList.swift; sourceTree = "<group>"; };
+		EA65A31A29E306E60080E471 /* ListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRow.swift; sourceTree = "<group>"; };
 		EA76CE6E29DED63D009EC960 /* FingerCrossed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FingerCrossed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA76CE7129DED63D009EC960 /* FingerCrossedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerCrossedApp.swift; sourceTree = "<group>"; };
 		EA76CE7529DED63E009EC960 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -97,8 +136,6 @@
 		EA76CE8C29DED63E009EC960 /* FingerCrossedUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerCrossedUITests.swift; sourceTree = "<group>"; };
 		EA76CE8E29DED63E009EC960 /* FingerCrossedUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FingerCrossedUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		EA76CE9F29DED925009EC960 /* Countries.geojson */ = {isa = PBXFileReference; lastKnownFileType = text; path = Countries.geojson; sourceTree = "<group>"; };
-		EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AzoSans-Medium.ttf"; path = "../../../../../fccode-frontend/FingerCrossed/FingerCrossed/Resources/Font/AzoSans-Medium.ttf"; sourceTree = "<group>"; };
-		EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "AzoSans-Regular.ttf"; path = "../../../../../fccode-frontend/FingerCrossed/FingerCrossed/Resources/Font/AzoSans-Regular.ttf"; sourceTree = "<group>"; };
 		EA76CEA829DEDA5F009EC960 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EA76CEAA29DEDAC5009EC960 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryLogo.swift; sourceTree = "<group>"; };
@@ -124,6 +161,8 @@
 		EA76CED829DEDD3A009EC960 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		EA76CED929DEDD3A009EC960 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		EA76CEDA29DEDD3A009EC960 /* ResetPasswordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordView.swift; sourceTree = "<group>"; };
+		EAD0165D29E3CCEC00FA9DEB /* ContainerWithLogoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerWithLogoHeaderView.swift; sourceTree = "<group>"; };
+		EAD0165F29E3CCFC00FA9DEB /* ContainerWithHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerWithHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +227,84 @@
 				EA0A932F29DEE9C300596FA0 /* ChatView.swift */,
 			);
 			path = Texting;
+			sourceTree = "<group>";
+		};
+		EA65A2EE29E2181F0080E471 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A30B29E2CE880080E471 /* Preference */,
+				EA65A2F829E23DEC0080E471 /* BasicInfo */,
+				EA65A2F329E224BE0080E471 /* ProfileView.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		EA65A2F829E23DEC0080E471 /* BasicInfo */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A30329E27D110080E471 /* BasicInfoBirthdayView.swift */,
+				EA65A30729E28A260080E471 /* BasicInfoEthnicityView.swift */,
+				EA65A30529E28A150080E471 /* BasicInfoGenderView.swift */,
+				EA65A2FF29E26F150080E471 /* BasicInfoNameView.swift */,
+				EA65A2FB29E23E400080E471 /* BasicInfoSelfIntroView.swift */,
+			);
+			path = BasicInfo;
+			sourceTree = "<group>";
+		};
+		EA65A2FD29E26B0B0080E471 /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A30929E2CD320080E471 /* CheckboxButton.swift */,
+				EA0A931429DEE79300596FA0 /* HeaderButton.swift */,
+				EA76CEB729DEDC55009EC960 /* IconButton.swift */,
+				EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */,
+				EA76CEB829DEDC55009EC960 /* PrimaryButton.swift */,
+				EA76CEB629DEDC55009EC960 /* RadioButton.swift */,
+				EA76CEB329DEDC55009EC960 /* SSOButton.swift */,
+			);
+			path = Button;
+			sourceTree = "<group>";
+		};
+		EA65A2FE29E26B400080E471 /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				EA76CEB529DEDC55009EC960 /* DatePickerTextField.swift */,
+				EA76CEB929DEDC56009EC960 /* PrimaryInputBar.swift */,
+			);
+			path = Input;
+			sourceTree = "<group>";
+		};
+		EA65A30B29E2CE880080E471 /* Preference */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A31429E2D9620080E471 /* PreferenceDistanceView.swift */,
+				EA65A31229E2D9390080E471 /* PreferenceEthnicityView.swift */,
+				EA65A31029E2D92D0080E471 /* PreferenceGoalView.swift */,
+				EA65A30C29E2CEF30080E471 /* PreferenceView.swift */,
+				EA65A30E29E2D9110080E471 /* PreferenceSexOrientationView.swift */,
+			);
+			path = Preference;
+			sourceTree = "<group>";
+		};
+		EA65A31829E306A20080E471 /* List */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A31629E2FC8A0080E471 /* MenuList.swift */,
+				EA65A31A29E306E60080E471 /* ListRow.swift */,
+			);
+			path = List;
+			sourceTree = "<group>";
+		};
+		EA65A31929E306BD0080E471 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				EA65A2EF29E21A1E0080E471 /* Box.swift */,
+				EAD0165F29E3CCFC00FA9DEB /* ContainerWithHeaderView.swift */,
+				EAD0165D29E3CCEC00FA9DEB /* ContainerWithLogoHeaderView.swift */,
+				EA65A31829E306A20080E471 /* List */,
+				EA65A2EC29E202970080E471 /* TabBar.swift */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 		EA76CE6529DED63D009EC960 = {
@@ -261,6 +378,7 @@
 		EA76CE9C29DED864009EC960 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				EA65A2EE29E2181F0080E471 /* Profile */,
 				EA0A932129DEE94800596FA0 /* Texting */,
 				EA76CEAB29DEDB3B009EC960 /* Component */,
 				EA76CEAC29DEDB46009EC960 /* Entry */,
@@ -289,9 +407,9 @@
 		EA76CEA129DED9EB009EC960 /* Font */ = {
 			isa = PBXGroup;
 			children = (
-				EA0A931329DEE73D00596FA0 /* AzoSans-Bold.ttf */,
-				EA76CEA229DEDA18009EC960 /* AzoSans-Medium.ttf */,
-				EA76CEA429DEDA2E009EC960 /* AzoSans-Regular.ttf */,
+				EA0A933829DF011800596FA0 /* AzoSans-Bold.ttf */,
+				EA0A933729DF011800596FA0 /* AzoSans-Medium.ttf */,
+				EA0A933929DF011800596FA0 /* AzoSans-Regular.ttf */,
 			);
 			path = Font;
 			sourceTree = "<group>";
@@ -299,20 +417,16 @@
 		EA76CEAB29DEDB3B009EC960 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				EA65A31929E306BD0080E471 /* Layout */,
+				EA65A2FE29E26B400080E471 /* Input */,
+				EA65A2FD29E26B0B0080E471 /* Button */,
 				EA0A931129DEE64600596FA0 /* Avatar.swift */,
-				EA76CEB529DEDC55009EC960 /* DatePickerTextField.swift */,
 				EA76CEBB29DEDC56009EC960 /* DividerWithLabel.swift */,
 				EA76CEB029DEDBF9009EC960 /* EntryLogo.swift */,
-				EA0A931429DEE79300596FA0 /* HeaderButton.swift */,
-				EA76CEB729DEDC55009EC960 /* IconButton.swift */,
 				EA76CEB429DEDC55009EC960 /* InputHelper.swift */,
 				EA76CEBA29DEDC56009EC960 /* NationalityPickerView.swift */,
-				EA0A931629DEE7FF00596FA0 /* NavigationBarBackButton.swift */,
-				EA76CEB829DEDC55009EC960 /* PrimaryButton.swift */,
-				EA76CEB929DEDC56009EC960 /* PrimaryInputBar.swift */,
-				EA76CEB629DEDC55009EC960 /* RadioButton.swift */,
-				EA76CEB329DEDC55009EC960 /* SSOButton.swift */,
 				EA76CEBC29DEDC56009EC960 /* ViewLink.swift */,
+				EA65A30129E2707B0080E471 /* NavigationHeader.swift */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -466,9 +580,10 @@
 			files = (
 				EA76CEA029DED925009EC960 /* Countries.geojson in Resources */,
 				EA76CE7929DED63E009EC960 /* Preview Assets.xcassets in Resources */,
-				EA76CEA529DEDA2E009EC960 /* AzoSans-Regular.ttf in Resources */,
+				EA0A933B29DF011900596FA0 /* AzoSans-Bold.ttf in Resources */,
 				EA76CE7629DED63E009EC960 /* Assets.xcassets in Resources */,
-				EA76CEA329DEDA18009EC960 /* AzoSans-Medium.ttf in Resources */,
+				EA0A933A29DF011900596FA0 /* AzoSans-Medium.ttf in Resources */,
+				EA0A933C29DF011900596FA0 /* AzoSans-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,23 +608,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAD0165E29E3CCEC00FA9DEB /* ContainerWithLogoHeaderView.swift in Sources */,
+				EA65A30629E28A150080E471 /* BasicInfoGenderView.swift in Sources */,
 				EA0A933029DEE9C300596FA0 /* ChatView.swift in Sources */,
 				EA76CED429DEDCFA009EC960 /* SignUpGenderView.swift in Sources */,
 				EA76CEC229DEDC56009EC960 /* IconButton.swift in Sources */,
 				EA76CEC629DEDC56009EC960 /* DividerWithLabel.swift in Sources */,
 				EA76CEA929DEDA5F009EC960 /* Extensions.swift in Sources */,
+				EA65A30229E2707B0080E471 /* NavigationHeader.swift in Sources */,
 				EA0A931929DEE88000596FA0 /* Message.swift in Sources */,
 				EA76CED129DEDCFA009EC960 /* SignUpNationalityView.swift in Sources */,
 				EA76CEC329DEDC56009EC960 /* PrimaryButton.swift in Sources */,
 				EA76CEC529DEDC56009EC960 /* NationalityPickerView.swift in Sources */,
+				EA65A2ED29E202970080E471 /* TabBar.swift in Sources */,
+				EA65A31B29E306E60080E471 /* ListRow.swift in Sources */,
 				EA0A931529DEE79300596FA0 /* HeaderButton.swift in Sources */,
 				EA76CEB129DEDBF9009EC960 /* EntryLogo.swift in Sources */,
+				EA65A30029E26F150080E471 /* BasicInfoNameView.swift in Sources */,
+				EA65A30A29E2CD320080E471 /* CheckboxButton.swift in Sources */,
 				EA0A932429DEE96400596FA0 /* TextingView.swift in Sources */,
 				EA0A931229DEE64600596FA0 /* Avatar.swift in Sources */,
 				EA0A931D29DEE8B600596FA0 /* MessageCell.swift in Sources */,
 				EA76CEBD29DEDC56009EC960 /* Countries.swift in Sources */,
 				EA0A932629DEE97800596FA0 /* TextRow.swift in Sources */,
 				EA76CE7229DED63D009EC960 /* FingerCrossedApp.swift in Sources */,
+				EA65A30429E27D110080E471 /* BasicInfoBirthdayView.swift in Sources */,
 				EA0A932829DEE98500596FA0 /* TextList.swift in Sources */,
 				EA76CEC729DEDC56009EC960 /* ViewLink.swift in Sources */,
 				EA76CEC429DEDC56009EC960 /* PrimaryInputBar.swift in Sources */,
@@ -520,16 +643,27 @@
 				EA0A931729DEE7FF00596FA0 /* NavigationBarBackButton.swift in Sources */,
 				EA76CEDD29DEDD3A009EC960 /* SignInView.swift in Sources */,
 				EA0A932029DEE90700596FA0 /* AppDelegate.swift in Sources */,
+				EA65A30829E28A260080E471 /* BasicInfoEthnicityView.swift in Sources */,
 				EA76CEBE29DEDC56009EC960 /* SSOButton.swift in Sources */,
+				EA65A31529E2D9620080E471 /* PreferenceDistanceView.swift in Sources */,
+				EA65A31129E2D92D0080E471 /* PreferenceGoalView.swift in Sources */,
+				EA65A2F029E21A1E0080E471 /* Box.swift in Sources */,
+				EA65A30D29E2CEF30080E471 /* PreferenceView.swift in Sources */,
 				EA76CED029DEDCFA009EC960 /* SignUpAccountView.swift in Sources */,
 				EA76CED329DEDCFA009EC960 /* SignUpAvatarView.swift in Sources */,
+				EA65A31329E2D9390080E471 /* PreferenceEthnicityView.swift in Sources */,
+				EA65A31729E2FC8A0080E471 /* MenuList.swift in Sources */,
 				EA76CED229DEDCFA009EC960 /* SignUpBirthdateView.swift in Sources */,
+				EA65A2FC29E23E400080E471 /* BasicInfoSelfIntroView.swift in Sources */,
 				EA76CEC129DEDC56009EC960 /* RadioButton.swift in Sources */,
 				EA0A932C29DEE9A600596FA0 /* MessageBubble.swift in Sources */,
 				EA76CEDF29DEDD3A009EC960 /* ResetPasswordView.swift in Sources */,
 				EA0A932E29DEE9B700596FA0 /* MessageInputField.swift in Sources */,
 				EA0A932A29DEE99C00596FA0 /* ChatRoomView.swift in Sources */,
+				EAD0166029E3CCFC00FA9DEB /* ContainerWithHeaderView.swift in Sources */,
 				EA76CEDB29DEDD3A009EC960 /* ResetPasswordEmailCheckView.swift in Sources */,
+				EA65A30F29E2D9110080E471 /* PreferenceSexOrientationView.swift in Sources */,
+				EA65A2F429E224BE0080E471 /* ProfileView.swift in Sources */,
 				EA76CEDC29DEDD3A009EC960 /* EntryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -617,7 +751,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -671,7 +805,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -689,6 +823,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FingerCrossed/Preview Content\"";
+				DEVELOPMENT_TEAM = 95584NT66H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FingerCrossed/Info.plist;
@@ -698,6 +833,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -719,6 +855,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"FingerCrossed/Preview Content\"";
+				DEVELOPMENT_TEAM = 95584NT66H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FingerCrossed/Info.plist;
@@ -728,6 +865,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

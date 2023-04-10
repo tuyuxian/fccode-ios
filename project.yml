@@ -1,0 +1,22 @@
+name: FingerCrossed
+options:
+  bundleIdPrefix: FingerCrossed
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  FingerCrossed:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    info:
+      path: FingerCrossed/Info.plist
+      properties:
+        UISupportedInterfaceOrientations~iphone:
+          [UIInterfaceOrientationPortrait]
+        UILaunchScreen: [UILaunchScreen: []]
+        UIAppFonts:
+          ["AzoSans-Bold.ttf", "AzoSans-Medium.ttf", "AzoSans-Regular.ttf"]
+        UIStatusBarStyle: "UIStatusBarStyleLightContent"
+    sources:
+      - FingerCrossed

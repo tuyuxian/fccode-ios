@@ -1,92 +1,38 @@
 //
-//  ParingView.swift
+//  PairingView.swift
 //  FingerCrossed
 //
-//  Created by Lawrence on 4/12/23.
+//  Created by Lawrence on 4/16/23.
 //
 
 import SwiftUI
 
-struct ParingView: View {
-    @State var candidateModel: CandidateModel
-    @State var lifePhoto: LifePhoto
+struct PairingView: View {
+    @State var candidateList: [CandidateModel]
     
     var body: some View {
-        VStack (spacing: 0.0) {
-            Spacer()
-            
-            ZStack {
-                VStack (spacing: 8.0){
-                    Text(candidateModel.username)
-                        .font(.h2Medium)
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 10)
-                    
-                    HStack {
-                        CandidateDetailItem(iconName: "GenderNeutralWhite", label: candidateModel.gender)
-                            
-                        CandidateDetailItem(iconName: "AgeWhite", label: String(candidateModel.age))
+        VStack {
+            GeometryReader { geometry in
+                TabView {
+                    ForEach(candidateList) { list in
+                        CandidateView(candidateModel: list, lifePhotoList: list.LifePhotoList)
+                            .rotationEffect(.degrees(-90))
+                            .frame(width: geometry.size.width, height: geometry.size.height)
                     }
-                    .padding(.horizontal, 19)
-                    
-                    HStack {
-                        CandidateDetailItem(iconName: "LocationWhite", label: candidateModel.location)
-                        
-                        CandidateDetailItem(iconName: "GlobeWhite", label: candidateModel.nationality)
-                    }
-                    .padding(.horizontal, 19)
-                    .padding(.bottom, 12)
-                    
                 }
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color.text.opacity(0.6))
-                )
-                .padding(.horizontal, 24)
-                
-                Button {
-                    print("link to candidate detail view")
-                } label: {
-                    Image("MoreWhite")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
-                        .padding(.trailing, 10)
-                        .padding(.top, 15)
-                }
-                .padding(.horizontal, 24)
-                .frame(height: 112, alignment: .top)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                
+                .edgesIgnoringSafeArea(.all)
+                .frame(width: geometry.size.height, height: geometry.size.width)
+                .rotationEffect(.degrees(90), anchor: .topLeading)
+                .offset(x: geometry.size.width)
+                .tabViewStyle(.page(indexDisplayMode: .never))
             }
-            
-            
-            Spacer()
-                .frame(height: 30)
             TabBar()
         }
     }
 }
 
-struct ParingView_Previews: PreviewProvider {
+struct PairingView_Previews: PreviewProvider {
     static var previews: some View {
-        ParingView(candidateModel: CandidateModel(LifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Male", age: 30, location: "Tempe", nationality: "America"), lifePhoto: LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption", position: 25))
-    }
-}
-
-struct CandidateDetailItem: View {
-    @State var iconName: String = "IconName"
-    @State var label: String = "Label"
-    
-    var body: some View {
-        HStack (spacing: 4.0) {
-            Image(iconName)
-            Text(label)
-                .font(.pMedium)
-                .foregroundColor(Color.white)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        PairingView(candidateList: [CandidateModel(LifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)], username: "UserName1", selfIntro: "Hi there! I'm a 25-year-old woman, born and raised in [City/State/Country]. I'm currently living in [City/State/Country], and I enjoy [hobbies/interests]. Nice to meet you!", gender: "Female", age: 30, location: "Tempe", nationality: "America"),CandidateModel(LifePhotoList: [LifePhoto(photoUrl: "https://lh3.googleusercontent.com/KdMX10-xp3FSYfSjaUuw_t0oS-Pjg5QKQMtq8Ne7naQ2Mh84xWxuXZm2-EnoTRDFxqTkEML5_t6Nh8oFEKEREHNtgmpAdwpulpOGEtGoeacxd2AIH2ESHbWxR1ybmx0Lxr3LtGrsZsyE8hvHNoRuuVwKoAnob45uMd9PUx_nHJqFY0aFrX9stOdmf3tncbjVlio5lextSIy3aLZQia4KLhtG64UWndSUT6d_UoF6yGygAtEU-aACTYG75Lsg7UnWXa17153KJBdSig1MXRlGxkVX67TB8yQlD6CB2JWdoefO0RVas40o0khR4T3Bkx53udBUphTO6xVlOvQ4WweI1dkm1mjrUoQsfeL5TpVj46oRbYMEXwF9STJkcxyi_UpBIOUsfrHsg8CCXuBiwW0KmWZai58enm5dptfwXofTJ-GA3R5uvkmflw4etRb0M3NEGQO5vuIrSdsZchZ1I-gaKG2QxsT5KdRiaIDmAfNNSqx5yeVFCNmtolQ1Vp2stj5NvfS1V_URHtxVo1Zp7Bid9hIP2Zp841ycS-lVSF-0uKGSBaBAmbzGf4OVPcbi7lxG-_-djd6CoDKw_vTwI6U9kzFpwe-hK-agLfJzl7Su97r95jOo7W0ZOx9-H0TRGUgI0pKfX09nRhqEv633myYAUaiZStML6onMAy6X1cHJReMq_vOTGt5YhuoLmYSoDa17SeF95JLuohJivlyoTRFRaiPHErDacx5SjPC4MFeB5ZTV-PYnQ8NenNw41SVtuKvZB3BJV8H8-l770L1ipryotRgrXb3DYuIC2WBEwKim-Y8B4-gnn7FBKAsF-pdIMyx9lW1LBa2aPaQy9Nntf3dvOQC0bicodBp5whaMQe7VuiaWXg0s8tAfXoAH3IP2-ZZyeAgCmjIEk5iQUhHWSKzeEGy3XnEsLXG8h19N5BI_nfHiJTjcc_gRF0t1e7BxC5fk47v98-lzv66df2929XAtQ7hLXYu1rni3uSMOX4l9SkIH3rLqgI8g3JgKYRq8U5SRP_OMCqXHB2d-Z25vWmPsRwQFY1g=w1918-h1438-s-no?authuser=3", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lh3.googleusercontent.com/XJP_ZZIxasPaf7LyqWl0cWIdsNfeg9mhhJrj_hUOo6s6aXpxrtRvn85rE9m9hEOQSU7x8sOmjiI-gptsTFUMiVYVDbhZph-dajyVSTFFppJD_HBrhrOVw9QTFhm1dHeonHCV-j1mmbM510g8kjf9BM3BO0q8jMv0QWfmabsY0cSqDL3lip68SrSE8zfl_1ihbXmXEn5dQXTp-eOiZfeHwOw-zNKWtrRMA6yhJI4wU3_ax6UXsOznN9JyFgkuPrQvSbNwrQzPL0hD5yEaGYXc4yXPKwzKSbijmkU4GX6y0tSFyb5p7b34kVIdXzlBw0t6YhHqGXTDc5Hd_rLJld-aQeG5ztDh_XCHWQrw9sDrn1u9JRrvc74pSho5GxvZksiDfzM_mtqPZOlPlzMVu9JQuvkoz7UwtsqXPzecd9sTVORhr8pscmtaiFJjY-DeFRcUEXpX5EpOSHlublXLQzgtrR647oLF3nsV4dXHUXwrEDclMzam5-7LPxrLMu1l01PknQN-TRCnvXZIPJZe8fqu5B8lDUXgPwo3wnBaXGnsyljS644o4s3XcxihNRBPyH0uYFXodN_zUCJbK_0l0Zq11UNjriyQbFvM9bC8Lb8p5rlIxcweC0syYKAAE17lRxhx6uYBLGa-A-uAtwU0pFxcDgcKaM5UTnv8Csg0QC89pj7HdOiawj9ySmByutzP_SaTQTmiPKShfSOIaXvtqFVXlQrNBpprMUBF584liRjj3hJtZ0Ec-VT0K7QQ6gmensHa7l2CEz2rzb3oxUSeQ-8WtSavi2kYoD54iyKrbTlRzc3oAUYUn_JKnD55XY_jpLCA90neRVCvDvYoePjHNQ3b61Ll2DPmgBifIbIp71j2xEHmeivmohixZbm9qr-6HMZFl7iuD73npHQGH5iLM5WcNM3q6IUnH_dg3VLc3vN8KzrwJ9ft8Uh3N72MFuR9YavIsOfBUP60JY5ewWt4wfnFXoDtGQmFjnLar5f1VUJLNB9cH4pskCCiYeIRCNrbg00My7B_WoXyOtn3KSUi0xffnD9vgok=w1918-h1438-s-no?authuser=3", caption: "caption2", position: 1)], username: "UserName2", selfIntro: "Hi there! I'm a 25-year-old woman, born and raised in [City/State/Country]. I'm currently living in [City/State/Country], and I enjoy [hobbies/interests]. Nice to meet you!", gender: "Male", age: 35, location: "Chandler", nationality: "America")])
     }
 }

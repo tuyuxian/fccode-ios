@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CandidateModel {
+struct CandidateModel: Identifiable{
     let id: UUID
     var LifePhotoList: [LifePhoto]
     var username: String
@@ -29,7 +29,7 @@ struct CandidateModel {
     }
 }
 
-struct LifePhoto {
+struct LifePhoto: Identifiable, Equatable {
     let id: UUID
     var photoUrl: String
     var caption: String
@@ -42,3 +42,4 @@ struct LifePhoto {
         self.position = position
     }
 }
+

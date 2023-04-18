@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct SignUpNationalityView: View {
-    @State private var showNationalitySheet: Bool = false
-    
-    @State private var x = 0
-    
-    @State private var nationalities = []
+    @StateObject var countryViewModel = CountryViewModel()
+    @StateObject var countrySelectionList: CountrySelectionList
     
     var body: some View {
         ZStack {
@@ -43,34 +40,21 @@ struct SignUpNationalityView: View {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 12)
                 
-                Button(action: {
-                    self.showNationalitySheet.toggle()
-                }) {
-                    HStack {
-                        Text("Choose languages").foregroundColor(Color.black)
-                        Spacer()
-                        Text("\(nationalities.count)")
-                            .foregroundColor(Color(UIColor.systemGray))
-                            .font(.body)
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(Color(UIColor.systemGray4))
-                            .font(Font.body.weight(.medium))
-
-                    }
-                }
-                .sheet(isPresented: $showNationalitySheet) {
-                    NationalityPickerView()
-                }
-
-                Picker(selection: $x, label: Text("One item Picker")) {
-                   ForEach(0..<10) { x in
-                      Text("\(x)")
-                   }
-                }
+                NationalityPickerView(countryViewModel: countryViewModel, countrySelectionList: countrySelectionList)
+                    .padding(.horizontal, 24)
+                
+                InputHelper(label: "Up to 3 Nationalities")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: 16)
+                    .padding(.horizontal, 40)
+                    .padding(.vertical, 10)
+                    
+                
+                
                 
                 
                 Spacer()
-                    .frame(height: 170)
+                    .frame(height: 246)
                 
                 Button {
                     print("Continue")
@@ -91,6 +75,6 @@ struct SignUpNationalityView: View {
 
 struct SignUpNationalityView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpNationalityView()
+        SignUpNationalityView(countryViewModel: CountryViewModel(), countrySelectionList: CountrySelectionList(countrySlections: [CountryModel]()))
     }
 }

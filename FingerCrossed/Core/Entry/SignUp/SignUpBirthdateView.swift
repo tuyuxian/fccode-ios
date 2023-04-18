@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignUpBirthdateView: View {
     @FocusState private var textfieldIsFocused: Bool
-    @State var birthday : Date?
+    @State var birthday : Date
     
     var body: some View {
         ZStack {
@@ -38,40 +38,43 @@ struct SignUpBirthdateView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 24)
-                .padding(.vertical, 12)
+                .padding(.top, 12)
+                .padding(.bottom, 14)
                 
-                ZStack {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 50)
-                            .stroke(Color.surface2, lineWidth: 1)
-                            .background(
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(Color.white)
-                            )
-                        .frame(height: 56)
-                        
-                        HStack {
-                            Spacer()
-                            
-                            Image(textfieldIsFocused ? "ArrowUpBased" : "ArrowDownBased")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.horizontal, 16)
-                    }
-                    // TODO(Lawrence): set the hint's font to be p regular
-                    DatePickerTextField(placeholder: "Select your birthday", date: $birthday)
-                        .focused($textfieldIsFocused)
-                        .padding(.horizontal, 16)
-                        .frame(height: 56)
-                    
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 18)
+                CustomPicker()
+                
+//                ZStack {
+//                    ZStack {
+//                        RoundedRectangle(cornerRadius: 50)
+//                            .stroke(Color.surface2, lineWidth: 1)
+//                            .background(
+//                                RoundedRectangle(cornerRadius: 50)
+//                                    .fill(Color.white)
+//                            )
+//                        .frame(height: 56)
+//
+//                        HStack {
+//                            Spacer()
+//
+//                            Image(textfieldIsFocused ? "ArrowUpBased" : "ArrowDownBased")
+//                                .resizable()
+//                                .aspectRatio(contentMode: .fit)
+//                                .frame(width: 24, height: 24)
+//                        }
+//                        .padding(.horizontal, 16)
+//                    }
+//                    // TODO(Lawrence): set the hint's font to be p regular
+//                    DatePickerTextField(placeholder: "Select your birthday", date: $birthday)
+//                        .focused($textfieldIsFocused)
+//                        .padding(.horizontal, 16)
+//                        .frame(height: 56)
+//
+//                }
+//                .padding(.horizontal, 24)
+//                .padding(.vertical, 18)
                 
                 Spacer()
-                    .frame(height: 266)
+                    .frame(height: 76)
                 
                 Button {
                     print("Continue")
@@ -92,6 +95,6 @@ struct SignUpBirthdateView: View {
 
 struct SignUpBirthdateView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpBirthdateView()
+        SignUpBirthdateView(birthday: Date())
     }
 }

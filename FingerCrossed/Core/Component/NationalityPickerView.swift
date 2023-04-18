@@ -8,21 +8,72 @@
 import SwiftUI
 
 struct NationalityPickerView: View {
-//    let countries = Bundle.main.decode(Country.self, from: "countries.json")
-//    @State private var selectedCountry = Set<Country>()
+    @StateObject var countryViewModel = CountryViewModel()
+    @StateObject var countrySelectionList: CountrySelectionList
+    @State var isSheetPresented = false
+    
     
     var body: some View {
-        Text("Hello World")
-//        List (selection: $selectedCountry){
-//            ForEach(countries) { country in
-//                Text(country.name)
-//            }
-//        }
+
+        ZStack {
+            Color.white
+                .frame(height: 56)
+                .cornerRadius(50)
+            
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(Color.text)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.horizontal, 16)
+            
+            if countrySelectionList.countrySlections.count != 0 {
+                ForEach(countrySelectionList.countrySlections) { countryselected in
+                    HStack (spacing: 4.0){
+                        Text(countryselected.name)
+                            .padding(.leading, 8)
+                            .padding(.vertical, 6)
+
+                        Button{
+                            countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
+                        } label: {
+                            Image(systemName: "xmark.circle")
+                        }
+                        .padding(.trailing, 8)
+                    }
+                    .frame(height: 32)
+                    .background(
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(Color.orange)
+                    )
+                }
+            }else {
+                Text("Search")
+                    .foregroundColor(Color.textHelper)
+                    .font(.pRegular)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .frame(height: 56)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 50)
+                            .stroke(Color.surface2, lineWidth: 1)
+                    )
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .onTapGesture {
+            isSheetPresented.toggle()
+        }
+        .sheet(isPresented: $isSheetPresented) {
+            print("Sheet dismissed")
+            print(self.countrySelectionList.countrySlections.count)
+        } content: {
+            CountryView(countryViewModel: countryViewModel)
+                .presentationDetents([.fraction(0.85)])
+        }
     }
 }
 
 struct NationalityPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        NationalityPickerView()
+        NationalityPickerView(countryViewModel: CountryViewModel(), countrySelectionList: CountrySelectionList(countrySlections: [CountryModel]()))
     }
 }

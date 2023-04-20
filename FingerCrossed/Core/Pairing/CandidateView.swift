@@ -158,7 +158,7 @@ struct CandidateView: View {
             print("Sheet dismissed")
         } content: {
             CandidateDetailView(candidateModel: candidateModel, lifePhotoList: lifePhotoList)
-                .presentationDetents([.fraction(0.85)])
+                .presentationDetents([.large])
         }
         
         

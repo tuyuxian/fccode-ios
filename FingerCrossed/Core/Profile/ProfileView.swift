@@ -40,7 +40,6 @@ struct ProfileView: View {
                         .padding(.top, 104) // 134 - 20 (ListRow) - 10 (first item's padding)
                 }
                 .padding(.top, -104)
-                TabBar()
             }
         }
     }

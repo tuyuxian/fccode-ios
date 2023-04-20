@@ -13,7 +13,6 @@ struct BasicInfoBirthdayView: View {
             Box {
                 // TODO(Sam): Date Picker
                 Spacer()
-                TabBar()
             }
         }
     }

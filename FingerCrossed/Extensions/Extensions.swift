@@ -17,11 +17,14 @@ extension Color {
     static let warning = Color("Warning")
     static let surface1 = Color("Surface1")
     static let surface2 = Color("Surface2")
+    static let surface3 = Color("Surface3")
+    static let surface4 = Color("Surface4")
     static let description = Color("Description")
     
     static let facebook = Color("FB")
     static let google = Color("Google")
     
+    static let blue20 = Color("Blue20")
     static let blue100 = Color("Blue100")
     static let orange60 = Color("Orange60")
     static let orange100 = Color("Orange100")
@@ -31,6 +34,7 @@ extension Color {
 }
 
 extension Font {
+    
     static let bigBoldTitle = Font.custom("AzoSans-Bold", size: 40)
     
     static let h1Medium = Font.custom("AzoSans-Medium", size: 28)
@@ -53,41 +57,15 @@ extension Font {
     
 }
 
-extension Bundle {
-    func decode<T: Decodable>(_ type: T.Type, from file: String, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate, keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys) -> T {
-            guard let url = self.url(forResource: file, withExtension: nil) else {
-                fatalError("Failed to locate \(file) in bundle.")
-            }
-
-            guard let data = try? Data(contentsOf: url) else {
-                fatalError("Failed to load \(file) from bundle.")
-            }
-
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = dateDecodingStrategy
-            decoder.keyDecodingStrategy = keyDecodingStrategy
-
-            do {
-                return try decoder.decode(T.self, from: data)
-            } catch DecodingError.keyNotFound(let key, let context) {
-                fatalError("Failed to decode \(file) from bundle due to missing key '\(key.stringValue)' not found – \(context.debugDescription)")
-            } catch DecodingError.typeMismatch(_, let context) {
-                fatalError("Failed to decode \(file) from bundle due to type mismatch – \(context.debugDescription)")
-            } catch DecodingError.valueNotFound(let type, let context) {
-                fatalError("Failed to decode \(file) from bundle due to missing \(type) value – \(context.debugDescription)")
-            } catch DecodingError.dataCorrupted(_) {
-                fatalError("Failed to decode \(file) from bundle because it appears to be invalid JSON")
-            } catch {
-                fatalError("Failed to decode \(file) from bundle: \(error.localizedDescription)")
-            }
-        }
-}
-
 // Extension for adding rounded corners to specific corners
 extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners) )
     }
+    
+//    public func fontTemplate(_ template: FontTemplate) -> some View {
+//            modifier(FontTemplateModifier(template: template))
+//        }
 }
 
 // Custom RoundedCorner shape used for cornerRadius extension above

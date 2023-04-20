@@ -9,11 +9,12 @@
 import SwiftUI
 
 struct IconButtonWithBackground: ButtonStyle {
+    var size: CGFloat = 54
     var buttonColor: Color = Color.orange100
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .frame(width: 54, height: 54)
+            .frame(width: size, height: size)
             .background(
                 Circle()
                     .fill(buttonColor)

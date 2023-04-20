@@ -38,13 +38,10 @@ struct SignUpAccountView: View {
                 
                 HStack {
                     VStack (alignment: .leading, spacing: 6.0){
-                        InputHelper()
-                        
-                        InputHelper(label: "At least one upper & one lowercase")
-                        
-                        InputHelper(label: "At least one number & symbol")
-                        
-                        InputHelper(label: "Match with password")
+                        InputHelper(isSatisfied: .constant(true), label: "At least 8 characters")
+                        InputHelper(isSatisfied: .constant(true), label: "At least one upper & one lowercase")
+                        InputHelper(isSatisfied: .constant(true), label: "At least one number & one symbol")
+                        InputHelper(isSatisfied: .constant(false), label: "Match with password")
                     }
                     .padding(.horizontal, 38.67)
                     

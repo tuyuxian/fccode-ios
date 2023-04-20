@@ -15,7 +15,7 @@ struct ListRow: View {
     var body: some View {
         HStack(spacing: 0) {
             Text(label)
-                .fontTemplate(.h3Medium)
+                .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
                 .frame(height: 24)
                 .padding(.top, 2)
@@ -25,7 +25,7 @@ struct ListRow: View {
                 .resizable()
                 .frame(width: 24, height: 24)
         }
-        .padding(EdgeInsets(top: 20, leading: 24, bottom: 20, trailing: 24))
+        .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
     }
 }
 

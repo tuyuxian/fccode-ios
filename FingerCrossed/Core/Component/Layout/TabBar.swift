@@ -19,7 +19,7 @@ struct TabBar: View {
             TabView(selection: $currentTab) {
                 TextingView()
                     .tag("Chat")
-                ProfileView()
+                PairingView()
                     .tag("Pairing")
                 ProfileView()
                     .tag("Profile")
@@ -48,9 +48,7 @@ struct TabBarButton: View {
     @Binding var currentTab: String
     var body: some View {
         Button {
-            withAnimation {
-                currentTab = icon
-            }
+            currentTab = icon
         } label: {
             ZStack {
                 Image(icon)

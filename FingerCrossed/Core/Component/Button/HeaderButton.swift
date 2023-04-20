@@ -16,7 +16,7 @@ struct HeaderButton: View {
         Button(name) {
             action()
         }
-        .font(.pMedium)
+        .fontTemplate(.pMedium)
         .foregroundColor(Color.orange100)
     }
 }

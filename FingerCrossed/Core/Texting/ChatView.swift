@@ -62,7 +62,7 @@ private struct AnnoucementBanner: View {
     var body: some View {
         HStack {
             Text(info)
-                .font(.captionMedium)
+                .fontTemplate(.captionMedium)
                 .foregroundColor(Color.text)
                 .multilineTextAlignment(.center)
                 .frame(width: 342, height: 44)
@@ -78,7 +78,7 @@ private struct DateStamp: View {
     var body: some View {
         HStack {
             Text(datestamp)
-                .font(.captionRegular)
+                .fontTemplate(.captionRegular)
                 .foregroundColor(Color.textHelper)
         }
         .padding(EdgeInsets(top: 8, leading: 24, bottom: 8, trailing: 24))

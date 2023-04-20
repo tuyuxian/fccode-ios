@@ -26,13 +26,13 @@ struct TextRow: View {
                     HStack {
                         // username
                         Text(username)
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                             .lineLimit(1)
                         Spacer()
                         // timestamp
                         Text(timestamp)
-                            .font(.captionRegular)
+                            .fontTemplate(.captionRegular)
                             .foregroundColor(Color.text)
                         
                     }
@@ -41,7 +41,7 @@ struct TextRow: View {
                     HStack {
                         // message
                         Text(latestMessage)
-                            .font(unreadMessageCount > 0 ? .pMedium : .pRegular)
+                            .fontTemplate(unreadMessageCount > 0 ? .pMedium : .pRegular)
                             .foregroundColor(Color.text)
                             .lineLimit(1)
                         Spacer()
@@ -102,7 +102,7 @@ private struct UnreadHint: View {
                 .frame(width: 26, height: 18, alignment: .center)
                 .overlay(
                     Text("99+")
-                        .font(.captionMedium)
+                        .fontTemplate(.captionMedium)
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)
                         .padding(.bottom, -2)
@@ -115,7 +115,7 @@ private struct UnreadHint: View {
                 .frame(width: 22, height: 18, alignment: .center)
                 .overlay(
                     Text("\(count)")
-                        .font(.captionMedium)
+                        .fontTemplate(.captionMedium)
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)
                         .padding(.bottom, -2)
@@ -127,7 +127,7 @@ private struct UnreadHint: View {
                 .frame(width: 18, height: 18, alignment: .center)
                 .overlay(
                     Text("\(count)")
-                        .font(.captionMedium)
+                        .fontTemplate(.captionMedium)
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color.white)
                         .padding(.bottom, -2)

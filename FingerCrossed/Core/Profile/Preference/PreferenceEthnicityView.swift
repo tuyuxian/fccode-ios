@@ -33,7 +33,7 @@ struct PreferenceEthnicityView: View {
                        
                         
                         index != ethnicityOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface2) // TODO(Sam): use surface3
+                        ? Divider().foregroundColor(Color.surface3)
                                 .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                         : nil
                         

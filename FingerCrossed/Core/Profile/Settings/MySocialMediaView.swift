@@ -16,7 +16,7 @@ struct MySocialMediaView: View {
                 VStack(alignment: .leading, spacing: 20.0) {
                     HStack {
                         Text("Facebook")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                             .foregroundColor(.text)
                         
                         Spacer()
@@ -24,7 +24,7 @@ struct MySocialMediaView: View {
                         Button("Connect") {
                             print("Connect!")
                         }
-                        .font(.pMedium)
+                        .fontTemplate(.pMedium)
                         .padding(EdgeInsets(top: 9, leading: 26, bottom: 9, trailing: 26))
                         .frame(width: 108, height: 38)
                         .background(Color("Orange100"))
@@ -37,7 +37,7 @@ struct MySocialMediaView: View {
                     
                     HStack {
                         Text("Google")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                             .foregroundColor(.text)
                         
                         Spacer()
@@ -45,7 +45,7 @@ struct MySocialMediaView: View {
                         Button("Disconnet") {
                             print("Disconnect!")
                         }
-                        .font(.pMedium)
+                        .fontTemplate(.pMedium)
                         .padding(EdgeInsets(top: 9, leading: 16.5, bottom: 9, trailing: 16.5))
                         .frame(width: 108, height: 38)
                         .foregroundColor(.orange100)
@@ -60,7 +60,7 @@ struct MySocialMediaView: View {
                     
                     HStack {
                         Text("Apple")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                             .foregroundColor(.text)
                         
                         Spacer()
@@ -68,7 +68,7 @@ struct MySocialMediaView: View {
                         Button("Disconnet") {
                             print("Disconnect!")
                         }
-                        .font(.pMedium)
+                        .fontTemplate(.pMedium)
                         .padding(EdgeInsets(top: 9, leading: 16.5, bottom: 9, trailing: 16.5))
                         .frame(width: 108, height: 38)
                         .foregroundColor(.orange100)

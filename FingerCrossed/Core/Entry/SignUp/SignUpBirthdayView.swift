@@ -1,5 +1,5 @@
 //
-//  SignUpBirthdateView.swift
+//  SignUpBirthdayView.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/3/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SignUpBirthdateView: View {
+struct SignUpBirthdayView: View {
     @FocusState private var textfieldIsFocused: Bool
     @State var birthday : Date?
     
@@ -90,8 +90,8 @@ struct SignUpBirthdateView: View {
     }
 }
 
-struct SignUpBirthdateView_Previews: PreviewProvider {
+struct SignUpBirthdayView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpBirthdateView()
+        SignUpBirthdayView()
     }
 }

@@ -7,10 +7,12 @@
 
 import SwiftUI
 
-struct ListRow: View {
+struct ListRow<Content: View>: View {
     
     @State var label: String
     @State var icon: String = "ArrowRightBased" // replace the icon when needed
+    @State var hasIcon: Bool = true
+    @ViewBuilder var preview: Content
     
     var body: some View {
         HStack(spacing: 0) {
@@ -31,6 +33,8 @@ struct ListRow: View {
 
 struct ListRow_Previews: PreviewProvider {
     static var previews: some View {
-        ListRow(label: "Demo list row")
+        ListRow(label: "Demo list row") {}
     }
 }
+
+

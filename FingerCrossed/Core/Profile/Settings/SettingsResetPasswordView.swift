@@ -16,14 +16,14 @@ struct SettingsResetPasswordView: View {
                     
                     VStack(alignment: .leading, spacing: 6.0){
                         Text("New Password")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
                         PrimaryInputBar(isDisable: false, hasButton: true)
                     }
                     
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("Comfirm Password")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
                         PrimaryInputBar(isDisable: false, hasButton: true)
                     }

@@ -17,8 +17,17 @@ struct MenuList: View {
                     VStack(spacing: 0) {
                         HStack(spacing: 0) {
                             ZStack {
-                                ListRow(label: childView.label)
-                                NavigationLink(
+                                ListRow(
+                                    label: childView.label,
+                                    hasIcon: childView.hasMedia ? false : true
+                                ) {
+                                    childView.hasMedia ? nil : childView.preview
+                                    childView.hasMedia ? childView.media : nil
+                                }
+                                
+                                childView.hasMedia
+                                ? nil
+                                : NavigationLink(
                                     destination: childView.view
                                     .navigationBarBackButtonHidden(true)
                                     .navigationBarItems(
@@ -42,7 +51,7 @@ struct MenuList: View {
                         .padding(.top, index == 0 ? 10 : 0) // 30 - 20 (ListRow) for the first item
                         
                         index != childViewList.count - 1
-                        ? Divider().foregroundColor(Color.surface2) // TODO(Sam): use surface3
+                        ? Divider().foregroundColor(Color.surface3)
                             .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                         : nil
                     }
@@ -66,5 +75,8 @@ struct MenuList_Previews: PreviewProvider {
 struct ChildView: Identifiable {
     var id = UUID()
     var label: String
-    var view: AnyView
+    var view: AnyView = AnyView(EmptyView())
+    var preview: AnyView = AnyView(EmptyView())
+    var hasMedia: Bool = false
+    var media: AnyView = AnyView(EmptyView())
 }

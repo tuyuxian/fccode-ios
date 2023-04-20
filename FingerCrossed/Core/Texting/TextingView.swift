@@ -53,8 +53,8 @@ struct TextingView: View {
                 HStack(alignment: .bottom) {
                     HeaderButton(name: "Edit", action: {
                         isEditing.toggle()
-                    })
-                }
+                    }
+                )
             }
             .padding(.top, 10)
             .padding(.leading, 24)

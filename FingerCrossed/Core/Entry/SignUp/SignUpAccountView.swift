@@ -20,7 +20,7 @@ struct SignUpAccountView: View {
                 HStack {
                     Text("Welcome to\nJoin us")
                         .foregroundColor(.text)
-                        .font(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

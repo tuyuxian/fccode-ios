@@ -20,7 +20,7 @@ struct ResetPasswordView: View {
                 HStack {
                     Text("Reset\nPassword")
                         .foregroundColor(.text)
-                        .font(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     .frame(width: 183)
                     
                     Spacer()

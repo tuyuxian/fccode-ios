@@ -15,7 +15,7 @@ struct ListRow: View {
     var body: some View {
         HStack(spacing: 0) {
             Text(label)
-                .font(.h3Medium)
+                .fontTemplate(.h3Medium)
                 .foregroundColor(Color.text)
                 .frame(height: 24)
                 .padding(.top, 2)

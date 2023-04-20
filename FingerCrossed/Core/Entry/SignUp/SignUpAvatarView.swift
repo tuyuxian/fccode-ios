@@ -20,7 +20,7 @@ struct SignUpAvatarView: View {
                 
                 HStack {
                     Text("Upload your...")
-                        .font(.h3Medium)
+                        .fontTemplate(.h3Medium)
                     .foregroundColor(Color.textHelper)
                     
                     Spacer()
@@ -30,7 +30,7 @@ struct SignUpAvatarView: View {
                 HStack {
                     Text("Profile Picture")
                         .foregroundColor(.text)
-                    .font(.bigBoldTitle)
+                    .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

@@ -14,12 +14,12 @@ struct NavigationHeader: View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 0) {
                 Text(parentTitle)
-                    .font(.h3Medium) // TODO(Sam): change to h4 medium
+                    .fontTemplate(.h4Medium)
                     .foregroundColor(Color.surface2) // TODO(Sam): change to surface3
                     .frame(height: 20)
                     .padding(.bottom, -5)
                 Text(childTitle)
-                    .font(.h1Medium)
+                    .fontTemplate(.h1Medium)
                     .foregroundColor(Color.text)
                     .frame(height: 40)
             }

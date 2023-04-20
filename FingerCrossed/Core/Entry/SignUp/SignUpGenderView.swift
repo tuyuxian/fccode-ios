@@ -20,7 +20,7 @@ struct SignUpGenderView: View {
                 
                 HStack {
                     Text("Tell us about your...")
-                        .font(.h3Medium)
+                        .fontTemplate(.h3Medium)
                     .foregroundColor(Color.textHelper)
                     
                     Spacer()
@@ -30,7 +30,7 @@ struct SignUpGenderView: View {
                 HStack {
                     Text("Gender")
                         .foregroundColor(.text)
-                    .font(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

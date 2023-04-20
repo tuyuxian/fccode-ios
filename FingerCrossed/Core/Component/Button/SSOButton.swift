@@ -13,7 +13,7 @@ struct SSOButton: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.pMedium)
+            .fontTemplate(.pMedium)
             .foregroundColor(labelColor)
             .frame(maxWidth: .infinity)
             .frame(height: 52)

@@ -20,7 +20,7 @@ struct EntryView: View {
                 HStack {
                     Text("Find Your\nPerfect match")
                         .foregroundColor(.text)
-                    .font(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     Spacer()
                 }
                 .padding(.horizontal, 24)

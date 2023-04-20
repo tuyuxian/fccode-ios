@@ -33,57 +33,83 @@ extension Color {
     static let yellow100 = Color("Yellow100")
 }
 
-extension Font {
-    static let bigBoldTitle = Font.custom("AzoSans-Bold", size: 40)
-    
-    static let h1Medium = Font.custom("AzoSans-Medium", size: 28)
-    static let h1Regular = Font.custom("AzoSans-Regular", size: 24)
-    
-    static let h2Medium = Font.custom("AzoSans-Medium", size: 24)
-    static let h2Regular = Font.custom("AzoSans-Regular", size: 20)
-    
-    static let h3Medium = Font.custom("AzoSans-Medium", size: 18)
-    static let h3Regular = Font.custom("AzoSans-Regular", size: 18)
-    
-    static let pMedium = Font.custom("AzoSans-Medium", size: 14)
-    static let pRegular = Font.custom("AzoSans-Regular", size: 14)
-    
-    static let noteMedium = Font.custom("AzoSans-Medium", size: 12)
-    static let noteRegular = Font.custom("AzoSans-Regular", size: 12)
-    
-    static let captionMedium = Font.custom("AzoSans-Medium", size: 10)
-    static let captionRegular = Font.custom("AzoSans-Regular", size: 10)
-    
+//extension Font {
+//    
+//    static let bigBoldTitle = Font.custom("AzoSans-Bold", size: 40)
+//    
+//    static let h1Medium = Font.custom("AzoSans-Medium", size: 28)
+//    static let h1Regular = Font.custom("AzoSans-Regular", size: 24)
+//    
+//    static let h2Medium = Font.custom("AzoSans-Medium", size: 24)
+//    static let h2Regular = Font.custom("AzoSans-Regular", size: 20)
+//    
+//    static let h3Medium = Font.custom("AzoSans-Medium", size: 18)
+//    static let h3Regular = Font.custom("AzoSans-Regular", size: 18)
+//    
+//    static let pMedium = Font.custom("AzoSans-Medium", size: 14)
+//    static let pRegular = Font.custom("AzoSans-Regular", size: 14)
+//    
+//    static let noteMedium = Font.custom("AzoSans-Medium", size: 12)
+//    static let noteRegular = Font.custom("AzoSans-Regular", size: 12)
+//    
+//    static let captionMedium = Font.custom("AzoSans-Medium", size: 10)
+//    static let captionRegular = Font.custom("AzoSans-Regular", size: 10)
+//    
+//}
+enum AppFonts {
+    case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h4Medium, h4Regular, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
 }
 
-extension Bundle {
-    func decode<T: Decodable>(_ type: T.Type, from file: String, dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .deferredToDate, keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys) -> T {
-            guard let url = self.url(forResource: file, withExtension: nil) else {
-                fatalError("Failed to locate \(file) in bundle.")
-            }
+struct Template {
+    static func get(font: AppFonts) -> FontTemplate {
+        switch font {
+        case .bigBoldTitle:
+            return FontTemplate(font: Font.system(size: 40), weight: .heavy, size: 40, lineHeight: 50)
+            
+        case .h1Medium:
+            return FontTemplate(font: Font.system(size: 28), weight: .medium, size: 28, lineHeight: 40)
+            
+        case .h1Regular:
+            return FontTemplate(font: Font.system(size: 28), weight: .regular, size: 28, lineHeight: 40)
+            
+        case .h2Medium:
+            return FontTemplate(font: Font.system(size: 24), weight: .medium, size: 24, lineHeight: 34)
+            
+        case .h2Regular:
+            return FontTemplate(font: Font.system(size: 20), weight: .regular, size: 20, lineHeight: 28)
+            
+        case .h3Medium:
+            return FontTemplate(font: Font.system(size: 18), weight: .medium, size: 18, lineHeight: 24)
+            
+        case .h3Regular:
+            return FontTemplate(font: Font.system(size: 18), weight: .regular, size: 18, lineHeight: 24)
 
-            guard let data = try? Data(contentsOf: url) else {
-                fatalError("Failed to load \(file) from bundle.")
-            }
+        case .h4Medium:
+            return FontTemplate(font: Font.system(size: 14), weight: .medium, size: 14, lineHeight: 20)
+            
+        case .h4Regular:
+            return FontTemplate(font: Font.system(size: 14), weight: .regular, size: 14, lineHeight: 20)
 
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = dateDecodingStrategy
-            decoder.keyDecodingStrategy = keyDecodingStrategy
-
-            do {
-                return try decoder.decode(T.self, from: data)
-            } catch DecodingError.keyNotFound(let key, let context) {
-                fatalError("Failed to decode \(file) from bundle due to missing key '\(key.stringValue)' not found – \(context.debugDescription)")
-            } catch DecodingError.typeMismatch(_, let context) {
-                fatalError("Failed to decode \(file) from bundle due to type mismatch – \(context.debugDescription)")
-            } catch DecodingError.valueNotFound(let type, let context) {
-                fatalError("Failed to decode \(file) from bundle due to missing \(type) value – \(context.debugDescription)")
-            } catch DecodingError.dataCorrupted(_) {
-                fatalError("Failed to decode \(file) from bundle because it appears to be invalid JSON")
-            } catch {
-                fatalError("Failed to decode \(file) from bundle: \(error.localizedDescription)")
-            }
+        case .pMedium:
+            return FontTemplate(font: Font.system(size: 16), weight: .medium, size: 16, lineHeight: 20)
+            
+        case .pRegular:
+            return FontTemplate(font: Font.system(size: 16), weight: .regular, size: 16, lineHeight: 25)
+            
+        case .noteMedium:
+            return FontTemplate(font: Font.system(size: 12), weight: .medium, size: 12, lineHeight: 16)
+            
+        case .noteRegular:
+            return FontTemplate(font: Font.system(size: 12), weight: .regular, size: 12, lineHeight: 16)
+            
+        case .captionMedium:
+            return FontTemplate(font: Font.system(size: 10), weight: .medium, size: 10, lineHeight: 14)
+            
+        case .captionRegular:
+            return FontTemplate(font: Font.system(size: 10), weight: .regular, size: 10, lineHeight: 14)
+        
         }
+    }
 }
 
 // Extension for adding rounded corners to specific corners
@@ -91,6 +117,14 @@ extension View {
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
         clipShape(RoundedCorner(radius: radius, corners: corners) )
     }
+    
+    public func fontTemplate(_ template: FontTemplating) -> some View {
+        modifier(FontTemplateModifier(template: template, uiFont: UIFont.systemFont(ofSize: template.size)))
+        }
+
+    func fontTemplate(_ template: AppFonts) -> some View {
+            self.fontTemplate(Template.get(font: template))
+        }
 }
 
 // Custom RoundedCorner shape used for cornerRadius extension above

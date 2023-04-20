@@ -16,7 +16,7 @@ struct CheckboxButton: View {
             isSelected ? Image("CheckBox") : Image("UncheckBox")
             
             Text(label)
-                .font(.pMedium)
+                .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
         }
     }

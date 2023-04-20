@@ -17,11 +17,14 @@ extension Color {
     static let warning = Color("Warning")
     static let surface1 = Color("Surface1")
     static let surface2 = Color("Surface2")
+    static let surface3 = Color("Surface3")
+    static let surface4 = Color("Surface4")
     static let description = Color("Description")
     
     static let facebook = Color("FB")
     static let google = Color("Google")
     
+    static let blue20 = Color("Blue20")
     static let blue100 = Color("Blue100")
     static let orange60 = Color("Orange60")
     static let orange100 = Color("Orange100")

@@ -26,7 +26,6 @@ struct BasicInfoNameView: View {
                 .padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 24))
                 
                 Spacer()
-                TabBar()
             }
         }
     }

@@ -61,12 +61,12 @@ private struct MessageInputBar: View {
                 ZStack(alignment: .leading){
                     text.isEmpty
                     ? Text("Aa")
-                            .font(.pMedium)
+                            .fontTemplate(.pMedium)
                             .foregroundColor(Color.textHelper)
                     : nil
                     TextField("", text: $text, axis: .vertical)
                         .textFieldStyle(.plain)
-                        .font(.pMedium)
+                        .fontTemplate(.pMedium)
                         .foregroundColor(Color.text)
                         .frame(minHeight: 24)
                         .padding(EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 4))

@@ -101,7 +101,7 @@ struct CandidateView: View {
                 ZStack {
                     VStack (spacing: 8.0){
                         Text(candidateModel.username)
-                            .font(.h2Medium)
+                            .fontTemplate(.h2Medium)
                             .foregroundColor(Color.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 16)

@@ -20,7 +20,7 @@ struct BasicInfoNameView: View {
                     PrimaryInputBar(isDisable: false, hasButton: false) // TODO(Sam): replace the hint with name
                     // characters remain
                     Text("\(30 - remainCharacters)/30")
-                        .font(.captionRegular)
+                        .fontTemplate(.captionRegular)
                         .foregroundColor(Color.textHelper)
                 }
                 .padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 24))

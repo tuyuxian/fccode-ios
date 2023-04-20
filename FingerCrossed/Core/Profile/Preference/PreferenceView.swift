@@ -24,7 +24,6 @@ struct PreferenceView: View {
             Box {
                 MenuList(childViewList: preferenceOptions)
                 Spacer()
-                TabBar()
             }
         }
     }

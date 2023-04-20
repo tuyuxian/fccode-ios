@@ -19,8 +19,9 @@ struct InputHelper: View {
                 .frame(width: 16, height: 16)
             
             Text(label)
-                .font(.noteMedium)
+                .fontTemplate(.noteMedium)
                 .foregroundColor(Color.text)
+            
         }
     }
 }

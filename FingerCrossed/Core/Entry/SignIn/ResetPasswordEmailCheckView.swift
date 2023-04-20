@@ -20,7 +20,7 @@ struct ResetPasswordEmailCheckView: View {
                 
                 Text("Please check\nyour email\nto reset password")
                     .foregroundColor(.text)
-                .font(.bigBoldTitle)
+                .fontTemplate(.bigBoldTitle)
                 .multilineTextAlignment(.leading)
                 
                 

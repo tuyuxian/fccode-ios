@@ -26,7 +26,7 @@ struct TextList: View {
                 HStack(spacing: 0) {
                     isEditing
                     ? IconButton(name: "UncheckBox", action:{})
-                        .padding(EdgeInsets(top: 29, leading: 26, bottom: 29, trailing: -3))
+                        .padding(EdgeInsets(top: 14, leading: 26, bottom: 14, trailing: -3))
                     : nil
                     VStack(spacing: 0) {
                         ZStack {

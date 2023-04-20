@@ -24,9 +24,10 @@ struct TextingView: View {
         Message (username: "Lawrence", avatarUrl: "https://scontent-dfw5-2.xx.fbcdn.net/v/t1.6435-1/49325793_1547271238709034_7588984728431099904_n.jpg?stp=dst-jpg_p100x100&_nc_cat=108&ccb=1-7&_nc_sid=7206a8&_nc_ohc=GaxQykPv5YcAX9z-0ua&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-dfw5-2.xx&oh=00_AfDrGLcrPSNRmWAZcrOhi6TblR8WgbjNzJH04skcfayAyw&oe=644F530D", latestMessage: "This is a test message from Sam.", timestamp: "03/30/2023", unreadMessageCount: 101, isActive: true)
     ]
     
+    // TODO(Sam): apply layout components here
     var body: some View {
-        VStack(spacing: 0) {
-            VStack {
+        NavigationView {
+            Box {
                 TextList(messageList: $textData, isEditing: $isEditing)
             }
             .background(Color.white)

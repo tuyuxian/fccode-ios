@@ -20,7 +20,7 @@ struct SignUpNameView: View {
                 
                 HStack {
                     Text("Tell us about your...")
-                        .font(.h3Medium)
+                        .fontTemplate(.h3Medium)
                     .foregroundColor(Color.textHelper)
                     
                     Spacer()
@@ -31,7 +31,7 @@ struct SignUpNameView: View {
                 HStack {
                     Text("Name")
                         .foregroundColor(.text)
-                    .font(.bigBoldTitle)
+                    .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

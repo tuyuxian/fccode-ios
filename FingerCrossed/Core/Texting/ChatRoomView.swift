@@ -58,7 +58,7 @@ struct ChatRoomView: View {
                         dotBackground: Color.background
                     )
                     Text(username)
-                        .font(.h1Medium)
+                        .fontTemplate(.h1Medium)
                         .foregroundColor(Color.text)
                         .frame(height: 40)
                         .multilineTextAlignment(.leading)

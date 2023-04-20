@@ -23,7 +23,7 @@ struct SignUpNationalityView: View {
                 
                 HStack {
                     Text("Tell us about your...")
-                        .font(.h3Medium)
+                        .fontTemplate(.h3Medium)
                     .foregroundColor(Color.textHelper)
                     
                     Spacer()
@@ -33,7 +33,7 @@ struct SignUpNationalityView: View {
                 HStack {
                     Text("Nationality")
                         .foregroundColor(.text)
-                    .font(.bigBoldTitle)
+                    .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

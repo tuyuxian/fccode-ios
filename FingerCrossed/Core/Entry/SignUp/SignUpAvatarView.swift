@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct SignUpAvatarView: View {
+    
+    @State var selectedImage: Image?
+    @State var showImagePicker: Bool = false
+    
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
@@ -39,10 +43,27 @@ struct SignUpAvatarView: View {
                 
                 
                 ZStack (alignment: .bottom){
-                    Image("ProfilePicture")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 192, height: 192)
+                    
+                    if ((self.selectedImage) != nil) {
+                        self.selectedImage?
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 192, height: 192)
+                            .cornerRadius(100)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 12)
+                                    .frame(width: 192)
+                            )
+                    }
+                    else {
+                        Image("ProfilePicture")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 192, height: 192)
+                    }
+                    
+                    
                     
                     HStack (spacing: 112){
                         Button {
@@ -56,7 +77,7 @@ struct SignUpAvatarView: View {
                         .buttonStyle(IconButtonWithBackground())
                         
                         Button {
-                            print("photo library")
+                            showImagePicker.toggle()
                         } label: {
                             Image("PictureWhite")
                                 .resizable()
@@ -68,11 +89,9 @@ struct SignUpAvatarView: View {
                     .padding(.bottom, 6)
                 }
                 .padding(.vertical, 47)
-                
-                
-                
-                
-                
+                .sheet(isPresented: $showImagePicker, content: {
+                    ImagePicker(image: self.$selectedImage)
+                })
                 
                 Spacer()
                     .frame(height: 82)

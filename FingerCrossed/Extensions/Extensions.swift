@@ -125,6 +125,13 @@ extension View {
     func fontTemplate(_ template: AppFonts) -> some View {
             self.fontTemplate(Template.get(font: template))
         }
+    @ViewBuilder func applyTextColor(_ color: Color) -> some View {
+        if UITraitCollection.current.userInterfaceStyle == .light {
+          self.colorInvert().colorMultiply(color)
+        } else {
+          self.colorMultiply(color)
+        }
+      }
 }
 
 // Custom RoundedCorner shape used for cornerRadius extension above

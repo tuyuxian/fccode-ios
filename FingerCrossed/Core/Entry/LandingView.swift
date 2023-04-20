@@ -12,7 +12,12 @@ struct LandingView: View {
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
+            
             Image("BG")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .ignoresSafeArea(.all)
+            
             VStack(spacing: 6.0) {
                 Image("EntryLogo") // TODO(Lawrence): image resolution
                     .resizable()

@@ -22,10 +22,11 @@ struct PrimaryInputBar: View {
                 .fontTemplate(.pRegular)
                 .foregroundColor(Color.text)
                 .frame(height: 56)
-            
+                .disabled(isDisable)
+                            
             hasButton
-            ? IconButton(name: "ArrowDownCircleBased", action: {})
-                .rotationEffect(.degrees(-90)) //TODO(Lawrence): new icon replacement
+            ? IconButton(name: iconName, action: {})
+                .rotationEffect(.degrees(-90))
             : nil
             
         }

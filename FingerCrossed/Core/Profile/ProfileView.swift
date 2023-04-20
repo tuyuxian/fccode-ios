@@ -16,7 +16,7 @@ struct ProfileView: View {
         ChildView(label: "Basic Info", view: AnyView(BasicInfoNameView())), // TODO(Sam): connect with basic info view
         ChildView(label: "Plan", view: AnyView(EmptyView())), // TODO(): add this in the future
         ChildView(label: "Preference", view: AnyView(PreferenceView())),
-        ChildView(label: "Settings", view: AnyView(PreferenceEthnicityView())), // TODO(Kevin): add settings view
+        ChildView(label: "Settings", view: AnyView(SettingsView())),
         ChildView(label: "Help & Support", view: AnyView(EmptyView())), // TODO(): add this in the future
     ]
     
@@ -40,7 +40,6 @@ struct ProfileView: View {
                         .padding(.top, 104) // 134 - 20 (ListRow) - 10 (first item's padding)
                 }
                 .padding(.top, -104)
-                TabBar()
             }
         }
     }

@@ -41,9 +41,19 @@ struct TextingView: View {
 
                 VStack {
                     Text("Message")
-                        .font(.h1Medium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 44)
+                         .fontTemplate(.h1Medium)
+                         .foregroundColor(Color.text)
+                         .frame(height: 44)
+                    }
+                }
+                .padding(.top, 10)
+                .padding(.leading, 24)
+            )
+            .navigationBarItems(trailing:
+                HStack(alignment: .bottom) {
+                    HeaderButton(name: "Edit", action: {
+                        isEditing.toggle()
+                    })
                 }
             }
             .padding(.top, 10)

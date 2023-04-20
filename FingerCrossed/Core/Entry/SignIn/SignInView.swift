@@ -22,7 +22,7 @@ struct SignInView: View {
                 HStack {
                     Text("Find Your\nPerfect match")
                         .foregroundColor(.text)
-                        .font(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }

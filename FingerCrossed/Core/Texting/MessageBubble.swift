@@ -35,7 +35,7 @@ struct MessageBubble: View {
                     
                     // raw text
                     Text(message)
-                        .font(.pRegular)
+                        .fontTemplate(.pRegular)
                         .foregroundColor(Color.text)
                         .padding(8)
                         .background(Color.background)
@@ -105,7 +105,7 @@ private struct TimeStamp: View {
     @State var timestamp: String
     var body: some View {
         Text(timestamp)
-            .font(.captionRegular)
+            .fontTemplate(.captionRegular)
             .foregroundColor(Color.textHelper)
             .multilineTextAlignment(.trailing)
     
@@ -115,7 +115,7 @@ private struct TimeStamp: View {
 private struct ReadStamp: View {
     var body: some View {
         Text("Read")
-            .font(.captionRegular)
+            .fontTemplate(.captionRegular)
             .foregroundColor(Color.textHelper)
             .multilineTextAlignment(.trailing)
     }

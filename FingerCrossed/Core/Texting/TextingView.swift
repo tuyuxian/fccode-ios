@@ -53,23 +53,22 @@ struct TextingView: View {
                 HStack(alignment: .bottom) {
                     HeaderButton(name: "Edit", action: {
                         isEditing.toggle()
-                    }
-                )
-            }
-            .padding(.top, 10)
-            .padding(.leading, 24)
-        )
-        .navigationBarItems(trailing:
-            HStack(alignment: .bottom) {
-                HeaderButton(name: "Edit", action: {
-                    isEditing.toggle()
-                })
-            }
-            .padding(.top, 10)
-            .padding(.trailing, 8)
-        )
-        .padding(.top, 19)
-        .background(Color.background)
+                    })
+                }
+                .padding(.top, 10)
+                .padding(.leading, 24)
+            )
+            .navigationBarItems(trailing:
+                HStack(alignment: .bottom) {
+                    HeaderButton(name: "Edit", action: {
+                        isEditing.toggle()
+                    })
+                }
+                .padding(.top, 10)
+                .padding(.trailing, 8)
+            )
+            .padding(.top, 19)
+            .background(Color.background)
     }
 
     

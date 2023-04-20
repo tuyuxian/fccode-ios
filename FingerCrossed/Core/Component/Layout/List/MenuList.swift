@@ -30,15 +30,6 @@ struct MenuList: View {
                                 : NavigationLink(
                                     destination: childView.view
                                     .navigationBarBackButtonHidden(true)
-                                    .navigationBarItems(
-                                        leading:
-                                            VStack(alignment: .center) {
-                                                NavigationBarBackButton()
-                                            }
-                                            .frame(height: 40)
-                                            .padding(.top, 24)
-                                            .padding(.leading, 14)
-                                    )
                                     .toolbarRole(.editor)
                                 ){
                                     EmptyView()

@@ -22,12 +22,8 @@ struct BasicInfoGenderView: View {
             Box {
                 VStack(spacing: 0) {
                     ForEach(Array(genderOptions.enumerated()), id: \.element.self) { index, gender in
-                        HStack {
-                            RadioButton(label: gender) // TODO(Sam): add click state
-                            Spacer()
-                        }
-                        .padding(EdgeInsets(top: 20, leading: 24, bottom: 20, trailing: 24))
-                       
+                        
+                        RadioButtonRow(label: gender)
                         
                         index != genderOptions.count - 1
                         ? Divider().foregroundColor(Color.surface3)

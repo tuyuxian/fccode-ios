@@ -19,6 +19,7 @@ struct ContainerWithLogoHeaderView<Content: View>: View {
                 Color.background.ignoresSafeArea(.all)
                 content
                 .navigationBarItems(leading:
+                    // TODO(Sam): change padding 
                     HStack(alignment: .center, spacing: 8) {
                         Image("HeaderLogo")
                             .resizable()

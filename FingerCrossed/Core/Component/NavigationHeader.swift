@@ -16,12 +16,10 @@ struct NavigationHeader: View {
                 Text(parentTitle)
                     .fontTemplate(.h4Medium)
                     .foregroundColor(Color.surface1)
-                    .frame(height: 20)
-                    .padding(.bottom, -5)
+                    .padding(.bottom, -8)
                 Text(childTitle)
                     .fontTemplate(.h1Medium)
                     .foregroundColor(Color.text)
-                    .frame(height: 40)
             }
         }
     }

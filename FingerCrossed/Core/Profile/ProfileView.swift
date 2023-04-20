@@ -26,7 +26,7 @@ struct ProfileView: View {
                 VStack(spacing: 18.75) {
                     Circle()
                         .fill(Color.surface2)
-                        .frame(width: 122.5, height: 122.5, alignment: .center)  // TODO(Sam): check stroke width
+                        .frame(width: 122.5, height: 122.5, alignment: .center)
                         .overlay(
                             Avatar(avatarUrl: avatarUrl,size: 121.5, isActive: false)
                         )

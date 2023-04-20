@@ -18,44 +18,36 @@ struct CandidateView: View {
     var body: some View {
         
         ZStack {
-            
-            TabView (selection: $currentTab) {
-                ForEach(lifePhotoList) { list in
+            GeometryReader { geometry in
+                TabView (selection: $currentTab) {
+                    ForEach(lifePhotoList) { list in
 
-                    AsyncImage(
-                        url: URL(string: list.photoUrl),
-                        transaction: Transaction(animation: .easeInOut)
-                    ) { phase in
-                        switch phase {
-                        case .empty:
-                            EmptyView() // TODO(Sam): Replace with shimmer later
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: imageDimenssions(url: list.photoUrl) ? .fit : .fill)
-                                .ignoresSafeArea()
-
-                        case .failure:
-                            ProgressView() // TODO(Sam): Replace with shimmer later
-                        @unknown default:
-                            EmptyView()
-                        }
+                        AsyncImageLoader(
+                            url: URL(string: list.photoUrl)!,
+                            placeholder: {
+                                Text("Loading...")
+                            },
+                            image: { Image(uiImage: $0)})
+                        .tag(lifePhotoList.firstIndex(where: { $0 == list })!)
+                        
                     }
-                    .tag(lifePhotoList.firstIndex(where: { $0 == list })!)
-                    
+                }
+                .frame(width: geometry.size.width)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .edgesIgnoringSafeArea(.all)
+                .onChange(of: currentTab) { value in
+                    index = value
+                }
+                .onTapGesture (count: 2) {
+                    isLiked.toggle()
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .edgesIgnoringSafeArea(.all)
-            .onChange(of: currentTab) { value in
-                index = value
-            }
-            .onTapGesture (count: 2) {
-                isLiked.toggle()
-            }
+            
 
             
             VStack (spacing: 0.0) {
+                Spacer()
+                    .frame(height: 70)
                 //carousel index section
                 HStack (spacing: 14){
                     ForEach(0..<lifePhotoList.count, id: \.self) { index in
@@ -80,6 +72,7 @@ struct CandidateView: View {
                     
                     Button {
                         print("like")
+                        isLiked.toggle()
                     } label: {
                         Image("HeartWhite")
                             .resizable()
@@ -131,6 +124,7 @@ struct CandidateView: View {
                         
                     }
                     .onTapGesture {
+                        print("\(isSheetPresented)")
                         isSheetPresented.toggle()
                     }
                     .background(
@@ -141,6 +135,7 @@ struct CandidateView: View {
                     
                     Button {
                         print("link to candidate detail view")
+                        print("Btb: \(isSheetPresented)")
                         isSheetPresented.toggle()
                     } label: {
                         Image("MoreWhite")
@@ -169,7 +164,7 @@ struct CandidateView: View {
         
     }
     
-    func imageDimenssions(url: String) -> Bool {
+    func imageIsLandscape(url: String) -> Bool {
         if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
             if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
                 let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
@@ -179,7 +174,7 @@ struct CandidateView: View {
                 //return "Width: \(pixelWidth), Height: \(pixelHeight)"
             }
         }
-        return true
+        return false
     }
     
 }

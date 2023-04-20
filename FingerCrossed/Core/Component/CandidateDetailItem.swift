@@ -16,6 +16,7 @@ struct CandidateDetailItem: View {
 
         HStack (spacing: 4.0) {
             Image(iconName)
+                .renderingMode(.template)
                 .foregroundColor(iconColor)
             Text(label)
                 .font(.pMedium)

@@ -9,23 +9,68 @@ import SwiftUI
 
 struct PairingView: View {
     @State var candidateList: [CandidateModel]
+    @State var currentCandidate = 0
+    @State var startPos : CGPoint = .zero
+    @State var isSwipping = true
     
     var body: some View {
         VStack {
             GeometryReader { geometry in
-                TabView {
+                TabView (selection: $currentCandidate) {
                     ForEach(candidateList) { list in
+
                         CandidateView(candidateModel: list, lifePhotoList: list.LifePhotoList)
-                            .rotationEffect(.degrees(-90))
+                            .rotationEffect(.init(degrees: -90))
                             .frame(width: geometry.size.width, height: geometry.size.height)
+                            .ignoresSafeArea(.all, edges: .top)
+                            .tag(candidateList.firstIndex(where: { $0 == list })!)
+                            .onAppear {
+                                if currentCandidate < candidateList.firstIndex(where: { $0 == list })! {
+                                    candidateList.remove(at: currentCandidate)
+                                }
+                            }
+                    }
+                    
+                }
+                .frame(width: geometry.size.height)
+                .rotationEffect(.init(degrees: 90))
+//                .offset(x: geometry.size.width)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(width: geometry.size.width)
+//                .gesture(DragGesture()
+//                        .onChanged { gesture in
+//                            if self.isSwipping {
+//                                self.startPos = gesture.location
+//                                self.isSwipping.toggle()
+//                            }
+//                        }
+//                        .onEnded { gesture in
+//                            let xDist =  abs(gesture.location.x - self.startPos.x)
+//                            let yDist =  abs(gesture.location.y - self.startPos.y)
+//                            if self.startPos.y <  gesture.location.y && yDist > xDist {
+//                                print("Down")
+//                            }
+//                            else if self.startPos.y >  gesture.location.y && yDist > xDist {
+//                                print("Up")
+//                            }
+//                            else if self.startPos.x > gesture.location.x && yDist < xDist {
+//                                print("Left")
+//                            }
+//                            else if self.startPos.x < gesture.location.x && yDist < xDist {
+//                                print("Right")
+//                            }
+//                            self.isSwipping.toggle()
+//                            print("\(isSwipping)")
+//                        }
+//                     )
+                .onTapGesture (count: 2){
+                    candidateList.remove(at: currentCandidate)
+                    withAnimation{
+                        currentCandidate += 1
                     }
                 }
-                .edgesIgnoringSafeArea(.all)
-                .frame(width: geometry.size.height, height: geometry.size.width)
-                .rotationEffect(.degrees(90), anchor: .topLeading)
-                .offset(x: geometry.size.width)
-                .tabViewStyle(.page(indexDisplayMode: .never))
             }
+            .ignoresSafeArea(.all, edges: .top)
             TabBar()
         }
     }

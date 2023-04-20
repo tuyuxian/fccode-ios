@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CandidateModel: Identifiable{
+struct CandidateModel: Identifiable, Equatable{
     let id: UUID
     var LifePhotoList: [LifePhoto]
     var username: String

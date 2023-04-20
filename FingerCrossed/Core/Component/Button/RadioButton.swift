@@ -17,7 +17,7 @@ struct RadioButton: View {
             isSelected ? Image("RadioSelected") : Image("RadioDefault")
             
             Text(label)
-                .font(.pMedium)
+                .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
         }
     }

@@ -29,20 +29,22 @@ struct TextingView: View {
         NavigationView {
             Box {
                 TextList(messageList: $textData, isEditing: $isEditing)
-                TabBar()
             }
-            .navigationBarItems(leading:
-                HStack(alignment: .center, spacing: 8) {
-                    Image("HeaderLogo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width:50, height: 50)
+            .background(Color.white)
+            .cornerRadius(30, corners: [.topLeft, .topRight])
+        }
+        .navigationBarItems(leading:
+            HStack(alignment: .center, spacing: 8) {
+                Image("HeaderLogo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:50, height: 50)
 
-                    VStack {
-                        Text("Message")
-                            .font(.h1Medium)
-                            .foregroundColor(Color.text)
-                            .frame(height: 44)
+                VStack {
+                    Text("Message")
+                         .fontTemplate(.h1Medium)
+                         .foregroundColor(Color.text)
+                         .frame(height: 44)
                     }
                 }
                 .padding(.top, 10)
@@ -54,12 +56,21 @@ struct TextingView: View {
                         isEditing.toggle()
                     })
                 }
-                .padding(.top, 10)
-                .padding(.trailing, 8)
-            )
-            .padding(.top, 19)
-            .background(Color.background)
-        }
+            }
+            .padding(.top, 10)
+            .padding(.leading, 24)
+        )
+        .navigationBarItems(trailing:
+            HStack(alignment: .bottom) {
+                HeaderButton(name: "Edit", action: {
+                    isEditing.toggle()
+                })
+            }
+            .padding(.top, 10)
+            .padding(.trailing, 8)
+        )
+        .padding(.top, 19)
+        .background(Color.background)
     }
 
     

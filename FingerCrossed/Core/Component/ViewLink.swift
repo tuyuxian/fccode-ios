@@ -15,7 +15,7 @@ struct ViewLink <targetView: View>: View {
         NavigationLink(destination: view, label: {
             Text(label)
                 .foregroundColor(Color.orange100)
-                .font(.pMedium)
+                .fontTemplate(.pMedium)
                 .frame(maxWidth: .infinity)
         })
     }

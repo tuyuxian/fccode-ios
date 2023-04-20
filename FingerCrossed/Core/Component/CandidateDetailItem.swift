@@ -19,7 +19,7 @@ struct CandidateDetailItem: View {
                 .renderingMode(.template)
                 .foregroundColor(iconColor)
             Text(label)
-                .font(.pMedium)
+                .fontTemplate(.pMedium)
                 .foregroundColor(labelColor)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

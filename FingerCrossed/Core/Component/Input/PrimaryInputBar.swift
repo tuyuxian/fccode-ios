@@ -19,7 +19,7 @@ struct PrimaryInputBar: View {
         HStack {
             TextField("" , text: $emailAccount, prompt: Text(hint)
                 .foregroundColor(isDisable ? Color.surface1 : Color.textHelper))
-                .font(.pRegular)
+                .fontTemplate(.pRegular)
                 .foregroundColor(Color.text)
                 .frame(height: 56)
             

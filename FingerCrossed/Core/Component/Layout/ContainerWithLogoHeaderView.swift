@@ -27,7 +27,7 @@ struct ContainerWithLogoHeaderView<Content: View>: View {
 
                         HStack(alignment: .center) {
                             Text(headerTitle)
-                                .font(.h1Medium)
+                                .fontTemplate(.h1Medium)
                                 .foregroundColor(Color.text)
                                 .frame(height: 40)
                                 .padding(.bottom, -8)

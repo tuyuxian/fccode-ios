@@ -42,7 +42,7 @@ struct TextingView: View {
 
                     VStack {
                         Text("Message")
-                            .font(.h1Medium)
+                            .fontTemplate(.h1Medium)
                             .foregroundColor(Color.text)
                             .frame(height: 44)
                     }

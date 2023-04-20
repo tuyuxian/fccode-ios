@@ -19,7 +19,7 @@ struct BasicInfoSelfIntroView: View {
                         .fill(.red)
                         .frame(height: 192)
                     Text("\(200 - remainCharacters)/200")
-                        .font(.captionRegular)
+                        .fontTemplate(.captionRegular)
                         .foregroundColor(Color.textHelper)
                 }
                 .padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 24))

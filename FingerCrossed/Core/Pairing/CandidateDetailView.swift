@@ -16,7 +16,7 @@ struct CandidateDetailView: View {
             VStack (spacing: 20){
                 VStack (spacing: 4.0){
                     Text(candidateModel.username)
-                        .font(.h2Medium)
+                        .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 24)
@@ -43,7 +43,7 @@ struct CandidateDetailView: View {
                     .padding(.horizontal, 24)
                 
                 Text(candidateModel.selfIntro)
-                    .font(.pRegular)
+                    .fontTemplate(.pRegular)
                     .foregroundColor(Color.text)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,7 +73,7 @@ struct CandidateDetailView: View {
                         
                         Text(list.caption)
                             .foregroundColor(Color.text)
-                            .font(.pRegular)
+                            .fontTemplate(.pRegular)
                             .padding(.horizontal, 24)
                             .multilineTextAlignment(.leading)
                             .frame(maxWidth: .infinity, alignment: .leading)

@@ -31,7 +31,7 @@ struct ProfileView: View {
                             Avatar(avatarUrl: avatarUrl,size: 121.5, isActive: false)
                         )
                     Text(username)
-                        .font(.h2Medium)
+                        .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                 }
                 .zIndex(1)

@@ -15,7 +15,7 @@ struct EntryLogo: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 56, height: 41)
             Text("Finger Crossed")
-                .font(.noteMedium)
+                .fontTemplate(.noteMedium)
                 .foregroundColor(Color.text)
         }
     }

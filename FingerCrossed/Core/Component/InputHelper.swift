@@ -21,6 +21,7 @@ struct InputHelper: View {
             Text(label)
                 .font(.noteMedium)
                 .foregroundColor(Color.text)
+            
         }
     }
 }

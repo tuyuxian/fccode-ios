@@ -15,13 +15,11 @@ struct NavigationHeader: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text(parentTitle)
                     .fontTemplate(.h4Medium)
-                    .foregroundColor(Color.surface2) // TODO(Sam): change to surface3
-                    .frame(height: 20)
-                    .padding(.bottom, -5)
+                    .foregroundColor(Color.surface1)
+                    .padding(.bottom, -8)
                 Text(childTitle)
                     .fontTemplate(.h1Medium)
                     .foregroundColor(Color.text)
-                    .frame(height: 40)
             }
         }
     }

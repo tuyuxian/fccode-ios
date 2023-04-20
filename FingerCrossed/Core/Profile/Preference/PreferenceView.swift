@@ -20,7 +20,7 @@ struct PreferenceView: View {
     
 
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Preference") {
+        ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Preference", showSaveButton: false) {
             Box {
                 MenuList(childViewList: preferenceOptions)
                 Spacer()

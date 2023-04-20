@@ -21,15 +21,6 @@ struct MenuList: View {
                                 NavigationLink(
                                     destination: childView.view
                                     .navigationBarBackButtonHidden(true)
-                                    .navigationBarItems(
-                                        leading:
-                                            VStack(alignment: .center) {
-                                                NavigationBarBackButton()
-                                            }
-                                            .frame(height: 40)
-                                            .padding(.top, 24)
-                                            .padding(.leading, 14)
-                                    )
                                     .toolbarRole(.editor)
                                 ){
                                     EmptyView()
@@ -42,7 +33,7 @@ struct MenuList: View {
                         .padding(.top, index == 0 ? 10 : 0) // 30 - 20 (ListRow) for the first item
                         
                         index != childViewList.count - 1
-                        ? Divider().foregroundColor(Color.surface2) // TODO(Sam): use surface3
+                        ? Divider().foregroundColor(Color.surface3) 
                             .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                         : nil
                     }

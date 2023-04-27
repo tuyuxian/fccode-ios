@@ -22,15 +22,11 @@ struct PreferenceGoalView: View {
             Box {
                 VStack(spacing: 0) {
                     ForEach(Array(goalOptions.enumerated()), id: \.element.self) { index, goal in
-                        HStack {
-                            CheckboxButton(label: goal) // TODO(Sam): add click state
-                            Spacer()
-                        }
-                        .padding(EdgeInsets(top: 20, leading: 24, bottom: 20, trailing: 24))
                         
+                        CheckboxButtonRow(label: goal)
                         
                         index != goalOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface2) // TODO(Sam): use surface3
+                        ? Divider().foregroundColor(Color.surface3)
                             .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                         : nil
                         

@@ -33,29 +33,6 @@ extension Color {
     static let yellow100 = Color("Yellow100")
 }
 
-//extension Font {
-//    
-//    static let bigBoldTitle = Font.custom("AzoSans-Bold", size: 40)
-//    
-//    static let h1Medium = Font.custom("AzoSans-Medium", size: 28)
-//    static let h1Regular = Font.custom("AzoSans-Regular", size: 24)
-//    
-//    static let h2Medium = Font.custom("AzoSans-Medium", size: 24)
-//    static let h2Regular = Font.custom("AzoSans-Regular", size: 20)
-//    
-//    static let h3Medium = Font.custom("AzoSans-Medium", size: 18)
-//    static let h3Regular = Font.custom("AzoSans-Regular", size: 18)
-//    
-//    static let pMedium = Font.custom("AzoSans-Medium", size: 14)
-//    static let pRegular = Font.custom("AzoSans-Regular", size: 14)
-//    
-//    static let noteMedium = Font.custom("AzoSans-Medium", size: 12)
-//    static let noteRegular = Font.custom("AzoSans-Regular", size: 12)
-//    
-//    static let captionMedium = Font.custom("AzoSans-Medium", size: 10)
-//    static let captionRegular = Font.custom("AzoSans-Regular", size: 10)
-//    
-//}
 enum AppFonts {
     case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h4Medium, h4Regular, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
 }
@@ -160,5 +137,12 @@ extension UINavigationController: UIGestureRecognizerDelegate {
 extension UIApplication {
     func closeKeyboard() {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
+// Customize picker width and height
+extension UIPickerView {
+    open override var intrinsicContentSize: CGSize {
+        return CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
     }
 }

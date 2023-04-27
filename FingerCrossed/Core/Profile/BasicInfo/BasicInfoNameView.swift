@@ -10,7 +10,6 @@ import SwiftUI
 struct BasicInfoNameView: View {
     
     @State var name: String = "Test"
-    @State var remainCharacters: Int = 24
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Basic Info", childTitle: "Name") {
@@ -18,8 +17,8 @@ struct BasicInfoNameView: View {
                 VStack(alignment: .trailing, spacing: 6.0) {
                     // input bar
                     PrimaryInputBar(isDisable: false, hasButton: false) // TODO(Sam): replace the hint with name
-                    // characters remain
-                    Text("\(30 - remainCharacters)/30")
+
+                    Text("\(name.count)/30")
                         .fontTemplate(.captionRegular)
                         .foregroundColor(Color.textHelper)
                 }

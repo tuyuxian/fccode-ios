@@ -23,7 +23,6 @@ struct MessageBubble: View {
                     .padding(.trailing, 12)
                 : nil
                 HStack(alignment: .bottom) {
-                    
                     // readstamp and timestamp for sent message
                     isReceived
                     ? nil
@@ -45,6 +44,7 @@ struct MessageBubble: View {
                             ? [.topRight, .bottomLeft, .bottomRight]
                             : [.topLeft, .topRight, .bottomLeft]
                         )
+                        //.frame(maxWidth: 207)
                     
                     // timestamp for received message
                     isReceived

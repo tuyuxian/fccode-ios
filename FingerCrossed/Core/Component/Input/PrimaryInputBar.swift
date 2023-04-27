@@ -11,7 +11,7 @@ import SwiftUI
 struct PrimaryInputBar: View {
     @State private var emailAccount: String = ""
     var hint: String = "Log in or sign up with email"
-    var iconName: String = "ArrowDownCircleBased"
+    var icon: String = "ArrowDownCircleBased"
     var isDisable: Bool
     var hasButton: Bool
     
@@ -24,7 +24,7 @@ struct PrimaryInputBar: View {
                 .frame(height: 56)
             
             hasButton
-            ? IconButton(name: "ArrowDownCircleBased", action: {})
+            ? IconButton(name: icon, action: {})
                 .rotationEffect(.degrees(-90)) //TODO(Lawrence): new icon replacement
             : nil
             

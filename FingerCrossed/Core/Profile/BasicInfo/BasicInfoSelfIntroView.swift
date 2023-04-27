@@ -9,16 +9,21 @@ import SwiftUI
 
 struct BasicInfoSelfIntroView: View {
     
-    @State var remainCharacters: Int = 200
-    
+    @State var text: String = ""
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Basic Info", childTitle: "Self Introduction") {
             Box {
                 VStack(alignment: .trailing, spacing: 6.0){
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(.red)
-                        .frame(height: 192)
-                    Text("\(200 - remainCharacters)/200")
+                    VStack {
+                        CaptionInputBar(
+                            hint: "Type your self introduction",
+                            defaultPresentLine: 10,
+                            lineLimit: 10
+                        )
+                    }
+                    .padding(.horizontal, 1) // offset border width
+
+                    Text("\(self.text.count)/200")
                         .fontTemplate(.captionRegular)
                         .foregroundColor(Color.textHelper)
                 }

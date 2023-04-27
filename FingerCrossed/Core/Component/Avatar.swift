@@ -26,7 +26,7 @@ struct Avatar: View {
                 case .success(let image):
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: size, height: size)
                 case .failure:
                     ProgressView() // TODO(Sam): Replace with shimmer later

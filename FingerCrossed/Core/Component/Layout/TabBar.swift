@@ -19,16 +19,18 @@ struct TabBar: View {
             TabView(selection: $currentTab) {
                 TextingView()
                     .tag("Chat")
+                    .environment(\.colorScheme, .light)
                 PairingView()
                     .tag("Pairing")
+                    .environment(\.colorScheme, .dark)
                 ProfileView()
                     .tag("Profile")
+                    .environment(\.colorScheme, .light)
             }
             HStack(spacing: 0) {
                 ForEach(["Chat", "Pairing", "Profile"], id: \.self) { icon in TabBarButton(icon: icon, currentTab: $currentTab)
                 }
             }
-            .padding(.horizontal)
             .padding(.top, 10)
             .overlay(Divider().foregroundColor(Color.surface2), alignment: .top)
             .background(currentTab == "Pairing" ? Color.surface4 : Color.surface3)

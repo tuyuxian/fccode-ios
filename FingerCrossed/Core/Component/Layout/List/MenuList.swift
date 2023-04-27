@@ -17,9 +17,15 @@ struct MenuList: View {
                     VStack(spacing: 0) {
                         HStack(spacing: 0) {
                             ZStack {
-                                ListRow(label: childView.label)
-                                NavigationLink(
-                                    destination: childView.view
+                                ListRow(
+                                    label: childView.label,
+                                    showIndicator: childView.hasSubview
+                                ) {
+                                    childView.preview
+                                }
+                                childView.hasSubview
+                                ? NavigationLink(
+                                    destination: childView.subview
                                     .navigationBarBackButtonHidden(true)
                                     .toolbarRole(.editor)
                                 ){
@@ -27,13 +33,14 @@ struct MenuList: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .opacity(0)
+                                : nil
                             }
                             .listRowBackground(Color.white)
                         }
-                        .padding(.top, index == 0 ? 10 : 0) // 30 - 20 (ListRow) for the first item
+                        .padding(.top, index == 0 ? 14 : 0) // 30 - 16 (ListRow) for the first item
                         
                         index != childViewList.count - 1
-                        ? Divider().foregroundColor(Color.surface3) 
+                        ? Divider().foregroundColor(Color.surface3)
                             .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                         : nil
                     }
@@ -50,12 +57,15 @@ struct MenuList: View {
 
 struct MenuList_Previews: PreviewProvider {
     static var previews: some View {
-        MenuList(childViewList: [ChildView(label: "Demo", view: AnyView(EmptyView()))])
+        MenuList(childViewList: [ChildView(label: "Demo", subview: AnyView(EmptyView()))])
     }
 }
 
 struct ChildView: Identifiable {
     var id = UUID()
     var label: String
-    var view: AnyView
+    var icon: String = ""
+    var subview: AnyView = AnyView(EmptyView())
+    var preview: AnyView = AnyView(EmptyView())
+    var hasSubview: Bool = true
 }

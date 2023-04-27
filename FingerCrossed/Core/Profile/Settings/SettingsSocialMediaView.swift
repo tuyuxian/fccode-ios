@@ -1,5 +1,5 @@
 //
-//  MySocialAccountView.swift
+//  SettingsSocialAccountView.swift
 //  FingerCrossed
 //
 //  Created by Kevin Tsai on 4/10/23.
@@ -7,14 +7,13 @@
 
 import SwiftUI
 
-struct MySocialMediaView: View {
+struct SettingsSocialAccountView: View {
     
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Settings", childTitle: "Social Account") {
             Box {
-                VStack(alignment: .leading, spacing: 20.0) {
-                    
+                VStack(alignment: .leading, spacing: 16) {
                     SocialAccountRow(label: "Facebook", isConnected: true)
                     
                     Divider()
@@ -37,9 +36,9 @@ struct MySocialMediaView: View {
     }
 }
 
-struct SocialAccountView_Previews: PreviewProvider {
+struct SettingsSocialAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        MySocialMediaView()
+        SettingsSocialAccountView()
     }
 }
 

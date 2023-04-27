@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @State var avatarUrl: String = "https://i.pravatar.cc/150?img=59"
+    @State var avatarUrl: String = "https://img.freepik.com/free-photo/pretty-smiling-joyfully-female-with-fair-hair-dressed-casually-looking-with-satisfaction_176420-15187.jpg?w=2000&t=st=1681172860~exp=1681173460~hmac=36c61c8ef9089e6e9875a89f7cc83463dcdcb9f79c052fab35a91224253a5d1e"
     @State var username: String = "Marine"
     
     let profileOptions: [ChildView] = [
-        ChildView(label: "Basic Info", view: AnyView(BasicInfoNameView())), // TODO(Sam): connect with basic info view
-        ChildView(label: "Preference", view: AnyView(PreferenceView())),
-        ChildView(label: "Settings", view: AnyView(SettingsView())),
-        ChildView(label: "Help & Support", view: AnyView(EmptyView())), // TODO(): add this in the future
+        ChildView(label: "Basic Info", subview: AnyView(BasicInfoView())),
+        ChildView(label: "Preference", subview: AnyView(PreferenceView())),
+        ChildView(label: "Settings", subview: AnyView(SettingsView())),
+        ChildView(label: "Help & Support", subview: AnyView(EmptyView())), // TODO(): add this in the future
     ]
     
     var body: some View {

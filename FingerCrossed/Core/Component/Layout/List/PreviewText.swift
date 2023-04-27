@@ -15,6 +15,7 @@ struct PreviewText: View {
             .foregroundColor(Color.textHelper)
             .padding(.top, 6)
             .lineLimit(2)
+            .multilineTextAlignment(.leading)
     }
 }
 

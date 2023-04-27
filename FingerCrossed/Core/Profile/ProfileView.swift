@@ -13,11 +13,10 @@ struct ProfileView: View {
     @State var username: String = "Marine"
     
     let profileOptions: [ChildView] = [
-        ChildView(label: "Basic Info", view: AnyView(BasicInfoView())),
-        ChildView(label: "Plan", view: AnyView(EmptyView())), // TODO(): add this in the future
-        ChildView(label: "Preference", view: AnyView(PreferenceView())),
-        ChildView(label: "Settings", view: AnyView(SettingsView())),
-        ChildView(label: "Help & Support", view: AnyView(EmptyView())), // TODO(): add this in the future
+        ChildView(label: "Basic Info", subview: AnyView(BasicInfoView())),
+        ChildView(label: "Preference", subview: AnyView(PreferenceView())),
+        ChildView(label: "Settings", subview: AnyView(SettingsView())),
+        ChildView(label: "Help & Support", subview: AnyView(EmptyView())), // TODO(): add this in the future
     ]
     
     var body: some View {

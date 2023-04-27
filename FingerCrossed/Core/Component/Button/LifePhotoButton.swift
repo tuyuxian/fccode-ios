@@ -8,21 +8,28 @@
 import SwiftUI
 
 struct LifePhotoButton: View {
-    @State var content_url: String = ""
-    @State var position: Int = 1
-    @State var caption: String = ""
-    @Binding var showModal: Bool
-    
-    @State private var offset = CGSize.zero
+    @State var lifePhoto: LifePhoto
+    @State var halfSize: CGFloat
+    @State var fullSize: CGFloat
+        
+    @ObservedObject var config: LifePhotoViewModel
     
     var body: some View {
         Button {
-            showModal = true
+            if lifePhoto.position <= config.currentLifePhotoCount {
+                self.config.showEditSheet = true
+                self.config.selectedLifePhoto = lifePhoto
+                if lifePhoto.photoUrl == "" {
+                    self.config.hasLifePhoto = false
+                } else {
+                    self.config.hasLifePhoto = true
+                }
+            }
         } label: {
             AsyncImage(
-                url: URL(string: content_url),
+                url: URL(string: lifePhoto.photoUrl),
                 transaction: Transaction(animation: .easeInOut)
-            ) { phase in
+            ){ phase in
                 switch phase {
                 case .empty:
                     Image("PictureBased")
@@ -35,7 +42,7 @@ struct LifePhotoButton: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 case .failure:
-                    ProgressView() // TODO(Sam): Replace with shimmer later
+                    ProgressView() // TODO(Sam): Replace with shimmer 
                 @unknown default:
                     Image("PictureBased")
                         .resizable()
@@ -45,79 +52,20 @@ struct LifePhotoButton: View {
                 }
             }
         }
-        .frame(width: position == 0 ? 164 : 75, height: position == 0 ? 164 : 75)
-        .background(position <= 1 ? Color.yellow100 : Color.yellow20)
+        .frame(width: lifePhoto.position == 0 ? fullSize : halfSize, height: lifePhoto.position == 0 ? fullSize : halfSize)
+        .background(lifePhoto.position <= config.currentLifePhotoCount ? Color.yellow100 : Color.yellow20)
         .cornerRadius(16)
-        .offset(offset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    self.position = 5
-                    self.offset = gesture.translation
-                }
-                .onEnded { gesture in
-                    self.position = 1
-                    self.offset = CGSize.zero
-                }
-        )
-        .sheet(isPresented: $showModal) {
-            LifePhotoActionSheet()
-        }
+        .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 16))
     }
 }
 
 struct LifePhotoButton_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoButton(showModal: .constant(false))
-    }
-}
-
-struct LifePhotoActionSheet: View {
-    
-    @State var showModal: Bool = false
-    
-    var body: some View {
-        ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            VStack(spacing: 20){
-                HStack(alignment: .center) {
-                    Text("Life Photos")
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
-                }
-                HStack(spacing: 91) {
-                    Button {
-                        // TODO(Sam): add action for life photo
-                    } label: {
-                        Image("CameraBased")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 56, height: 56)
-                            .foregroundColor(Color.white)
-                    }
-                    .frame(width: 80, height: 80)
-                    .background(Color.orange100)
-                    .cornerRadius(50)
-                    
-                    Button {
-                        showModal = true
-                    } label: {
-                        Image("PictureBased")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 56, height: 56)
-                            .foregroundColor(Color.white)
-                    }
-                    .frame(width: 80, height: 80)
-                    .background(Color.orange100)
-                    .cornerRadius(50)
-                    .sheet(isPresented: $showModal) {
-                        LifePhotoEditSheet()
-                    }
-                }
-            }
-            .background(Color.white)
-            .presentationDetents([.fraction(0.25)])
-        }
+        LifePhotoButton(
+            lifePhoto: LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=6", caption: "", position: 0),
+            halfSize: 75,
+            fullSize: 164,
+            config: LifePhotoViewModel()
+        )
     }
 }

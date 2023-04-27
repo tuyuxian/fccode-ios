@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct CaptionInputBar: View {
+    
     // Remember to offset 1px border line width when using this component.
     @State var text: String = ""
     @State var hint: String
     @State var defaultPresentLine: Int = 1
     @State var lineLimit: Int
-    
+
     var body: some View {
         TextField(
             "",
@@ -30,7 +31,7 @@ struct CaptionInputBar: View {
         .foregroundColor(Color.text)
         .multilineTextAlignment(.leading)
         .padding(0)
-        //.disabled(text.count >= 200 ? true : false) TODO(Sam): dynamically disable textfield when reaching 200 characters
+        //.disabled(text.count >= 200) // TODO(Sam): dynamically disable textfield when reaching 200 characters
         .overlay(
               RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.surface2, lineWidth: 1)

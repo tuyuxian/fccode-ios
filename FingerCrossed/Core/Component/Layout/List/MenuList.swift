@@ -19,16 +19,13 @@ struct MenuList: View {
                             ZStack {
                                 ListRow(
                                     label: childView.label,
-                                    hasIcon: childView.hasMedia ? false : true
+                                    showIndicator: childView.hasSubview
                                 ) {
-                                    childView.hasMedia ? nil : childView.preview
-                                    childView.hasMedia ? childView.media : nil
+                                    childView.preview
                                 }
-                                
-                                childView.hasMedia
-                                ? nil
-                                : NavigationLink(
-                                    destination: childView.view
+                                childView.hasSubview
+                                ? NavigationLink(
+                                    destination: childView.subview
                                     .navigationBarBackButtonHidden(true)
                                     .toolbarRole(.editor)
                                 ){
@@ -36,10 +33,11 @@ struct MenuList: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .opacity(0)
+                                : nil
                             }
                             .listRowBackground(Color.white)
                         }
-                        .padding(.top, index == 0 ? 10 : 0) // 30 - 20 (ListRow) for the first item
+                        .padding(.top, index == 0 ? 14 : 0) // 30 - 16 (ListRow) for the first item
                         
                         index != childViewList.count - 1
                         ? Divider().foregroundColor(Color.surface3)
@@ -59,15 +57,15 @@ struct MenuList: View {
 
 struct MenuList_Previews: PreviewProvider {
     static var previews: some View {
-        MenuList(childViewList: [ChildView(label: "Demo", view: AnyView(EmptyView()))])
+        MenuList(childViewList: [ChildView(label: "Demo", subview: AnyView(EmptyView()))])
     }
 }
 
 struct ChildView: Identifiable {
     var id = UUID()
     var label: String
-    var view: AnyView = AnyView(EmptyView())
+    var icon: String = ""
+    var subview: AnyView = AnyView(EmptyView())
     var preview: AnyView = AnyView(EmptyView())
-    var hasMedia: Bool = false
-    var media: AnyView = AnyView(EmptyView())
+    var hasSubview: Bool = true
 }

@@ -1,6 +1,6 @@
 name: FingerCrossed
 options:
-  bundleIdPrefix: com
+  bundleIdPrefix: FingerCrossed
   deploymentTarget:
     iOS: "16.0"
 
@@ -17,5 +17,7 @@ targets:
         UILaunchScreen: [UILaunchScreen: []]
         UIStatusBarStyle: "UIStatusBarStyleLightContent"
         UIViewControllerBasedStatusBarAppearance: true
+        UIRequiresFullScreen: true
+
     sources:
       - FingerCrossed

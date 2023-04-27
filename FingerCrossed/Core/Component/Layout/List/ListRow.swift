@@ -10,22 +10,30 @@ import SwiftUI
 struct ListRow<Content: View>: View {
     
     @State var label: String
-    @State var icon: String = "ArrowRightBased" // replace the icon when needed
-    @State var hasIcon: Bool = true
+    
+    // Replace the icon in different use cases
+    @State var icon: String = "ArrowRightBased"
+    @State var showIndicator: Bool = true
+        
     @ViewBuilder var preview: Content
     
     var body: some View {
-        HStack(spacing: 0) {
-            Text(label)
-                .fontTemplate(.pMedium)
-                .foregroundColor(Color.text)
-                .frame(height: 24)
-                .padding(.top, 2)
-                .padding(.bottom, -2)
-            Spacer()
-            Image(icon)
-                .resizable()
-                .frame(width: 24, height: 24)
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 0) {
+                Text(label)
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(Color.text)
+                    .frame(height: 24)
+                    .padding(.top, 2)
+                    .padding(.bottom, -2)
+                Spacer()
+                showIndicator
+                ? Image(icon)
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                : nil
+            }
+            preview
         }
         .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
     }
@@ -33,8 +41,6 @@ struct ListRow<Content: View>: View {
 
 struct ListRow_Previews: PreviewProvider {
     static var previews: some View {
-        ListRow(label: "Demo list row") {}
+        ListRow(label: "Demo list row"){}
     }
 }
-
-

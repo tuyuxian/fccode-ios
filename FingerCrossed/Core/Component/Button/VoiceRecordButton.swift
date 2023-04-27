@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct VoiceRecordButton: View {
+    
+    @State var showVocieRecordSheet: Bool = false
+    
     var body: some View {
         Button {
-            // TODO(Sam): add action for voice record
+            showVocieRecordSheet.toggle()
         } label: {
             HStack(alignment: .center, spacing: 0) {
                 Text("Press to record message")
@@ -24,6 +27,9 @@ struct VoiceRecordButton: View {
         .foregroundColor(Color.orange100)
         .background(Color.yellow20)
         .cornerRadius(50)
+        .sheet(isPresented: $showVocieRecordSheet) {
+            VoiceMessageEditSheet()
+        }
     }
 }
 

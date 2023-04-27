@@ -18,6 +18,7 @@ struct DividerWithLabel: View {
             
             Text(label)
                 .fontTemplate(.pMedium)
+                .foregroundColor(Color.text)
             
             VStack {
                 Divider()

@@ -45,7 +45,7 @@ struct SignUpNameView: View {
                     .padding(.horizontal, 24)
                 
                 HStack {
-                    InputHelper(iconName: "CheckCircleBased", label: "2-30 characters")
+                    InputHelper(isSatisfied: .constant(false), label: "2-30 characters")
                     
                     Spacer()
                 }

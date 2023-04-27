@@ -28,18 +28,3 @@ struct CandidateModel: Identifiable, Equatable{
         self.nationality = nationality
     }
 }
-
-struct LifePhoto: Identifiable, Equatable {
-    let id: UUID
-    var photoUrl: String
-    var caption: String
-    var position: Int
-    
-    init(id: UUID = UUID(), photoUrl: String, caption: String, position: Int) {
-        self.id = id
-        self.photoUrl = photoUrl
-        self.caption = caption
-        self.position = position
-    }
-}
-

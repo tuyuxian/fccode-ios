@@ -20,6 +20,10 @@ struct SSOButton: ButtonStyle {
             .background(
                 RoundedRectangle(cornerRadius: 66)
                     .fill(buttonColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 66)
+                            .strokeBorder(Color.surface1, lineWidth: 1)
+                    )
             )
             .scaleEffect(configuration.isPressed ? 1.2 : 1)
             .animation(.easeOut(duration: 0.2), value: configuration.isPressed)

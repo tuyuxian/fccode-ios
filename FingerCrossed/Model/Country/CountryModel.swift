@@ -40,7 +40,11 @@ class CountryModel: Codable, Identifiable, Equatable, ObservableObject {
     }
 }
 
-class CountrySelectionList: ObservableObject {
+class CountrySelectionList: ObservableObject, Equatable {
+    static func == (lhs: CountrySelectionList, rhs: CountrySelectionList) -> Bool {
+        lhs.countrySlections == rhs.countrySlections
+    }
+    
     @Published var countrySlections = [CountryModel]()
     
     init(countrySlections: [CountryModel]) {

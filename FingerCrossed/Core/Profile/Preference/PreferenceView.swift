@@ -13,7 +13,7 @@ struct PreferenceView: View {
     let preferenceOptions: [ChildView] = [
         ChildView(label: "Sex Orientation", view: AnyView(PreferenceSexOrientationView())),
         ChildView(label: "Goal", view: AnyView(PreferenceGoalView())),
-        ChildView(label: "Nationality", view: AnyView(PreferenceSexOrientationView())), // TODO(Sam): change to nationality view
+        ChildView(label: "Nationality", view: AnyView(PreferenceNationalityView())), // TODO(Sam): change to nationality view
         ChildView(label: "Ethnicity", view: AnyView(PreferenceEthnicityView())),
         ChildView(label: "Distance", view: AnyView(PreferenceDistanceView())),
     ]

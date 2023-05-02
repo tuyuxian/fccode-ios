@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct PrimaryButton: ButtonStyle {
-    var labelColor: Color = Color.white
-    var buttonColor: Color = Color.orange100
+    var labelColor: Color = Color.text
+    var buttonColor: Color = Color.yellow100
+    
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

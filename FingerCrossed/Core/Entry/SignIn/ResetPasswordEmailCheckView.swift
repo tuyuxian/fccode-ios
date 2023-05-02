@@ -8,38 +8,43 @@
 import SwiftUI
 
 struct ResetPasswordEmailCheckView: View {
+    @State private var showEntryView: Bool = false
+    
     var body: some View {
-        ZStack {
-            Color.background.ignoresSafeArea(.all)
-            
-            
-            VStack (spacing: 0.0){
-                EntryLogo()
+            ZStack {
+                Color.background.ignoresSafeArea(.all)
                 
-                Spacer()
                 
-                Text("Please check\nyour email\nto reset password")
-                    .foregroundColor(.text)
-                    .fontTemplate(.bigBoldTitle)
-                    .multilineTextAlignment(.leading)
-               
-                Text("✉️")
-                    .font(.custom("AzoSans-Bold", size: 160))
-                    .padding(.horizontal, 33)
-                
-                Spacer()
-                    .frame(height: 120)
-                
-                Button {
-                    print("email check")
-                } label: {
-                    Text("Back to login")
-                }
-                .buttonStyle(PrimaryButton())
-                .padding(.horizontal, 24)
-                
-                Spacer()
+                VStack (spacing: 0.0){
+                    EntryLogo()
+                    
+                    Spacer()
+                        .frame(height: 135)
+                    
+                    Text("Please check\nyour email\nto reset password")
+                        .foregroundColor(.text)
+                        .fontTemplate(.bigBoldTitle)
+                        .multilineTextAlignment(.leading)
+                   
+                    Text("✉️")
+                        .font(.custom("AzoSans-Bold", size: 160))
+                        .padding(.horizontal, 33)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        showEntryView = true
+                    }, label: {
+                        Text("Back to login")
+                    })
+                    .buttonStyle(PrimaryButton())
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 50)
             }
+                
+        }
+        .fullScreenCover(isPresented: $showEntryView) {
+            EntryView()
         }
     }
 }

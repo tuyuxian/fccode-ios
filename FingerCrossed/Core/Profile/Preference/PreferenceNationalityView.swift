@@ -12,7 +12,7 @@ struct PreferenceNationalityView: View {
         ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Nationali") {
             Box {
                 VStack(spacing: 0) {
-                    CountryView(countryViewModel: CountryViewModel())
+//                    CountryView(countryViewModel: CountryViewModel())
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Spacer()

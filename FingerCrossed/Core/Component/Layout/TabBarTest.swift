@@ -43,7 +43,7 @@ struct TabBarTest: View {
                     }
                     .tag(2)
             }
-            .tint(Color.orange100)
+            .tint(Color.yellow100)
         }
     }
 }

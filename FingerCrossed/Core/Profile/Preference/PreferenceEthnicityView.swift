@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PreferenceEthnicityView: View {
     
+    @State var userEthnicity = [Ethnicity]()
     let ethnicityOptions:[String] = [
         "Open to all",
         "Asian",
@@ -39,6 +40,11 @@ struct PreferenceEthnicityView: View {
                         
                     }
                 }
+                
+//                CheckBoxEthnicityGroup(hasDivider: true, ethnicityList: $userEthnicity) { selected in
+//                    print("\(selected)")
+//                    print("Ethnicity: \(userEthnicity.count)")
+//                }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Spacer()
             }

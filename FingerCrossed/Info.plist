@@ -19,9 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Acess to the camera to take photo</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app uses your location to personalize your app experience.</string>
+	<string>Access to the camera to take photo</string>
 	<key>UILaunchScreen</key>
 	<array>
 		<dict>
@@ -37,5 +35,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

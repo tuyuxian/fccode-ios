@@ -21,22 +21,6 @@ struct PreferenceDistanceView: View {
         ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Distance") {
             Box {
                 VStack(spacing: 0) {
-<<<<<<< HEAD
-//                    ForEach(Array(distanceOptions.enumerated()), id: \.element.self) { index, distance in
-//                        HStack {
-//                            RadioButton(label: distance) // TODO(Sam): add click state
-//                            Spacer()
-//                        }
-//                        .padding(EdgeInsets(top: 20, leading: 24, bottom: 20, trailing: 24))
-//                       
-//                        
-//                        index != distanceOptions.count - 1
-//                        ? Divider().foregroundColor(Color.surface2) // TODO(Sam): use surface3
-//                                .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
-//                        : nil
-//                        
-//                    }
-=======
                     ForEach(Array(distanceOptions.enumerated()), id: \.element.self) { index, distance in
                         
                         RadioButtonRow(label: distance)
@@ -47,7 +31,6 @@ struct PreferenceDistanceView: View {
                         : nil
                         
                     }
->>>>>>> release
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Spacer()

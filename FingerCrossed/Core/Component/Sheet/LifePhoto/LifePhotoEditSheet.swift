@@ -49,7 +49,7 @@ struct LifePhotoEditSheet: View {
                                     .cornerRadius(6)
                                     .background(
                                         RoundedRectangle(cornerRadius: 6)
-                                            .strokeBorder(Color.orange100, lineWidth: 1)
+                                            .strokeBorder(Color.yellow100, lineWidth: 1)
                                     )
 //                                    .onAppear{
 //                                        uiImage = UIImage(data: getImageData(url: config.selectedLifePhoto?.photoUrl ?? ""))!

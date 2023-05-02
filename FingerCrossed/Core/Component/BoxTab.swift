@@ -19,7 +19,7 @@ struct BoxTab: View {
                 Text("Edit")
             }
             .frame(width: 171, height: 48)
-            .background(isSelected == 1 ? Color.orange100 : Color.orange60)
+            .background(isSelected == 1 ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
             Button{
                 isSelected = 2
@@ -27,13 +27,13 @@ struct BoxTab: View {
                 Text("Preview")
             }
             .frame(width: 171, height: 48)
-            .background(isSelected == 2 ? Color.orange100 : Color.orange60)
+            .background(isSelected == 2 ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
         }
         .frame(width: 342, height:48)
         .fontTemplate(.h3Medium)
         .foregroundColor(Color.white)
-        .background(Color.orange60)
+        .background(Color.yellow20)
         .cornerRadius(50)
 
     }

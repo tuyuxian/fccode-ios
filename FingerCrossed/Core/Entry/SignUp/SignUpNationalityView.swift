@@ -10,6 +10,7 @@ import SwiftUI
 struct SignUpNationalityView: View {
     @ObservedObject var user: EntryViewModel
     @ObservedObject var countrySelectionList =  CountrySelectionList(countrySlections: [CountryModel]())
+    @State var isStatisfied: Bool = false
     
     var body: some View {
         ZStack {
@@ -48,11 +49,11 @@ struct SignUpNationalityView: View {
                     .onChange(of: countrySelectionList.countrySlections, perform: { newValue in
 //                        print("\(newValue)")
                         user.nationality = countrySelectionList.countrySlections
+                        self.isStatisfied = user.nationality.count > 0
                     })
                     .padding(.horizontal, 24)
                     .padding(.top, 20)
-                
-                InputHelper(label: "Up to 3 Nationalities", textcolor: user.nationality.count > 0 ? Color.text : Color.surface1, imageColor: user.nationality.count > 0 ? Color.text : Color.surface1)
+                InputHelper(isSatisfied: $isStatisfied, label: "Up to 3 Nationalities")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(height: 16)
                     .padding(.horizontal, 40)

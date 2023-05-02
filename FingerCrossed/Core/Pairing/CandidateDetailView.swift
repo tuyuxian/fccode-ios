@@ -64,10 +64,10 @@ struct CandidateDetailView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 30, height: 30)
-                                .foregroundColor(Color.orange100)
+                                .foregroundColor(Color.white)
                                 .background(
                                     Circle()
-                                        .foregroundColor(Color.orange20)
+                                        .foregroundColor(Color.yellow100)
                                         .frame(width: 60, height: 60)
                                 )
                         }

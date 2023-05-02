@@ -18,15 +18,11 @@ struct TagButton: View {
         } label: {
             Text(label)
                 .fontTemplate(.captionRegular)
-                .foregroundColor(isSelected == tag ? Color.white : Color.orange100)
+                .foregroundColor(Color.text)
                 .padding(.bottom, -1) // offset text padding
-                .padding(EdgeInsets(top: 3, leading: 9, bottom: 3, trailing: 9)) // leave 1 padding for border line
-                .background(isSelected == tag ? Color.orange100 : Color.white)
+                .padding(EdgeInsets(top: 4, leading: 10, bottom: 4, trailing: 10)) // leave 1 padding for border line
+                .background(isSelected == tag ? Color.yellow100 : Color.yellow20)
                 .cornerRadius(50)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 50)
-                        .stroke(Color.orange100, lineWidth: 1)
-                )
         }
     }
 }

@@ -1,11 +1,7 @@
 {
   "images" : [
     {
-<<<<<<< HEAD:FingerCrossed/Resources/Assets.xcassets/Icons/Action/CloseWarning.imageset/Contents.json
       "filename" : "Close.svg",
-=======
-      "filename" : "48_48.svg",
->>>>>>> release:FingerCrossed/Resources/Assets.xcassets/Logo/HeaderLogo.imageset/Contents.json
       "idiom" : "universal",
       "scale" : "1x"
     },

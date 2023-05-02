@@ -8,54 +8,33 @@
 import SwiftUI
 
 struct SettingsResetPasswordView: View {
-<<<<<<< HEAD
-    @State var isQualified = false
-    @State var newPassword: String = ""
-    @State var newPasswordConfirmed: String = ""
-=======
     @State var hasPassword: Bool = true
->>>>>>> release
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Settings", childTitle: "Password") {
             Box {
                 VStack(alignment: .leading, spacing: 20.0) {
-                    
-<<<<<<< HEAD
-                    VStack(alignment: .leading, spacing: 6.0){
-                        Text("New Password")
-                            .fontTemplate(.h3Medium)
-                        .foregroundColor(.text)
-                        PrimaryInputBar(value: $newPassword, isDisable: false, hasButton: true, isQualified: $isQualified)
-=======
                     hasPassword
                     ? VStack(alignment: .leading, spacing: 6.0) {
                         Text("Current Password")
                             .fontTemplate(.pMedium)
-                        .foregroundColor(.text)
-                        PrimaryInputBar(hint: "Please enter your password", isDisable: false, hasButton: false)
+                            .foregroundColor(.text)
+//                        PrimaryInputBar(hint: "Please enter your password", isDisable: false, hasButton: false)
                     }
                     : nil
                     
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("New Password")
                             .fontTemplate(.pMedium)
-                        .foregroundColor(.text)
-                        PrimaryInputBar(hint: "Please enter new password", isDisable: false, hasButton: false)
->>>>>>> release
+                            .foregroundColor(.text)
+//                        PrimaryInputBar(hint: "Please enter new password", isDisable: false, hasButton: false)
                     }
                     
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("Comfirm Password")
-<<<<<<< HEAD
-                            .fontTemplate(.h3Medium)
-                        .foregroundColor(.text)
-                        PrimaryInputBar(value: $newPasswordConfirmed, isDisable: false, hasButton: true, isQualified: $isQualified)
-=======
                             .fontTemplate(.pMedium)
-                        .foregroundColor(.text)
-                        PrimaryInputBar(hint: "Confirm new password", isDisable: false, hasButton: false)
->>>>>>> release
+                            .foregroundColor(.text)
+//                        PrimaryInputBar(hint: "Confirm new password", isDisable: false, hasButton: false)
                     }
             
                 }

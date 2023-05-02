@@ -10,26 +10,15 @@ import SwiftUI
 struct BasicInfoNameView: View {
     
     @State var name: String = "Test"
-<<<<<<< HEAD
-    @State var remainCharacters: Int = 24
-    @State var isQualified = false
-=======
->>>>>>> release
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Basic Info", childTitle: "Name") {
             Box {
                 VStack(alignment: .trailing, spacing: 6.0) {
                     // input bar
-<<<<<<< HEAD
-                    PrimaryInputBar(value: $name, isDisable: false, hasButton: false, isQualified: $isQualified) // TODO(Sam): replace the hint with name
-                    // characters remain
-                    Text("\(30 - remainCharacters)/30")
-=======
-                    PrimaryInputBar(isDisable: false, hasButton: false) // TODO(Sam): replace the hint with name
+                    PrimaryInputBar(value: $name, isDisable: false, hasButton: false, isQualified: .constant(false))
 
                     Text("\(name.count)/30")
->>>>>>> release
                         .fontTemplate(.captionRegular)
                         .foregroundColor(Color.textHelper)
                 }

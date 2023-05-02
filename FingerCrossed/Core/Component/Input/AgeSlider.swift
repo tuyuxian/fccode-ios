@@ -55,12 +55,12 @@ struct AgeSlider: View {
                             .fill(Color.surface3)
                             .frame(height: 28)
                         RoundedRectangle(cornerRadius: 50)
-                            .fill(Color.orange60)
+                            .fill(Color.yellow20)
                             .frame(width: self.to - self.from + 56, height: 28)
                             .offset(x: self.from)
                         HStack(spacing: 0) {
                             Circle()
-                                .fill(Color.orange100)
+                                .fill(Color.peach100)
                                 .frame(width: isFromDragging ? 16 : 28, height: isFromDragging ? 16 : 28)
                                 .overlay(
                                     !isFromDragging
@@ -88,7 +88,7 @@ struct AgeSlider: View {
 
                             
                             Circle()
-                                .fill(Color.orange100)
+                                .fill(Color.peach100)
                                 .frame(width: isToDragging ? 16 : 28, height: isToDragging ? 16 : 28)
                                 .overlay(
                                     !isToDragging

@@ -61,8 +61,8 @@ struct SocialAccountRow: View {
             }
             .fontTemplate(.pMedium)
             .frame(width: 108, height: 38)
-            .foregroundColor(isConnected ? Color.orange100 : Color.white)
-            .background(isConnected ? Color.white : Color.orange100)
+            .foregroundColor(isConnected ? Color.yellow100 : Color.text)
+            .background(isConnected ? Color.white : Color.yellow100)
             .clipShape(Capsule())
         }
         .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))

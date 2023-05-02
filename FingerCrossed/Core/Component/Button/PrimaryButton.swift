@@ -27,20 +27,3 @@ struct PrimaryButton: ButtonStyle {
         
     }
 }
-
-struct SecondaryButton: ButtonStyle {
-    var labelColor: Color = Color.orange100
-    var buttonColor: Color = Color.white
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .fontTemplate(.pMedium)
-            .foregroundColor(labelColor)
-            .frame(maxWidth: .infinity)
-            .frame(height: 52)
-            .background(
-                RoundedRectangle(cornerRadius: 50)
-                    .fill(buttonColor)
-            )        
-    }
-}

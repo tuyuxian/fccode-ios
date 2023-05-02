@@ -18,6 +18,7 @@ targets:
         UIStatusBarStyle: "UIStatusBarStyleLightContent"
         UIViewControllerBasedStatusBarAppearance: true
         UIRequiresFullScreen: true
+        NSCameraUsageDescription: "Access to the camera to take photo"
 
     sources:
       - FingerCrossed

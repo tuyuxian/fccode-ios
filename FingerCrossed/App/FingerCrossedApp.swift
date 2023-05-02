@@ -12,7 +12,8 @@ struct FingerCrossedApp: App {
     var body: some Scene {
         WindowGroup {
             TabBar()
-                .environment(\.colorScheme, .dark)
+                .environment(\.colorScheme, .light)
+            //EntryView()
         }
     }
 }

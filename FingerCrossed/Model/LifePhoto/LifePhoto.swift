@@ -26,7 +26,7 @@ class LifePhotoViewModel: ObservableObject {
         LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=6", caption: "", position: 0),
         LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=7", caption: "", position: 1),
         LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=8", caption: "", position: 2),
-        LifePhoto(photoUrl: "", caption: "", position: 3),
+        LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "", position: 3),
         LifePhoto(photoUrl: "", caption: "", position: 4),
     ]
     

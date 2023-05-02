@@ -10,6 +10,7 @@ import SwiftUI
 struct CandidateDetailView: View {
     @State var candidateModel: CandidateModel
     @State var lifePhotoList: [LifePhoto]
+    @State var isPlay: Bool = false
     
     var body: some View {
         ScrollView {
@@ -39,14 +40,45 @@ struct CandidateDetailView: View {
                 }
                 .padding(.top, 30)
                 
-                Divider()
-                    .padding(.horizontal, 24)
-                
                 Text(candidateModel.selfIntro)
                     .fontTemplate(.pRegular)
                     .foregroundColor(Color.text)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
+                
+                VStack (spacing: 20){
+                    Text("Voice Message")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    HStack {
+                        Button {
+                            withAnimation {
+                                isPlay.toggle()
+                            }
+                        } label: {
+                            Image(isPlay ? "pause" : "play")
+                                .renderingMode(.template)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange100)
+                                .background(
+                                    Circle()
+                                        .foregroundColor(Color.orange20)
+                                        .frame(width: 60, height: 60)
+                                )
+                        }
+
+//                        LottieView(lottieFile: "soundwave")
+                    }
+                }
+                .padding(.vertical, 24)
+                .padding(.horizontal, 24)
+                
+                Divider()
                     .padding(.horizontal, 24)
                 
                 ForEach(lifePhotoList) { list in
@@ -62,7 +94,9 @@ struct CandidateDetailView: View {
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
+                                    .cornerRadius(16)
                                     .padding(.horizontal, 24)
+                                    
 
                             case .failure:
                                 ProgressView() // TODO(Sam): Replace with shimmer later

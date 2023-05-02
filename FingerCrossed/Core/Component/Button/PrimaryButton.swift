@@ -22,8 +22,25 @@ struct PrimaryButton: ButtonStyle {
                 RoundedRectangle(cornerRadius: 66)
                     .fill(buttonColor)
             )
-            .scaleEffect(configuration.isPressed ? 1.2 : 1)
-            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+            //.scaleEffect(configuration.isPressed ? 1.2 : 1)
+            //.animation(.easeOut(duration: 0.2), value: configuration.isPressed)
         
+    }
+}
+
+struct SecondaryButton: ButtonStyle {
+    var labelColor: Color = Color.orange100
+    var buttonColor: Color = Color.white
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .fontTemplate(.pMedium)
+            .foregroundColor(labelColor)
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+            .background(
+                RoundedRectangle(cornerRadius: 50)
+                    .fill(buttonColor)
+            )        
     }
 }

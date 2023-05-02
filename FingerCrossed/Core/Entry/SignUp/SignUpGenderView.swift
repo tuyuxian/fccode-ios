@@ -40,11 +40,22 @@ struct SignUpGenderView: View {
                     Spacer()
                 }
                 .padding(.horizontal, 24)
+<<<<<<< HEAD
                 .padding(.top, 4)
 
                 RadioButtonGenderGroup { selected in
                     user.gender = Gender.allCases.first { gender in
                         gender.rawValue == selected
+=======
+                .padding(.vertical, 12)
+                
+                HStack {
+                    VStack (alignment: .leading){
+                        RadioButtonRow(label: "Male")
+                        RadioButtonRow(label: "Female")
+                        RadioButtonRow(label: "Non-binary")
+                        RadioButtonRow(label: "Prefer not to say")
+>>>>>>> release
                     }
                 }
                 .padding(.horizontal, 24)

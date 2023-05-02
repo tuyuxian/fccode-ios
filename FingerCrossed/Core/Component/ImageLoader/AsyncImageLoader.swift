@@ -32,11 +32,6 @@ struct AsyncImageLoader<Placeholder: View>: View {
     private var content: some View {
         GeometryReader { geometry in
             if loader.image != nil {
-                
-//                Image(uiImage: loader.image!)
-//                    .resizable()
-                
-//                if imageIsLandscape(url: self.url) {
                 if loader.image!.size.width >= loader.image!.size.height {
                     image(loader.image!)
                         .resizable()
@@ -67,18 +62,5 @@ struct AsyncImageLoader<Placeholder: View>: View {
                 placeholder
             }
         }
-    }
-    
-    func imageIsLandscape(url: URL) -> Bool {
-        if let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) {
-            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
-                let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
-                let pixelHeight = imageProperties[kCGImagePropertyPixelHeight] as! Int
-                
-                return pixelWidth >= pixelHeight ? true : false
-                //return "Width: \(pixelWidth), Height: \(pixelHeight)"
-            }
-        }
-        return false
     }
 }

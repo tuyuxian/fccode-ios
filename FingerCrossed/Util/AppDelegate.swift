@@ -8,7 +8,6 @@
 import SwiftUI
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    
     // Force phone to use portrait mode
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .all

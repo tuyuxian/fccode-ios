@@ -9,31 +9,16 @@ import SwiftUI
 
 struct SettingsView: View {
     let settingsOptions: [ChildView] = [
-        ChildView(label: "Password", view: AnyView(SettingsResetPasswordView())),
-        ChildView(label: "My Social Media", view: AnyView(MySocialMediaView())),
+        ChildView(label: "Password", subview: AnyView(SettingsResetPasswordView())),
+        ChildView(label: "Social Account", subview: AnyView(SettingsSocialAccountView())),
     ]
     
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Settings") {
+        ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Settings", showSaveButton: false) {
             Box {
                 MenuList(childViewList: settingsOptions)
-                Spacer()
-                TabBar()
             }
-            
         }
-        
-      
-            
-            
-            
-            
-    
-            
-            
-        
-        
-        
     }
 }
 

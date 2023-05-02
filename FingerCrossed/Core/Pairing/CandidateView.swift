@@ -13,7 +13,8 @@ struct CandidateView: View {
     @State var index = 0
     @State private var currentTab = 0
     @State var isSheetPresented: Bool = false
-    @State var isLiked: Bool = false
+    @Binding var isLiked: Bool
+    @Binding var isDisliked: Bool
     
     var body: some View {
         
@@ -68,34 +69,34 @@ struct CandidateView: View {
                 
                 
                 //Heart Button Section
-                VStack (spacing: 12){
+                VStack (spacing: 16){
                     
                     Button {
                         print("like")
                         isLiked.toggle()
                     } label: {
-                        Image("HeartWhite")
+                        Image(isLiked ? "HeartPink" : "HeartWhite")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(isLiked ? Color.warning : Color.white)
+                            .frame(width: 30, height: 30)
                     }
-                    .buttonStyle(IconButtonWithBackground(size: 38, buttonColor: Color.text.opacity(0.4)))
+                    .buttonStyle(IconButtonWithBackground(size: 50, buttonColor: Color.text.opacity(0.4)))
                     
                     Button {
                         print("dislike")
+                        isDisliked.toggle()
                     } label: {
-                        Image("BrokenHeartWhite")
+                        Image(isDisliked ? "BrokenHeartPink" : "BrokenHeartWhite")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
+                            .frame(width: 30, height: 30)
                             .foregroundColor(Color.white)
                     }
-                    .buttonStyle(IconButtonWithBackground(size: 38, buttonColor: Color.text.opacity(0.4)))
+                    .buttonStyle(IconButtonWithBackground(size: 50, buttonColor: Color.text.opacity(0.4)))
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.horizontal, 24)
-                .padding(.bottom, 12)
+                .padding(.bottom, 16)
                 
                 //CandidateInfo Section
                 ZStack {
@@ -134,7 +135,6 @@ struct CandidateView: View {
                     .padding(.horizontal, 24)
                     
                     Button {
-                        print("link to candidate detail view")
                         print("Btb: \(isSheetPresented)")
                         isSheetPresented.toggle()
                     } label: {
@@ -158,29 +158,42 @@ struct CandidateView: View {
             print("Sheet dismissed")
         } content: {
             CandidateDetailView(candidateModel: candidateModel, lifePhotoList: lifePhotoList)
-                .presentationDetents([.fraction(0.85)])
+                .presentationDetents([.large])
         }
-        
-        
-    }
-    
-    func imageIsLandscape(url: String) -> Bool {
-        if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
-            if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as Dictionary? {
-                let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
-                let pixelHeight = imageProperties[kCGImagePropertyPixelHeight] as! Int
+        .overlay(
+            ZStack {
+                Color.text.opacity(0.4)
                 
-                return pixelWidth >= pixelHeight ? true : false
-                //return "Width: \(pixelWidth), Height: \(pixelHeight)"
+                isLiked ?
+                Image("HeartPink")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 90, height: 90)
+                : nil
+                
+                isDisliked ?
+                Image("BrokenHeartPink")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 90, height: 90)
+                : nil
+                
             }
-        }
-        return false
+            .ignoresSafeArea(.all)
+            .opacity(isLiked || isDisliked ? 1 : 0)
+        )
+        
+        
     }
     
 }
 
+private var Bool: Binding<Bool> {
+    Binding.constant(false)
+}
+
 struct CandidateView_Previews: PreviewProvider {
     static var previews: some View {
-        CandidateView(candidateModel: CandidateModel(LifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)])
+        CandidateView(candidateModel: CandidateModel(LifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)], isLiked: Bool, isDisliked: Bool)
     }
 }

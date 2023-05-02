@@ -22,12 +22,6 @@
 	<string>Acess to the camera to take photo</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app uses your location to personalize your app experience.</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>AzoSans-Bold.ttf</string>
-		<string>AzoSans-Medium.ttf</string>
-		<string>AzoSans-Regular.ttf</string>
-	</array>
 	<key>UILaunchScreen</key>
 	<array>
 		<dict>
@@ -35,6 +29,8 @@
 			<array/>
 		</dict>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations~iphone</key>

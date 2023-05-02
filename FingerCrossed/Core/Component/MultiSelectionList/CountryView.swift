@@ -10,15 +10,15 @@ import SwiftUI
 struct CountryView: View {
     @Environment(\.dismiss) private var dismiss
     @State var countryViewModel: CountryViewModel = CountryViewModel()
-    @StateObject var countrySelectionList = CountrySelectionList(countrySlections: [CountryModel]())
+    @ObservedObject var countrySelectionList: CountrySelectionList
     @State private var countryName: String = ""
     @State private var scrollTarget: String?
     @FocusState private var isSearchBarFocused
     
     
     //MARK: init
-    init(countryViewModel: CountryViewModel){
-        self.countryViewModel = countryViewModel
+    init(countrySelectionList: CountrySelectionList){
+        self.countrySelectionList = countrySelectionList
         UITextField.appearance().clearButtonMode = .whileEditing
     }
     
@@ -27,14 +27,14 @@ struct CountryView: View {
             
             ZStack {
                 Text("Nationality")
-                    .font(.h2Medium)
+                    .fontTemplate(.h2Medium)
                     .frame(maxWidth: .infinity)
 
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(Color.orange100)
-                    .font(.pMedium)
+                    .foregroundColor(Color.gold)
+                    .fontTemplate(.pMedium)
                     .padding(.horizontal, 24)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 
@@ -42,66 +42,129 @@ struct CountryView: View {
             .padding(.top, 30)
             
             Text("Up to 3 Nationalities")
-                .font(.captionMedium)
+                .fontTemplate(.captionMedium)
                 .foregroundColor(Color.text)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .frame(height: 14)
                 .padding(.top, 3)
-                .padding(.bottom, 10)
+                .padding(.bottom, 7)
             
-            
-            searchBar
+            CountrySearchBar(countrySelectionList: countrySelectionList, countryName: $countryName)
                 .padding(.horizontal, 24)
                 .padding(.vertical, 20)
             
+            
+//            searchBar
+//                .padding(.horizontal, 24)
+//                .padding(.vertical, 20)
+            
             countriesListView
         }
-        .navigationBarBackButtonHidden(true)
     }
     
     var searchBar: some View {
-        HStack {
-            ForEach(countrySelectionList.countrySlections) { countryselected in
-                HStack (spacing: 4.0){
-                    Text(countryselected.name)
-                        .padding(.leading, 8)
-                        .padding(.vertical, 6)
+        HStack (alignment: .top, spacing: 0){
+            if countrySelectionList.countrySlections.count >= 1 {
+                VStack (alignment: .leading, spacing: 10.0){
+                    countrySelectionList.countrySlections.count >= 3 ? nil
+                    : TextField("",
+                              text: $countryName,
+                              prompt: Text("Search").foregroundColor(.textHelper).font(Font.system(size: 16, weight: .regular)))
+                                .fontTemplate(.pRegular)
+                                .foregroundColor(Color.text)
+                                .frame(height: 24)
+                                .padding(.leading, 8)
+                                .padding(.bottom, 0)
+                                .focused($isSearchBarFocused)
+                                .onAppear {
+                                    isSearchBarFocused = false
+                                }
                     
-                    Button{
-                        countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
-                    } label: {
-                        Image(systemName: "xmark.circle")
+                    VStack (alignment: .leading, spacing: 10.0) {
+                        countrySelectionList.countrySlections.count >= 3 ? nil : Divider()
+                        
+                        ForEach(countrySelectionList.countrySlections) { countryselected in
+                            
+                            HStack (spacing: 8.0){
+                                Text(countryselected.name)
+                                    .padding(.leading, 10)
+                                    .padding(.vertical, 6)
+                                
+                                Button{
+                                    countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
+                                } label: {
+                                    Image("CloseCircle")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                }
+                                .padding(.trailing, 10)
+                                .padding(.vertical, 6)
+                            }
+                            .frame(height: 36)
+                            .background(
+                                RoundedRectangle(cornerRadius: 50)
+                                    .fill(Color.yellow20)
+                            )
+                        }
                     }
-                    .padding(.trailing, 8)
+                    
+                    
                 }
-                .frame(height: 32)
-                .background(
-                    RoundedRectangle(cornerRadius: 50)
-                        .fill(Color.orange60)
-                )
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }else {
+                HStack {
+                    HStack (spacing: 8.0) {
+                        ForEach(countrySelectionList.countrySlections) { countryselected in
+                            
+                            HStack (spacing: 8.0){
+                                Text(countryselected.name)
+                                    .padding(.leading, 10)
+                                    .padding(.vertical, 6)
+                                
+                                Button{
+                                    countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
+                                } label: {
+                                    Image("CloseCircle")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                }
+                                .padding(.trailing, 10)
+                                .padding(.vertical, 6)
+                            }
+                            .frame(height: 36)
+                            .background(
+                                RoundedRectangle(cornerRadius: 50)
+                                    .fill(Color.yellow20)
+                            )
+                        }
+                    }
+                    
+                    TextField("",
+                              text: $countryName,
+                              prompt: Text("Search").foregroundColor(.textHelper).font(Font.system(size: 16, weight: .regular)))
+                        .fontTemplate(.pRegular)
+                        .foregroundColor(Color.text)
+                        .focused($isSearchBarFocused)
+                        .onAppear {
+                            isSearchBarFocused = false
+                        }
+                }
             }
             
-            TextField("", text: $countryName, prompt: Text("Search").foregroundColor(.textHelper).font(.pRegular))
-                .font(.pRegular)
-                .foregroundColor(Color.text)
-                .frame(height: 56)
-                .focused($isSearchBarFocused)
-                .onAppear {
-                    isSearchBarFocused = false
-                }
-            
             Image(systemName: "magnifyingglass").foregroundColor(Color.text)
+                .padding(.top, 5)
         }
         .environmentObject(countrySelectionList)
-        .padding(16)
+        .frame(maxWidth: .infinity)
+        .frame(height: countrySelectionList.countrySlections.count >= 1 ? (countrySelectionList.countrySlections.count >= 2 ? 160 : 108) : 56)
+        .padding(.horizontal, 16)
         .background(
-            RoundedRectangle(cornerRadius: 50)
+            RoundedRectangle(cornerRadius: countrySelectionList.countrySlections.count >= 1 ? 26 : 50)
                 .stroke(Color.surface2, lineWidth: 1)
                 .background(
                     RoundedRectangle(cornerRadius: 50)
                         .fill(Color.white)
                 )
-            .frame(height: 56)
         )
     }
     
@@ -154,7 +217,8 @@ struct CountryView: View {
             countrySelectionList.countrySlections.removeAll(where: { $0 == selectedCountry })
         }
         else {
-            countrySelectionList.countrySlections.append(selectedCountry)
+            countrySelectionList.countrySlections.count >= 3 ? nil
+            : countrySelectionList.countrySlections.append(selectedCountry)
         }
         
         //countrySelections.append(selectedCountry)
@@ -167,7 +231,7 @@ struct CountryView: View {
 
 struct CountryView_Previews: PreviewProvider {
     static var previews: some View {
-        CountryView(countryViewModel: CountryViewModel())
+        CountryView(countrySelectionList: CountrySelectionList(countrySlections: [CountryModel]()))
     }
 }
 

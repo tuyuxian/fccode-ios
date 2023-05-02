@@ -12,9 +12,19 @@ struct ViewLink <targetView: View>: View {
     var label: String = "Forgot password"
     
     var body: some View {
-        NavigationLink(destination: view, label: {
+        NavigationLink(destination: view
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(
+                leading:
+                    VStack(alignment: .center) {
+                        NavigationBarBackButton()
+                    }
+                    .frame(height: 40)
+                    .padding(.top, 24)
+                    .padding(.leading, 14)
+            ), label: {
             Text(label)
-                .foregroundColor(Color.orange100)
+                .foregroundColor(Color.gold)
                 .fontTemplate(.pMedium)
                 .frame(maxWidth: .infinity)
         })

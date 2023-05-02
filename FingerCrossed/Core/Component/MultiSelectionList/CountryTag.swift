@@ -11,22 +11,25 @@ struct CountryTag: View {
     var countryModel: CountryModel = CountryModel(name: "Taiwan", code: "TW")
     
     var body: some View {
-        HStack (spacing: 4.0){
+        HStack (spacing: 8.0){
             Text(countryModel.name)
-                .padding(.leading, 8)
+                .padding(.leading, 10)
                 .padding(.vertical, 6)
             
             Button{
                 print("remove")
             } label: {
-                Image(systemName: "xmark.circle")
+                Image("CloseCircle")
+                    .resizable()
+                    .frame(width: 24, height: 24)
             }
-            .padding(.trailing, 8)
+            .padding(.trailing, 10)
+            .padding(.vertical, 8)
         }
         .frame(height: 32)
         .background(
             RoundedRectangle(cornerRadius: 50)
-                .fill(Color.orange60)
+                .fill(Color.yellow20)
         )
     }
 }

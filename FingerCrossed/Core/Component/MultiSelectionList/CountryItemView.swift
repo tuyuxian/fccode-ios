@@ -21,15 +21,18 @@ struct CountryItemView: View {
     var body: some View {
         VStack {
             HStack (spacing: 6.0){
-                Image(isSelected ? "CheckBox" : "UncheckBox")
-                    .resizable()
-                    .frame(width: 24, height: 24, alignment: .center)
-                
                 Text(countryModel.name)
-                    .font(.pMedium)
+                    .fontTemplate(.pMedium)
                     .foregroundColor(Color.text)
                     .padding(.vertical, 2)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                
+                
+                Image(isSelected ? "CheckCircleBased" : "")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundColor(Color.gold)
+                    .frame(width: 24, height: 24, alignment: .center)
                 
             }
             //Divider().background(Color.gray)
@@ -41,7 +44,7 @@ struct CountryItemView: View {
 
 struct CountryItemView_Previews: PreviewProvider {
     static var previews: some View {
-        CountryItemView(countryModel: CountryModel(name: "Taiwan", code: "TW"), isSelected: false)
+        CountryItemView(countryModel: CountryModel(name: "Taiwan", code: "TW"), isSelected: true)
     }
 }
 

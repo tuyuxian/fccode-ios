@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct SignUpAvatarView: View {
-    
-    @State var selectedImage: Image?
+    @ObservedObject var user: EntryViewModel
+    @State var selectedImage: UIImage?
+    @State var selectedImageData: Data? = nil
     @State var showImagePicker: Bool = false
+    @State var showCamera: Bool = false
     
     var body: some View {
         ZStack {
@@ -19,13 +21,17 @@ struct SignUpAvatarView: View {
             
             VStack {
                 EntryLogo()
+                    .padding(.top, 5)
+                    .padding(.bottom, 55)
                 
-                Spacer()
+                SignUpProcessBar(status: 6)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 30)
                 
                 HStack {
                     Text("Upload your...")
-                        .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.textHelper)
+                        .fontTemplate(.h3Bold)
+                        .foregroundColor(Color.text)
                     
                     Spacer()
                 }
@@ -34,18 +40,18 @@ struct SignUpAvatarView: View {
                 HStack {
                     Text("Profile Picture")
                         .foregroundColor(.text)
-                    .fontTemplate(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }
                 .padding(.horizontal, 24)
-                .padding(.vertical, 12)
+                .padding(.top, 4)
                 
                 
                 ZStack (alignment: .bottom){
                     
                     if ((self.selectedImage) != nil) {
-                        self.selectedImage?
+                        Image(uiImage: self.selectedImage!)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 192, height: 192)
@@ -54,8 +60,7 @@ struct SignUpAvatarView: View {
                                 Circle()
                                     .stroke(Color.white, lineWidth: 12)
                                     .frame(width: 192)
-                            )
-                    }
+                            )                    }
                     else {
                         Image("ProfilePicture")
                             .resizable()
@@ -68,20 +73,26 @@ struct SignUpAvatarView: View {
                     HStack (spacing: 112){
                         Button {
                             print("camera")
+                            showCamera.toggle()
                         } label: {
-                            Image("CameraWhite")
+                            Image("CameraBased")
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .foregroundColor(Color.white)
                                 .frame(width: 36, height: 36)
                         }
                         .buttonStyle(IconButtonWithBackground())
                         
                         Button {
                             showImagePicker.toggle()
+                            print("\(user.username)")
                         } label: {
-                            Image("PictureWhite")
+                            Image("PictureBased")
+                                .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .foregroundColor(Color.white)
                                 .frame(width: 36, height: 36)
                         }
                         .buttonStyle(IconButtonWithBackground())
@@ -89,32 +100,61 @@ struct SignUpAvatarView: View {
                     .padding(.bottom, 6)
                 }
                 .padding(.vertical, 47)
+                .fullScreenCover(isPresented: $showCamera, content: {
+                    ImagePicker(sourceType: .camera, selectedImage: self.$selectedImage, imageData: self.$selectedImageData)
+                        .edgesIgnoringSafeArea(.all)
+                })
                 .sheet(isPresented: $showImagePicker, content: {
-                    ImagePicker(image: self.$selectedImage)
+                    ImagePicker(sourceType: .photoLibrary, selectedImage: self.$selectedImage, imageData: self.$selectedImageData)
                 })
                 
                 Spacer()
-                    .frame(height: 82)
                 
                 Button {
-                    print("Continue")
+                    self.selectedImage != nil ? user.isQualified = true : nil
                 } label: {
-                    Text("Continue")
+                    Text(self.selectedImage != nil ? "Done!": "Continue")
                 }
-                .buttonStyle(PrimaryButton())
+                .buttonStyle(PrimaryButton(labelColor: self.selectedImage != nil ? Color.text : Color.white, buttonColor: self.selectedImage != nil ? Color.yellow100 : Color.surface2))
                 .padding(.horizontal, 24)
+                .padding(.bottom, 50)
                 
-                Spacer()
-                
+//                NavigationLink (destination: PairingView(candidateList: [CandidateModel]()) //TODO(Lawrence): change to pairing instruction view
+//                    .navigationBarBackButtonHidden(true)
+//                    .navigationBarItems(
+//                        leading:
+//                            VStack(alignment: .center) {
+//                                NavigationBarBackButton()
+//                            }
+//                            .frame(height: 40)
+//                            .padding(.top, 24)
+//                            .padding(.leading, 14)
+//                    )) {
+//                        Text(self.selectedImage != nil ? "Done!": "Continue")
+//                }
+//                .buttonStyle(PrimaryButton())
+//                .padding(.horizontal, 24)
+//                .padding(.bottom, 50)
             }
-            
-            
+            .navigationDestination(isPresented: $user.isQualified) {
+                PairingView(candidateList: [CandidateModel]()) //TODO(Lawrence): change to pairing instruction view
+            }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(
+                leading:
+                    VStack(alignment: .center) {
+                        NavigationBarBackButton()
+                    }
+                    .frame(height: 40)
+                    .padding(.top, 24)
+                    .padding(.leading, 14))
         }
+
     }
 }
 
 struct SignUpAvatarView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpAvatarView()
+        SignUpAvatarView(user: EntryViewModel())
     }
 }

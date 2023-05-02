@@ -11,13 +11,14 @@ struct BasicInfoNameView: View {
     
     @State var name: String = "Test"
     @State var remainCharacters: Int = 24
+    @State var isQualified = false
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Basic Info", childTitle: "Name") {
             Box {
                 VStack(alignment: .trailing, spacing: 6.0) {
                     // input bar
-                    PrimaryInputBar(isDisable: false, hasButton: false) // TODO(Sam): replace the hint with name
+                    PrimaryInputBar(value: $name, isDisable: false, hasButton: false, isQualified: $isQualified) // TODO(Sam): replace the hint with name
                     // characters remain
                     Text("\(30 - remainCharacters)/30")
                         .fontTemplate(.captionRegular)

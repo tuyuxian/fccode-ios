@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct ResetPasswordView: View {
+    @ObservedObject var user: EntryViewModel
+    @State private var showEntryView: Bool = false
+    @State var newPassword: String = ""
+    @State var newPasswordConfirmed: String = ""
+    
+    
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
@@ -16,21 +22,21 @@ struct ResetPasswordView: View {
                 EntryLogo()
                 
                 Spacer()
+                    .frame(height: 78)
                 
                 HStack {
                     Text("Reset\nPassword")
                         .foregroundColor(.text)
                         .fontTemplate(.bigBoldTitle)
-                    .frame(width: 183)
                     
                     Spacer()
                 }
                 .padding(.horizontal, 24)
                 
                 VStack (spacing: 20){
-                    PrimaryInputBar(hint: "Please enter new password", isDisable: false, hasButton: false)
+                    PrimaryInputBar(value: $newPassword, hint: "Please enter new password", isDisable: false, hasButton: false, isPassword: true, isQualified: $user.isQualified)
                     
-                    PrimaryInputBar(hint: "Confirm password", isDisable: false, hasButton: false)
+                    PrimaryInputBar(value: $newPasswordConfirmed, hint: "Confirm new password", isDisable: false, hasButton: false, isPassword: true, isQualified: $user.isQualified)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 30)
@@ -52,27 +58,29 @@ struct ResetPasswordView: View {
                 }
                 
                 Spacer()
-                    .frame(height: 122)
                 
                 
-                Button {
-                    print("email check")
-                } label: {
+                Button(action: {
+                    showEntryView = true
+                }, label: {
                     Text("Done")
-                }
+                })
                 .buttonStyle(PrimaryButton())
                 .padding(.horizontal, 24)
-                
-                Spacer()
+                .padding(.bottom, 50)
+        
             }
         }
         .preferredColorScheme(.light)
+        .fullScreenCover(isPresented: $showEntryView) {
+            EntryView()
+        }
     }
     
 }
 
 struct ResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ResetPasswordView()
+        ResetPasswordView(user: EntryViewModel())
     }
 }

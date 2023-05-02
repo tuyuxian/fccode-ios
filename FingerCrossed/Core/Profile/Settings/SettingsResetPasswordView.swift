@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SettingsResetPasswordView: View {
+    @State var isQualified = false
+    @State var newPassword: String = ""
+    @State var newPasswordConfirmed: String = ""
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Settings") {
@@ -16,16 +19,16 @@ struct SettingsResetPasswordView: View {
                     
                     VStack(alignment: .leading, spacing: 6.0){
                         Text("New Password")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
-                        PrimaryInputBar(isDisable: false, hasButton: true)
+                        PrimaryInputBar(value: $newPassword, isDisable: false, hasButton: true, isQualified: $isQualified)
                     }
                     
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("Comfirm Password")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
-                        PrimaryInputBar(isDisable: false, hasButton: true)
+                        PrimaryInputBar(value: $newPasswordConfirmed, isDisable: false, hasButton: true, isQualified: $isQualified)
                     }
             
                 }

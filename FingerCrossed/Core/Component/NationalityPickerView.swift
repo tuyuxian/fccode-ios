@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct NationalityPickerView: View {
-    @StateObject var countryViewModel = CountryViewModel()
-    @StateObject var countrySelectionList: CountrySelectionList
+    @State var countryViewModel: CountryViewModel = CountryViewModel()
+    @ObservedObject var countrySelectionList: CountrySelectionList
     @State var isSheetPresented = false
+    @State var countryName = ""
     
     
     var body: some View {
@@ -26,29 +27,31 @@ struct NationalityPickerView: View {
                 .padding(.horizontal, 16)
             
             if countrySelectionList.countrySlections.count != 0 {
-                ForEach(countrySelectionList.countrySlections) { countryselected in
-                    HStack (spacing: 4.0){
-                        Text(countryselected.name)
-                            .padding(.leading, 8)
-                            .padding(.vertical, 6)
-
-                        Button{
-                            countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
-                        } label: {
-                            Image(systemName: "xmark.circle")
-                        }
-                        .padding(.trailing, 8)
-                    }
-                    .frame(height: 32)
-                    .background(
-                        RoundedRectangle(cornerRadius: 50)
-                            .fill(Color.orange)
-                    )
-                }
+                CountrySearchBar(countrySelectionList: countrySelectionList, countryName: $countryName, isDisplay: true)
+                
+//                ForEach(countrySelectionList.countrySlections) { countryselected in
+//                    HStack (spacing: 4.0){
+//                        Text(countryselected.name)
+//                            .padding(.leading, 8)
+//                            .padding(.vertical, 6)
+//
+//                        Button{
+//                            countrySelectionList.countrySlections.removeAll(where: { $0 == countryselected })
+//                        } label: {
+//                            Image(systemName: "xmark.circle")
+//                        }
+//                        .padding(.trailing, 8)
+//                    }
+//                    .frame(height: 32)
+//                    .background(
+//                        RoundedRectangle(cornerRadius: 50)
+//                            .fill(Color.orange)
+//                    )
+//                }
             }else {
                 Text("Search")
                     .foregroundColor(Color.textHelper)
-                    .font(.pRegular)
+                    .fontTemplate(.pRegular)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .frame(height: 56)
@@ -66,14 +69,14 @@ struct NationalityPickerView: View {
             print("Sheet dismissed")
             print(self.countrySelectionList.countrySlections.count)
         } content: {
-            CountryView(countryViewModel: countryViewModel)
-                .presentationDetents([.fraction(0.85)])
+            CountryView(countrySelectionList: countrySelectionList)
+                .presentationDetents([.large])
         }
     }
 }
 
 struct NationalityPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        NationalityPickerView(countryViewModel: CountryViewModel(), countrySelectionList: CountrySelectionList(countrySlections: [CountryModel]()))
+        NationalityPickerView(countrySelectionList: CountrySelectionList(countrySlections: [CountryModel]()))
     }
 }

@@ -13,6 +13,7 @@ struct FingerCrossedApp: App {
         WindowGroup {
             TabBar()
                 .environment(\.colorScheme, .light)
+            //EntryView()
         }
     }
 }

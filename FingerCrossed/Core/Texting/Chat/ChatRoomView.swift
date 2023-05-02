@@ -87,6 +87,7 @@ struct ChatRoomView: View {
             isRead: false
         ),
     ]
+    @EnvironmentObject private var vm: TabViewModel
     
     var body: some View {
         Box {
@@ -148,18 +149,26 @@ struct ChatRoomView: View {
         )
         .padding(.top, 19)
         .background(Color.background)
+        .onAppear(perform: {
+            vm.showTab = false
+        })
+        .onDisappear(perform: {
+            withAnimation(.easeInOut(duration: 0.1)) {
+                vm.showTab = true
+            }
+        })
     }
 }
 
-struct ChatRoomView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatRoomView(
-            username: .constant("Kelly"),
-            avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
-            isActive: .constant(true)
-        )
-    }
-}
+//struct ChatRoomView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatRoomView(
+//            username: .constant("Kelly"),
+//            avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
+//            isActive: .constant(true)
+//        )
+//    }
+//}
 
 private struct BotBanner: View {
     var body: some View {

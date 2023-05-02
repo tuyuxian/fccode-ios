@@ -23,39 +23,37 @@ struct ContainerWithHeaderView<Content: View>: View {
     
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                content
-            }
-            .navigationBarItems(
-                leading:
-                    HStack(spacing: 0) {
-                        NavigationBarBackButton()
-                            .padding(.top, 12)
-                        NavigationHeader(
-                            parentTitle: parentTitle,
-                            childTitle: childTitle
-                        )
-                    }
-            )
-            .navigationBarItems(
-                trailing:
-                    showSaveButton
-                    ? VStack(alignment: .center) {
-                        HeaderButton(
-                            name: $iconButtonName,
-                            action: action
-                        )
-                    }
-                    .frame(height: 40)
-                    .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 8))
-                    : nil
-            )
-            .padding(.top, 19)
-            .background(Color.background)
-            .edgesIgnoringSafeArea(.bottom)
-            //.background(Color.background)
+        ZStack {
+            content
         }
+        .navigationBarItems(
+            leading:
+                HStack(spacing: 0) {
+                    NavigationBarBackButton()
+                        .padding(.top, 12)
+                    NavigationHeader(
+                        parentTitle: parentTitle,
+                        childTitle: childTitle
+                    )
+                }
+        )
+        .navigationBarItems(
+            trailing:
+                showSaveButton
+                ? VStack(alignment: .center) {
+                    HeaderButton(
+                        name: $iconButtonName,
+                        action: action
+                    )
+                }
+                .frame(height: 40)
+                .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 8))
+                : nil
+        )
+        .padding(.top, 19)
+        .background(Color.background)
+        .edgesIgnoringSafeArea(.bottom)
+        //.background(Color.background)
     }
 }
 

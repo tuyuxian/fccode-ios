@@ -12,7 +12,7 @@ struct TextList: View {
     @Binding var messageList: [Message]
     
     @Binding var isEditing: Bool
-    
+        
     var body: some View {
         List {
             ForEach(

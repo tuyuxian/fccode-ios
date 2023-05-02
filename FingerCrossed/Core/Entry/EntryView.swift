@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct EntryView: View {
     var body: some View {
@@ -55,17 +56,41 @@ struct EntryView: View {
                         Label("Continue with Google", image: "Google")
                     }
                     .buttonStyle(SSOButton(labelColor: Color.text, buttonColor: Color.white))
-                    .padding(.horizontal, 24)
-                    
-                    Button {
-                        print("yeah")
-                    } label: {
-                        Label("Continue with Apple", image: "Apple")
+//                    .padding(.horizontal, 24)
+//                    GoogleSignInButton(action: {})
+//                        .frame(height: 52, alignment: .center)
+//                        .buttonStyle(PlainButtonStyle())
+                    SignInWithAppleButton(.continue) { request in
+                        request.requestedScopes = [.email]
+                    } onCompletion: { result in
+                        switch result {
+                            case .success(let authResults):
+                                print("Authorisation successful")
+                                switch authResults.credential {
+                                    case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                                            guard let appleIDToken = appleIDCredential.identityToken else {
+                                                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+                                            }
+                                            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                                              print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                                              return
+                                            }
+                                    print("---\(idTokenString)")
+                                    print("---\(String(describing: appleIDCredential.email))")
+                                default:
+                                    break
+                                }
+                            case .failure(let error):
+                                print("Authorisation failed: \(error.localizedDescription)")
+                        }
                     }
-                    .buttonStyle(SSOButton(labelColor: Color.white, buttonColor: Color.text))
-                    .padding(.horizontal, 24)
+                    .signInWithAppleButtonStyle(.black)
+                    .frame(height: 52)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(50)
                 }
-                
+                .padding(.horizontal, 24)
+
                 Spacer()
                 
                 

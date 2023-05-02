@@ -10,6 +10,7 @@ import SwiftUI
 struct TabBar: View {
     
     @State var currentTab = "Profile"
+    @StateObject var vm = TabViewModel()
     
     init() {
         UITabBar.appearance().isHidden = true
@@ -25,14 +26,20 @@ struct TabBar: View {
                 ProfileView()
                     .tag("Profile")
             }
-            HStack(spacing: 0) {
-                ForEach(["Chat", "Pairing", "Profile"], id: \.self) { icon in TabBarButton(icon: icon, currentTab: $currentTab)
+            
+            vm.showTab
+            ? HStack(spacing: 0) {
+                    ForEach(["Chat", "Pairing", "Profile"], id: \.self) { icon in TabBarButton(icon: icon, currentTab: $currentTab)
+                    }
                 }
-            }
-            .padding(.top, 10)
-            .overlay(Divider().foregroundColor(Color.surface2), alignment: .top)
-            .background(currentTab == "Pairing" ? Color.surface4 : Color.surface3)
+                .padding(.top, 10)
+                .overlay(Divider().foregroundColor(Color.surface2), alignment: .top)
+                .background(currentTab == "Pairing" ? Color.surface4 : Color.surface3)
+                .transition(.customTransition)
+            : nil
+            
         }
+        .environmentObject(vm)
     }
 }
 
@@ -59,5 +66,21 @@ struct TabBarButton: View {
             .foregroundColor(currentTab == icon ? Color.orange100 : Color.surface2)
             .frame(maxWidth: .infinity)
         }
+    }
+}
+
+
+class TabViewModel: ObservableObject {
+    @Published var showTab: Bool = true
+}
+
+
+extension AnyTransition {
+    static var customTransition: AnyTransition {
+        let insertion = AnyTransition.move(edge: .bottom)
+            .combined(with: .opacity)
+        let removal = AnyTransition.move(edge: .bottom)
+            .combined(with: .opacity)
+        return .asymmetric(insertion: insertion, removal: removal)
     }
 }

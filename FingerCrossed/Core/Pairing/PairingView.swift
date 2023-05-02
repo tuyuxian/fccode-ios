@@ -13,6 +13,8 @@ struct PairingView: View {
     @State var currentCandidate = 0
     @State var startPos : CGPoint = .zero
     @State var isSwipping = true
+    @State var isLiked = false
+    @State var isDisLiked = false
     
     var body: some View {
         VStack {
@@ -20,11 +22,16 @@ struct PairingView: View {
                 TabView (selection: $currentCandidate) {
                     ForEach(candidateList) { list in
 
-                        CandidateView(candidateModel: list, lifePhotoList: list.LifePhotoList)
+                        CandidateView(candidateModel: list, lifePhotoList: list.LifePhotoList, isLiked: $isLiked, isDisliked: $isDisLiked)
                             .rotationEffect(.init(degrees: -90))
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .ignoresSafeArea(.all, edges: .top)
                             .tag(candidateList.firstIndex(where: { $0 == list })!)
+                            .onDisappear{
+                                isLiked = false
+                                isDisLiked = false
+                            }
+                            
 //                            .onAppear {
 //                                if currentCandidate < candidateList.firstIndex(where: { $0 == list })! {
 //                                    candidateList.remove(at: currentCandidate)
@@ -65,11 +72,30 @@ struct PairingView: View {
 //                        }
 //                     )
                 .onTapGesture (count: 2){
-                    candidateList.remove(at: currentCandidate)
+//                    candidateList.remove(at: currentCandidate) // remove former candidate
                     withAnimation{
                         currentCandidate += 1
                     }
                 }
+                .onChange(of: isLiked, perform: { newValue in
+                    print("Like: \(newValue)")
+                    isLiked = newValue
+                    if newValue {
+                        print("\(currentCandidate)")
+                        withAnimation{
+                            currentCandidate += 1
+                        }
+                    }
+                })
+                .onChange(of: isDisLiked, perform: { newValue in
+                    print("DisLike: \(newValue)")
+                    isDisLiked = newValue
+                    if newValue {
+                        withAnimation{
+                            currentCandidate += 1
+                        }
+                    }
+                })
             }
             .ignoresSafeArea(.all, edges: .top)
         }

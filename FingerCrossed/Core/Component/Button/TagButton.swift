@@ -10,7 +10,7 @@ import SwiftUI
 struct TagButton: View {
     @State var label: String
     @Binding var tag: Int
-    @Binding var isSelected: Int?
+    @Binding var isSelected: Int
     
     var body: some View {
         Button {

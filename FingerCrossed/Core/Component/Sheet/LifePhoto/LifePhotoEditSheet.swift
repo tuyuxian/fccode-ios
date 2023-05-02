@@ -10,8 +10,10 @@ import SwiftUI
 struct LifePhotoEditSheet: View {
     @Environment(\.presentationMode) private var presentationMode
 
-    @State private var selectedTag: Int?
+    @State private var selectedTag: Int = 2
     @ObservedObject var config: LifePhotoViewModel
+    @State var uiImage: UIImage = UIImage()
+    @State var newUIImage: UIImage = UIImage()
 
     var body: some View {
         ScrollViewReader { (proxy: ScrollViewProxy) in
@@ -25,9 +27,11 @@ struct LifePhotoEditSheet: View {
                         .padding(.top, 30)
                         .id(2)
                     
+                    
+                    
                     VStack {
                     }
-                    .frame(width: 342, height: 342)
+                    .frame(height: 342)
                     .background(
                         AsyncImage(
                             url: URL(string: config.selectedLifePhoto?.photoUrl ?? ""),
@@ -39,8 +43,20 @@ struct LifePhotoEditSheet: View {
                             case .success(let image):
                                 image
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: imageWidth(tag: selectedTag), height: imageHeight(tag: selectedTag))
                                     .scaleEffect(config.imageScale)
+                                    .cornerRadius(6)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .strokeBorder(Color.orange100, lineWidth: 1)
+                                    )
+//                                    .onAppear{
+//                                        uiImage = UIImage(data: getImageData(url: config.selectedLifePhoto?.photoUrl ?? ""))!
+//                                    }
+                                    .onChange(of: uiImage, perform: { newImage in
+                                        newUIImage = UIImage(data: newImage.jpegData(compressionQuality: 0.95)!)!
+                                    })
                                     .gesture(
                                         MagnificationGesture().onChanged({(value) in
                                             config.imageScale = value
@@ -55,7 +71,7 @@ struct LifePhotoEditSheet: View {
                             }
                         }
                     )
-                    .clipped()
+//                    .clipped()
                     
                     HStack(spacing: 12) {
                         TagButton(label: "16:9", tag: .constant(0), isSelected: $selectedTag)
@@ -82,6 +98,7 @@ struct LifePhotoEditSheet: View {
                     
                     Button {
                         presentationMode.wrappedValue.dismiss()
+                        
                     } label: {
                         Text("Save")
                     }
@@ -105,6 +122,56 @@ struct LifePhotoEditSheet: View {
             }
         }
 
+    }
+    
+//    func getImageData(url: String) -> Data {
+//        var loader: ImageLoader
+//        var image: UIImage
+//
+//        loader = ImageLoader(url: URL(string: url)!)
+//        if loader.image != nil {
+//            image = loader.image!
+//            return image.jpegData(compressionQuality: 0.95)!
+//        }
+//        return Data()
+//    }
+    
+    func imageHeight(tag: Int) -> (CGFloat) {
+        switch tag {
+        case 0:
+            return 192.375
+            
+        case 1:
+            return 342
+            
+        case 2:
+            return 256
+            
+        case 3:
+            return 342
+            
+        default:
+            return 256
+        }
+    }
+    
+    func imageWidth(tag: Int) -> (CGFloat) {
+        switch tag {
+        case 0:
+            return 342
+            
+        case 1:
+            return 192.375
+            
+        case 2:
+            return 342
+            
+        case 3:
+            return 256
+            
+        default:
+            return 342
+        }
     }
 }
 

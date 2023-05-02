@@ -9,14 +9,16 @@ import SwiftUI
 
 struct EntryLogo: View {
     var body: some View {
-        VStack (spacing: 4.0) {
-            Image("EntryLogo")
+        HStack (spacing: 6.0) {
+            Image("Logo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 56, height: 41)
-            Text("Finger Crossed")
-                .fontTemplate(.noteMedium)
-                .foregroundColor(Color.text)
+                .frame(width: 45, height: 45)
+            
+            Image("FCVertical")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 76.18, height: 38)
         }
     }
 }

@@ -7,13 +7,14 @@
 
 import SwiftUI
 
-@main
+ @main
 struct FingerCrossedApp: App {
     var body: some Scene {
+        
         WindowGroup {
-            TabBar()
-                .environment(\.colorScheme, .light)
-            //EntryView()
+            EntryView ()
+            //TabBar()
         }
+        
     }
 }

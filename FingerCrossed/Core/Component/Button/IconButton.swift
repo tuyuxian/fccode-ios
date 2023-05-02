@@ -10,7 +10,7 @@ import SwiftUI
 
 struct IconButtonWithBackground: ButtonStyle {
     var size: CGFloat = 54
-    var buttonColor: Color = Color.orange100
+    var buttonColor: Color = Color.yellow100
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

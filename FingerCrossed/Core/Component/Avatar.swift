@@ -39,7 +39,7 @@ struct Avatar: View {
             
             isActive
             ? Circle()
-                .fill(Color.orange100)
+                .fill(Color.yellow100)
                 .frame(width: 8, height: 8)
                 .overlay(
                     Circle()

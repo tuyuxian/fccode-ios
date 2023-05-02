@@ -63,7 +63,7 @@ struct TabBarButton: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 35, height: 35)
             }
-            .foregroundColor(currentTab == icon ? Color.orange100 : Color.surface2)
+            .foregroundColor(currentTab == icon ? Color.yellow100 : Color.surface2)
             .frame(maxWidth: .infinity)
         }
     }

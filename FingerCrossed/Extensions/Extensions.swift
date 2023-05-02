@@ -34,7 +34,7 @@ extension Color {
 }
 
 enum AppFonts {
-    case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h4Medium, h4Regular, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
+    case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h4Medium, h4Regular, pSemibold, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
 }
 
 struct Template {
@@ -66,7 +66,10 @@ struct Template {
             
         case .h4Regular:
             return FontTemplate(font: Font.system(size: 14), weight: .regular, size: 14, lineHeight: 20)
-
+        
+        case .pSemibold:
+            return FontTemplate(font: Font.system(size: 16), weight: .semibold, size: 16, lineHeight: 24)
+            
         case .pMedium:
             return FontTemplate(font: Font.system(size: 16), weight: .medium, size: 16, lineHeight: 20)
             

@@ -90,6 +90,8 @@ struct BasicInfoContent: View {
     @State var basicInfoOptions: [ChildView]
     @State private var showAlert: Bool = false
     @State private var showSheet: Bool = false
+    @State private var showBanner: Bool = false
+    @State var bannerData: BannerModifier.BannerData = BannerModifier.BannerData(content: "We've sent a reset link to your email!", type: .Info)
 
     
     var body: some View {
@@ -126,7 +128,7 @@ struct BasicInfoContent: View {
                                         }
                                     }
                                 } else {
-                                    UneditableRow(showAlert: $showAlert) {
+                                    UneditableRow(showAlert: $showAlert, showBanner: $showBanner) {
                                         ListRow(
                                             label: childView.label,
                                             icon: childView.icon
@@ -143,6 +145,7 @@ struct BasicInfoContent: View {
             .scrollIndicators(.hidden)
             .padding(.top, 38) // 54 - 16 (Life photos)
         }
+        .banner(data: $bannerData, show: $showBanner)
     }
 }
 
@@ -150,6 +153,8 @@ struct BasicInfoContent: View {
 struct UneditableRow<Content: View>: View {
     
     @Binding var showAlert: Bool
+    
+    @Binding var showBanner: Bool
     
     @ViewBuilder var row: Content
     
@@ -166,7 +171,7 @@ struct UneditableRow<Content: View>: View {
                 message: Text("To provide a better overall experience, users are only allowed to change this information once."),
                 primaryButton: .destructive(
                     Text("Yes")) {
-                        // TODO(Sam): add toast
+                        showBanner = true
                     },
                 secondaryButton: .cancel(Text("No"))
             )

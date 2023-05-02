@@ -8,35 +8,65 @@
 import SwiftUI
 
 struct SettingsResetPasswordView: View {
+<<<<<<< HEAD
+    @State var isQualified = false
+    @State var newPassword: String = ""
+    @State var newPasswordConfirmed: String = ""
+=======
+    @State var hasPassword: Bool = true
+>>>>>>> release
     
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Profile", childTitle: "Settings") {
+        ContainerWithHeaderView(parentTitle: "Settings", childTitle: "Password") {
             Box {
                 VStack(alignment: .leading, spacing: 20.0) {
                     
+<<<<<<< HEAD
                     VStack(alignment: .leading, spacing: 6.0){
                         Text("New Password")
-                            .font(.h3Medium)
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
-                        PrimaryInputBar(isDisable: false, hasButton: true)
+                        PrimaryInputBar(value: $newPassword, isDisable: false, hasButton: true, isQualified: $isQualified)
+=======
+                    hasPassword
+                    ? VStack(alignment: .leading, spacing: 6.0) {
+                        Text("Current Password")
+                            .fontTemplate(.pMedium)
+                        .foregroundColor(.text)
+                        PrimaryInputBar(hint: "Please enter your password", isDisable: false, hasButton: false)
+                    }
+                    : nil
+                    
+                    VStack(alignment: .leading, spacing: 6.0) {
+                        Text("New Password")
+                            .fontTemplate(.pMedium)
+                        .foregroundColor(.text)
+                        PrimaryInputBar(hint: "Please enter new password", isDisable: false, hasButton: false)
+>>>>>>> release
                     }
                     
                     VStack(alignment: .leading, spacing: 6.0) {
                         Text("Comfirm Password")
-                            .font(.h3Medium)
+<<<<<<< HEAD
+                            .fontTemplate(.h3Medium)
                         .foregroundColor(.text)
-                        PrimaryInputBar(isDisable: false, hasButton: true)
+                        PrimaryInputBar(value: $newPasswordConfirmed, isDisable: false, hasButton: true, isQualified: $isQualified)
+=======
+                            .fontTemplate(.pMedium)
+                        .foregroundColor(.text)
+                        PrimaryInputBar(hint: "Confirm new password", isDisable: false, hasButton: false)
+>>>>>>> release
                     }
             
                 }
                 .padding(EdgeInsets(top: 30, leading: 24, bottom: 0, trailing: 24))
                 
                 HStack {
-                    VStack (alignment: .leading, spacing: 6.0){
-                        InputHelper()
-                        InputHelper(label: "At least one upper & one lowercase")
-                        InputHelper(label: "At least one number & symbol")
-                        InputHelper(label: "Match with password")
+                    VStack (alignment: .leading, spacing: 6.0) {
+                        InputHelper(isSatisfied: .constant(true), label: "At least 8 characters")
+                        InputHelper(isSatisfied: .constant(true), label: "At least one upper & one lowercase")
+                        InputHelper(isSatisfied: .constant(true), label: "At least one number & one symbol")
+                        InputHelper(isSatisfied: .constant(false), label: "Match with password")
                     }
                     .padding(.horizontal, 24) //check position
                     
@@ -44,9 +74,7 @@ struct SettingsResetPasswordView: View {
                 }
                 .padding(.vertical, 10)
                 
-                
                 Spacer()
-                TabBar()
             }
         }
     }

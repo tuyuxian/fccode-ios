@@ -9,7 +9,8 @@ import SwiftUI
 
 struct HeaderButton: View {
     
-    @State var name: String = ""
+    @Binding var name: String
+    
     var action: () -> Void = {}
     
     var body: some View {
@@ -17,13 +18,13 @@ struct HeaderButton: View {
             action()
         }
         .fontTemplate(.pMedium)
-        .foregroundColor(Color.orange100)
+        .foregroundColor(Color.gold)
     }
 }
 
 struct HeaderButton_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderButton(name: "Demo")
+        HeaderButton(name: .constant("Demo"))
     }
 }
 

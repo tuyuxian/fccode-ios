@@ -19,45 +19,20 @@ extension Color {
     static let surface2 = Color("Surface2")
     static let surface3 = Color("Surface3")
     static let surface4 = Color("Surface4")
-    static let description = Color("Description")
     
     static let facebook = Color("FB")
     static let google = Color("Google")
     
-    static let blue20 = Color("Blue20")
-    static let blue100 = Color("Blue100")
-    static let orange60 = Color("Orange60")
-    static let orange100 = Color("Orange100")
+    static let blue = Color("Blue")
+    static let peach100 = Color("Peach100")
+    static let gold = Color("Gold")
     static let pink100 = Color("Pink100")
     static let yellow20 = Color("Yellow20")
     static let yellow100 = Color("Yellow100")
 }
 
-//extension Font {
-//    
-//    static let bigBoldTitle = Font.custom("AzoSans-Bold", size: 40)
-//    
-//    static let h1Medium = Font.custom("AzoSans-Medium", size: 28)
-//    static let h1Regular = Font.custom("AzoSans-Regular", size: 24)
-//    
-//    static let h2Medium = Font.custom("AzoSans-Medium", size: 24)
-//    static let h2Regular = Font.custom("AzoSans-Regular", size: 20)
-//    
-//    static let h3Medium = Font.custom("AzoSans-Medium", size: 18)
-//    static let h3Regular = Font.custom("AzoSans-Regular", size: 18)
-//    
-//    static let pMedium = Font.custom("AzoSans-Medium", size: 14)
-//    static let pRegular = Font.custom("AzoSans-Regular", size: 14)
-//    
-//    static let noteMedium = Font.custom("AzoSans-Medium", size: 12)
-//    static let noteRegular = Font.custom("AzoSans-Regular", size: 12)
-//    
-//    static let captionMedium = Font.custom("AzoSans-Medium", size: 10)
-//    static let captionRegular = Font.custom("AzoSans-Regular", size: 10)
-//    
-//}
 enum AppFonts {
-    case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h4Medium, h4Regular, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
+    case bigBoldTitle, h1Medium, h1Regular, h2Medium, h2Regular, h3Medium, h3Regular, h3Bold, h4Medium, h4Regular, pSemibold, pMedium, pRegular, captionMedium, captionRegular, noteMedium, noteRegular
 }
 
 struct Template {
@@ -83,13 +58,19 @@ struct Template {
             
         case .h3Regular:
             return FontTemplate(font: Font.system(size: 18), weight: .regular, size: 18, lineHeight: 24)
+            
+        case .h3Bold:
+            return FontTemplate(font: Font.system(size: 18), weight: .bold, size: 18, lineHeight: 24)
 
         case .h4Medium:
             return FontTemplate(font: Font.system(size: 14), weight: .medium, size: 14, lineHeight: 20)
             
         case .h4Regular:
             return FontTemplate(font: Font.system(size: 14), weight: .regular, size: 14, lineHeight: 20)
-
+        
+        case .pSemibold:
+            return FontTemplate(font: Font.system(size: 16), weight: .semibold, size: 16, lineHeight: 24)
+            
         case .pMedium:
             return FontTemplate(font: Font.system(size: 16), weight: .medium, size: 16, lineHeight: 20)
             
@@ -125,6 +106,24 @@ extension View {
     func fontTemplate(_ template: AppFonts) -> some View {
             self.fontTemplate(Template.get(font: template))
         }
+    
+    func hideKeyboard() {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    
+    @ViewBuilder func applyTextColor(_ color: Color) -> some View {
+        if UITraitCollection.current.userInterfaceStyle == .light {
+          self.colorInvert().colorMultiply(color)
+        } else {
+          self.colorMultiply(color)
+        }
+      }
+    
+    func disableSwipeBack() -> some View {
+        self.background(
+            DisableSwipeBackView()
+        )
+    }
 }
 
 // Custom RoundedCorner shape used for cornerRadius extension above
@@ -145,7 +144,16 @@ extension UINavigationController: UIGestureRecognizerDelegate {
         interactivePopGestureRecognizer?.delegate = self
     }
 
+    var rootViewController: UIViewController? {
+        print("root: \(String(describing: viewControllers.first))")
+        return viewControllers.first
+    }
+
+
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        print("entry: \(String(describing: UIHostingController(rootView: EntryView())))")
+        print("view: \(String(describing: viewControllers[0]))")
+        
         return viewControllers.count > 1
     }
 
@@ -153,7 +161,7 @@ extension UINavigationController: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         true
     }
-    
+
 }
 
 // On tap gesture to close the keyboard
@@ -162,3 +170,4 @@ extension UIApplication {
         sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+

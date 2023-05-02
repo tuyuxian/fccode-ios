@@ -18,12 +18,10 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>AzoSans-Bold.ttf</string>
-		<string>AzoSans-Medium.ttf</string>
-		<string>AzoSans-Regular.ttf</string>
-	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Acess to the camera to take photo</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses your location to personalize your app experience.</string>
 	<key>UILaunchScreen</key>
 	<array>
 		<dict>
@@ -31,13 +29,13 @@
 			<array/>
 		</dict>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations~iphone</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
 </dict>
 </plist>

@@ -15,8 +15,9 @@ targets:
         UISupportedInterfaceOrientations~iphone:
           [UIInterfaceOrientationPortrait]
         UILaunchScreen: [UILaunchScreen: []]
-        UIAppFonts:
-          ["AzoSans-Bold.ttf", "AzoSans-Medium.ttf", "AzoSans-Regular.ttf"]
         UIStatusBarStyle: "UIStatusBarStyleLightContent"
+        UIViewControllerBasedStatusBarAppearance: true
+        UIRequiresFullScreen: true
+
     sources:
       - FingerCrossed

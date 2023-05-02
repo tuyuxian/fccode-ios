@@ -98,7 +98,7 @@ private struct UnreadHint: View {
     var body: some View {
         if (count > 99) {
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.orange100)
+                .fill(Color.gold)
                 .frame(width: 26, height: 18, alignment: .center)
                 .overlay(
                     Text("99+")
@@ -111,7 +111,7 @@ private struct UnreadHint: View {
                 
         } else if (count > 9) {
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.orange100)
+                .fill(Color.gold)
                 .frame(width: 22, height: 18, alignment: .center)
                 .overlay(
                     Text("\(count)")
@@ -123,7 +123,7 @@ private struct UnreadHint: View {
                 .padding(.bottom, 2)
         } else {
             Circle()
-                .fill(Color.orange100)
+                .fill(Color.gold)
                 .frame(width: 18, height: 18, alignment: .center)
                 .overlay(
                     Text("\(count)")

@@ -1,7 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Status=Default-1.svg",
+<<<<<<< HEAD
+      "filename" : "Status=Default.svg",
+=======
+      "filename" : "Action-1.svg",
+>>>>>>> release
       "idiom" : "universal",
       "scale" : "1x"
     },

@@ -41,7 +41,7 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                         .overlay(
                             ZStack {
                                 RoundedRectangle(cornerRadius: 6)
-                                    .strokeBorder(Color.orange100, lineWidth: 1)
+                                    .strokeBorder(Color.yellow100, lineWidth: 1)
                                 
                                 Path() { path in
                                     path.move(to: CGPoint(x: geometry.size.width / 3, y: 0))

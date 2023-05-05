@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SignUpNameView: View {
     @ObservedObject var user: EntryViewModel
+    @State var isSatisfied: Bool = false
     
     var body: some View {
         ZStack {
@@ -50,13 +51,14 @@ struct SignUpNameView: View {
                 
                 PrimaryInputBar(value: $user.username, hint: "Please enter your name", isDisable: false, hasButton: false, isQualified: $user.isQualified)
                     .padding(.horizontal, 24)
+                    .onChange(of: user.username) { name in
+                        if name.count >= 2 && name.count <= 30 {
+                            isSatisfied.toggle()
+                        }
+                    }
                 
                 HStack {
-<<<<<<< HEAD
-                    InputHelper(iconName: "CheckCircleBased", label: "At least 2 and less than 30 characters", textcolor: user.username.count >= 2 && user.username.count <= 30 ? Color.text : Color.surface1, imageColor: user.username.count >= 2 && user.username.count <= 30 ? Color.text : Color.surface1)
-=======
-                    InputHelper(isSatisfied: .constant(false), label: "2-30 characters")
->>>>>>> release
+                    InputHelper(isSatisfied: $isSatisfied, label: "At least 2 and less than 30 characters")
                     
                     Spacer()
                 }
@@ -77,7 +79,7 @@ struct SignUpNameView: View {
                 
             }
             .navigationDestination(isPresented: $user.isQualified) {
-                SignUpBirthdateView(user: user)
+                SignUpBirthdayView(user: user)
             }
             .navigationBarBackButtonHidden(true)
             .navigationBarItems(

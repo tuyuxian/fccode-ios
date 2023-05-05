@@ -98,9 +98,9 @@ struct CandidateView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 16)
                 
-                //CandidateInfo Section
+                // CandidateInfo Section
                 ZStack {
-                    VStack (spacing: 8.0){
+                    VStack (spacing: 8.0) {
                         Text(candidateModel.username)
                             .fontTemplate(.h2Medium)
                             .foregroundColor(Color.white)
@@ -183,17 +183,16 @@ struct CandidateView: View {
             .opacity(isLiked || isDisliked ? 1 : 0)
         )
         
-        
     }
     
 }
 
-private var Bool: Binding<Bool> {
+private var isLiked: Binding<Bool> {
     Binding.constant(false)
 }
 
 struct CandidateView_Previews: PreviewProvider {
     static var previews: some View {
-        CandidateView(candidateModel: CandidateModel(LifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)], isLiked: Bool, isDisliked: Bool)
+        CandidateView(candidateModel: CandidateModel(lifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)], isLiked: isLiked, isDisliked: isLiked)
     }
 }

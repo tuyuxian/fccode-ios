@@ -41,6 +41,6 @@ struct ListRow<Content: View>: View {
 
 struct ListRow_Previews: PreviewProvider {
     static var previews: some View {
-        ListRow(label: "Demo list row"){}
+        ListRow(label: "Demo list row") {}
     }
 }

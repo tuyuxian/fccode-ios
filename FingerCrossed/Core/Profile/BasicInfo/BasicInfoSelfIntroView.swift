@@ -13,7 +13,7 @@ struct BasicInfoSelfIntroView: View {
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Basic Info", childTitle: "Self Introduction") {
             Box {
-                VStack(alignment: .trailing, spacing: 6.0){
+                VStack(alignment: .trailing, spacing: 6.0) {
                     VStack {
                         CaptionInputBar(
                             hint: "Type your self introduction",

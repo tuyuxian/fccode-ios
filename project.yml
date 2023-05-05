@@ -1,14 +1,26 @@
 name: FingerCrossed
+
 options:
-  bundleIdPrefix: FingerCrossed
+  bundleIdPrefix: com.FingerCrossed
   deploymentTarget:
     iOS: "16.0"
+
+settings:
+  DEVELOPMENT_TEAM: 95584NT66H
+
+# Import package
+packages:
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    exactVersion: 7.0.0
 
 targets:
   FingerCrossed:
     type: application
     platform: iOS
     deploymentTarget: "16.0"
+    sources:
+      - path: FingerCrossed
     info:
       path: FingerCrossed/Info.plist
       properties:
@@ -19,6 +31,16 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         UIRequiresFullScreen: true
         NSCameraUsageDescription: "Access to the camera to take photo"
-
-    sources:
-      - FingerCrossed
+    dependencies:
+      # specify the pacakge used in target
+      - package: GoogleSignIn
+        product: GoogleSignInSwift
+    postCompileScripts:
+      - script: |
+          export PATH="$PATH:/opt/homebrew/bin"
+          if which swiftlint >/dev/null; then
+            swiftlint
+          else
+            echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+          fi
+        name: Swift Lint

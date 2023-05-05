@@ -8,9 +8,9 @@
 import SwiftUI
 
 public enum HeightOption {
-    case VisibleCount(Int)
-    case Fixed(CGFloat)
-    case Ratio(CGFloat)
+    case visibleCount(Int)
+    case fixed(CGFloat)
+    case ratio(CGFloat)
 }
 
 
@@ -21,7 +21,7 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
     let contentBuilder: (Item) -> Content
     @Binding var position: Int
     @GestureState private var translation: CGFloat = 0
-    private var contentHeightOption: HeightOption = .VisibleCount(5)
+    private var contentHeightOption: HeightOption = .visibleCount(5)
     private var sizeFactor: CGFloat = 1
     private var alphaFactor: Double = 1
     private var edgeTopView: AnyView? = nil
@@ -178,11 +178,11 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
     
     private func calcContentHeight(_ geometry: GeometryProxy, option: HeightOption) -> CGFloat {
         switch option {
-        case .VisibleCount(let count):
+        case .visibleCount(let count):
             return geometry.size.height / CGFloat(count)
-        case .Fixed(let height):
+        case .fixed(let height):
             return height
-        case .Ratio(let ratio):
+        case .ratio(let ratio):
             return geometry.size.height * ratio
         }
     }

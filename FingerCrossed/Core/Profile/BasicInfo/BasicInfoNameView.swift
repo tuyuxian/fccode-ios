@@ -16,7 +16,12 @@ struct BasicInfoNameView: View {
             Box {
                 VStack(alignment: .trailing, spacing: 6.0) {
                     // input bar
-                    PrimaryInputBar(value: $name, isDisable: false, hasButton: false, isQualified: .constant(false))
+                    PrimaryInputBar(
+                        value: $name,
+                        isDisable: false,
+                        hasButton: false,
+                        isQualified: .constant(false)
+                    )
 
                     Text("\(name.count)/30")
                         .fontTemplate(.captionRegular)

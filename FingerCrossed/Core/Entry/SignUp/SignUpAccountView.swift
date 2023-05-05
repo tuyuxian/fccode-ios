@@ -135,15 +135,15 @@ struct SignUpAccountView: View {
     }
     
     func checkUppercase(str: String) -> Bool {
-        let UppercaseLetters = CharacterSet.uppercaseLetters
+        let uppercaseLetters = CharacterSet.uppercaseLetters
         
-        return str.rangeOfCharacter(from: UppercaseLetters) != nil ? true : false
+        return str.rangeOfCharacter(from: uppercaseLetters) != nil ? true : false
     }
     
     func checkLowercase(str: String) -> Bool {
-        let LowercaseLetters = CharacterSet.lowercaseLetters
+        let lowercaseLetters = CharacterSet.lowercaseLetters
         
-        return str.rangeOfCharacter(from: LowercaseLetters) != nil ? true : false
+        return str.rangeOfCharacter(from: lowercaseLetters) != nil ? true : false
     }
 }
 

@@ -12,7 +12,6 @@ struct AsyncImageLoader<Placeholder: View>: View {
     private let placeholder: Placeholder
     private let url: URL
     private let image: (UIImage) -> Image
-        
         init(
             url: URL,
             @ViewBuilder placeholder: () -> Placeholder,

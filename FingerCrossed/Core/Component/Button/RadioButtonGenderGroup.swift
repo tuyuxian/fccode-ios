@@ -28,11 +28,11 @@ struct RadioButtonGenderGroup: View {
             
             hasDivider ? Divider().foregroundColor(Color.surface3) : nil
             
-            RadioButton(id: Gender.NON_BINARY.rawValue, label: Gender.NON_BINARY.rawValue, isSelected: selectedId == Gender.NON_BINARY.rawValue ? true : false, callback: radioGroupCallback)
+            RadioButton(id: Gender.NONBINARY.rawValue, label: Gender.NONBINARY.rawValue, isSelected: selectedId == Gender.NONBINARY.rawValue ? true : false, callback: radioGroupCallback)
             
             hasDivider ? Divider().foregroundColor(Color.surface3) : nil
             
-            RadioButton(id: Gender.PREFER_NOT_TO_SAY.rawValue, label: Gender.PREFER_NOT_TO_SAY.rawValue, isSelected: selectedId == Gender.PREFER_NOT_TO_SAY.rawValue ? true : false, callback: radioGroupCallback)
+            RadioButton(id: Gender.PREFERNOTTOSAY.rawValue, label: Gender.PREFERNOTTOSAY.rawValue, isSelected: selectedId == Gender.PREFERNOTTOSAY.rawValue ? true : false, callback: radioGroupCallback)
             
         }
     }

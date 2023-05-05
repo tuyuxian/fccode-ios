@@ -9,12 +9,12 @@ import SwiftUI
 
 struct BasicInfoGenderView: View {
     
-    let genderOptions:[String] = [
+    let genderOptions: [String] = [
         "Male",
         "Female",
         "Transgender",
         "Nonbinary",
-        "Prefer not to say",
+        "Prefer not to say"
     ]
     
     var body: some View {

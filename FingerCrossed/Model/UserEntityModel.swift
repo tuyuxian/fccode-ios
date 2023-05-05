@@ -11,8 +11,8 @@ enum Gender: String, CaseIterable {
     case MALE = "Male"
     case FEMALE = "Female"
     case TRANSGENDER = "Transgender"
-    case NON_BINARY = "Nonbinary"
-    case PREFER_NOT_TO_SAY = "Prefer not to say"
+    case NONBINARY = "Nonbinary"
+    case PREFERNOTTOSAY = "Prefer not to say"
 }
 
 class UserEntityModel: ObservableObject{

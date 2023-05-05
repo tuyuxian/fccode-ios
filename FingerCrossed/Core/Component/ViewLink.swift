@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct ViewLink <targetView: View>: View {
-    var view: targetView = ResetPasswordEmailCheckView() as! targetView
+struct ViewLink <TargetView: View>: View {
+    var view: TargetView = ResetPasswordEmailCheckView() as! TargetView
     var label: String = "Forgot password"
     
     var body: some View {

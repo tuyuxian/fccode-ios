@@ -77,20 +77,10 @@ struct SignUpAccountView: View {
                 
                 HStack {
                     VStack (alignment: .leading, spacing: 6.0){
-<<<<<<< HEAD
-                        InputHelper(textcolor: isQualifiedLength ? Color.text : Color.surface1, imageColor: isQualifiedLength ? Color.text : Color.surface1)
-                        
-                        InputHelper(label: "At least one upper & one lowercase", textcolor: isQualifiedUpper ? Color.text : Color.surface1, imageColor: isQualifiedUpper ? Color.text : Color.surface1)
-                        
-                        InputHelper(label: "At least one number & symbol", textcolor: isQualifiedNumber ? Color.text : Color.surface1, imageColor: isQualifiedNumber ? Color.text : Color.surface1)
-                        
-                        InputHelper(label: "Match with password", textcolor: isQualifiedMatch ? Color.text : Color.surface1, imageColor: isQualifiedMatch ? Color.text : Color.surface1)
-=======
-                        InputHelper(isSatisfied: .constant(true), label: "At least 8 characters")
-                        InputHelper(isSatisfied: .constant(true), label: "At least one upper & one lowercase")
-                        InputHelper(isSatisfied: .constant(true), label: "At least one number & one symbol")
-                        InputHelper(isSatisfied: .constant(false), label: "Match with password")
->>>>>>> release
+                        InputHelper(isSatisfied: $isQualifiedLength, label: "At least 8 characters")
+                        InputHelper(isSatisfied: $isQualifiedUpper, label: "At least one upper & one lowercase")
+                        InputHelper(isSatisfied: $isQualifiedNumber, label: "At least one number & one symbol")
+                        InputHelper(isSatisfied: $isQualifiedMatch, label: "Match with password")
                     }
                     .padding(.horizontal, 38.67)
                     
@@ -145,15 +135,15 @@ struct SignUpAccountView: View {
     }
     
     func checkUppercase(str: String) -> Bool {
-        let UppercaseLetters = CharacterSet.uppercaseLetters
+        let uppercaseLetters = CharacterSet.uppercaseLetters
         
-        return str.rangeOfCharacter(from: UppercaseLetters) != nil ? true : false
+        return str.rangeOfCharacter(from: uppercaseLetters) != nil ? true : false
     }
     
     func checkLowercase(str: String) -> Bool {
-        let LowercaseLetters = CharacterSet.lowercaseLetters
+        let lowercaseLetters = CharacterSet.lowercaseLetters
         
-        return str.rangeOfCharacter(from: LowercaseLetters) != nil ? true : false
+        return str.rangeOfCharacter(from: lowercaseLetters) != nil ? true : false
     }
 }
 

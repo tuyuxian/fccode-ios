@@ -1,5 +1,5 @@
 //
-//  SignUpBirthdateView.swift
+//  SignUpBirthdayView.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/3/23.
@@ -7,14 +7,9 @@
 
 import SwiftUI
 
-struct SignUpBirthdateView: View {
-    //@ObservedObject var user = EntryViewModel()
-    @State var selectedArray = [
-        ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"],
-        ["2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010"]
-    ]
-//    @State var birthday : Date
+struct SignUpBirthdayView: View {
+    @ObservedObject var user: EntryViewModel
+    @State var isOld = false
     
     var body: some View {
         ZStack {
@@ -23,20 +18,20 @@ struct SignUpBirthdateView: View {
             
             VStack {
                 EntryLogo()
+                    .padding(.top, 5)
+                    .padding(.bottom, 55)
                 
-                Spacer()
-                    .frame(height: 19)
                 
-//                SignUpProcessBar(status: 2)
-//                    .padding(.vertical, 30)
-//                    .padding(.horizontal, 24)
-//                
+                SignUpProcessBar(status: 2)
+                    .padding(.bottom, 30)
+                    .padding(.horizontal, 24)
+                
                 
                 
                 HStack {
                     Text("Tell us about your...")
-                        .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.textHelper)
+                        .fontTemplate(.h3Bold)
+                        .foregroundColor(Color.text)
                     
                     Spacer()
                 }
@@ -45,73 +40,61 @@ struct SignUpBirthdateView: View {
                 HStack {
                     Text("Birthday")
                         .foregroundColor(.text)
-                    .fontTemplate(.bigBoldTitle)
+                        .fontTemplate(.bigBoldTitle)
                     
                     Spacer()
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, 12)
-                .padding(.bottom, 14)
+                .padding(.top, 4)
                 
-                CustomPickers(dataArrays: $selectedArray)
-                    .frame(maxWidth: .infinity, alignment: .center)
-//                    .onChange(of: selectedArray, perform: { date in
-//                        user.dateOfBirth = ArrayToDate(dateArray: date)
-//                        print(user.dateOfBirth!)
-//                    })
-                
-//                ZStack {
-//                    ZStack {
-//                        RoundedRectangle(cornerRadius: 50)
-//                            .stroke(Color.surface2, lineWidth: 1)
-//                            .background(
-//                                RoundedRectangle(cornerRadius: 50)
-//                                    .fill(Color.white)
-//                            )
-//                        .frame(height: 56)
-//
-//                        HStack {
-//                            Spacer()
-//
-//                            Image(textfieldIsFocused ? "ArrowUpBased" : "ArrowDownBased")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fit)
-//                                .frame(width: 24, height: 24)
-//                        }
-//                        .padding(.horizontal, 16)
-//                    }
-//                    // TODO(Lawrence): set the hint's font to be p regular
-//                    DatePickerTextField(placeholder: "Select your birthday", date: $birthday)
-//                        .focused($textfieldIsFocused)
-//                        .padding(.horizontal, 16)
-//                        .frame(height: 56)
-//
-//                }
-//                .padding(.horizontal, 24)
-//                .padding(.vertical, 18)
                 
                 Spacer()
-                    .frame(height: 76)
+                    .frame(height: 60)
+                
+                DatePickers(monthIndex: $user.monthIndex, dayIndex: $user.dayIndex, yearIndex: $user.yearIndex)
+                    .padding(.horizontal, 24)
+                    .onChange(of: user.monthIndex) { newMonth in
+                        getSelectedDate()
+                    }
+                    .onChange(of: user.yearIndex) { newYear in
+                        getSelectedDate()
+                    }
+                    .onChange(of: user.dayIndex) { newDay in
+                        getSelectedDate()
+                    }
+ 
+                InputHelper(isSatisfied: $isOld,label: "You must be over 18")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 40)
+                    .padding(.top, 10)
+                
                 
                 Spacer()
                 
-                NavigationLink (destination: SignUpGenderView()
-                    .navigationBarBackButtonHidden(true)
-                    .navigationBarItems(
-                        leading:
-                            VStack(alignment: .center) {
-                                NavigationBarBackButton()
-                            }
-                            .frame(height: 40)
-                            .padding(.top, 24)
-                            .padding(.leading, 14)
-                    )) {
+                Button {
+                    isOld ? user.isQualified = true : nil
+                } label: {
                     Text("Continue")
                 }
-                .buttonStyle(PrimaryButton())
+                .buttonStyle(PrimaryButton(labelColor: isOld ? Color.text : Color.white, buttonColor: isOld ? Color.yellow100 : Color.surface2))
                 .padding(.horizontal, 24)
                 .padding(.bottom, 50)
                 
+            }
+            .navigationDestination(isPresented: $user.isQualified) {
+                SignUpGenderView(user: user)
+            }
+            .navigationBarBackButtonHidden(true)
+            .navigationBarItems(
+                leading:
+                    VStack(alignment: .center) {
+                        NavigationBarBackButton()
+                    }
+                    .frame(height: 40)
+                    .padding(.top, 24)
+                    .padding(.leading, 14))
+            .onDisappear{
+                user.isQualified = false
             }
             
             
@@ -119,22 +102,31 @@ struct SignUpBirthdateView: View {
 
     }
     
-    func ArrayToDate(dateArray: [[String]]) -> Date{
-        let year = dateArray[2]
-        let month = dateArray[0]
-        let day = dateArray[1]
+    func toTwoDigit(index: Int) -> String{
+        return index+1 < 10 ? "0\(index+1)" : "\(index+1)"
+    }
+    
+    func getSelectedDate(){
+        let currentYear = Calendar.current.component(.year, from: Date())
         
-        print("year: \(year)")
-        print("month: \(month)")
-        print("day: \(day)")
+        user.dateOfBirth = "\(currentYear-(100-Int(toTwoDigit(index: user.yearIndex))!))-\(toTwoDigit(index: user.monthIndex))-\(toTwoDigit(index: user.dayIndex))T00:00:00Z"
+        print("date: \(user.dateOfBirth)")
         
-        return Date.now
+        let selectedString = "0\(toTwoDigit(index: user.dayIndex))/0\(toTwoDigit(index: user.monthIndex))/\(currentYear-(100-Int(toTwoDigit(index: user.yearIndex))!))"
+        
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = "dd/MM/yy"
+        
+        let selectedDate = dateFormater.date(from: selectedString)!
+        
+        let yearGap = Calendar.current.dateComponents([.year], from: selectedDate, to: Date.now)
+        
+        isOld = yearGap.year! >= 18 ? true : false
     }
 }
 
-struct SignUpBirthdateView_Previews: PreviewProvider {
+struct SignUpBirthdayView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpBirthdateView()
+        SignUpBirthdayView(user: EntryViewModel())
     }
 }
-

@@ -39,35 +39,6 @@ struct TextingView: View {
                         )
                     )
             )
-<<<<<<< HEAD
-        .navigationBarItems(trailing:
-                                HStack(alignment: .bottom) {
-            HeaderButton(name: "Edit", action: {
-                isEditing.toggle()
-            })
-            
-            .padding(.top, 10)
-            .padding(.leading, 24)
-        })
-        .navigationBarItems(trailing:
-            HStack(alignment: .bottom) {
-                HeaderButton(name: "Edit", action: {
-                    isEditing.toggle()
-                })
-            }
-            .padding(.top, 10)
-            .padding(.trailing, 8)
-        )
-        .padding(.top, 19)
-        .background(Color.background)
-    }
-
-    
-    
-    struct TextingView_Previews: PreviewProvider {
-        static var previews: some View {
-            TextingView()
-=======
             .alert(isPresented: $vm.showAlert) {
                 Alert(
                     title: Text("Do you really want to permanently delete these conversation(s)?")
@@ -82,7 +53,6 @@ struct TextingView: View {
                     )
                 )
             }
->>>>>>> release
         }
     }
 }

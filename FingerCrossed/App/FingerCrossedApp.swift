@@ -13,7 +13,6 @@ struct FingerCrossedApp: App {
         
         WindowGroup {
             EntryView ()
-            //TabBar()
         }
         
     }

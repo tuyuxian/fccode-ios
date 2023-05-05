@@ -27,12 +27,12 @@ struct VoiceMessageEditSheet: View {
                         .renderingMode(.template)
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(Color.orange100)
+                        .foregroundColor(Color.white)
                 }
                 .frame(width: 60, height: 60)
                 .overlay(
                     Circle()
-                        .stroke(Color.surface3, lineWidth: 18)
+                        .stroke(Color.yellow100, lineWidth: 18)
                            .frame(width: 96, height: 96)
                 )
                 

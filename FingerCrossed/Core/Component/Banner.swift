@@ -12,29 +12,27 @@ struct BannerModifier: ViewModifier {
         var content: String
         var type: BannerType
     }
-    
     enum BannerType {
-        case Info
-        case Warning
-        case Success
-        case Error
+        case info
+        case warning
+        case success
+        case error
         
         var leadingIcon: String {
             switch self {
-            case .Info:
+            case .info:
                 return "HeartBased"
-            case .Success:
+            case .success:
                 return "HeartBased"
-            case .Warning:
+            case .warning:
                 return "HeartBased"
-            case .Error:
+            case .error:
                 return "HeartBased"
             }
         }
     }
     
     @Binding var data: BannerData
-    
     @Binding var show: Bool
     
     func body(
@@ -45,8 +43,7 @@ struct BannerModifier: ViewModifier {
             if show {
                 withAnimation(
                     .easeInOut
-                ) {
-                    VStack {
+                ) { VStack {
                         Spacer()
                         HStack(
                             alignment: .center,
@@ -55,7 +52,6 @@ struct BannerModifier: ViewModifier {
                             Image(data.type.leadingIcon)
                                 .resizable()
                                 .frame(width: 21.33, height: 21.33)
-                            
                             Text(data.content)
                                 .fontTemplate(.noteMedium)
                                 .foregroundColor(Color.text)
@@ -100,7 +96,7 @@ struct BannerModifier: ViewModifier {
         Binding.constant(
             BannerModifier.BannerData(
                 content: "We've sent a reset link to your email!",
-                type: .Info)
+                type: .info)
         )
     }
     
@@ -130,4 +126,3 @@ extension View {
         )
     }
 }
-

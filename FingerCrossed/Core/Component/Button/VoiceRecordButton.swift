@@ -24,7 +24,7 @@ struct VoiceRecordButton: View {
         }
         .frame(height:54)
         .fontTemplate(.pMedium)
-        .foregroundColor(Color.orange100)
+        .foregroundColor(Color.yellow100)
         .background(Color.yellow20)
         .cornerRadius(50)
         .sheet(isPresented: $showVocieRecordSheet) {

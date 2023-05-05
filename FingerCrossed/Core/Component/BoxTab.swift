@@ -13,27 +13,27 @@ struct BoxTab: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
-            Button{
+            Button {
                 isSelected = 1
             } label: {
                 Text("Edit")
             }
             .frame(width: 171, height: 48)
-            .background(isSelected == 1 ? Color.orange100 : Color.orange60)
+            .background(isSelected == 1 ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
-            Button{
+            Button {
                 isSelected = 2
             } label: {
                 Text("Preview")
             }
             .frame(width: 171, height: 48)
-            .background(isSelected == 2 ? Color.orange100 : Color.orange60)
+            .background(isSelected == 2 ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
         }
-        .frame(width: 342, height:48)
+        .frame(width: 342, height: 48)
         .fontTemplate(.h3Medium)
         .foregroundColor(Color.white)
-        .background(Color.orange60)
+        .background(Color.yellow20)
         .cornerRadius(50)
 
     }

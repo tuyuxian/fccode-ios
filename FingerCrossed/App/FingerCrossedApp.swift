@@ -12,7 +12,7 @@ struct FingerCrossedApp: App {
     var body: some Scene {
         
         WindowGroup {
-            EntryView ()
+            ContentView()
         }
         
     }

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import GoogleSignIn
+import FacebookCore
 
 struct ContentView: View {
     
@@ -31,6 +33,15 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                    .onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                    }
+                    .onAppear {
+                        ApplicationDelegate.shared.application(
+                            UIApplication.shared,
+                            didFinishLaunchingWithOptions: nil
+                        )
+                    }
             case .password:
                 SignInView(vm: vm)
                     .transition(

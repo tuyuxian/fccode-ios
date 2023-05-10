@@ -33,6 +33,7 @@ struct EntryView: View {
             )
         ) {
             Color.background.ignoresSafeArea(.all)
+            
             VStack(spacing: 0) {
                 EntryLogo()
                     .padding(.top, 5)
@@ -89,9 +90,18 @@ struct EntryView: View {
                         alignment: .center,
                         spacing: 20
                     ) {
-                        SSOButton(platform: .facebook, handler: {})
-                        SSOButton(platform: .google, handler: {})
-                        SSOButton(platform: .apple, handler: {})
+                        SSOButton(
+                            platform: .facebook,
+                            handler: FacebookSSOViewModel().showFacebookLoginView
+                        )
+                        SSOButton(
+                            platform: .google,
+                            handler: GoogleSSOViewModel().showGoogleLoginView
+                        )
+                        SSOButton(
+                            platform: .apple,
+                            handler: AppleSSOViewModel().showAppleLoginView
+                        )
                     }
                 }
             }

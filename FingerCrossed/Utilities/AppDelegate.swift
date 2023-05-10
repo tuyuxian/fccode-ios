@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FacebookCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     // Force phone to use portrait mode

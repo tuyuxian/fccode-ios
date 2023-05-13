@@ -1,0 +1,5 @@
+interface Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+}

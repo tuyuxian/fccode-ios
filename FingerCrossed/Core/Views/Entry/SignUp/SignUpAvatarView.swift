@@ -19,6 +19,42 @@ struct SignUpAvatarView: View {
     // Flag for button tappable
     @State var isStatisfied: Bool = false
     
+    private func upload(
+        _ data: Data?,
+        toPresignedURL remoteURL: URL
+    ) async -> Result<URL?, Error> {
+        return await withCheckedContinuation { continuation in
+            AWSS3.upload(data, toPresignedURL: remoteURL) { (result) in
+                switch result {
+                case .success(let url):
+                    print("File uploaded: ", url!)
+                case .failure(let error):
+                    print("Upload failed: ", error.localizedDescription)
+                }
+                continuation.resume(returning: result)
+            }
+        }
+    }
+    
+    private func buttonOnTap() {
+        Task {
+            do {
+                let result = await upload(
+                    selectedImageData,
+                    // TODO(Sam): replace with presigned Url generated from backend
+                    // swiftlint: disable line_length
+                    toPresignedURL: URL(string: "https://fc-development.s3.us-west-1.amazonaws.com/test.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAV3WQQ3NAMASFS5L2%2F20230511%2Fus-west-1%2Fs3%2Faws4_request&X-Amz-Date=20230511T225520Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&x-id=PutObject&X-Amz-Signature=d7b821923dcedf96f7ef196dcfb911adc1ce1f905778dc53a1dd6e390dac9c50")!
+                    // swiftlint: enable line_length
+
+                )
+                print("Result: \(result)")
+            }
+//            catch {
+//                print(error)
+//            }
+        }
+    }
+    
     var body: some View {
         ZStack(
             alignment: Alignment(
@@ -145,6 +181,7 @@ struct SignUpAvatarView: View {
                 
                 PrimaryButton(
                     label: "Continue",
+                    action: buttonOnTap,
                     isTappable: $isStatisfied
                 )
                 .padding(.bottom, 16)

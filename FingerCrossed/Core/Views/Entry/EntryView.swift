@@ -20,6 +20,7 @@ struct EntryView: View {
             isEmailValid = false
             return
         }
+        TestViewModel().fetch(email: vm.email)
         isEmailValid = true
         vm.transition = .forward
         vm.switchView = .account

@@ -16,6 +16,15 @@ packages:
   facebook-ios-sdk:
     url: https://github.com/facebook/facebook-ios-sdk
     exactVersion: 16.1.0
+  lottie-spm:
+    url: https://github.com/airbnb/lottie-spm
+    exactVersion: 4.2.0
+  apollo-ios:
+    url: https://github.com/apollographql/apollo-ios
+    exactVersion: 1.1.3
+
+  GraphQLAPI:
+    path: ./GraphQL/GraphQLAPI
 
 targets:
   FingerCrossed:
@@ -57,10 +66,17 @@ targets:
     dependencies:
       # specify the pacakge used in target
       - package: GoogleSignIn
+        product: GoogleSignIn
+      - package: GoogleSignIn
         product: GoogleSignInSwift
       - package: facebook-ios-sdk
         product: FacebookCore
         product: FacebookLogin
+      - package: lottie-spm
+        product: Lottie
+      - package: apollo-ios
+        product: Apollo
+      - package: GraphQLAPI
     postCompileScripts:
       - script: |
           export PATH="$PATH:/opt/homebrew/bin"

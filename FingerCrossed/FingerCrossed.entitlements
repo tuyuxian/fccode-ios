@@ -8,7 +8,7 @@
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)FingerCrossed.FingerCrossed</string>
+		<string>$(AppIdentifierPrefix)com.FingerCrossed.FingerCrossed</string>
 	</array>
 </dict>
 </plist>

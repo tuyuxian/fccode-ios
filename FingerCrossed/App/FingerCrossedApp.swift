@@ -7,12 +7,12 @@
 
 import SwiftUI
 
- @main
+@main
 struct FingerCrossedApp: App {
     var body: some Scene {
         
         WindowGroup {
-            EntryView ()
+            ContentView()
         }
         
     }

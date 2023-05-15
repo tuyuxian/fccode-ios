@@ -12,7 +12,6 @@ struct DisableSwipeBackView: UIViewControllerRepresentable {
     
     typealias UIViewControllerType = DisableSwipeBackViewController
     
-    
     func makeUIViewController(context: Context) -> UIViewControllerType {
         UIViewControllerType()
     }

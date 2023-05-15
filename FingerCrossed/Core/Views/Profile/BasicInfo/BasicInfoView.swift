@@ -163,14 +163,28 @@ struct UneditableRow<Content: View>: View {
         }
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("Do you really want to change it?")
-                    .font(Font.system(size: 18, weight: .medium)),
-                message: Text("To provide a better overall experience, users are only allowed to change this information once."),
+                title: Text(
+                    "Do you really want to change it?"
+                )
+                .font(
+                    Font.system(
+                        size: 18,
+                        weight: .medium
+                    )
+                ),
+                message: Text(
+                    // swiftlint: disable line_length
+                    "To provide a better overall experience, users are only allowed to change this information once."
+                    // swiftlint: enable line_length
+                ),
                 primaryButton: .destructive(
-                    Text("Yes")) {
-                        showBanner = true
-                    },
-                secondaryButton: .cancel(Text("No"))
+                    Text("Yes")
+                ) {
+                    showBanner = true
+                },
+                secondaryButton: .cancel(
+                    Text("No")
+                )
             )
         }
     }

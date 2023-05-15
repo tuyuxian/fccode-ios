@@ -21,8 +21,15 @@ struct SelfIntroEditSheet: View {
                         .padding(.top, 30)
                         .id(2)
                     
-                    VStack(alignment: .trailing,spacing: 6) {
-                        CaptionInputBar(hint: "Type your self introduction", defaultPresentLine: 10, lineLimit: 10)
+                    VStack(
+                        alignment: .trailing,
+                        spacing: 6
+                    ) {
+                        CaptionInputBar(
+                            hint: "Type your self introduction",
+                            defaultPresentLine: 10,
+                            lineLimit: 10
+                        )
                         Text("0/200")
                             .fontTemplate(.captionRegular)
                             .foregroundColor(Color.textHelper)

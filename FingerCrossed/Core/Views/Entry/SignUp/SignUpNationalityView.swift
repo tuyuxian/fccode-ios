@@ -61,7 +61,7 @@ struct SignUpNationalityView: View {
                     alignment: .leading,
                     spacing: 10
                 ) {
-                    NationalityPickerView(
+                    NationalityPicker(
                         countrySelectionList: countrySelectionList
                     )
                     .onChange(of: countrySelectionList.countrySelections) { _ in

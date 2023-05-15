@@ -13,20 +13,24 @@ struct ListRow<Content: View>: View {
     
     // Replace the icon in different use cases
     @State var icon: String = "ArrowRightBased"
+    
     @State var showIndicator: Bool = true
         
     @ViewBuilder var preview: Content
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(
+            alignment: .leading,
+            spacing: 0
+        ) {
             HStack(spacing: 0) {
                 Text(label)
                     .fontTemplate(.pMedium)
                     .foregroundColor(Color.text)
                     .frame(height: 24)
-                    .padding(.top, 2)
-                    .padding(.bottom, -2)
+                
                 Spacer()
+                
                 showIndicator
                 ? Image(icon)
                     .resizable()
@@ -35,7 +39,14 @@ struct ListRow<Content: View>: View {
             }
             preview
         }
-        .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
+        .padding(
+            EdgeInsets(
+                top: 16,
+                leading: 24,
+                bottom: 16,
+                trailing: 24
+            )
+        )
     }
 }
 

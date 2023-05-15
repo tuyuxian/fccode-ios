@@ -14,8 +14,8 @@ struct CandidateDetailView: View {
     
     var body: some View {
         ScrollView {
-            VStack (spacing: 20){
-                VStack (spacing: 4.0){
+            VStack(spacing: 20) {
+                VStack(spacing: 4.0) {
                     Text(candidateModel.username)
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
@@ -47,7 +47,7 @@ struct CandidateDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 24)
                 
-                VStack (spacing: 20){
+                VStack(spacing: 20) {
                     Text("Voice Message")
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
@@ -82,7 +82,7 @@ struct CandidateDetailView: View {
                     .padding(.horizontal, 24)
                 
                 ForEach(lifePhotoList) { list in
-                    VStack (spacing: 10.5){
+                    VStack(spacing: 10.5) {
                         AsyncImage(
                             url: URL(string: list.photoUrl),
                             transaction: Transaction(animation: .easeInOut)

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LandingView: View {
+    
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
@@ -40,6 +41,7 @@ struct LandingView: View {
                     .foregroundColor(Color.surface1)
                     .multilineTextAlignment(.center)
                     .frame(width: 220)
+                    .kerning(-0.4)
             }
         }
     }

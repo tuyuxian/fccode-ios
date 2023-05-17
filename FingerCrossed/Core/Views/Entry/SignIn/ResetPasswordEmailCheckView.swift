@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ResetPasswordEmailCheckView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .backward
@@ -40,7 +42,8 @@ struct ResetPasswordEmailCheckView: View {
                 PrimaryButton(
                     label: "Back to Login",
                     action: buttonOnTap,
-                    isTappable: .constant(true)
+                    isTappable: .constant(true),
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -51,6 +54,8 @@ struct ResetPasswordEmailCheckView: View {
 
 struct ResetPasswordEmailCheckView_Previews: PreviewProvider {
     static var previews: some View {
-        ResetPasswordEmailCheckView(vm: EntryViewModel())
+        ResetPasswordEmailCheckView(
+            vm: EntryViewModel()
+        )
     }
 }

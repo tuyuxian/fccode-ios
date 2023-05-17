@@ -10,17 +10,20 @@ import SwiftUI
 import AuthenticationServices
 
 struct EntryView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for email validation
-    @State var isEmailValid: Bool = true
-
+    /// Flag for email validation
+    @State private var isEmailValid: Bool = true
+    /// Flag for button tap
+    @State private var isStatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
+    /// Handler for button on submit
     private func emailOnSubmit() {
         guard vm.isEmailValid() else {
             isEmailValid = false
             return
         }
-        TestViewModel().fetch(email: vm.email)
         isEmailValid = true
         vm.transition = .forward
         vm.switchView = .account
@@ -52,16 +55,16 @@ struct EntryView: View {
                     
                     VStack(
                         alignment: .leading,
-                        spacing: 10
+                        spacing: 20
                     ) {
                         PrimaryInputBar(
                             input: .email,
                             value: $vm.email,
                             hint: "Log in or sign up with email",
-                            action: emailOnSubmit
+                            isValid: $isEmailValid
                         )
-                        .onSubmit {
-                            emailOnSubmit()
+                        .onChange(of: vm.email) { val in
+                            isStatisfied = val.count > 0
                         }
                         
                         !isEmailValid
@@ -70,7 +73,16 @@ struct EntryView: View {
                             label: "Please enter a valid email address",
                             type: .error
                         )
+                        .padding(.leading, 16)
+                        .padding(.vertical, -10)
                         : nil
+                        
+                        PrimaryButton(
+                            label: "Continue",
+                            action: emailOnSubmit,
+                            isTappable: $isStatisfied,
+                            isLoading: $isLoading
+                        )
                     }
                     
                     HStack(spacing: 10) {
@@ -78,7 +90,7 @@ struct EntryView: View {
                             Divider()
                         }
                         
-                        Text("Continue with")
+                        Text("or")
                             .fontTemplate(.pMedium)
                             .foregroundColor(Color.text)
                         
@@ -114,6 +126,8 @@ struct EntryView: View {
 
 struct EntryView_Previews: PreviewProvider {
     static var previews: some View {
-        EntryView(vm: EntryViewModel())
+        EntryView(
+            vm: EntryViewModel()
+        )
     }
 }

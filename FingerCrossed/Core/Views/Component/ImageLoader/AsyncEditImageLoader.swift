@@ -21,7 +21,12 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
             self.url = url
             self.placeholder = placeholder()
             self.image = image
-            _loader = StateObject(wrappedValue: ImageLoader(url: url, cache: Environment(\.imageCache).wrappedValue))
+            _loader = StateObject(
+                wrappedValue: ImageLoader(
+                    url: url,
+                    cache: Environment(\.imageCache).wrappedValue
+                )
+            )
         }
 
     var body: some View {
@@ -43,37 +48,80 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                                 RoundedRectangle(cornerRadius: 6)
                                     .strokeBorder(Color.yellow100, lineWidth: 1)
                                 
-                                Path(){ path in
-                                    path.move(to: CGPoint(x: geometry.size.width / 3, y: 0))
-                                    path.addLine(to: CGPoint(x: geometry.size.width / 3, y: geometry.size.height))
+                                Path { path in
+                                    path.move(
+                                        to: CGPoint(
+                                            x: geometry.size.width / 3,
+                                            y: 0
+                                        )
+                                    )
+                                    path.addLine(
+                                        to: CGPoint(
+                                            x: geometry.size.width / 3,
+                                            y: geometry.size.height
+                                        )
+                                    )
                                 }
                                 .stroke(Color.surface2, lineWidth: 1)
                                 
-                                Path() { path in
-                                    path.move(to: CGPoint(x: geometry.size.width * 2 / 3, y: 0))
-                                    path.addLine(to: CGPoint(x: geometry.size.width * 2 / 3, y: geometry.size.height))
+                                Path { path in
+                                    path.move(
+                                        to: CGPoint(
+                                            x: geometry.size.width * 2 / 3,
+                                            y: 0
+                                        )
+                                    )
+                                    path.addLine(
+                                        to: CGPoint(
+                                            x: geometry.size.width * 2 / 3,
+                                            y: geometry.size.height
+                                        )
+                                    )
                                 }
                                 .stroke(Color.surface2, lineWidth: 1)
                                 
-                                Path() { path in
-                                    path.move(to: CGPoint(x: 0, y: geometry.size.height / 3))
-                                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height / 3))
+                                Path { path in
+                                    path.move(
+                                        to: CGPoint(
+                                            x: 0,
+                                            y: geometry.size.height / 3
+                                        )
+                                    )
+                                    path.addLine(
+                                        to: CGPoint(
+                                            x: geometry.size.width,
+                                            y: geometry.size.height / 3
+                                        )
+                                    )
                                 }
                                 .stroke(Color.surface2, lineWidth: 1)
                                 
-                                Path() { path in
-                                    path.move(to: CGPoint(x: 0, y: geometry.size.height * 2 / 3))
-                                    path.addLine(to: CGPoint(x: geometry.size.width, y: geometry.size.height * 2 / 3))
+                                Path { path in
+                                    path.move(
+                                        to: CGPoint(
+                                            x: 0,
+                                            y: geometry.size.height * 2 / 3
+                                        )
+                                    )
+                                    path.addLine(
+                                        to: CGPoint(
+                                            x: geometry.size.width,
+                                            y: geometry.size.height * 2 / 3
+                                        )
+                                    )
                                 }
                                 .stroke(Color.surface2, lineWidth: 1)
                             }
                             
                         )
-                }else {
+                } else {
                     image(loader.image!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: geometry.size.width, height: geometry.size.height)
+                        .frame(
+                            width: geometry.size.width,
+                            height: geometry.size.height
+                        )
                         .clipped()
                         .ignoresSafeArea(.all)
                 }

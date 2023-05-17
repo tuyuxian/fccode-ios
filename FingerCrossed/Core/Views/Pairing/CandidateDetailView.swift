@@ -53,7 +53,7 @@ struct CandidateDetailView: View {
                         .foregroundColor(Color.text)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    HStack {
+                    HStack(spacing: 0) {
                         Button {
                             withAnimation {
                                 isPlay.toggle()
@@ -68,14 +68,13 @@ struct CandidateDetailView: View {
                                 .background(
                                     Circle()
                                         .foregroundColor(Color.yellow100)
-                                        .frame(width: 60, height: 60)
+                                        .frame(width: 50, height: 50)
                                 )
                         }
-
-//                        LottieView(lottieFile: "soundwave")
+                        LottieView(lottieFile: "soundwave.json")
+                            .frame(width: 230, height: 50)
                     }
                 }
-                .padding(.vertical, 24)
                 .padding(.horizontal, 24)
                 
                 Divider()
@@ -89,17 +88,16 @@ struct CandidateDetailView: View {
                         ) { phase in
                             switch phase {
                             case .empty:
-                                EmptyView() // TODO(Sam): Replace with shimmer later
+                                EmptyView()
                             case .success(let image):
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .cornerRadius(16)
                                     .padding(.horizontal, 24)
-                                    
 
                             case .failure:
-                                ProgressView() // TODO(Sam): Replace with shimmer later
+                                Shimmer()
                             @unknown default:
                                 EmptyView()
                             }
@@ -121,6 +119,35 @@ struct CandidateDetailView: View {
 
 struct CandidateDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        CandidateDetailView(candidateModel: CandidateModel(lifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "Hi there! I'm a 25-year-old woman, born and raised in [City/State/Country]. I'm currently living in [City/State/Country], and I enjoy [hobbies/interests]. Nice to meet you!", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor", position: 1)])
+        CandidateDetailView(
+            candidateModel:
+                CandidateModel(
+                    lifePhotoList: [LifePhoto](),
+                    username: "UserName",
+                    // swiftlint: disable line_length
+                    selfIntro: "Hi there! I'm a 25-year-old woman, born and raised in [City/State/Country]. I'm currently living in [City/State/Country], and I enjoy [hobbies/interests]. Nice to meet you!",
+                    // swiftlint: enable line_length
+                    gender: "Female",
+                    age: 30,
+                    location: "Tempe",
+                    nationality: "America"
+                ),
+            lifePhotoList: [
+                LifePhoto(
+                    // swiftlint: disable line_length
+                    photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
+                    caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
+                    // swiftlint: enable line_length
+                    position: 0
+                ),
+                LifePhoto(
+                    // swiftlint: disable line_length
+                    photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
+                    caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
+                    // swiftlint: enable line_length
+                    position: 1
+                )
+            ]
+        )
     }
 }

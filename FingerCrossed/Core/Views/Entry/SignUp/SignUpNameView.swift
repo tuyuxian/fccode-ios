@@ -8,20 +8,31 @@
 import SwiftUI
 
 struct SignUpNameView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for name validation
-    @State var isSatisfied: Bool = false
+    /// Flag for name validation
+    @State private var isSatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .birthday
     }
     
-    private func checkLength(str: String) -> Bool {
+    private func checkLength(
+        str: String
+    ) -> Bool {
         return str.count >= 2 && str.count <= 30
     }
     
+    private func checkCharacter(
+        str: String
+    ) -> Bool {
+        let digitsCharacters = CharacterSet(charactersIn: "0123456789")
+        return !CharacterSet(charactersIn: str).isSubset(of: digitsCharacters)
+    }
+     
     private func checkSymbols(
         str: String
     ) -> Bool {
@@ -40,11 +51,28 @@ struct SignUpNameView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .account
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 1)
@@ -76,11 +104,13 @@ struct SignUpNameView: View {
                     PrimaryInputBar(
                         input: .text,
                         value: $vm.name,
-                        hint: "Please enter your name"
+                        hint: "Enter your name",
+                        isValid: .constant(true)
                     )
                     .onChange(of: vm.name) { name in
+                        vm.name = String(name.prefix(30))
                         isSatisfied = checkLength(str: name) &&
-                        (vm.checkUpper(str: name) || vm.checkLower(str: name)) &&
+                        checkCharacter(str: name) &&
                         !checkSymbols(str: name)
                     }
                     
@@ -99,7 +129,8 @@ struct SignUpNameView: View {
                     PrimaryButton(
                         label: "Continue",
                         action: buttonOnTap,
-                        isTappable: $isSatisfied
+                        isTappable: $isSatisfied,
+                        isLoading: $isLoading
                     )
                     .padding(.bottom, 16)
                 }
@@ -112,6 +143,8 @@ struct SignUpNameView: View {
 
 struct SignUpNameView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpNameView(vm: EntryViewModel())
+        SignUpNameView(
+            vm: EntryViewModel()
+        )
     }
 }

@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct SignUpAccountView: View, KeyboardReadable {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for password validation
-    @State var isPasswordValid: Bool = true
-    // Flag for button tappable
-    @State var isStatisfied: Bool = false
-    // Flags for input helpers
-    @State var isLengthStatisfied: Bool = false
-    @State var isUpperAndLowerStatisfied: Bool = false
-    @State var isNumberAndSymbolStatisfied: Bool = false
-    @State var isPasswordMatched: Bool = false
-    // Flag for keyboard signal
-    @State var isKeyboardShowUp: Bool = false
+    /// Flag for password validation
+    @State private var isPasswordValid: Bool = true
+    /// Flag for button tappable
+    @State private var isStatisfied: Bool = false
+    /// Flags for input helpers
+    @State private var isLengthStatisfied: Bool = false
+    @State private var isUpperAndLowerStatisfied: Bool = false
+    @State private var isNumberAndSymbolStatisfied: Bool = false
+    @State private var isPasswordMatched: Bool = false
+    /// Flag for keyboard signal
+    @State private var isKeyboardShowUp: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         guard vm.isPasswordValid() else {
@@ -41,10 +43,28 @@ struct SignUpAccountView: View, KeyboardReadable {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .onboarding
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 !isKeyboardShowUp
                 ? Text("Welcome to\nJoin us")
@@ -65,13 +85,15 @@ struct SignUpAccountView: View, KeyboardReadable {
                     PrimaryInputBar(
                         input: .text,
                         value: $vm.email,
+                        isValid: .constant(true),
                         isDisable: true
                     )
                     
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.password,
-                        hint: "Please enter password"
+                        hint: "Enter password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.password) { password in
                         isLengthStatisfied = vm.checkLength(str: password)
@@ -94,7 +116,8 @@ struct SignUpAccountView: View, KeyboardReadable {
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.passwordConfirmed,
-                        hint: "Confirm password"
+                        hint: "Confirm password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.passwordConfirmed) { password in
                         isPasswordMatched =
@@ -149,7 +172,8 @@ struct SignUpAccountView: View, KeyboardReadable {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied
+                    isTappable: $isStatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -160,6 +184,8 @@ struct SignUpAccountView: View, KeyboardReadable {
 
 struct SignUpAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpAccountView(vm: EntryViewModel())
+        SignUpAccountView(
+            vm: EntryViewModel()
+        )
     }
 }

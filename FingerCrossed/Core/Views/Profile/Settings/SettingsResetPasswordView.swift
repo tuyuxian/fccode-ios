@@ -26,7 +26,8 @@ struct SettingsResetPasswordView: View {
                         PrimaryInputBar(
                             input: .password,
                             value: .constant(""),
-                            hint: "Please enter current password"
+                            hint: "Enter current password",
+                            isValid: .constant(false)
                         )
                     }
                     : nil
@@ -35,7 +36,8 @@ struct SettingsResetPasswordView: View {
                         PrimaryInputBar(
                             input: .password,
                             value: .constant(""),
-                            hint: "Please enter new password"
+                            hint: "Enter new password",
+                            isValid: .constant(false)
                         )
                     }
                     
@@ -43,7 +45,8 @@ struct SettingsResetPasswordView: View {
                         PrimaryInputBar(
                             input: .password,
                             value: .constant(""),
-                            hint: "Confirm new password"
+                            hint: "Confirm new password",
+                            isValid: .constant(false)
                         )
                     }
                     

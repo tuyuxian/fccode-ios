@@ -29,7 +29,7 @@ struct LifePhotoButton: View {
             AsyncImage(
                 url: URL(string: lifePhoto.photoUrl),
                 transaction: Transaction(animation: .easeInOut)
-            ){ phase in
+            ) { phase in
                 switch phase {
                 case .empty:
                     Image("PictureBased")
@@ -42,7 +42,11 @@ struct LifePhotoButton: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 case .failure:
-                    ProgressView() // TODO(Sam): Replace with shimmer 
+                    Image("PictureBased")
+                        .resizable()
+                        .renderingMode(.template)
+                        .frame(width: 46.15, height: 46.15)
+                        .foregroundColor(Color.white)
                 @unknown default:
                     Image("PictureBased")
                         .resizable()
@@ -52,7 +56,10 @@ struct LifePhotoButton: View {
                 }
             }
         }
-        .frame(width: lifePhoto.position == 0 ? fullSize : halfSize, height: lifePhoto.position == 0 ? fullSize : halfSize)
+        .frame(
+            width: lifePhoto.position == 0 ? fullSize : halfSize,
+            height: lifePhoto.position == 0 ? fullSize : halfSize
+        )
         .background(lifePhoto.position <= config.currentLifePhotoCount ? Color.yellow100 : Color.yellow20)
         .cornerRadius(16)
         .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 16))
@@ -62,7 +69,12 @@ struct LifePhotoButton: View {
 struct LifePhotoButton_Previews: PreviewProvider {
     static var previews: some View {
         LifePhotoButton(
-            lifePhoto: LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=6", caption: "", position: 0),
+            lifePhoto:
+                LifePhoto(
+                    photoUrl: "https://i.pravatar.cc/150?img=6",
+                    caption: "",
+                    position: 0
+                ),
             halfSize: 75,
             fullSize: 164,
             config: LifePhotoViewModel()

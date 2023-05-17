@@ -65,29 +65,31 @@ class EntryViewModel: ObservableObject, Equatable {
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPredicate.evaluate(with: email)
     }
-    
+    /// Password regex
+    /// Rules
+    /// - 8 - 36 characters
+    /// - at least 1 uppercase
+    /// - at least 1 lowercase
+    /// - at least 1 number
+    /// - at least 1 symbol (!&^%$#@()/_*+-)
     public func isPasswordValid() -> Bool {
-        /// Password regex
-        /// Rules
-        /// - 8 - 36 characters
-        /// - at least 1 uppercase
-        /// - at least 1 lowercase
-        /// - at least 1 number
-        /// - at least 1 symbol (@$!%*?&)
-        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,36}$"
+        // swiftlint: disable line_length
+        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!&^%$#@()/_*+-])[A-Za-z\\d!&^%$#@()/_*+-]{8,36}$"
+        // swiftlint: enable line_length
         let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
         return passwordPredicate.evaluate(with: password)
     }
-    
+    /// New Password regex
+    /// Rules
+    /// - 8 - 36 characters
+    /// - at least 1 uppercase
+    /// - at least 1 lowercase
+    /// - at least 1 number
+    /// - at least 1 symbol (!&^%$#@()/_*+-)
     public func isNewPasswordValid() -> Bool {
-        /// Password regex
-        /// Rules
-        /// - 8 - 36 characters
-        /// - at least 1 uppercase
-        /// - at least 1 lowercase
-        /// - at least 1 number
-        /// - at least 1 symbol (@$!%*?&)
-        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,36}$"
+        // swiftlint: disable line_length
+        let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!&^%$#@()/_*+-])[A-Za-z\\d!&^%$#@()/_*+-]{8,36}$"
+        // swiftlint: enable line_length
         let passwordPredicate = NSPredicate(format: "SELF MATCHES %@", passwordRegex)
         return passwordPredicate.evaluate(with: newPassword) && newPassword == newPasswordConfirmed
     }

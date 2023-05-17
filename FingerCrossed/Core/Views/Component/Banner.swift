@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct BannerModifier: ViewModifier {
+    
     struct BannerData {
         var content: String
         var type: BannerType
     }
+    
     enum BannerType {
         case info
         case warning
@@ -33,6 +35,7 @@ struct BannerModifier: ViewModifier {
     }
     
     @Binding var data: BannerData
+    
     @Binding var show: Bool
     
     func body(
@@ -41,17 +44,18 @@ struct BannerModifier: ViewModifier {
         ZStack {
             content
             if show {
-                withAnimation(
-                    .easeInOut
-                ) { VStack {
+                withAnimation(.easeInOut) {
+                    VStack {
                         Spacer()
+                        
                         HStack(
                             alignment: .center,
-                            spacing: 5.33
+                            spacing: 8
                         ) {
                             Image(data.type.leadingIcon)
                                 .resizable()
-                                .frame(width: 21.33, height: 21.33)
+                                .frame(width: 16, height: 16)
+                            
                             Text(data.content)
                                 .fontTemplate(.noteMedium)
                                 .foregroundColor(Color.text)
@@ -59,13 +63,13 @@ struct BannerModifier: ViewModifier {
                         }
                         .padding(
                             EdgeInsets(
-                                top: 13.33,
-                                leading: 13.33,
-                                bottom: 13.33,
-                                trailing: 13.33
+                                top: 16,
+                                leading: 16,
+                                bottom: 16,
+                                trailing: 16
                             )
                         )
-                        .background(Color.yellow100)
+                        .background(Color.yellow20)
                         .cornerRadius(16)
                         .frame(
                             maxWidth: UIScreen.main.bounds.width * 0.8,
@@ -73,12 +77,8 @@ struct BannerModifier: ViewModifier {
                         )
                     }
                     .padding(.bottom, UIScreen.main.bounds.height * 0.02)
-                    .transition(
-                        AnyTransition
-                            .move(edge: .bottom)
-                            .combined(with: .opacity)
-                    )
-                    .onAppear(perform: {
+                    .transition(.opacity)
+                    .onAppear {
                         DispatchQueue.main.asyncAfter(
                             deadline: .now() + 2  // last for 2 seconds
                         ) {
@@ -86,7 +86,7 @@ struct BannerModifier: ViewModifier {
                                 self.show = false
                             }
                         }
-                    })
+                    }
                 }
             }
         }
@@ -96,7 +96,8 @@ struct BannerModifier: ViewModifier {
         Binding.constant(
             BannerModifier.BannerData(
                 content: "We've sent a reset link to your email!",
-                type: .info)
+                type: .info
+            )
         )
     }
     

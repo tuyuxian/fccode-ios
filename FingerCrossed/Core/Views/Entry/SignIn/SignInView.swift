@@ -8,11 +8,17 @@
 
 import SwiftUI
 
-struct SignInView: View {
-    // Observed entry view model
+struct SignInView: View, KeyboardReadable {
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for password validation
-    @State var isPasswordValid: Bool = true
+    /// Flag for password validation
+    @State private var isPasswordValid: Bool = true
+    /// Flag for button tap
+    @State private var isStatisfied: Bool = false
+    /// Flag for keyboard signal
+    @State private var isKeyboardShowUp: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func passwordOnSubmit() {
         guard vm.isPasswordValid() else {
@@ -43,10 +49,29 @@ struct SignInView: View {
             )
         ) {
             Color.background.ignoresSafeArea(.all)
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .onboarding
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 30) {
                     Text("Glad to\nSee You Back")
@@ -63,24 +88,28 @@ struct SignInView: View {
                         spacing: 20
                     ) {
                         PrimaryInputBar(
-                            input: .text,
-                            value: $vm.email,
-                            isDisable: true
-                        )
-                        
-                        PrimaryInputBar(
                             input: .password,
                             value: $vm.password,
                             hint: "Password",
-                            action: passwordOnSubmit
+                            isValid: $isPasswordValid
                         )
-                        .onSubmit {
-                            passwordOnSubmit()
+                        .onReceive(keyboardPublisher) { val in
+                            isKeyboardShowUp = val
                         }
+
                         // TODO(Sam): handle wrong password
                         !isPasswordValid
                         ? ErrorHelper()
+                            .padding(.leading, 16)
+                            .padding(.vertical, -10)
                         : nil
+                        
+                        PrimaryButton(
+                            label: "Continue",
+                            action: passwordOnSubmit,
+                            isTappable: $isStatisfied,
+                            isLoading: $isLoading
+                        )
                     }
                     
                     HStack(spacing: 10) {
@@ -109,7 +138,7 @@ struct SignInView: View {
                         Button {
                             backToEntry()
                         } label: {
-                            Text("Log in with SSO")
+                            Text("Continue with social sign-in")
                                 .fontTemplate(.pMedium)
                                 .foregroundColor(Color.gold)
                         }
@@ -117,14 +146,16 @@ struct SignInView: View {
                 }
             }
             .padding(.horizontal, 24)
+            .ignoresSafeArea(.keyboard, edges: .all)
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
 struct SignInView_Previews: PreviewProvider {
     static var previews: some View {
-        SignInView(vm: EntryViewModel())
+        SignInView(
+            vm: EntryViewModel()
+        )
     }
 }
 

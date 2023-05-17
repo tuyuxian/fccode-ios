@@ -45,6 +45,12 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Access to the camera to take photo</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Access to your location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to the microphone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to the photo library</string>
 	<key>UILaunchScreen</key>
 	<array>
 		<dict>

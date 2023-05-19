@@ -8,11 +8,7 @@
 import Foundation
 import SwiftUI
 
-class EntryViewModel: ObservableObject, Equatable {
-    static func == (lhs: EntryViewModel, rhs: EntryViewModel) -> Bool {
-        return lhs.email == rhs.email
-    }
-    
+class EntryViewModel: ObservableObject {    
     @Published var isNewUser: Bool = true
     @Published var email: String = ""
     @Published var password: String = ""
@@ -26,13 +22,14 @@ class EntryViewModel: ObservableObject, Equatable {
     @Published var nationality = [CountryModel]()
     @Published var ethnicity = [Ethnicity]()
     @Published var avatarUrl: String?
-    @Published var isQualified: Bool = false
     @Published var yearIndex = 99
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
+    @Published var selectedImage: UIImage?
+    @Published var selectedImageData: Data?
     
     enum CurrentView: Int {
-        case onboarding
+        case email
         case password
         case resetPassword
         case resetPasswordEmailCheck
@@ -52,9 +49,35 @@ class EntryViewModel: ObservableObject, Equatable {
     
     /// Default is forward transition
     @Published var transition: Transition = .forward
+    /// Default entry view is email
+    @Published var switchView = CurrentView.gender
     
-    // @AppStorage("entryState") var switchView = CurrentView.onboarding
-    @Published var switchView = CurrentView.onboarding
+    // MARK: - Condition Variables
+    /// Flag for button tap
+    /// - Email view
+    @Published var isEmailSatisfied: Bool = false
+    /// - Password view
+    @Published var isPasswordSatisfied: Bool = false
+    /// - Sign up account view
+    @Published var isAccountPasswordSatisfied: Bool = false
+    @Published var isAccountPasswordLengthSatisfied: Bool = false
+    @Published var isAccountPasswordUpperAndLowerSatisfied: Bool = false
+    // swiftlint: disable identifier_name
+    @Published var isAccountPasswordNumberAndSymbolSatisfied: Bool = false
+    // swiftlint: enable identifier_name
+    @Published var isAccountPasswordPasswordMatched: Bool = false
+    /// - Sign up name view
+    @Published var isNameSatisfied: Bool = false
+    /// - Sign up birthday view
+    @Published var isAdult: Bool = false
+    /// - Sign up gender view
+    @Published var isGenderSatisfied: Bool = false
+    /// - Sign up ethnicity view
+    @Published var isEthnicitySatisfied: Bool = false
+    /// - Sign up nationality view
+    @Published var isNationalitySatisfied: Bool = false
+    /// - Sign up avatar view
+    @Published var isAvatarSatisfied: Bool = false
     
     // MARK: - Validation functions
     public func isEmailValid() -> Bool {

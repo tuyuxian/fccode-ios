@@ -31,7 +31,7 @@ struct DatePicker: View {
     @State var year: [String] = []
     
     var body: some View {
-        VStack {
+        LazyVStack {
             ZStack {
                 Rectangle()
                     .fill(Color.yellow20)

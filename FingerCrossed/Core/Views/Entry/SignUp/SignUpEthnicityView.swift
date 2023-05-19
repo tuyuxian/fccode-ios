@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct SignUpEthnicityView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for name validation
-    @State var isSatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .forward
@@ -27,10 +27,28 @@ struct SignUpEthnicityView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .gender
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 4)
@@ -55,11 +73,14 @@ struct SignUpEthnicityView: View {
                         .frame(height: 50)
                 }
                 
-                CheckBoxEthnicityGroup(ethnicityList: $vm.ethnicity) { _ in
-                }
+                CheckBoxEthnicityGroup(
+                    selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
+                    ethnicityList: $vm.ethnicity,
+                    callback: { _ in }
+                )
                 .padding(.vertical, 20)
                 .onChange(of: vm.ethnicity) { _ in
-                    isSatisfied = vm.ethnicity.count > 0
+                    vm.isEthnicitySatisfied = vm.ethnicity.count > 0
                 }
                 
                 Spacer()
@@ -67,7 +88,8 @@ struct SignUpEthnicityView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isSatisfied
+                    isTappable: $vm.isEthnicitySatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -78,6 +100,8 @@ struct SignUpEthnicityView: View {
 
 struct SignUpEthnicityView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpEthnicityView(vm: EntryViewModel())
+        SignUpEthnicityView(
+            vm: EntryViewModel()
+        )
     }
 }

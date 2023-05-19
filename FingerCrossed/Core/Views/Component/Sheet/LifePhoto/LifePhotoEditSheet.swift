@@ -14,6 +14,13 @@ struct LifePhotoEditSheet: View {
     @ObservedObject var config: LifePhotoViewModel
     @State var uiImage: UIImage = UIImage()
     @State var newUIImage: UIImage = UIImage()
+    
+    @State private var text: String = ""
+    
+    @State private var isSatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
+    let textLengthLimit: Int = 200
 
     var body: some View {
         ScrollViewReader { (proxy: ScrollViewProxy) in
@@ -27,8 +34,6 @@ struct LifePhotoEditSheet: View {
                         .padding(.top, 30)
                         .id(2)
                     
-                    
-                    
                     VStack {
                     }
                     .frame(height: 342)
@@ -39,23 +44,24 @@ struct LifePhotoEditSheet: View {
                         ) { phase in
                             switch phase {
                             case .empty:
-                                EmptyView() // TODO(Sam): Replace with shimmer later
+                                EmptyView()
                             case .success(let image):
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: imageWidth(tag: selectedTag), height: imageHeight(tag: selectedTag))
+                                    .frame(
+                                        width: imageWidth(tag: selectedTag),
+                                        height: imageHeight(tag: selectedTag)
+                                    )
                                     .scaleEffect(config.imageScale)
                                     .cornerRadius(6)
                                     .background(
                                         RoundedRectangle(cornerRadius: 6)
                                             .strokeBorder(Color.yellow100, lineWidth: 1)
                                     )
-//                                    .onAppear{
-//                                        uiImage = UIImage(data: getImageData(url: config.selectedLifePhoto?.photoUrl ?? ""))!
-//                                    }
                                     .onChange(of: uiImage, perform: { newImage in
-                                        newUIImage = UIImage(data: newImage.jpegData(compressionQuality: 0.95)!)!
+                                        newUIImage = UIImage(
+                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
                                     })
                                     .gesture(
                                         MagnificationGesture().onChanged({(value) in
@@ -65,7 +71,12 @@ struct LifePhotoEditSheet: View {
                                         })
                                     )
                             case .failure:
-                                ProgressView() // TODO(Sam): Replace with shimmer later
+                                Shimmer(
+                                    size: CGSize(
+                                        width: UIScreen.main.bounds.size.width - 48,
+                                        height: 342
+                                    )
+                                )
                             @unknown default:
                                 EmptyView()
                             }
@@ -81,33 +92,28 @@ struct LifePhotoEditSheet: View {
                     }
                     .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                     
-                    VStack(alignment: .trailing,spacing: 6) {
-                        CaptionInputBar(hint: "Add caption", defaultPresentLine: 6, lineLimit: 6)
-
-                        Text("0/200")
-                            .fontTemplate(.captionRegular)
-                            .foregroundColor(Color.textHelper)
-                        
+                    CaptionInputBar(
+                        text: $text,
+                        hint: "Type your self introduction",
+                        defaultPresentLine: 10,
+                        lineLimit: 10,
+                        textLengthLimit: textLengthLimit
+                    )
+                    .onChange(of: text) { _ in
+                        isSatisfied = true
                     }
-                    .padding(.horizontal, 1) // offset border width
                     .onTapGesture {
                         withAnimation(.easeInOut(duration: 0.16)) {
                             proxy.scrollTo(1, anchor: .center)
                         }
                     }
                     
-//                    Button {
-//                        presentationMode.wrappedValue.dismiss()
-//                        
-//                    } label: {
-//                        Text("Save")
-//                    }
-//                    .buttonStyle(PrimaryButton())
-//                    .padding(.vertical, 4) // 20 - 16
-//                    .padding(.bottom, 30)
-//                    .id(1)
+                    PrimaryButton(
+                        label: "Save",
+                        isTappable: $isSatisfied,
+                        isLoading: $isLoading
+                    )
                 }
-
             }
             .padding(.horizontal, 24)
             .background(Color.white)

@@ -8,19 +8,21 @@
 import SwiftUI
 
 struct ResetPasswordView: View, KeyboardReadable {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for password validation
-    @State var isPasswordValid: Bool = true
-    // Flag for button tappable
-    @State var isStatisfied: Bool = false
-    // Flags for input helpers
-    @State var isLengthStatisfied: Bool = false
-    @State var isUpperAndLowerStatisfied: Bool = false
-    @State var isNumberAndSymbolStatisfied: Bool = false
-    @State var isNewPasswordMatched: Bool = false
-    // Flag for keyboard signal
-    @State var isKeyboardShowUp: Bool = false
+    /// Flag for password validation
+    @State private var isPasswordValid: Bool = true
+    /// Flag for button tappable
+    @State private var isSatisfied: Bool = false
+    /// Flags for input helpers
+    @State private var isLengthSatisfied: Bool = false
+    @State private var isUpperAndLowerSatisfied: Bool = false
+    @State private var isNumberAndSymbolSatisfied: Bool = false
+    @State private var isNewPasswordMatched: Bool = false
+    /// Flag for keyboard signal
+    @State private var isKeyboardShowUp: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         guard vm.isNewPasswordValid() else {
@@ -30,6 +32,8 @@ struct ResetPasswordView: View, KeyboardReadable {
         isPasswordValid = true
         vm.transition = .forward
         vm.switchView = .resetPasswordEmailCheck
+        vm.newPassword = ""
+        vm.newPasswordConfirmed = ""
     }
 
     var body: some View {
@@ -41,10 +45,28 @@ struct ResetPasswordView: View, KeyboardReadable {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .password
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 !isKeyboardShowUp
                 ? Text("Reset\nPassword")
@@ -58,27 +80,28 @@ struct ResetPasswordView: View, KeyboardReadable {
                     .padding(.bottom, 30)
                 : nil
 
-                VStack(
+                LazyVStack(
                     alignment: .leading,
                     spacing: 20
                 ) {
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.newPassword,
-                        hint: "Please enter new password"
+                        hint: "Enter new password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.newPassword) { password in
-                        isLengthStatisfied = vm.checkLength(str: password)
-                        isUpperAndLowerStatisfied =
+                        isLengthSatisfied = vm.checkLength(str: password)
+                        isUpperAndLowerSatisfied =
                             vm.checkUpper(str: password) &&
                             vm.checkLower(str: password)
-                        isNumberAndSymbolStatisfied =
+                        isNumberAndSymbolSatisfied =
                             vm.checkNumber(str: password) &&
                             vm.checkSymbols(str: password)
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
+                        isSatisfied =
+                            isLengthSatisfied &&
+                            isUpperAndLowerSatisfied &&
+                            isNumberAndSymbolSatisfied &&
                             isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
@@ -88,38 +111,39 @@ struct ResetPasswordView: View, KeyboardReadable {
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.newPasswordConfirmed,
-                        hint: "Confirm new password"
+                        hint: "Confirm new password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.newPasswordConfirmed) { password in
                         isNewPasswordMatched =
                             !vm.newPassword.isEmpty &&
                             !password.isEmpty &&
                             vm.newPassword == password
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
+                        isSatisfied =
+                            isLengthSatisfied &&
+                            isUpperAndLowerSatisfied &&
+                            isNumberAndSymbolSatisfied &&
                             isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
                     }
                     
-                    VStack(alignment: .leading, spacing: 6.0) {
+                    LazyVStack(alignment: .leading, spacing: 6.0) {
                         InputHelper(
-                            isSatisfied: $isLengthStatisfied,
+                            isSatisfied: $isLengthSatisfied,
                             label: "Password should be 8 to 36 characters",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isUpperAndLowerStatisfied,
+                            isSatisfied: $isUpperAndLowerSatisfied,
                             label: "At least 1 uppercase & 1 lowercase",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isNumberAndSymbolStatisfied,
+                            isSatisfied: $isNumberAndSymbolSatisfied,
                             label: "At least 1 number & 1 symbol",
                             type: .info
                         )
@@ -138,9 +162,10 @@ struct ResetPasswordView: View, KeyboardReadable {
                     .ignoresSafeArea(.keyboard)
                 
                 PrimaryButton(
-                    label: "Update Password",
+                    label: "Reset Password",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied
+                    isTappable: $isSatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -151,6 +176,8 @@ struct ResetPasswordView: View, KeyboardReadable {
 
 struct ResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ResetPasswordView(vm: EntryViewModel())
+        ResetPasswordView(
+            vm: EntryViewModel()
+        )
     }
 }

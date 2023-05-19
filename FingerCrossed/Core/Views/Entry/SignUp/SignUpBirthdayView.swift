@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct SignUpBirthdayView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for age validation
-    @State var isAdult: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .forward
@@ -39,7 +39,7 @@ struct SignUpBirthdayView: View {
         
         let yearGap = Calendar.current.dateComponents([.year], from: selectedDate, to: Date.now)
         
-        isAdult = yearGap.year! >= 18 ? true : false
+        vm.isAdult = yearGap.year! >= 18
     }
     
     var body: some View {
@@ -51,10 +51,28 @@ struct SignUpBirthdayView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .name
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 2)
@@ -96,7 +114,7 @@ struct SignUpBirthdayView: View {
                 }
 
                 InputHelper(
-                    isSatisfied: $isAdult,
+                    isSatisfied: $vm.isAdult,
                     label: "You must be over 18",
                     type: .info
                 )
@@ -111,7 +129,8 @@ struct SignUpBirthdayView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isAdult
+                    isTappable: $vm.isAdult,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -122,6 +141,8 @@ struct SignUpBirthdayView: View {
 
 struct SignUpBirthdayView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpBirthdayView(vm: EntryViewModel())
+        SignUpBirthdayView(
+            vm: EntryViewModel()
+        )
     }
 }

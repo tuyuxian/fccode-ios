@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct VoiceMessageEditSheet: View {
-    // TODO(Lawrence): add sound wave animation
+    // TODO(Lawrence): apply new design
     var body: some View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(.all)

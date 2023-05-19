@@ -25,7 +25,14 @@ struct LifePhotoStack: View {
                         lifePhotoData.currentDragLifePhoto = lifePhoto
                         return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                     })
-                    .onDrop(of: [.url], delegate: DropViewDelegate(lifePhoto: lifePhoto, lifePhotoData: lifePhotoData))
+                    .onDrop(
+                        of: [.url],
+                        delegate:
+                            DropViewDelegate(
+                                lifePhoto: lifePhoto,
+                                lifePhotoData: lifePhotoData
+                            )
+                    )
                 }
                 LazyVStack(spacing: 14) {
                     LazyHStack(spacing: 14) {
@@ -41,11 +48,17 @@ struct LifePhotoStack: View {
                                     lifePhotoData.currentDragLifePhoto = lifePhoto
                                     return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                                 })
-                                .onDrop(of: [.url], delegate: DropViewDelegate(lifePhoto: lifePhoto, lifePhotoData: lifePhotoData))
+                                .onDrop(
+                                    of: [.url],
+                                    delegate:
+                                        DropViewDelegate(
+                                            lifePhoto: lifePhoto,
+                                            lifePhotoData: lifePhotoData
+                                        )
+                                )
                             } else {
                                 LifePhotoButton(
                                     lifePhoto: lifePhoto,
-//                                    showEditSheet: lifePhotoData.currentLifePhotoCount == lifePhoto.position ? $showEditSheet : .constant(false),
                                     halfSize: (proxy.size.width - 42)/4,
                                     fullSize: (proxy.size.width - 14)/2,
                                     config: lifePhotoData
@@ -66,11 +79,17 @@ struct LifePhotoStack: View {
                                     lifePhotoData.currentDragLifePhoto = lifePhoto
                                     return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                                 })
-                                .onDrop(of: [.url], delegate: DropViewDelegate(lifePhoto: lifePhoto, lifePhotoData: lifePhotoData))
+                                .onDrop(
+                                    of: [.url],
+                                    delegate:
+                                        DropViewDelegate(
+                                            lifePhoto: lifePhoto,
+                                            lifePhotoData: lifePhotoData
+                                        )
+                                )
                             } else {
                                 LifePhotoButton(
                                     lifePhoto: lifePhoto,
-//                                    showEditSheet: lifePhotoData.currentLifePhotoCount == lifePhoto.position ? $showEditSheet : .constant(false),
                                     halfSize: (proxy.size.width - 42)/4,
                                     fullSize: (proxy.size.width - 14)/2,
                                     config: lifePhotoData
@@ -98,18 +117,25 @@ struct LifePhotoStack_Previews: PreviewProvider {
 struct DropViewDelegate: DropDelegate {
     
     var lifePhoto: LifePhoto
+    
     var lifePhotoData: LifePhotoViewModel
     
-    func performDrop(info: DropInfo) -> Bool {
+    func performDrop(
+        info: DropInfo
+    ) -> Bool {
         return true
     }
     
-    func dropEntered(info: DropInfo) {
-        let fromIndex = lifePhotoData.lifePhotos.firstIndex{(lifePhoto) -> Bool in
-            return lifePhoto.id == lifePhotoData.currentDragLifePhoto?.id} ?? 0
+    func dropEntered(
+        info: DropInfo
+    ) {
+        let fromIndex = lifePhotoData.lifePhotos.firstIndex { (lifePhoto) -> Bool in
+            return lifePhoto.id == lifePhotoData.currentDragLifePhoto?.id
+        } ?? 0
         
-        let toIndex = lifePhotoData.lifePhotos.firstIndex{(lifePhoto) -> Bool in
-            return lifePhoto.id == self.lifePhoto.id} ?? 0
+        let toIndex = lifePhotoData.lifePhotos.firstIndex { (lifePhoto) -> Bool in
+            return lifePhoto.id == self.lifePhoto.id
+        } ?? 0
         
         if fromIndex != toIndex {
             let fromLifePhoto = lifePhotoData.lifePhotos[fromIndex]
@@ -120,7 +146,9 @@ struct DropViewDelegate: DropDelegate {
         }
     }
     
-    func dropUpdated(info: DropInfo) -> DropProposal? {
+    func dropUpdated(
+        info: DropInfo
+    ) -> DropProposal? {
         return DropProposal(operation: .move)
     }
     

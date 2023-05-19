@@ -8,16 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-    let settingsOptions: [ChildView] = [
-        ChildView(
-            label: "Password",
-            subview: AnyView(SettingsResetPasswordView())
-        ),
-        ChildView(
-            label: "Social Account",
-            subview: AnyView(SettingsSocialAccountView())
-        )
-    ]
+    
+    @ObservedObject var vm: ProfileViewModel
     
     var body: some View {
         ContainerWithHeaderView(
@@ -26,7 +18,18 @@ struct SettingsView: View {
             showSaveButton: false
         ) {
             Box {
-                MenuList(childViewList: settingsOptions)
+                MenuList(
+                    childViewList: [
+                        ChildView(
+                            label: "Password",
+                            subview: AnyView(SettingsResetPasswordView(vm: vm))
+                        ),
+                        ChildView(
+                            label: "Social Account",
+                            subview: AnyView(SettingsSocialAccountView(vm: vm))
+                        )
+                    ]
+                )
             }
         }
     }
@@ -34,6 +37,8 @@ struct SettingsView: View {
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(
+            vm: ProfileViewModel()
+        )
     }
 }

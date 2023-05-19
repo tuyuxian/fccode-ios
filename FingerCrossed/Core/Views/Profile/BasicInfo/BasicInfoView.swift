@@ -90,7 +90,10 @@ struct BasicInfoContent: View {
     @State private var showAlert: Bool = false
     @State private var showSheet: Bool = false
     @State private var showBanner: Bool = false
-    @State var bannerData: BannerModifier.BannerData = BannerModifier.BannerData(content: "We've sent a reset link to your email!", type: .info)
+    @State var bannerData: BannerModifier.BannerData = BannerModifier.BannerData(
+        content: "We've sent a reset link to your email!",
+        type: .info
+    )
     
     var body: some View {
         GeometryReader { proxy in
@@ -111,13 +114,16 @@ struct BasicInfoContent: View {
                     }
                     .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
                     
-                    ForEach(Array(basicInfoOptions.enumerated()), id: \.element.id) { index, childView in
+                    ForEach(Array(basicInfoOptions.enumerated()), id: \.element.id) { _, childView in
                         VStack(spacing: 0) {
                             Divider().foregroundColor(Color.surface3)
                                 .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                             HStack(spacing: 0) {
                                 if childView.hasSubview {
-                                    EditableRow(showSheet: $showSheet, sheetType: childView.label == "Voice Message" ? 1 : 2) {
+                                    EditableRow(
+                                        showSheet: $showSheet,
+                                        sheetType: childView.label == "Voice Message" ? 1 : 2
+                                    ) {
                                         ListRow(
                                             label: childView.label,
                                             icon: childView.icon
@@ -163,14 +169,28 @@ struct UneditableRow<Content: View>: View {
         }
         .alert(isPresented: $showAlert) {
             Alert(
-                title: Text("Do you really want to change it?")
-                    .font(Font.system(size: 18, weight: .medium)),
-                message: Text("To provide a better overall experience, users are only allowed to change this information once."),
+                title: Text(
+                    "Do you really want to change it?"
+                )
+                .font(
+                    Font.system(
+                        size: 18,
+                        weight: .medium
+                    )
+                ),
+                message: Text(
+                    // swiftlint: disable line_length
+                    "To provide a better overall experience, users are only allowed to change this information once."
+                    // swiftlint: enable line_length
+                ),
                 primaryButton: .destructive(
-                    Text("Yes")) {
-                        showBanner = true
-                    },
-                secondaryButton: .cancel(Text("No"))
+                    Text("Yes")
+                ) {
+                    showBanner = true
+                },
+                secondaryButton: .cancel(
+                    Text("No")
+                )
             )
         }
     }

@@ -10,8 +10,6 @@ import SwiftUI
 struct SignUpNameView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for name validation
-    @State private var isSatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
@@ -36,7 +34,7 @@ struct SignUpNameView: View {
     private func checkSymbols(
         str: String
     ) -> Bool {
-        let specialCharacterRegEx  = ".*[!&^%$#@()/*+]+.*"
+        let specialCharacterRegEx  = ".*[!&^%$#@()/*+_]+.*"
         let symbolChecker = NSPredicate(format: "SELF MATCHES %@", specialCharacterRegEx)
         guard symbolChecker.evaluate(with: str) else { return false }
         return true
@@ -109,14 +107,14 @@ struct SignUpNameView: View {
                     )
                     .onChange(of: vm.name) { name in
                         vm.name = String(name.prefix(30))
-                        isSatisfied = checkLength(str: name) &&
+                        vm.isNameSatisfied = checkLength(str: name) &&
                         checkCharacter(str: name) &&
                         !checkSymbols(str: name)
                     }
                     
                     VStack {
                         InputHelper(
-                            isSatisfied: $isSatisfied,
+                            isSatisfied: $vm.isNameSatisfied,
                             label: "Name should be 2 to 30 characters",
                             type: .info
                         )
@@ -129,7 +127,7 @@ struct SignUpNameView: View {
                     PrimaryButton(
                         label: "Continue",
                         action: buttonOnTap,
-                        isTappable: $isSatisfied,
+                        isTappable: $vm.isNameSatisfied,
                         isLoading: $isLoading
                     )
                     .padding(.bottom, 16)

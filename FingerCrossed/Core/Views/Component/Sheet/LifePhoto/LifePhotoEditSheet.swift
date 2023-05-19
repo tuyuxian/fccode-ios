@@ -17,7 +17,7 @@ struct LifePhotoEditSheet: View {
     
     @State private var text: String = ""
     
-    @State private var isStatisfied: Bool = false
+    @State private var isSatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     let textLengthLimit: Int = 200
@@ -100,7 +100,7 @@ struct LifePhotoEditSheet: View {
                         textLengthLimit: textLengthLimit
                     )
                     .onChange(of: text) { _ in
-                        isStatisfied = true
+                        isSatisfied = true
                     }
                     .onTapGesture {
                         withAnimation(.easeInOut(duration: 0.16)) {
@@ -110,7 +110,7 @@ struct LifePhotoEditSheet: View {
                     
                     PrimaryButton(
                         label: "Save",
-                        isTappable: $isStatisfied,
+                        isTappable: $isSatisfied,
                         isLoading: $isLoading
                     )
                 }

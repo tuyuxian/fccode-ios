@@ -13,7 +13,7 @@ struct SelfIntroEditSheet: View {
     
     @State private var text: String = ""
     
-    @State private var isStatisfied: Bool = false
+    @State private var isSatisfied: Bool = false
     
     @State private var isLoading: Bool = false
             
@@ -43,13 +43,13 @@ struct SelfIntroEditSheet: View {
                         textLengthLimit: textLengthLimit
                     )
                     .onChange(of: text) { _ in
-                        isStatisfied = true
+                        isSatisfied = true
                     }
                 }
                 
                 PrimaryButton(
                     label: "Save",
-                    isTappable: $isStatisfied,
+                    isTappable: $isSatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.top, 4) // 20 - 16(spacing)

@@ -42,11 +42,14 @@ struct CheckBoxEthnicityGroup: View {
                 item == id
             })
             ethnicityList.removeAll { item in
-                item.type == String(describing: et)
+                item.type == et
             }
         } else {
             selectedIdList.append(id)
-            let ethnicity = Ethnicity(id: UUID(), type: String(describing: et))
+            let ethnicity = Ethnicity(
+                id: UUID(),
+                type: EthnicityType(rawValue: id) ?? .ET1
+            )
             ethnicityList.append(ethnicity)
             callback(id)
         }
@@ -70,7 +73,7 @@ struct CheckBoxEthnicityGroup: View {
 }
 
 private var selectedValues: Binding<[Ethnicity]> {
-    Binding.constant([Ethnicity(id: UUID(), type: "Value")])
+    Binding.constant([Ethnicity(id: UUID(), type: .ET1)])
 }
 
 struct CheckBoxEthnicityGroup_Previews: PreviewProvider {

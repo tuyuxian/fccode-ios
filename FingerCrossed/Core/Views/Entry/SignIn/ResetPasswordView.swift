@@ -13,11 +13,11 @@ struct ResetPasswordView: View, KeyboardReadable {
     /// Flag for password validation
     @State private var isPasswordValid: Bool = true
     /// Flag for button tappable
-    @State private var isStatisfied: Bool = false
+    @State private var isSatisfied: Bool = false
     /// Flags for input helpers
-    @State private var isLengthStatisfied: Bool = false
-    @State private var isUpperAndLowerStatisfied: Bool = false
-    @State private var isNumberAndSymbolStatisfied: Bool = false
+    @State private var isLengthSatisfied: Bool = false
+    @State private var isUpperAndLowerSatisfied: Bool = false
+    @State private var isNumberAndSymbolSatisfied: Bool = false
     @State private var isNewPasswordMatched: Bool = false
     /// Flag for keyboard signal
     @State private var isKeyboardShowUp: Bool = false
@@ -32,6 +32,8 @@ struct ResetPasswordView: View, KeyboardReadable {
         isPasswordValid = true
         vm.transition = .forward
         vm.switchView = .resetPasswordEmailCheck
+        vm.newPassword = ""
+        vm.newPasswordConfirmed = ""
     }
 
     var body: some View {
@@ -78,7 +80,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                     .padding(.bottom, 30)
                 : nil
 
-                VStack(
+                LazyVStack(
                     alignment: .leading,
                     spacing: 20
                 ) {
@@ -89,17 +91,17 @@ struct ResetPasswordView: View, KeyboardReadable {
                         isValid: $isPasswordValid
                     )
                     .onChange(of: vm.newPassword) { password in
-                        isLengthStatisfied = vm.checkLength(str: password)
-                        isUpperAndLowerStatisfied =
+                        isLengthSatisfied = vm.checkLength(str: password)
+                        isUpperAndLowerSatisfied =
                             vm.checkUpper(str: password) &&
                             vm.checkLower(str: password)
-                        isNumberAndSymbolStatisfied =
+                        isNumberAndSymbolSatisfied =
                             vm.checkNumber(str: password) &&
                             vm.checkSymbols(str: password)
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
+                        isSatisfied =
+                            isLengthSatisfied &&
+                            isUpperAndLowerSatisfied &&
+                            isNumberAndSymbolSatisfied &&
                             isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
@@ -117,31 +119,31 @@ struct ResetPasswordView: View, KeyboardReadable {
                             !vm.newPassword.isEmpty &&
                             !password.isEmpty &&
                             vm.newPassword == password
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
+                        isSatisfied =
+                            isLengthSatisfied &&
+                            isUpperAndLowerSatisfied &&
+                            isNumberAndSymbolSatisfied &&
                             isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
                     }
                     
-                    VStack(alignment: .leading, spacing: 6.0) {
+                    LazyVStack(alignment: .leading, spacing: 6.0) {
                         InputHelper(
-                            isSatisfied: $isLengthStatisfied,
+                            isSatisfied: $isLengthSatisfied,
                             label: "Password should be 8 to 36 characters",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isUpperAndLowerStatisfied,
+                            isSatisfied: $isUpperAndLowerSatisfied,
                             label: "At least 1 uppercase & 1 lowercase",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isNumberAndSymbolStatisfied,
+                            isSatisfied: $isNumberAndSymbolSatisfied,
                             label: "At least 1 number & 1 symbol",
                             type: .info
                         )
@@ -162,7 +164,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                 PrimaryButton(
                     label: "Reset Password",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied,
+                    isTappable: $isSatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

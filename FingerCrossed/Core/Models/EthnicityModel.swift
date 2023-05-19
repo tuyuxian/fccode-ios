@@ -21,11 +21,11 @@ enum EthnicityType: String, CaseIterable {
 
 struct Ethnicity: Equatable {
     var id: UUID
-    var type: String
+    var type: EthnicityType
     
     init(
         id: UUID,
-        type: String
+        type: EthnicityType
     ) {
         self.id = id
         self.type = type

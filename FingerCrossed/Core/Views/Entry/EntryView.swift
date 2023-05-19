@@ -2,132 +2,173 @@
 //  EntryView.swift
 //  FingerCrossed
 //
-//  Created by Lawrence on 3/31/23.
-//  Modified by Sam on 5/5/23.
+//  Created by Yu-Hsien Tu on 5/5/23.
 //
 
 import SwiftUI
-import AuthenticationServices
+import GoogleSignIn
+import FacebookCore
 
 struct EntryView: View {
-    /// Observed entry view model
-    @ObservedObject var vm: EntryViewModel
-    /// Flag for email validation
-    @State private var isEmailValid: Bool = true
-    /// Flag for button tap
-    @State private var isStatisfied: Bool = false
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    /// Handler for button on submit
-    private func emailOnSubmit() {
-        guard vm.isEmailValid() else {
-            isEmailValid = false
-            return
-        }
-        isEmailValid = true
-        vm.transition = .forward
-        vm.switchView = .account
-    }
+    
+    @ObservedObject var global: GlobalViewModel
+    
+    @StateObject var vm: EntryViewModel = EntryViewModel()
+        
+    let transitionForward: AnyTransition = .asymmetric(
+        insertion: .move(edge: .trailing),
+        removal: .move(edge: .leading)
+    )
+    
+    let transitionBackward: AnyTransition = .asymmetric(
+        insertion: .move(edge: .leading),
+        removal: .move(edge: .trailing)
+    )
     
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .center,
-                vertical: .top
-            )
-        ) {
-            Color.background.ignoresSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+        Group {
+            switch vm.switchView {
+            case .email:
+                EmailView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                    .onOpenURL { url in
+                        GIDSignIn.sharedInstance.handle(url)
+                    }
+                    .onAppear {
+                        ApplicationDelegate.shared.application(
+                            UIApplication.shared,
+                            didFinishLaunchingWithOptions: nil
+                        )
+                    }
+            case .password:
+                PasswordView(
+                    global: global,
+                    vm: vm
+                )
+                .transition(
+                    vm.transition == .forward
+                    ? transitionForward
+                    : transitionBackward
+                )
                 
-                VStack(spacing: 30) {
-                    Text("Find Your\nPerfect match")
-                        .fontTemplate(.bigBoldTitle)
-                        .foregroundColor(Color.text)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .leading
-                        )
-                        .frame(height: 100)
-                    
-                    VStack(
-                        alignment: .leading,
-                        spacing: 20
-                    ) {
-                        PrimaryInputBar(
-                            input: .email,
-                            value: $vm.email,
-                            hint: "Log in or sign up with email",
-                            isValid: $isEmailValid
-                        )
-                        .onChange(of: vm.email) { val in
-                            isStatisfied = val.count > 0
-                        }
-                        
-                        !isEmailValid
-                        ? InputHelper(
-                            isSatisfied: .constant(false),
-                            label: "Please enter a valid email address",
-                            type: .error
-                        )
-                        .padding(.leading, 16)
-                        .padding(.vertical, -10)
-                        : nil
-                        
-                        PrimaryButton(
-                            label: "Continue",
-                            action: emailOnSubmit,
-                            isTappable: $isStatisfied,
-                            isLoading: $isLoading
-                        )
-                    }
-                    
-                    HStack(spacing: 10) {
-                        VStack {
-                            Divider()
-                        }
-                        
-                        Text("or")
-                            .fontTemplate(.pMedium)
-                            .foregroundColor(Color.text)
-                        
-                        VStack {
-                            Divider()
-                        }
-                    }
-                    
-                    HStack(
-                        alignment: .center,
-                        spacing: 20
-                    ) {
-                        SSOButton(
-                            platform: .facebook,
-                            handler: FacebookSSOViewModel().showFacebookLoginView
-                        )
-                        SSOButton(
-                            platform: .google,
-                            handler: GoogleSSOViewModel().showGoogleLoginView
-                        )
-                        SSOButton(
-                            platform: .apple,
-                            handler: AppleSSOViewModel().showAppleLoginView
-                        )
-                    }
-                }
+            case .resetPassword:
+                ResetPasswordView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+ 
+            case .resetPasswordEmailCheck:
+                ResetPasswordEmailCheckView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .account:
+                SignUpAccountView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .name:
+                SignUpNameView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .birthday:
+                SignUpBirthdayView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .gender:
+                SignUpGenderView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .ethnicity:
+                SignUpEthnicityView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .nationality:
+                SignUpNationalityView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .avatar:
+                SignUpAvatarView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
             }
-            .padding(.horizontal, 24)
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
+        .animation(.easeInOut(duration: 0.5), value: vm.switchView)
+        .background(Color.background)
     }
 }
 
 struct EntryView_Previews: PreviewProvider {
     static var previews: some View {
         EntryView(
-            vm: EntryViewModel()
+            global: GlobalViewModel()
         )
+    }
+}
+
+/// View modifier that applies a move transition on the leading edge
+struct TransitionLeading: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.transition(.move(edge: .leading))
+        } else {
+            content.transition(
+                .asymmetric(
+                    insertion: .move(edge: .leading),
+                    removal: .move(edge: .trailing)
+                )
+            )
+        }
+    }
+}
+
+/// View modifier that applies a move transition on the trailing edge
+struct TransitionTrailing: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.transition(.move(edge: .trailing))
+        } else {
+            content.transition(
+                .asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)
+                )
+            )
+        }
     }
 }

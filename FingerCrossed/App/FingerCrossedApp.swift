@@ -9,23 +9,30 @@ import SwiftUI
 
 @main
 struct FingerCrossedApp: App {
-    @State var loggedIn: Bool = false
+    
+    @StateObject var global: GlobalViewModel = GlobalViewModel()
+    
     var body: some Scene {
         
         WindowGroup {
-            if loggedIn {
-                ContentView()
-                    .preferredColorScheme(.light)
-            } else {
+            switch global.viewState {
+            case .landing:
                 LandingView()
                     .transition(.opacity)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             withAnimation(.easeInOut) {
-                                loggedIn.toggle()
+                                global.viewState = global.isLogin ? .main : .onboarding
                             }
                         }
                     }
+                    .preferredColorScheme(.light)
+            case .onboarding:
+                EntryView(global: global)
+                    .preferredColorScheme(.light)
+            case .main:
+                TabBar()
+                    .preferredColorScheme(.light)
             }
         }
         

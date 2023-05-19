@@ -15,13 +15,15 @@ struct ResetPasswordEmailCheckView: View {
     
     private func buttonOnTap() {
         vm.transition = .backward
-        vm.switchView = .onboarding
+        vm.switchView = .email
         vm.email = ""
+        vm.isEmailSatisfied = false
     }
     
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
+            
             VStack(spacing: 0) {
                 EntryLogo()
                     .padding(.top, 5)

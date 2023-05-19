@@ -10,8 +10,6 @@ import SwiftUI
 struct SignUpBirthdayView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for age validation
-    @State private var isAdult: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
@@ -41,7 +39,7 @@ struct SignUpBirthdayView: View {
         
         let yearGap = Calendar.current.dateComponents([.year], from: selectedDate, to: Date.now)
         
-        isAdult = yearGap.year! >= 18 ? true : false
+        vm.isAdult = yearGap.year! >= 18
     }
     
     var body: some View {
@@ -116,7 +114,7 @@ struct SignUpBirthdayView: View {
                 }
 
                 InputHelper(
-                    isSatisfied: $isAdult,
+                    isSatisfied: $vm.isAdult,
                     label: "You must be over 18",
                     type: .info
                 )
@@ -131,7 +129,7 @@ struct SignUpBirthdayView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isAdult,
+                    isTappable: $vm.isAdult,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

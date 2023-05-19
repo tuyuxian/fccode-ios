@@ -49,6 +49,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                    
             case .resetPassword:
                 ResetPasswordView(vm: vm)
                     .transition(
@@ -56,6 +57,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+ 
             case .resetPasswordEmailCheck:
                 ResetPasswordEmailCheckView(vm: vm)
                     .transition(
@@ -63,6 +65,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .account:
                 SignUpAccountView(vm: vm)
                     .transition(
@@ -70,6 +73,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .name:
                 SignUpNameView(vm: vm)
                     .transition(
@@ -77,6 +81,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .birthday:
                 SignUpBirthdayView(vm: vm)
                     .transition(
@@ -84,6 +89,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .gender:
                 SignUpGenderView(vm: vm)
                     .transition(
@@ -91,6 +97,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .ethnicity:
                 SignUpEthnicityView(vm: vm)
                     .transition(
@@ -98,6 +105,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .nationality:
                 SignUpNationalityView(vm: vm)
                     .transition(
@@ -105,6 +113,7 @@ struct ContentView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+                
             case .avatar:
                 SignUpAvatarView(vm: vm)
                     .transition(
@@ -122,5 +131,37 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+/// View modifier that applies a move transition on the leading edge
+struct TransitionLeading: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.transition(.move(edge: .leading))
+        } else {
+            content.transition(
+                .asymmetric(
+                    insertion: .move(edge: .leading),
+                    removal: .move(edge: .trailing)
+                )
+            )
+        }
+    }
+}
+
+/// View modifier that applies a move transition on the trailing edge
+struct TransitionTrailing: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.transition(.move(edge: .trailing))
+        } else {
+            content.transition(
+                .asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)
+                )
+            )
+        }
     }
 }

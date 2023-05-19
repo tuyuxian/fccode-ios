@@ -15,14 +15,20 @@ struct PrimaryInputBar: View {
         case password
         case text
     }
+    
     @State var input: Input
+    
     @Binding var value: String
+    
     @State var hint: String = ""
-    @State var isError: Bool = false
+    
+    @Binding var isValid: Bool
+    
     @State var isDisable: Bool = false
-    @State var isPasswordVisible: Bool = false
+    
+    @State var isSecureMode: Bool = true
+    
     @FocusState var isFocus: Bool
-    @State var action: () -> Void = {}
     
     var body: some View {
         HStack {
@@ -34,7 +40,13 @@ struct PrimaryInputBar: View {
                         text: $value,
                         prompt: Text(hint)
                                 .font(Font.system(size: 16, weight: .regular))
-                                .foregroundColor(isDisable ? Color.surface1 : Color.textHelper)
+                                .foregroundColor(
+                                    isValid
+                                    ? isDisable
+                                        ? Color.surface1
+                                        : Color.textHelper
+                                    : Color.warning
+                                )
                     )
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
@@ -42,24 +54,56 @@ struct PrimaryInputBar: View {
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                 case .password:
-                    SecureField(
-                        "",
-                        text: $value,
-                        prompt: Text(hint)
-                                .font(Font.system(size: 16, weight: .regular))
-                                .foregroundColor(isDisable ? Color.surface1 : Color.textHelper)
-                    )
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 54)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
+                    if isSecureMode {
+                        SecureField(
+                            "",
+                            text: $value,
+                            prompt: Text(hint)
+                                    .font(Font.system(size: 16, weight: .regular))
+                                    .foregroundColor(
+                                        isValid
+                                        ? isDisable
+                                            ? Color.surface1
+                                            : Color.textHelper
+                                        : Color.warning
+                                    )
+                        )
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                    } else {
+                        TextField(
+                            "",
+                            text: $value,
+                            prompt: Text(hint)
+                                    .font(Font.system(size: 16, weight: .regular))
+                                    .foregroundColor(
+                                        isValid
+                                        ? isDisable
+                                            ? Color.surface1
+                                            : Color.textHelper
+                                        : Color.warning
+                                    )
+                        )
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                    }
                 case .text:
                     TextField(
                         "",
                         text: $value,
                         prompt: Text(hint)
                                 .font(Font.system(size: 16, weight: .regular))
-                                .foregroundColor(isDisable ? Color.surface1 : Color.textHelper)
+                                .foregroundColor(
+                                    isValid
+                                    ? isDisable
+                                        ? Color.surface1
+                                        : Color.textHelper
+                                    : Color.warning
+                                )
                     )
                     .frame(maxWidth: .infinity)
                     .frame(height: 54)
@@ -69,28 +113,18 @@ struct PrimaryInputBar: View {
             .foregroundColor(isDisable ? Color.surface1 : Color.text)
             .disabled(isDisable)
             .focused($isFocus)
-            
+            .onTapGesture {
+                isFocus = true
+            }
+
             switch input {
             case .email:
-                Button {
-                    action()
-                } label: {
-                    Image("ArrowRightCircleBased")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(value.isEmpty ? Color.surface1 : Color.text)
-                        .frame(width: 24, height: 24)
-                }
-                .disabled(value.isEmpty)
+                EmptyView()
             case .password:
                 Button {
-                    withAnimation(
-                        .easeInOut(duration: 0.1)
-                    ) {
-                        self.isPasswordVisible.toggle()
-                    }
+                   isSecureMode.toggle()
                 } label: {
-                    Image(self.isPasswordVisible ? "EyeShow" : "EyeClose")
+                    Image(isSecureMode ? "EyeClose" : "EyeShow")
                         .resizable()
                         .frame(width: 24, height: 24)
                 }
@@ -103,7 +137,7 @@ struct PrimaryInputBar: View {
         .background(
             RoundedRectangle(cornerRadius: 50)
                 .strokeBorder(
-                    isError ? Color.warning : Color.surface2,
+                    isValid ? Color.surface2 : Color.warning,
                     lineWidth: 1
                 )
                 .background(
@@ -119,21 +153,25 @@ struct PrimaryInputBar_Previews: PreviewProvider {
         VStack {
             PrimaryInputBar(
                 input: .email,
-                value: .constant("Value")
+                value: .constant("Value"),
+                isValid: .constant(true)
             )
             PrimaryInputBar(
                 input: .password,
-                value: .constant("Value")
+                value: .constant("Value"),
+                isValid: .constant(true)
             )
             PrimaryInputBar(
                 input: .text,
                 value: .constant("Value"),
+                isValid: .constant(true),
                 isDisable: true
             )
             PrimaryInputBar(
                 input: .text,
-                value: .constant("Value"),
-                isError: true
+                value: .constant(""),
+                hint: "hint",
+                isValid: .constant(false)
             )
         }
         .padding(.horizontal, 24)

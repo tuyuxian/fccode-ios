@@ -1,5 +1,5 @@
 //
-//  NationalityPickerView.swift
+//  NationalityPicker.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/4/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NationalityPickerView: View {
+struct NationalityPicker: View {
     @State var countryViewModel: CountryViewModel = CountryViewModel()
     @ObservedObject var countrySelectionList: CountrySelectionList
     @State var isSheetPresented = false
@@ -64,10 +64,13 @@ struct NationalityPickerView: View {
     }
 }
 
-struct NationalityPickerView_Previews: PreviewProvider {
+struct NationalityPicker_Previews: PreviewProvider {
     static var previews: some View {
-        NationalityPickerView(
-            countrySelectionList: CountrySelectionList(countrySelections: [CountryModel]())
+        NationalityPicker(
+            countrySelectionList:
+                CountrySelectionList(
+                    countrySelections: [CountryModel]()
+                )
         )
     }
 }

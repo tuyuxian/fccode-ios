@@ -8,16 +8,18 @@
 import SwiftUI
 
 struct SignUpAvatarView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    @State var selectedImage: UIImage?
-    @State var selectedImageData: Data?
-    // Flag for image picker's signal
-    @State var showImagePicker: Bool = false
-    // Flag for camera's signal
-    @State var showCamera: Bool = false
-    // Flag for button tappable
-    @State var isStatisfied: Bool = false
+    @State private var selectedImage: UIImage?
+    @State private var selectedImageData: Data?
+    /// Flag for image picker's signal
+    @State private var showImagePicker: Bool = false
+    /// Flag for camera's signal
+    @State private var showCamera: Bool = false
+    /// Flag for button tappable
+    @State private var isStatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func upload(
         _ data: Data?,
@@ -64,10 +66,28 @@ struct SignUpAvatarView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .nationality
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 6)
@@ -92,7 +112,12 @@ struct SignUpAvatarView: View {
                         .frame(height: 50)
                 }
                 
-                ZStack(alignment: .bottom) {
+                ZStack(
+                    alignment: Alignment(
+                        horizontal: .center,
+                        vertical: .bottom
+                    )
+                ) {
                     if selectedImage != nil {
                         Image(uiImage: selectedImage!)
                             .resizable()
@@ -154,6 +179,7 @@ struct SignUpAvatarView: View {
                         }
                     }
                 }
+                .frame(width: UIScreen.main.bounds.size.width - 48)
                 .padding(.top, 20)
                 .fullScreenCover(
                     isPresented: $showCamera,
@@ -182,7 +208,8 @@ struct SignUpAvatarView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied
+                    isTappable: $isStatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -196,6 +223,8 @@ struct SignUpAvatarView: View {
 
 struct SignUpAvatarView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpAvatarView(vm: EntryViewModel())
+        SignUpAvatarView(
+            vm: EntryViewModel()
+        )
     }
 }

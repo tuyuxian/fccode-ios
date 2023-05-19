@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct SignUpNationalityView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
 
     @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
-    // Flag for button tappable
-    @State var isStatisfied: Bool = false
+    /// Flag for button tappable
+    @State private var isStatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .forward
@@ -29,10 +31,28 @@ struct SignUpNationalityView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .ethnicity
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 5)
@@ -61,7 +81,7 @@ struct SignUpNationalityView: View {
                     alignment: .leading,
                     spacing: 10
                 ) {
-                    NationalityPickerView(
+                    NationalityPicker(
                         countrySelectionList: countrySelectionList
                     )
                     .onChange(of: countrySelectionList.countrySelections) { _ in
@@ -85,7 +105,8 @@ struct SignUpNationalityView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied
+                    isTappable: $isStatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -96,6 +117,8 @@ struct SignUpNationalityView: View {
 
 struct SignUpNationalityView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpNationalityView(vm: EntryViewModel())
+        SignUpNationalityView(
+            vm: EntryViewModel()
+        )
     }
 }

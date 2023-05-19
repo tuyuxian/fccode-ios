@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LandingView: View {
+    
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea(.all)
@@ -35,11 +36,12 @@ struct LandingView: View {
                         )
                 }
                 .frame(width: 220)
-                Text("Where you can find perfect match with a little bit of luck.")
-                    .fontTemplate(.noteMedium)
+                Text("Where you can find perfect match with a little bit of luck")
+                    .fontTemplate(.h4Medium)
                     .foregroundColor(Color.surface1)
                     .multilineTextAlignment(.center)
                     .frame(width: 220)
+                    .kerning(-0.4)
             }
         }
     }

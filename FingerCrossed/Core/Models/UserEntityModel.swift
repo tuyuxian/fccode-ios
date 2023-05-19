@@ -17,7 +17,7 @@ enum Gender: String, CaseIterable {
 
 class UserEntityModel: ObservableObject {
     var id: UUID
-    var userID: Int?
+    var userId: Int?
     var email: String?
     var password: String?
     var username: String?
@@ -41,6 +41,7 @@ class UserEntityModel: ObservableObject {
     
     init(
         id: UUID,
+        userId: Int,
         email: String,
         password: String,
         username: String,
@@ -86,6 +87,6 @@ class UserEntityModel: ObservableObject {
     }
     
     // swiftlint: disable line_length
-    static let example = UserEntityModel(id: UUID(), email: "", password: "", username: "", dateOfBirth: Date.now, gender: Gender.MALE, avatarURL: "", selfIntro: "", longitude: 0.0, latitude: 0.0, voiceContentURL: "", matchingDistance: 0, googleConnect: false, facebookConnect: false, appleConnect: false, premium: false, goal: [GoalModel](), citizen: [CountryModel](), lifePhoto: [LifePhoto](), socialAccount: [SocialAccount](), ethnicity: [Ethnicity]())
+    static let example = UserEntityModel(id: UUID(), userId: 123, email: "", password: "", username: "", dateOfBirth: Date.now, gender: Gender.MALE, avatarURL: "", selfIntro: "", longitude: 0.0, latitude: 0.0, voiceContentURL: "", matchingDistance: 0, googleConnect: false, facebookConnect: false, appleConnect: false, premium: false, goal: [GoalModel](), citizen: [CountryModel](), lifePhoto: [LifePhoto](), socialAccount: [SocialAccount](), ethnicity: [Ethnicity]())
     // swiftlint: enable line_length
 }

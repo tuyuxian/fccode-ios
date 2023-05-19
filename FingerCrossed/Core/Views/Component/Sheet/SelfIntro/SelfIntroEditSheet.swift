@@ -8,43 +8,58 @@
 import SwiftUI
 
 struct SelfIntroEditSheet: View {
+    
     @Environment(\.presentationMode) private var presentationMode
-        
+    
+    @State private var text: String = ""
+    
+    @State private var isStatisfied: Bool = false
+    
+    @State private var isLoading: Bool = false
+            
+    let textLengthLimit: Int = 200
+    
     var body: some View {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 16) {
-                    Text("Self Introduction")
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 34)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 30)
-                        .id(2)
-                    
-                    VStack(alignment: .trailing,spacing: 6) {
-                        CaptionInputBar(hint: "Type your self introduction", defaultPresentLine: 10, lineLimit: 10)
-                        Text("0/200")
-                            .fontTemplate(.captionRegular)
-                            .foregroundColor(Color.textHelper)
-                        
+        ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+            VStack(spacing: 16) {
+                Text("Self Introduction")
+                    .fontTemplate(.h2Medium)
+                    .foregroundColor(Color.text)
+                    .frame(height: 34)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 30)
+                    .id(2)
+                
+                VStack(
+                    alignment: .trailing,
+                    spacing: 6
+                ) {
+                    CaptionInputBar(
+                        text: $text,
+                        hint: "Type your self introduction",
+                        defaultPresentLine: 10,
+                        lineLimit: 10,
+                        textLengthLimit: textLengthLimit
+                    )
+                    .onChange(of: text) { _ in
+                        isStatisfied = true
                     }
-                    .padding(.horizontal, 1) // offset border width
-                    
-//                    Button {
-//                        presentationMode.wrappedValue.dismiss()
-//                    } label: {
-//                        Text("Save")
-//                    }
-//                    .buttonStyle(PrimaryButton())
-//                    .padding(.vertical, 4) // 20 - 16
-//                    .padding(.bottom, 30)
                 }
-
+                
+                PrimaryButton(
+                    label: "Save",
+                    isTappable: $isStatisfied,
+                    isLoading: $isLoading
+                )
+                .padding(.top, 4) // 20 - 16(spacing)
             }
             .padding(.horizontal, 24)
             .background(Color.white)
-            .presentationDetents([.height(436)])
-            .scrollDismissesKeyboard(.immediately)
+            .presentationDetents([.height(402)]) // 436 - 34(safe area)
+            .presentationDragIndicator(.visible)
+            .scrollDismissesKeyboard(.automatic)
+        }
     }
 }
 

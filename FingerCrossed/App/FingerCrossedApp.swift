@@ -9,10 +9,24 @@ import SwiftUI
 
 @main
 struct FingerCrossedApp: App {
+    @State var loggedIn: Bool = false
     var body: some Scene {
         
         WindowGroup {
-            ContentView()
+            if loggedIn {
+                ContentView()
+                    .preferredColorScheme(.light)
+            } else {
+                LandingView()
+                    .transition(.opacity)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation(.easeInOut) {
+                                loggedIn.toggle()
+                            }
+                        }
+                    }
+            }
         }
         
     }

@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct SignUpGenderView: View {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for name validation
-    @State var isSatisfied: Bool = false
+    /// Flag for name validation
+    @State private var isSatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
         vm.transition = .forward
@@ -27,10 +29,28 @@ struct SignUpGenderView: View {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .birthday
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 2)
@@ -70,7 +90,8 @@ struct SignUpGenderView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isSatisfied
+                    isTappable: $isSatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -81,6 +102,8 @@ struct SignUpGenderView: View {
 
 struct SignUpGenderView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpGenderView(vm: EntryViewModel())
+        SignUpGenderView(
+            vm: EntryViewModel()
+        )
     }
 }

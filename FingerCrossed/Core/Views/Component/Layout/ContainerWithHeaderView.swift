@@ -17,10 +17,9 @@ struct ContainerWithHeaderView<Content: View>: View {
     
     @State var iconButtonName: String = "Save"
     
-    @State var action: ()->() = {}
+    @State var action: () -> () = {}
     
     @ViewBuilder var content: Content
-    
     
     var body: some View {
         ZStack {
@@ -53,7 +52,6 @@ struct ContainerWithHeaderView<Content: View>: View {
         .padding(.top, 19)
         .background(Color.background)
         .edgesIgnoringSafeArea(.bottom)
-        //.background(Color.background)
     }
 }
 

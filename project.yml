@@ -49,6 +49,9 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         UIRequiresFullScreen: true
         NSCameraUsageDescription: "Access to the camera to take photo"
+        NSPhotoLibraryUsageDescription: "Access to the photo library"
+        NSMicrophoneUsageDescription: "Access to the microphone"
+        NSLocationWhenInUseUsageDescription: "Access to your location"
         GIDClientID: "796251774309-qoqun0ovm6ttv6adjs9jdjll0ug9qsi8.apps.googleusercontent.com"
         FacebookAppID: "1204276926902380"
         FacebookClientToken: "f9fe041bf6d59db32221a5a7a9ed31ca"

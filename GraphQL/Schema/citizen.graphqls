@@ -1,0 +1,4 @@
+extend type Mutation {
+  createCitizen(input: CreateCitizenInput!): Citizen
+  updateCitizen(id: ID!, input: UpdateCitizenInput!): Citizen!
+}

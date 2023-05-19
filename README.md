@@ -9,10 +9,10 @@ export HOMEBREW_NO_INSTALL_FROM_API=1
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 
-2. Install **xcodegen**
+2. Install third party library
 
 ```
-brew install xcodegen
+make install
 ```
 
 3. Clone this repository to your local
@@ -26,7 +26,11 @@ git checkout <to your working branch>
 4. Generate xcodeproj
 
 ```
-xcodegen generate
+make gen
 ```
 
-5. Happy Hacking!
+5. Run xcode
+
+```
+make open
+```

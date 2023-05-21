@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PreferenceGoalView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
     
     let goalOptions: [String] = [
         "Serious relationship",
@@ -21,19 +23,17 @@ struct PreferenceGoalView: View {
         ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Goal") {
             Box {
                 VStack(spacing: 0) {
-                    ForEach(Array(goalOptions.enumerated()), id: \.element.self) { index, goal in
-                        
-                        CheckboxButtonRow(label: goal)
-                        
-                        index != goalOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface3)
-                            .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
-                        : nil
-                        
+                    CheckBoxWithDivider(items: goalOptions) { list in
+                        vm.goal.removeAll()
+                        for item in list {
+                            vm.goal.append(item)
+                        }
                     }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 30)
+                    
+                    Spacer()
                 }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                Spacer()
             }
         }
     }
@@ -41,6 +41,6 @@ struct PreferenceGoalView: View {
 
 struct PreferenceGoalView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceGoalView()
+        PreferenceGoalView(vm: ProfileViewModel())
     }
 }

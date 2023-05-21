@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct PreferenceAgeView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
+    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
@@ -15,7 +18,7 @@ struct PreferenceAgeView: View {
         ) {
             Box {
                 VStack {
-                    AgeSlider()
+                    AgeSlider(ageFrom: $vm.ageFrom, ageTo: $vm.ageTo)
                 }
                 .padding(.horizontal, 24)
                 Spacer()
@@ -26,6 +29,6 @@ struct PreferenceAgeView: View {
 
 struct PreferenceAgeView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceAgeView()
+        PreferenceAgeView(vm: ProfileViewModel())
     }
 }

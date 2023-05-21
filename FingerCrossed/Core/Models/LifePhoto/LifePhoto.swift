@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct LifePhoto: Identifiable, Equatable {
     let id: UUID
@@ -45,6 +46,14 @@ class LifePhotoViewModel: ObservableObject {
     
     @Published var imageScale: CGFloat = 1
     
+    @Published var imageOffset = CGSize.zero
+    
     @Published var selectedLifePhoto: LifePhoto?
+    
+    @Published var newUIImage: UIImage = UIImage()
+    
+    @Published var cropCGRect: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
+    
+    @Published var cropCGImage: CGImage = UIImage(systemName: "circle.fill")!.cgImage!
     
 }

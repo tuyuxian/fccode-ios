@@ -37,7 +37,7 @@ struct LifePhotoActionSheet: View {
                         Image("PictureBased")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text(config.hasLifePhoto ? "Update Photos" : "Upload Photos")
+                        Text(config.hasLifePhoto ? "Edit Photos" : "Upload Photos")
                             .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                         Spacer()

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PreferenceDistanceView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
     
     let distanceOptions: [String] = [
         "25 miles",
@@ -23,22 +25,12 @@ struct PreferenceDistanceView: View {
             childTitle: "Distance"
         ) {
             Box {
-                VStack(spacing: 0) {
-                    ForEach(
-                        Array(distanceOptions.enumerated()),
-                        id: \.element.self
-                    ) { index, distance in
-                        
-                        RadioButtonRow(label: distance)
-                        
-                        index != distanceOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface3)
-                                .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
-                        : nil
-                        
-                    }
-                }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                RadioButtonWithDivider(callback: { selected in
+                    vm.distance = selected
+                }, items: distanceOptions)
+                .padding(.vertical, 30)
+                .padding(.horizontal, 24)
+                
                 Spacer()
             }
         }
@@ -47,6 +39,8 @@ struct PreferenceDistanceView: View {
 
 struct PreferenceDistanceView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceDistanceView()
+        PreferenceDistanceView(
+            vm: ProfileViewModel()
+        )
     }
 }

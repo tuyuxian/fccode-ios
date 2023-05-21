@@ -8,33 +8,31 @@
 import SwiftUI
 
 struct PreferenceSexOrientationView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
     
     let sexOrientationOptions: [String] = [
+        "Open to all",
         "Heterosexuality",
         "Bisexuality",
-        "Homosexuality",
-        "All"
+        "Homosexuality"
     ]
     
     var body: some View {
         ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Sex Orientation") {
             Box {
                 VStack(spacing: 0) {
-                    ForEach(
-                        Array(sexOrientationOptions.enumerated()),
-                        id: \.element.self
-                    ) { index, sexOrientation in
-                        CheckboxButtonRow(label: sexOrientation)
-                        
-                        index != sexOrientationOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface3)
-                            .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
-                        : nil
-                        
+                    CheckBoxWithDivider(items: sexOrientationOptions) { list in
+                        vm.sexOrientation.removeAll()
+                        for item in list {
+                            vm.sexOrientation.append(item)
+                        }
                     }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 30)
+                    
+                    Spacer()
                 }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                Spacer()
             }
         }
     }
@@ -42,6 +40,6 @@ struct PreferenceSexOrientationView: View {
 
 struct PreferenceSexOrientationView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceSexOrientationView()
+        PreferenceSexOrientationView(vm: ProfileViewModel())
     }
 }

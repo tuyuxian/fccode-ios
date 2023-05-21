@@ -15,6 +15,18 @@ struct SignUpEthnicityView: View {
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
+    let ethnicityOptions: [String] = [
+        "American Indian",
+        "Black/African American",
+        "East Asian",
+        "Hipanic/Latino",
+        "Mid Eastern",
+        "Pacific Islander",
+        "South Asian",
+        "Southeast Asian",
+        "White/Caucasian"
+    ]
+    
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .nationality
@@ -75,7 +87,12 @@ struct SignUpEthnicityView: View {
                         .frame(height: 50)
                 }
                 
-                CheckBoxEthnicityGroup(ethnicityList: $vm.ethnicity) { _ in
+                CheckBoxGroup(items: ethnicityOptions) { list in
+                    vm.ethnicity.removeAll()
+                    for item in list {
+                        let ethnicity = Ethnicity(id: UUID(), type: item)
+                        vm.ethnicity.append(ethnicity)
+                    }
                 }
                 .padding(.vertical, 20)
                 .onChange(of: vm.ethnicity) { _ in

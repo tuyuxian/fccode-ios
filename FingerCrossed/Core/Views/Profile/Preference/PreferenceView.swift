@@ -22,27 +22,27 @@ struct PreferenceView: View {
                     childViewList: [
                         ChildView(
                             label: "Sex Orientation",
-                            subview: AnyView(PreferenceSexOrientationView())
+                            subview: AnyView(PreferenceSexOrientationView(vm: vm))
                         ),
                         ChildView(
                             label: "Goal",
-                            subview: AnyView(PreferenceGoalView())
+                            subview: AnyView(PreferenceGoalView(vm: vm))
                         ),
                         ChildView(
                             label: "Nationality",
-                            subview: AnyView(PreferenceSexOrientationView())
+                            subview: AnyView(PreferenceNationalityView(vm: vm))
                         ),
                         ChildView(
                             label: "Ethnicity",
-                            subview: AnyView(PreferenceEthnicityView())
+                            subview: AnyView(PreferenceEthnicityView(vm: vm))
                         ),
                         ChildView(
                             label: "Age",
-                            subview: AnyView(PreferenceAgeView())
+                            subview: AnyView(PreferenceAgeView(vm: vm))
                         ),
                         ChildView(
                             label: "Distance",
-                            subview: AnyView(PreferenceDistanceView())
+                            subview: AnyView(PreferenceDistanceView(vm: vm))
                         )
                     ]
                 )

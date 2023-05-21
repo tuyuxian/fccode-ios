@@ -32,4 +32,13 @@ class ProfileViewModel: ObservableObject {
         socialAccount: [],
         ethnicity: []
     )
+    
+    @Published var distance: String = ""
+    @Published var ethnicity: [Ethnicity] = []
+    @Published var goal: [String] = []
+    @Published var sexOrientation: [String] = []
+    @Published var ageFrom: Int = 18
+    @Published var ageTo: Int = 100
+    @Published var nationality = [CountryModel]()
+    
 }

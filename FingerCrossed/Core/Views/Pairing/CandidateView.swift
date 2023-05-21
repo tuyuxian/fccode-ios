@@ -47,7 +47,7 @@ struct CandidateView: View {
             VStack(spacing: 0.0) {
                 Spacer()
                     .frame(height: 70)
-                // carousel index section
+                // Carousel Index section
                 HStack(spacing: 14) {
                     ForEach(0..<lifePhotoList.count, id: \.self) { index in
                         

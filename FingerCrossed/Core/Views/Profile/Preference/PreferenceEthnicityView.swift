@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct PreferenceEthnicityView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
     
-    @State var userEthnicity = [Ethnicity]()
     let ethnicityOptions: [String] = [
         "Open to all",
-        "Asian",
-        "Black/African-descent",
-        "Hispanic/Latino",
-        "Native American",
-        "Pacifci Islander",
+        "American Indian",
+        "Black/African American",
+        "East Asian",
+        "Hipanic/Latino",
+        "Mid Eastern",
+        "Pacific Islander",
         "South Asian",
+        "Southeast Asian",
         "White/Caucasian"
     ]
 
@@ -25,24 +28,18 @@ struct PreferenceEthnicityView: View {
         ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Ethnicity") {
             Box {
                 VStack(spacing: 0) {
-                    ForEach(Array(ethnicityOptions.enumerated()), id: \.element.self) { index, ethnicity in
-                    
-                        CheckboxButtonRow(label: ethnicity)
-                        
-                        index != ethnicityOptions.count - 1
-                        ? Divider().foregroundColor(Color.surface3)
-                                .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
-                        : nil
-                        
+                    CheckBoxWithDivider(items: ethnicityOptions) { list in
+                        vm.ethnicity.removeAll()
+                        for item in list {
+                            let ethnicity = Ethnicity(id: UUID(), type: item)
+                            vm.ethnicity.append(ethnicity)
+                        }
                     }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 30)
+                    
+                    Spacer()
                 }
-                
-//                CheckBoxEthnicityGroup(hasDivider: true, ethnicityList: $userEthnicity) { selected in
-//                    print("\(selected)")
-//                    print("Ethnicity: \(userEthnicity.count)")
-//                }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                Spacer()
             }
         }
     }
@@ -50,6 +47,6 @@ struct PreferenceEthnicityView: View {
 
 struct PreferenceEthnicityView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceEthnicityView()
+        PreferenceEthnicityView(vm: ProfileViewModel())
     }
 }

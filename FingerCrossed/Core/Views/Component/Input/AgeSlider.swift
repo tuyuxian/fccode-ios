@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct AgeSlider: View {
-    // TODO(Lawrence): use these two vars to get the value
-    @State var from: CGFloat = 10
-    @State var to: CGFloat = 80
+    @Binding var ageFrom: Int
+    @Binding var ageTo: Int
+    @State var from: CGFloat = 0
+    @State var to: CGFloat = 100
     
     @State var isFromDragging: Bool = false
     @State var isToDragging: Bool = false
@@ -21,7 +22,9 @@ struct AgeSlider: View {
                 HStack(spacing: 0) {
                     isFromDragging
                     ? Image("DragIndicator")
+                        .renderingMode(.template)
                         .resizable()
+                        .foregroundColor(Color.peach100)
                         .frame(width: 28, height: 34.85)
                         .overlay(
                             Text(self.getValue(val: ((self.from / (proxy.size.width - 56)) * 82)))
@@ -34,7 +37,9 @@ struct AgeSlider: View {
                     : nil
                     isToDragging
                     ? Image("DragIndicator")
+                        .renderingMode(.template)
                         .resizable()
+                        .foregroundColor(Color.peach100)
                         .frame(width: 28, height: 34.85)
                         .overlay(
                             Text(self.getValue(val: ((self.to / (proxy.size.width - 56)) * 82)))
@@ -46,6 +51,10 @@ struct AgeSlider: View {
                         .offset(x: isFromDragging ? self.to : self.to + 28)
                     : nil
                     Spacer()
+                }
+                .onAppear {
+                    self.from = self.getX(age: ageFrom, width: proxy.size.width)
+                    self.to = self.getX(age: ageTo, width: proxy.size.width)
                 }
                 .frame(width: proxy.size.width, height: 34.85)
                 .padding(.bottom, 8)
@@ -130,6 +139,7 @@ struct AgeSlider: View {
                         .frame(width: 28, height: 28)
                 }
             }
+            
         }
         .frame(height: 60)
     }
@@ -139,6 +149,14 @@ struct AgeSlider: View {
     ) -> String {
         let result = String(format: "%.0f", val+18)
         return result == "100" ? "99+" : result
+    }
+    
+    private func getX(
+        age: Int,
+        width: CGFloat
+    ) -> CGFloat {
+        let result = (age - 18) * (Int(ceil(width)) - 56) / 82
+        return CGFloat(result)
     }
     
     private func getOffset(
@@ -154,8 +172,16 @@ struct AgeSlider: View {
     }
 }
 
+private var valueFrom: Binding<Int> {
+    Binding.constant(18)
+}
+
+private var valueTo: Binding<Int> {
+    Binding.constant(100)
+}
+
 struct AgeSlider_Previews: PreviewProvider {
     static var previews: some View {
-        AgeSlider()
+        AgeSlider(ageFrom: valueFrom, ageTo: valueTo)
     }
 }

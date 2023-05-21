@@ -17,6 +17,51 @@ struct SignUpAvatarView: View {
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
+    @State var showCameraAlert: Bool = false
+    
+    @State var showPhotoLibraryAlert: Bool = false
+    
+    let imagePermissionManager = PhotoLibraryPermissionManager()
+    
+    let cameraPermissionManager = CameraPermissionManager()
+
+    let cameraAlertTitle: String = "Allow camera access in device settings"
+    
+    let photoLibraryAlertTitle: String = "Allow photos access in device settings"
+    // swiftlint: disable line_length
+    let cameraAlertMessage: String = "Finger Crossed uses your device's camera so you can take photos"
+        
+    let photoLibraryAlertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
+    // swiftlint: enable line_length
+    
+    private func cameraOnTap() {
+        switch cameraPermissionManager.permissionStatus {
+        case .notDetermined:
+            cameraPermissionManager.requestPermission { granted, _ in
+                guard granted else { return }
+                showCamera = true
+            }
+        case .denied:
+            showCameraAlert.toggle()
+        default:
+            showCamera = true
+        }
+    }
+    
+    private func photoLibraryOnTap() {
+        switch imagePermissionManager.permissionStatus {
+        case .notDetermined:
+            imagePermissionManager.requestPermission { granted, _ in
+                guard granted else { return }
+                showImagePicker = true
+            }
+        case .denied:
+            showPhotoLibraryAlert.toggle()
+        default:
+            showImagePicker = true
+        }
+    }
+    
     private func buttonOnTap() {
         Task {
             do {
@@ -114,7 +159,7 @@ struct SignUpAvatarView: View {
                     
                     HStack(spacing: 112) {
                         Button {
-                            showCamera.toggle()
+                            cameraOnTap()
                         } label: {
                             Circle()
                                 .fill(Color.yellow100)
@@ -131,9 +176,38 @@ struct SignUpAvatarView: View {
                                         .frame(width: 36, height: 36)
                                 )
                         }
+                        .fullScreenCover(
+                            isPresented: $showCamera,
+                            content: {
+                                ImagePicker(
+                                    sourceType: .camera,
+                                    selectedImage: $vm.selectedImage,
+                                    imageData: $vm.selectedImageData
+                                )
+                                .edgesIgnoringSafeArea(.all)
+                            }
+                        ) .alert(isPresented: $showCameraAlert) {
+                            Alert(
+                                title:
+                                    Text(cameraAlertTitle)
+                                    .font(Font.system(size: 18, weight: .medium)),
+                                message:
+                                    Text(cameraAlertMessage)
+                                    .font(Font.system(size: 12, weight: .medium)),
+                                primaryButton: .default(Text("Cancel")),
+                                secondaryButton: .default(
+                                    Text("Settings"),
+                                    action: {
+                                        UIApplication.shared.open(
+                                            URL(string: UIApplication.openSettingsURLString)!
+                                        )
+                                    }
+                                )
+                            )
+                        }
                         
                         Button {
-                            showImagePicker.toggle()
+                            photoLibraryOnTap()
                         } label: {
                             Circle()
                                 .fill(Color.yellow100)
@@ -150,31 +224,39 @@ struct SignUpAvatarView: View {
                                         .frame(width: 36, height: 36)
                                 )
                         }
+                        .sheet(
+                            isPresented: $showImagePicker,
+                            content: {
+                                ImagePicker(
+                                    sourceType: .photoLibrary,
+                                    selectedImage: $vm.selectedImage,
+                                    imageData: $vm.selectedImageData
+                                )
+                            }
+                        )
+                        .alert(isPresented: $showPhotoLibraryAlert) {
+                            Alert(
+                                title:
+                                    Text(photoLibraryAlertTitle)
+                                    .font(Font.system(size: 18, weight: .medium)),
+                                message:
+                                    Text(photoLibraryAlertMessage)
+                                    .font(Font.system(size: 12, weight: .medium)),
+                                primaryButton: .default(Text("Cancel")),
+                                secondaryButton: .default(
+                                    Text("Settings"),
+                                    action: {
+                                        UIApplication.shared.open(
+                                            URL(string: UIApplication.openSettingsURLString)!
+                                        )
+                                    }
+                                )
+                            )
+                        }
                     }
                 }
                 .frame(width: UIScreen.main.bounds.size.width - 48)
                 .padding(.top, 20)
-                .fullScreenCover(
-                    isPresented: $showCamera,
-                    content: {
-                        ImagePicker(
-                            sourceType: .camera,
-                            selectedImage: $vm.selectedImage,
-                            imageData: $vm.selectedImageData
-                        )
-                        .edgesIgnoringSafeArea(.all)
-                    }
-                )
-                .sheet(
-                    isPresented: $showImagePicker,
-                    content: {
-                        ImagePicker(
-                            sourceType: .photoLibrary,
-                            selectedImage: $vm.selectedImage,
-                            imageData: $vm.selectedImageData
-                        )
-                    }
-                )
                 
                 Spacer()
                 

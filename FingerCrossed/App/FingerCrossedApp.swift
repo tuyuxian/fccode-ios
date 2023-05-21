@@ -20,7 +20,7 @@ struct FingerCrossedApp: App {
             ZStack {
                 ProfileView()
                     .environmentObject(bannerManager)
-                
+
                 if bannerManager.isPresented {
                     BannerContent(bm: bannerManager)
                 }

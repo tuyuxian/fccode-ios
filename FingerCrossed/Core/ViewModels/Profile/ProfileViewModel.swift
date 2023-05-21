@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PhotosUI
 
 class ProfileViewModel: ObservableObject, InputUtils {
     @Published var user: UserEntity = UserEntity(
@@ -80,4 +81,7 @@ class ProfileViewModel: ObservableObject, InputUtils {
     @Published var currentLifePhotoCount: Int = 4
     @Published var imageScale: CGFloat = 1
     @Published var selectedLifePhoto: LifePhoto?
+    
+    @Published var selectedImage: UIImage?
+    @Published var selectedImageData: Data?
 }

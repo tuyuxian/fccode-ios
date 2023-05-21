@@ -10,21 +10,23 @@ import AVFoundation
 
 struct VoiceMessageActionSheet: View {
         
-    @State var showEditModal: Bool = false
+    @State var showEditSheet: Bool = false
     
     @State var showAlert: Bool = false
         
-    let alertTitle: String = "Allow microphone access in device settings"
-    // swiftlint: disable line_length
-    let alertMessage: String = "Finger Crossed uses your device's microphone so that you can record voice message."
-    // swiftlint: enable line_length
+    let audioPermissionManager = AudioPermissionManager()
     
-    private func checkAudioPermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { allowed in
-            if !allowed {
-                showAlert.toggle()
+    private func buttonOnTap() {
+        switch audioPermissionManager.permissionStatus {
+        case .notDetermined:
+            audioPermissionManager.requestPermission { granted, _ in
+                guard granted else { return }
+                showEditSheet = true
             }
-            showEditModal = true
+        case .denied:
+            showAlert.toggle()
+        default:
+            showEditSheet = true
         }
     }
     
@@ -57,7 +59,7 @@ struct VoiceMessageActionSheet: View {
                 }
                 
                 Button {
-                    checkAudioPermission()
+                    buttonOnTap()
                 } label: {
                     HStack(spacing: 20) {
                         Image("Edit")
@@ -69,7 +71,7 @@ struct VoiceMessageActionSheet: View {
                         Spacer()
                     }
                 }
-                .sheet(isPresented: $showEditModal) {
+                .sheet(isPresented: $showEditSheet) {
                     VoiceMessageEditSheet()
                 }
             }
@@ -82,10 +84,10 @@ struct VoiceMessageActionSheet: View {
         .alert(isPresented: $showAlert) {
             Alert(
                 title:
-                    Text(alertTitle)
+                    Text(audioPermissionManager.alertTitle)
                         .font(Font.system(size: 18, weight: .medium)),
                 message:
-                    Text(alertMessage)
+                    Text(audioPermissionManager.alertMessage)
                         .font(Font.system(size: 12, weight: .medium)),
                 primaryButton: .default(Text("Cancel")),
                 secondaryButton: .default(

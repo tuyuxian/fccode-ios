@@ -48,9 +48,9 @@ targets:
         UIStatusBarStyle: "UIStatusBarStyleLightContent"
         UIViewControllerBasedStatusBarAppearance: true
         UIRequiresFullScreen: true
-        NSCameraUsageDescription: "Access to the camera to take photo"
-        NSPhotoLibraryUsageDescription: "Access to the photo library"
-        NSMicrophoneUsageDescription: "Finger Crossed needs access to your microphone so that you can record voice message."
+        NSCameraUsageDescription: "Finger Crossed needs access to your camera so you can take photos."
+        NSPhotoLibraryUsageDescription: "Finger Crossed needs access to your photo library so you can share photos."
+        NSMicrophoneUsageDescription: "Finger Crossed needs access to your microphone so you can record voice messages."
         NSLocationWhenInUseUsageDescription: "Access to your location"
         GIDClientID: "796251774309-qoqun0ovm6ttv6adjs9jdjll0ug9qsi8.apps.googleusercontent.com"
         FacebookAppID: "1204276926902380"

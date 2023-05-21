@@ -8,56 +8,65 @@
 import SwiftUI
 
 struct VoiceMessageActionSheet: View {
-    @Binding var hasVoiceMessage: Bool
+        
     @State var showEditModal: Bool = false
     
     var body: some View {
-        ZStack {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
             Color.white.edgesIgnoringSafeArea(.all)
-            VStack(alignment: .leading, spacing: 0) {
-                hasVoiceMessage
-                ?   Button {
-                        
-                    } label: {
-                        HStack(spacing: 20) {
-                            Image("Trash")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-
-                            Text("Delete")
-                                .fontTemplate(.h3Medium)
-                                .foregroundColor(Color.text)
-                            Spacer()
-                        }
-                    }
-                    .padding(EdgeInsets(top: 15, leading: 24, bottom: 15, trailing: 24))
-                : nil
+            
+            VStack(
+                alignment: .leading,
+                spacing: 30
+            ) {
                 Button {
-                    showEditModal = true
+                    // TODO(Sam): add delete method
                 } label: {
                     HStack(spacing: 20) {
-                        Image("Mic")
+                        Image("Trash")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text(hasVoiceMessage ? "Record New Message" : "Record Message")
+
+                        Text("Delete")
                             .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                         Spacer()
                     }
                 }
-                .padding(EdgeInsets(top: 15, leading: 24, bottom: 15, trailing: 24))
+                
+                Button {
+                    showEditModal = true
+                } label: {
+                    HStack(spacing: 20) {
+                        Image("Edit")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                        Text("Edit Voice Message")
+                            .fontTemplate(.h3Medium)
+                            .foregroundColor(Color.text)
+                        Spacer()
+                    }
+                }
                 .sheet(isPresented: $showEditModal) {
                     VoiceMessageEditSheet()
                 }
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 30)
             .background(Color.white)
             .presentationDetents([.height(138)])
+            .presentationDragIndicator(.visible)
         }
     }
 }
 
 struct VoiceMessageActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        VoiceMessageActionSheet(hasVoiceMessage: .constant(true))
+        VoiceMessageActionSheet()
     }
 }

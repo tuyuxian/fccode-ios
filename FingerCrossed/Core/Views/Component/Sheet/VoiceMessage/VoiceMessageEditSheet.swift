@@ -8,37 +8,54 @@
 import SwiftUI
 
 struct VoiceMessageEditSheet: View {
-    // TODO(Lawrence): apply new design
-    var body: some View {
-        ZStack {
-            Color.white.edgesIgnoringSafeArea(.all)
-            VStack(alignment: .center, spacing: 6) {
-                Text("Voice Message")
-                    .fontTemplate(.h2Medium)
-                    .foregroundColor(Color.text)
-                Text("00:00")
-                    .fontTemplate(.pMedium)
-                    .foregroundColor(Color.text)
-                    .padding(.bottom, 30)
-                Button {
-                    
-                } label: {
-                    Image("Mic")
-                        .renderingMode(.template)
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(Color.white)
-                }
-                .frame(width: 60, height: 60)
-                .overlay(
-                    Circle()
-                        .stroke(Color.yellow100, lineWidth: 18)
-                           .frame(width: 96, height: 96)
-                )
+    
+    @Environment(\.presentationMode) private var presentationMode
+        
+    @State private var isSatisfied: Bool = false
+    
+    @State private var isLoading: Bool = false
                 
+    private func buttonOnTap() {
+        // TODO(Sam): update to server before view dismiss
+        presentationMode.wrappedValue.dismiss()
+    }
+    
+    var body: some View {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
+            Color.white.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 16) {
+                VStack(spacing: 0) {
+                    Text("Voice Message")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 34)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 30)
+                    Text("Click to replay")
+                        .fontTemplate(.noteMedium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 16)
+                        .multilineTextAlignment(.center)
+                }
+                
+                PrimaryButton(
+                    label: "Save",
+                    action: buttonOnTap,
+                    isTappable: $isSatisfied,
+                    isLoading: $isLoading
+                )
+                .padding(.top, 4) // 20 - 16(spacing)
             }
+            .padding(.horizontal, 24)
             .background(Color.white)
-            .presentationDetents([.fraction(0.25)])
+            .presentationDetents([.fraction(0.55)])
+            .presentationDragIndicator(.visible)
         }
     }
 }

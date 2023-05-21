@@ -9,20 +9,26 @@ import SwiftUI
 
 struct LifePhotoStack: View {
     
-    @StateObject var lifePhotoData = LifePhotoViewModel()
+    @ObservedObject var vm: ProfileViewModel
+    
+    @StateObject var hapticHelper: HapticsHelper = HapticsHelper()
 
     var body: some View {
         GeometryReader { proxy in
             LazyHStack(spacing: 14) {
-                ForEach(lifePhotoData.lifePhotos[0...0]) { lifePhoto in
+                ForEach(
+                    Array(vm.user.lifePhoto[0...0].enumerated()),
+                    id: \.element.id
+                ) { index, lifePhoto in
                     LifePhotoButton(
-                        lifePhoto: lifePhoto,
+                        vm: vm,
+                        position: index,
                         halfSize: (proxy.size.width - 42)/4,
-                        fullSize: (proxy.size.width - 14)/2,
-                        config: lifePhotoData
+                        fullSize: (proxy.size.width - 14)/2
                      )
                     .onDrag({
-                        lifePhotoData.currentDragLifePhoto = lifePhoto
+                        hapticHelper.impactFeedback.impactOccurred()
+                        vm.currentDragLifePhoto = lifePhoto
                         return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                     })
                     .onDrop(
@@ -30,22 +36,27 @@ struct LifePhotoStack: View {
                         delegate:
                             DropViewDelegate(
                                 lifePhoto: lifePhoto,
-                                lifePhotoData: lifePhotoData
+                                vm: vm
                             )
                     )
                 }
+                
                 LazyVStack(spacing: 14) {
                     LazyHStack(spacing: 14) {
-                        ForEach(lifePhotoData.lifePhotos[1...2]) { lifePhoto in
+                        ForEach(
+                            Array(vm.user.lifePhoto[1...2].enumerated()),
+                            id: \.element.id
+                        ) { index, lifePhoto in
                             if lifePhoto.photoUrl != "" {
                                 LifePhotoButton(
-                                    lifePhoto: lifePhoto,
+                                    vm: vm,
+                                    position: index + 1,
                                     halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2,
-                                    config: lifePhotoData
+                                    fullSize: (proxy.size.width - 14)/2
                                 )
                                 .onDrag({
-                                    lifePhotoData.currentDragLifePhoto = lifePhoto
+                                    hapticHelper.impactFeedback.impactOccurred()
+                                    vm.currentDragLifePhoto = lifePhoto
                                     return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                                 })
                                 .onDrop(
@@ -53,30 +64,35 @@ struct LifePhotoStack: View {
                                     delegate:
                                         DropViewDelegate(
                                             lifePhoto: lifePhoto,
-                                            lifePhotoData: lifePhotoData
+                                            vm: vm
                                         )
                                 )
                             } else {
                                 LifePhotoButton(
-                                    lifePhoto: lifePhoto,
+                                    vm: vm,
+                                    position: index + 1,
                                     halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2,
-                                    config: lifePhotoData
+                                    fullSize: (proxy.size.width - 14)/2
                                 )
                             }
                         }
                     }
+                    
                     LazyHStack(spacing: 14) {
-                        ForEach(lifePhotoData.lifePhotos[3...4]) { lifePhoto in
+                        ForEach(
+                            Array(vm.user.lifePhoto[3...4].enumerated()),
+                            id: \.element.id
+                        ) { index, lifePhoto in
                             if lifePhoto.photoUrl != "" {
                                 LifePhotoButton(
-                                    lifePhoto: lifePhoto,
+                                    vm: vm,
+                                    position: index + 3,
                                     halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2,
-                                    config: lifePhotoData
+                                    fullSize: (proxy.size.width - 14)/2
                                 )
                                 .onDrag({
-                                    lifePhotoData.currentDragLifePhoto = lifePhoto
+                                    hapticHelper.impactFeedback.impactOccurred()
+                                    vm.currentDragLifePhoto = lifePhoto
                                     return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
                                 })
                                 .onDrop(
@@ -84,25 +100,31 @@ struct LifePhotoStack: View {
                                     delegate:
                                         DropViewDelegate(
                                             lifePhoto: lifePhoto,
-                                            lifePhotoData: lifePhotoData
+                                            vm: vm
                                         )
                                 )
                             } else {
                                 LifePhotoButton(
-                                    lifePhoto: lifePhoto,
+                                    vm: vm,
+                                    position: index + 3,
                                     halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2,
-                                    config: lifePhotoData
+                                    fullSize: (proxy.size.width - 14)/2
                                 )
                             }
                         }
                     }
                 }
-                .frame(width: (proxy.size.width - 14)/2, height: (proxy.size.width - 14)/2)
+                .frame(
+                    width: (proxy.size.width - 14)/2,
+                    height: (proxy.size.width - 14)/2
+                )
             }
-            .frame(width: proxy.size.width, height: (proxy.size.width - 14)/2)
-            .sheet(isPresented: $lifePhotoData.showEditSheet) {
-                LifePhotoActionSheet(config: lifePhotoData)
+            .frame(
+                width: proxy.size.width,
+                height: (proxy.size.width - 14)/2
+            )
+            .sheet(isPresented: $vm.showEditSheet) {
+                LifePhotoActionSheet(vm: vm)
             }
         }
     }
@@ -110,15 +132,18 @@ struct LifePhotoStack: View {
 
 struct LifePhotoStack_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoStack()
+        LifePhotoStack(
+            vm: ProfileViewModel()
+        )
+        .padding(.horizontal, 24)
     }
 }
 
 struct DropViewDelegate: DropDelegate {
-    
+
     var lifePhoto: LifePhoto
     
-    var lifePhotoData: LifePhotoViewModel
+    var vm: ProfileViewModel
     
     func performDrop(
         info: DropInfo
@@ -129,20 +154,20 @@ struct DropViewDelegate: DropDelegate {
     func dropEntered(
         info: DropInfo
     ) {
-        let fromIndex = lifePhotoData.lifePhotos.firstIndex { (lifePhoto) -> Bool in
-            return lifePhoto.id == lifePhotoData.currentDragLifePhoto?.id
+        let fromIndex = vm.user.lifePhoto.firstIndex { (lifePhoto) -> Bool in
+            return lifePhoto.id == vm.currentDragLifePhoto?.id
         } ?? 0
         
-        let toIndex = lifePhotoData.lifePhotos.firstIndex { (lifePhoto) -> Bool in
+        let toIndex = vm.user.lifePhoto.firstIndex { (lifePhoto) -> Bool in
             return lifePhoto.id == self.lifePhoto.id
         } ?? 0
         
         if fromIndex != toIndex {
-            let fromLifePhoto = lifePhotoData.lifePhotos[fromIndex]
-            lifePhotoData.lifePhotos[fromIndex] = lifePhotoData.lifePhotos[toIndex]
-            lifePhotoData.lifePhotos[fromIndex].position = fromIndex
-            lifePhotoData.lifePhotos[toIndex] = fromLifePhoto
-            lifePhotoData.lifePhotos[toIndex].position = toIndex
+            let fromLifePhoto = vm.user.lifePhoto[fromIndex]
+            vm.user.lifePhoto[fromIndex] = vm.user.lifePhoto[toIndex]
+            vm.user.lifePhoto[fromIndex].position = fromIndex
+            vm.user.lifePhoto[toIndex] = fromLifePhoto
+            vm.user.lifePhoto[toIndex].position = toIndex
         }
     }
     
@@ -152,4 +177,12 @@ struct DropViewDelegate: DropDelegate {
         return DropProposal(operation: .move)
     }
     
+}
+
+class HapticsHelper: ObservableObject {
+    @Published var impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        
+    init() {
+        impactFeedback.prepare()
+    }
 }

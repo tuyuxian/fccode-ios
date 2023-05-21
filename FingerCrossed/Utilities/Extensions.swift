@@ -62,12 +62,6 @@ extension View {
         } else {
           self.colorMultiply(color)
         }
-      }
-    
-    func disableSwipeBack() -> some View {
-        self.background(
-            DisableSwipeBackView()
-        )
     }
 }
 

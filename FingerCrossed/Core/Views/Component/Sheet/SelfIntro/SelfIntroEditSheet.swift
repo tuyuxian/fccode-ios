@@ -11,7 +11,7 @@ struct SelfIntroEditSheet: View {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    @State private var text: String = ""
+    @State var text: String = ""
     
     @State private var isSatisfied: Bool = false
     
@@ -19,9 +19,20 @@ struct SelfIntroEditSheet: View {
             
     let textLengthLimit: Int = 200
     
+    private func buttonOnTap() {
+        // TODO(Sam): update to server before view dismiss
+        presentationMode.wrappedValue.dismiss()
+    }
+    
     var body: some View {
-        ZStack {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
             Color.white.edgesIgnoringSafeArea(.all)
+            
             VStack(spacing: 16) {
                 Text("Self Introduction")
                     .fontTemplate(.h2Medium)
@@ -49,6 +60,7 @@ struct SelfIntroEditSheet: View {
                 
                 PrimaryButton(
                     label: "Save",
+                    action: buttonOnTap,
                     isTappable: $isSatisfied,
                     isLoading: $isLoading
                 )
@@ -56,7 +68,7 @@ struct SelfIntroEditSheet: View {
             }
             .padding(.horizontal, 24)
             .background(Color.white)
-            .presentationDetents([.height(402)]) // 436 - 34(safe area)
+            .presentationDetents([.fraction(0.55)])
             .presentationDragIndicator(.visible)
             .scrollDismissesKeyboard(.automatic)
         }

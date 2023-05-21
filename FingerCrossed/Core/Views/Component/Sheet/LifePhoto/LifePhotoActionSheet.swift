@@ -8,54 +8,72 @@
 import SwiftUI
 
 struct LifePhotoActionSheet: View {
+    
     @State var showEditModal: Bool = false
-    @ObservedObject var config: LifePhotoViewModel
+    
+    @ObservedObject var vm: ProfileViewModel
     
     var body: some View {
-        ZStack {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
             Color.white.edgesIgnoringSafeArea(.all)
-            VStack(alignment: .leading, spacing: 0) {
+            
+            VStack(
+                alignment: .leading,
+                spacing: 30
+            ) {
                 Button {
-                    
+                    // TODO(Sam): add delete method
                 } label: {
                     HStack(spacing: 20) {
-                        Image(config.hasLifePhoto ? "Trash" : "CameraBased")
+                        Image(vm.hasLifePhoto ? "Trash" : "CameraBased")
                             .resizable()
                             .frame(width: 24, height: 24)
 
-                        Text(config.hasLifePhoto ? "Delete" : "Take Photos")
+                        Text(vm.hasLifePhoto ? "Delete" : "Take Photos")
                             .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                         Spacer()
                     }
                 }
-                .padding(EdgeInsets(top: 15, leading: 24, bottom: 15, trailing: 24))
+
                 Button {
                     showEditModal = true
                 } label: {
                     HStack(spacing: 20) {
-                        Image("PictureBased")
+                        Image(vm.hasLifePhoto ? "Edit" : "PictureBased")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text(config.hasLifePhoto ? "Update Photos" : "Upload Photos")
+                        Text(vm.hasLifePhoto ? "Edit Photos" : "Upload Photos")
                             .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                         Spacer()
                     }
                 }
-                .padding(EdgeInsets(top: 15, leading: 24, bottom: 15, trailing: 24))
                 .sheet(isPresented: $showEditModal) {
-                    LifePhotoEditSheet(config: config)
+                    LifePhotoEditSheet(
+                        vm: vm,
+                        text: vm.selectedLifePhoto?.caption ?? ""
+                    )
                 }
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 30)
             .background(Color.white)
             .presentationDetents([.height(138)])
+            .presentationDragIndicator(.visible)
         }
     }
 }
 
 struct LifePhotoActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoActionSheet(config: LifePhotoViewModel())
+        LifePhotoActionSheet(
+            vm: ProfileViewModel()
+        )
     }
 }

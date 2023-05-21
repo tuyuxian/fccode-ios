@@ -48,7 +48,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Access to your location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Access to the microphone</string>
+	<string>Finger Crossed needs access to your microphone so that you can record voice message.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Access to the photo library</string>
 	<key>UILaunchScreen</key>

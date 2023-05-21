@@ -6,10 +6,27 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct VoiceMessageActionSheet: View {
         
     @State var showEditModal: Bool = false
+    
+    @State var showAlert: Bool = false
+        
+    let alertTitle: String = "Allow microphone access in device settings"
+    // swiftlint: disable line_length
+    let alertMessage: String = "Finger Crossed uses your device's microphone so that you can record voice message."
+    // swiftlint: enable line_length
+    
+    private func checkAudioPermission() {
+        AVAudioSession.sharedInstance().requestRecordPermission { allowed in
+            if !allowed {
+                showAlert.toggle()
+            }
+            showEditModal = true
+        }
+    }
     
     var body: some View {
         ZStack(
@@ -40,7 +57,7 @@ struct VoiceMessageActionSheet: View {
                 }
                 
                 Button {
-                    showEditModal = true
+                    checkAudioPermission()
                 } label: {
                     HStack(spacing: 20) {
                         Image("Edit")
@@ -61,6 +78,25 @@ struct VoiceMessageActionSheet: View {
             .background(Color.white)
             .presentationDetents([.height(138)])
             .presentationDragIndicator(.visible)
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title:
+                    Text(alertTitle)
+                        .font(Font.system(size: 18, weight: .medium)),
+                message:
+                    Text(alertMessage)
+                        .font(Font.system(size: 12, weight: .medium)),
+                primaryButton: .default(Text("Cancel")),
+                secondaryButton: .default(
+                    Text("Settings"),
+                    action: {
+                        UIApplication.shared.open(
+                            URL(string: UIApplication.openSettingsURLString)!
+                        )
+                    }
+                )
+            )
         }
     }
 }

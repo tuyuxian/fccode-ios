@@ -7,9 +7,18 @@
 
 import Foundation
 
-class InputUtils {
+public protocol InputUtils {
     // MARK: - Input Validation functions
-    
+    func isEmailValid(str: String) -> Bool
+    func isPasswordValid(str: String) -> Bool
+    func checkLength(str: String) -> Bool
+    func checkUpper(str: String) -> Bool
+    func checkLower(str: String) -> Bool
+    func checkNumber(str: String) -> Bool
+    func checkSymbols(str: String) -> Bool
+}
+
+extension InputUtils {
     /// Email regex from MDN
     public func isEmailValid(
         str: String
@@ -28,7 +37,9 @@ class InputUtils {
     /// - at least 1 lowercase
     /// - at least 1 number
     /// - at least 1 symbol (!&^%$#@()/_*+-)
-    public func isPasswordValid(str: String) -> Bool {
+    public func isPasswordValid(
+        str: String
+    ) -> Bool {
         // swiftlint: disable line_length
         let passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!&^%$#@()/_*+-])[A-Za-z\\d!&^%$#@()/_*+-]{8,36}$"
         // swiftlint: enable line_length

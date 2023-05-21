@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ProfileViewModel: InputUtils, ObservableObject {
+class ProfileViewModel: ObservableObject, InputUtils {
     @Published var user: UserEntity = UserEntity(
         id: UUID(),
         userId: 123123123,

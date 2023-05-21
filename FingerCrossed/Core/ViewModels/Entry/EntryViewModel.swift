@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class EntryViewModel: InputUtils, ObservableObject {
+class EntryViewModel: ObservableObject, InputUtils {
     // MARK: Enum section
     enum CurrentView: Int {
         case email

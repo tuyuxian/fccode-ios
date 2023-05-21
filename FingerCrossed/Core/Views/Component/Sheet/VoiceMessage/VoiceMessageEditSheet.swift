@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct VoiceMessageEditSheet: View {
     
@@ -14,10 +15,71 @@ struct VoiceMessageEditSheet: View {
     @State private var isSatisfied: Bool = false
     
     @State private var isLoading: Bool = false
-                
+    
+    @State var audioRecorder: AVAudioRecorder!
+    
+    @State var audioPlayer: AVPlayer!
+        
+    @State var isRecording: Bool = false
+    
+    @State var isPlaying: Bool = false
+
     private func buttonOnTap() {
-        // TODO(Sam): update to server before view dismiss
-        presentationMode.wrappedValue.dismiss()
+        Task {
+            do {
+                let result = await AWSS3().uploadAudio(
+                    audioRecorder.url,
+                    // TODO(Sam): replace with presigned Url generated from backend
+                    toPresignedURL: URL(string: "")!
+                )
+                print(result)
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+    
+    public func startRecording() {
+        let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
+        
+        do {
+            try audioSession.setCategory(.playAndRecord)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        do {
+            let documentUrl = FileManager.default.urls(
+                for: .documentDirectory,
+                in: .userDomainMask
+            )[0]
+            let fileName = documentUrl.appendingPathComponent("\(UUID()).m4a")
+            let settings = [
+                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                AVSampleRateKey: 12000,
+                AVNumberOfChannelsKey: 1,
+                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+            ]
+            audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
+            audioRecorder.record()
+            isRecording.toggle()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    public func stopRecording() {
+        audioRecorder.stop()
+        isRecording.toggle()
+    }
+    
+    public func startPlaying() {
+        let playerItem = AVPlayerItem(url: audioRecorder.url)
+        audioPlayer = AVPlayer(playerItem: playerItem)
+        audioPlayer.play()
+    }
+    
+    public func stopPlaying() {
+        audioPlayer.pause()
     }
     
     var body: some View {
@@ -42,6 +104,22 @@ struct VoiceMessageEditSheet: View {
                         .foregroundColor(Color.text)
                         .frame(height: 16)
                         .multilineTextAlignment(.center)
+                }
+                
+                Button {
+                    isRecording
+                    ? stopRecording()
+                    : startRecording()
+                } label: {
+                    Text("Record audio")
+                }
+                
+                Button {
+                    isPlaying
+                    ? stopPlaying()
+                    : startPlaying()
+                } label: {
+                    Text("Play audio")
                 }
                 
                 PrimaryButton(

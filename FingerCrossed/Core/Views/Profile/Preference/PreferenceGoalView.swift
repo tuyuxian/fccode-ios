@@ -18,7 +18,12 @@ struct PreferenceGoalView: View {
     ]
     
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Goal") {
+        ContainerWithHeaderView(
+            parentTitle: "Preference",
+            childTitle: "Goal",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
+        ) {
             Box {
                 VStack(spacing: 0) {
                     ForEach(Array(goalOptions.enumerated()), id: \.element.self) { index, goal in

@@ -13,11 +13,13 @@ struct ContainerWithHeaderView<Content: View>: View {
     
     @State var childTitle: String
     
-    @State var showSaveButton: Bool = true
+    @Binding var showSaveButton: Bool
+    
+    @Binding var isLoading: Bool
     
     @State var iconButtonName: String = "Save"
     
-    @State var action: () -> () = {}
+    var action: () -> () = {}
     
     @ViewBuilder var content: Content
     
@@ -42,11 +44,19 @@ struct ContainerWithHeaderView<Content: View>: View {
                 ? VStack(alignment: .center) {
                     HeaderButton(
                         name: $iconButtonName,
+                        isLoading: $isLoading,
                         action: action
                     )
                 }
                 .frame(height: 40)
-                .padding(EdgeInsets(top: 12, leading: 0, bottom: 0, trailing: 8))
+                .padding(
+                    EdgeInsets(
+                        top: 12,
+                        leading: 0,
+                        bottom: 0,
+                        trailing: 8
+                    )
+                )
                 : nil
         )
         .padding(.top, 19)
@@ -60,7 +70,8 @@ struct ContainerWithHeaderView_Previews: PreviewProvider {
         ContainerWithHeaderView(
             parentTitle: "Parent",
             childTitle: "Child",
-            content: {}
-        )
+            showSaveButton: .constant(true),
+            isLoading: .constant(false)
+        ) {}
     }
 }

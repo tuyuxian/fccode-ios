@@ -107,9 +107,10 @@ struct SignUpNameView: View {
                     )
                     .onChange(of: vm.name) { name in
                         vm.name = String(name.prefix(30))
-                        vm.isNameSatisfied = checkLength(str: name) &&
-                        checkCharacter(str: name) &&
-                        !checkSymbols(str: name)
+                        vm.isNameSatisfied =
+                            checkLength(str: name) &&
+                            checkCharacter(str: name) &&
+                            !checkSymbols(str: name)
                     }
                     
                     VStack {

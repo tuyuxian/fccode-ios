@@ -21,7 +21,7 @@ struct PasswordView: View, KeyboardReadable {
     @State private var isLoading: Bool = false
 
     private func passwordOnSubmit() {
-        guard vm.isPasswordValid() else {
+        guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
         }

@@ -41,7 +41,7 @@ struct ProfileView: View {
                         childViewList: [
                             ChildView(
                                 label: "Basic Info",
-                                subview: AnyView(BasicInfoView())
+                                subview: AnyView(BasicInfoView(vm: vm))
                             ),
                             ChildView(
                                 label: "Preference",
@@ -59,6 +59,7 @@ struct ProfileView: View {
                         ]
                     )
                     .padding(.top, 104) // 134 - 20 (ListRow) - 10 (first item)
+                    .scrollDisabled(true)
                 }
                 .padding(.top, -104)
             }

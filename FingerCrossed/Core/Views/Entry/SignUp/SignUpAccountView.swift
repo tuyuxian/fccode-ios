@@ -18,7 +18,7 @@ struct SignUpAccountView: View, KeyboardReadable {
     @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
-        guard vm.isPasswordValid() else {
+        guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
         }
@@ -89,18 +89,23 @@ struct SignUpAccountView: View, KeyboardReadable {
                         isValid: $isPasswordValid
                     )
                     .onChange(of: vm.password) { password in
-                        vm.isAccountPasswordLengthSatisfied = vm.checkLength(str: password)
+                        vm.isAccountPasswordLengthSatisfied =
+                            vm.checkLength(str: password)
                         vm.isAccountPasswordUpperAndLowerSatisfied =
                             vm.checkUpper(str: password) &&
                             vm.checkLower(str: password)
                         vm.isAccountPasswordNumberAndSymbolSatisfied =
                             vm.checkNumber(str: password) &&
                             vm.checkSymbols(str: password)
+                        vm.isAccountPasswordMatched =
+                            !vm.password.isEmpty &&
+                            !password.isEmpty &&
+                            vm.passwordConfirmed == password
                         vm.isAccountPasswordSatisfied =
-                        vm.isAccountPasswordLengthSatisfied &&
-                        vm.isAccountPasswordUpperAndLowerSatisfied &&
-                        vm.isAccountPasswordNumberAndSymbolSatisfied &&
-                        vm.isAccountPasswordPasswordMatched
+                            vm.isAccountPasswordLengthSatisfied &&
+                            vm.isAccountPasswordUpperAndLowerSatisfied &&
+                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                            vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -113,15 +118,15 @@ struct SignUpAccountView: View, KeyboardReadable {
                         isValid: $isPasswordValid
                     )
                     .onChange(of: vm.passwordConfirmed) { password in
-                        vm.isAccountPasswordPasswordMatched =
+                        vm.isAccountPasswordMatched =
                             !vm.password.isEmpty &&
                             !password.isEmpty &&
                             vm.password == password
                         vm.isAccountPasswordSatisfied =
-                        vm.isAccountPasswordLengthSatisfied &&
-                        vm.isAccountPasswordUpperAndLowerSatisfied &&
-                        vm.isAccountPasswordNumberAndSymbolSatisfied &&
-                        vm.isAccountPasswordPasswordMatched
+                            vm.isAccountPasswordLengthSatisfied &&
+                            vm.isAccountPasswordUpperAndLowerSatisfied &&
+                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                            vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -150,7 +155,7 @@ struct SignUpAccountView: View, KeyboardReadable {
                         )
                         
                         InputHelper(
-                            isSatisfied: $vm.isAccountPasswordPasswordMatched,
+                            isSatisfied: $vm.isAccountPasswordMatched,
                             label: "Passwords are matched",
                             type: .info
                         )

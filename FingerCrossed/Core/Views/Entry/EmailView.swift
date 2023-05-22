@@ -18,7 +18,7 @@ struct EmailView: View {
     @State private var isLoading: Bool = false
     /// Handler for button on submit
     private func emailOnSubmit() {
-        guard vm.isEmailValid() else {
+        guard vm.isEmailValid(str: vm.email) else {
             isEmailValid = false
             return
         }
@@ -89,7 +89,7 @@ struct EmailView: View {
                                 Divider()
                             }
                             
-                            Text("or")
+                            Text("Continue with")
                                 .fontTemplate(.pMedium)
                                 .foregroundColor(Color.text)
                             

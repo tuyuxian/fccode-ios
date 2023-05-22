@@ -15,7 +15,8 @@ struct SettingsView: View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
             childTitle: "Settings",
-            showSaveButton: false
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 MenuList(
@@ -30,6 +31,7 @@ struct SettingsView: View {
                         )
                     ]
                 )
+                .scrollDisabled(true)
             }
         }
     }

@@ -14,7 +14,9 @@ struct SettingsSocialAccountView: View {
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Settings",
-            childTitle: "Social Account"
+            childTitle: "Social Account",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 VStack(

@@ -26,6 +26,7 @@ struct TextingView: View {
                     HStack(alignment: .center) {
                         HeaderButton(
                             name: .constant(vm.getIconButtonName(state: vm.iconButtonStatus)),
+                            isLoading: .constant(false),
                             action: vm.getIconButtonAction(state: vm.iconButtonStatus)
                         )
                     }

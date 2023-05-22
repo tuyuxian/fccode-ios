@@ -16,6 +16,11 @@ struct Spinner: View {
 
 struct Spinner_Previews: PreviewProvider {
     static var previews: some View {
-        Spinner()
+        ZStack {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.yellow100)
+                .frame(width: 200, height: 50)
+            Spinner()
+        }
     }
 }

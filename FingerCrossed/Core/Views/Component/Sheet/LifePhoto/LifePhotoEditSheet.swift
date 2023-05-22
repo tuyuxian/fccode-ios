@@ -48,30 +48,34 @@ struct LifePhotoEditSheet: View {
                         ) { phase in
                             switch phase {
                             case .empty:
-                                Image(uiImage: vm.selectedImage!)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        width: imageWidth(tag: selectedTag),
-                                        height: imageHeight(tag: selectedTag)
-                                    )
-                                    .scaleEffect(vm.imageScale)
-                                    .cornerRadius(6)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 6)
-                                            .strokeBorder(Color.yellow100, lineWidth: 1)
-                                    )
-                                    .onChange(of: uiImage, perform: { newImage in
-                                        newUIImage = UIImage(
-                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
-                                    })
-                                    .gesture(
-                                        MagnificationGesture().onChanged({(value) in
-                                            vm.imageScale = value
-                                        }).onEnded({(value) in
-                                            vm.imageScale = value < 1 ? 1 : value
+                                if vm.selectedImage == nil {
+                                    EmptyView()
+                                } else {
+                                    Image(uiImage: vm.selectedImage!)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(
+                                            width: imageWidth(tag: selectedTag),
+                                            height: imageHeight(tag: selectedTag)
+                                        )
+                                        .scaleEffect(vm.imageScale)
+                                        .cornerRadius(6)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .strokeBorder(Color.yellow100, lineWidth: 1)
+                                        )
+                                        .onChange(of: uiImage, perform: { newImage in
+                                            newUIImage = UIImage(
+                                                data: newImage.jpegData(compressionQuality: 0.95)!)!
                                         })
-                                    )
+                                        .gesture(
+                                            MagnificationGesture().onChanged({(value) in
+                                                vm.imageScale = value
+                                            }).onEnded({(value) in
+                                                vm.imageScale = value < 1 ? 1 : value
+                                            })
+                                        )
+                                }
                             case .success(let image):
                                 image
                                     .resizable()

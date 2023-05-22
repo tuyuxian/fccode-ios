@@ -12,10 +12,8 @@ final class PhotoLibraryPermissionManager {
     
     let alertTitle: String = "Allow photos access in device settings"
     
-    // swiftlint: disable line_length
     let alertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
-    // swiftlint: enable line_length
-    
+
     public var permissionStatus: PermissionStatus {
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:

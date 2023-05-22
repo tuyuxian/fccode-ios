@@ -26,7 +26,7 @@ struct BoxTab: View {
             } label: {
                 Text("Edit")
             }
-            .frame(width: 171, height: 48)
+            .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
             .background(isSelected == .edit ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
             
@@ -35,11 +35,11 @@ struct BoxTab: View {
             } label: {
                 Text("Preview")
             }
-            .frame(width: 171, height: 48)
+            .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
             .background(isSelected == .preview ? Color.yellow100 : Color.yellow20)
             .cornerRadius(50)
         }
-        .frame(width: 342, height: 48)
+        .frame(width: UIScreen.main.bounds.size.width - 48, height: 48)
         .fontTemplate(.h3Medium)
         .foregroundColor(Color.text)
         .background(Color.yellow20)

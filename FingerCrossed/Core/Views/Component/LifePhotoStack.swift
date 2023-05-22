@@ -115,13 +115,13 @@ struct LifePhotoStack: View {
                     }
                 }
                 .frame(
-                    width: (proxy.size.width - 14)/2,
-                    height: (proxy.size.width - 14)/2
+                    width: abs(proxy.size.width - 14)/2,
+                    height: abs(proxy.size.width - 14)/2
                 )
             }
             .frame(
-                width: proxy.size.width,
-                height: (proxy.size.width - 14)/2
+                width: abs(proxy.size.width),
+                height: abs(proxy.size.width - 14)/2
             )
             .sheet(isPresented: $vm.showEditSheet) {
                 LifePhotoActionSheet(vm: vm)

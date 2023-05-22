@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct CountryItemView: View {
     let countryModel: CountryModel
     var isSelected: Bool = false
@@ -20,22 +18,27 @@ struct CountryItemView: View {
     
     var body: some View {
         VStack {
-            HStack (spacing: 6.0){
+            HStack(spacing: 6.0) {
                 Text(countryModel.name)
                     .fontTemplate(.pMedium)
                     .foregroundColor(Color.text)
                     .padding(.vertical, 2)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .leading
+                    )
                 
                 Image(isSelected ? "CheckCircleBased" : "")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color.gold)
-                    .frame(width: 24, height: 24, alignment: .center)
-                
+                    .frame(
+                        width: 24,
+                        height: 24,
+                        alignment: .center
+                    )
             }
-            //Divider().background(Color.gray)
         }
         .padding(.horizontal, 40)
         .padding(.vertical, 10)
@@ -47,4 +50,3 @@ struct CountryItemView_Previews: PreviewProvider {
         CountryItemView(countryModel: CountryModel(name: "Taiwan", code: "TW"), isSelected: true)
     }
 }
-

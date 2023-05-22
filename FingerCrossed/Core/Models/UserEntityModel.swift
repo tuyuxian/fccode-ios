@@ -15,9 +15,9 @@ enum Gender: String, CaseIterable {
     case PREFERNOTTOSAY = "Prefer not to say"
 }
 
-class UserEntityModel: ObservableObject {
+class UserEntity: ObservableObject {
     var id: UUID
-    var userID: Int?
+    var userId: Int?
     var email: String?
     var password: String?
     var username: String?
@@ -33,14 +33,15 @@ class UserEntityModel: ObservableObject {
     var facebookConnect: Bool?
     var appleConnect: Bool?
     var premium: Bool?
-    var goal: [GoalModel]?
-    var citizen: [CountryModel]?
-    var lifePhoto: [LifePhoto]?
-    var socialAccount: [SocialAccount]?
-    var ethnicity: [Ethnicity]?
+    var goal: [GoalModel]
+    var citizen: [CountryModel]
+    var lifePhoto: [LifePhoto]
+    var socialAccount: [SocialAccount]
+    var ethnicity: [Ethnicity]
     
     init(
         id: UUID,
+        userId: Int,
         email: String,
         password: String,
         username: String,
@@ -84,8 +85,4 @@ class UserEntityModel: ObservableObject {
         self.socialAccount = socialAccount
         self.ethnicity = ethnicity
     }
-    
-    // swiftlint: disable line_length
-    static let example = UserEntityModel(id: UUID(), email: "", password: "", username: "", dateOfBirth: Date.now, gender: Gender.MALE, avatarURL: "", selfIntro: "", longitude: 0.0, latitude: 0.0, voiceContentURL: "", matchingDistance: 0, googleConnect: false, facebookConnect: false, appleConnect: false, premium: false, goal: [GoalModel](), citizen: [CountryModel](), lifePhoto: [LifePhoto](), socialAccount: [SocialAccount](), ethnicity: [Ethnicity]())
-    // swiftlint: enable line_length
 }

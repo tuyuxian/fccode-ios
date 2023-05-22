@@ -8,15 +8,26 @@
 import SwiftUI
 
 struct PreferenceNationalityView: View {
+    
+    @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
+
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Nationali") {
+        ContainerWithHeaderView(
+            parentTitle: "Preference",
+            childTitle: "Nationality",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
+        ) {
             Box {
-                VStack(spacing: 0) {
-//                    CountryView(countryViewModel: CountryViewModel())
+                VStack {
+                    NationalityPicker(
+                        countrySelectionList: countrySelectionList
+                    )
                 }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                .padding(.top, 30)
+                .padding(.horizontal, 24)
+                
                 Spacer()
-                TabBar()
             }
         }
     }

@@ -8,22 +8,17 @@
 import SwiftUI
 
 struct SignUpAccountView: View, KeyboardReadable {
-    // Observed entry view model
+    /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    // Flag for password validation
-    @State var isPasswordValid: Bool = true
-    // Flag for button tappable
-    @State var isStatisfied: Bool = false
-    // Flags for input helpers
-    @State var isLengthStatisfied: Bool = false
-    @State var isUpperAndLowerStatisfied: Bool = false
-    @State var isNumberAndSymbolStatisfied: Bool = false
-    @State var isPasswordMatched: Bool = false
-    // Flag for keyboard signal
-    @State var isKeyboardShowUp: Bool = false
+    /// Flag for password validation
+    @State private var isPasswordValid: Bool = true
+    /// Flag for keyboard signal
+    @State private var isKeyboardShowUp: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
-        guard vm.isPasswordValid() else {
+        guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
         }
@@ -41,10 +36,28 @@ struct SignUpAccountView: View, KeyboardReadable {
         ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.transition = .backward
+                        vm.switchView = .email
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
                 !isKeyboardShowUp
                 ? Text("Welcome to\nJoin us")
@@ -65,27 +78,34 @@ struct SignUpAccountView: View, KeyboardReadable {
                     PrimaryInputBar(
                         input: .text,
                         value: $vm.email,
+                        isValid: .constant(true),
                         isDisable: true
                     )
                     
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.password,
-                        hint: "Please enter password"
+                        hint: "Enter password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.password) { password in
-                        isLengthStatisfied = vm.checkLength(str: password)
-                        isUpperAndLowerStatisfied =
+                        vm.isAccountPasswordLengthSatisfied =
+                            vm.checkLength(str: password)
+                        vm.isAccountPasswordUpperAndLowerSatisfied =
                             vm.checkUpper(str: password) &&
                             vm.checkLower(str: password)
-                        isNumberAndSymbolStatisfied =
+                        vm.isAccountPasswordNumberAndSymbolSatisfied =
                             vm.checkNumber(str: password) &&
                             vm.checkSymbols(str: password)
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
-                            isPasswordMatched
+                        vm.isAccountPasswordMatched =
+                            !vm.password.isEmpty &&
+                            !password.isEmpty &&
+                            vm.passwordConfirmed == password
+                        vm.isAccountPasswordSatisfied =
+                            vm.isAccountPasswordLengthSatisfied &&
+                            vm.isAccountPasswordUpperAndLowerSatisfied &&
+                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                            vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -94,18 +114,19 @@ struct SignUpAccountView: View, KeyboardReadable {
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.passwordConfirmed,
-                        hint: "Confirm password"
+                        hint: "Confirm password",
+                        isValid: $isPasswordValid
                     )
                     .onChange(of: vm.passwordConfirmed) { password in
-                        isPasswordMatched =
+                        vm.isAccountPasswordMatched =
                             !vm.password.isEmpty &&
                             !password.isEmpty &&
                             vm.password == password
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
-                            isPasswordMatched
+                        vm.isAccountPasswordSatisfied =
+                            vm.isAccountPasswordLengthSatisfied &&
+                            vm.isAccountPasswordUpperAndLowerSatisfied &&
+                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                            vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -116,25 +137,25 @@ struct SignUpAccountView: View, KeyboardReadable {
                         spacing: 6.0
                     ) {
                         InputHelper(
-                            isSatisfied: $isLengthStatisfied,
+                            isSatisfied: $vm.isAccountPasswordLengthSatisfied,
                             label: "Password should be 8 to 36 characters",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isUpperAndLowerStatisfied,
+                            isSatisfied: $vm.isAccountPasswordUpperAndLowerSatisfied,
                             label: "At least 1 uppercase & 1 lowercase",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isNumberAndSymbolStatisfied,
+                            isSatisfied: $vm.isAccountPasswordNumberAndSymbolSatisfied,
                             label: "At least 1 number & 1 symbol",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isPasswordMatched,
+                            isSatisfied: $vm.isAccountPasswordMatched,
                             label: "Passwords are matched",
                             type: .info
                         )
@@ -149,7 +170,8 @@ struct SignUpAccountView: View, KeyboardReadable {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied
+                    isTappable: $vm.isAccountPasswordSatisfied,
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
             }
@@ -160,6 +182,8 @@ struct SignUpAccountView: View, KeyboardReadable {
 
 struct SignUpAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        SignUpAccountView(vm: EntryViewModel())
+        SignUpAccountView(
+            vm: EntryViewModel()
+        )
     }
 }

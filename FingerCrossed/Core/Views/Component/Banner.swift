@@ -7,11 +7,8 @@
 
 import SwiftUI
 
-struct BannerModifier: ViewModifier {
-    struct BannerData {
-        var content: String
-        var type: BannerType
-    }
+struct Banner {
+    
     enum BannerType {
         case info
         case warning
@@ -32,97 +29,73 @@ struct BannerModifier: ViewModifier {
         }
     }
     
-    @Binding var data: BannerData
-    @Binding var show: Bool
+    let title: String
+    let type: BannerType
+}
+
+final class BannerManager: ObservableObject {
     
-    func body(
-        content: Content
-    ) -> some View {
-        ZStack {
-            content
-            if show {
-                withAnimation(
-                    .easeInOut
-                ) { VStack {
-                        Spacer()
-                        HStack(
-                            alignment: .center,
-                            spacing: 5.33
-                        ) {
-                            Image(data.type.leadingIcon)
-                                .resizable()
-                                .frame(width: 21.33, height: 21.33)
-                            Text(data.content)
-                                .fontTemplate(.noteMedium)
-                                .foregroundColor(Color.text)
-                                .lineLimit(1)
-                        }
-                        .padding(
-                            EdgeInsets(
-                                top: 13.33,
-                                leading: 13.33,
-                                bottom: 13.33,
-                                trailing: 13.33
-                            )
-                        )
-                        .background(Color.yellow100)
-                        .cornerRadius(16)
-                        .frame(
-                            maxWidth: UIScreen.main.bounds.width * 0.8,
-                            alignment: .center
-                        )
-                    }
-                    .padding(.bottom, UIScreen.main.bounds.height * 0.02)
-                    .transition(
-                        AnyTransition
-                            .move(edge: .bottom)
-                            .combined(with: .opacity)
-                    )
-                    .onAppear(perform: {
-                        DispatchQueue.main.asyncAfter(
-                            deadline: .now() + 2  // last for 2 seconds
-                        ) {
-                            withAnimation {
-                                self.show = false
-                            }
-                        }
-                    })
-                }
-            }
+    @Published var isPresented: Bool = false
+    
+    var banner: Banner? {
+        didSet {
+            isPresented = banner != nil
         }
     }
     
-    static private var demoBanner: Binding<BannerModifier.BannerData> {
-        Binding.constant(
-            BannerModifier.BannerData(
-                content: "We've sent a reset link to your email!",
-                type: .info)
-        )
-    }
-    
-    struct Banner_Previews: PreviewProvider {
-        static var previews: some View {
-            VStack {
-                Text("Hello")
-            }
-            .banner(
-                data: demoBanner,
-                show: .constant(true)
-            )
+    public func dismiss() {
+        if isPresented {
+            isPresented = false
         }
     }
 }
 
-extension View {
-    func banner(
-        data: Binding<BannerModifier.BannerData>,
-        show: Binding<Bool>
-    ) -> some View {
-        self.modifier(
-            BannerModifier(
-                data: data,
-                show: show
+struct BannerContent: View {
+    
+    @ObservedObject var bm: BannerManager
+    
+    var body: some View {
+        VStack {
+            Spacer()
+
+            HStack(
+                alignment: .center,
+                spacing: 8
+            ) {
+                Image(bm.banner?.type.leadingIcon ?? "")
+                    .resizable()
+                    .frame(width: 16, height: 16)
+
+                Text(bm.banner?.title ?? "")
+                    .fontTemplate(.noteMedium)
+                    .foregroundColor(Color.text)
+                    .lineLimit(1)
+            }
+            .padding(
+                EdgeInsets(
+                    top: 16,
+                    leading: 16,
+                    bottom: 16,
+                    trailing: 16
+                )
             )
-        )
+            .background(Color.yellow20)
+            .cornerRadius(16)
+            .frame(
+                maxWidth: UIScreen.main.bounds.width * 0.8,
+                alignment: .center
+            )
+        }
+        .padding(.bottom, UIScreen.main.bounds.height * 0.02)
+        .transition(.opacity)
+        .onAppear {
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + 2  // last for 2 seconds
+            ) {
+                withAnimation {
+                    bm.dismiss()
+                }
+            }
+        }
     }
 }

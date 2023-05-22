@@ -44,7 +44,13 @@
 		<string>fb-messenger-share-api</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Access to the camera to take photo</string>
+	<string>Finger Crossed needs access to your camera so you can take photos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Access to your location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Finger Crossed needs access to your microphone so you can record voice messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Finger Crossed needs access to your photo library so you can share photos.</string>
 	<key>UILaunchScreen</key>
 	<array>
 		<dict>

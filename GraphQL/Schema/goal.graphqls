@@ -1,0 +1,4 @@
+extend type Mutation {
+  createGoal(input: CreateGoalInput!): Goal
+  updateGoal(id: ID!, input: UpdateGoalInput!): Goal!
+}

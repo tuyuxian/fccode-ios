@@ -11,7 +11,9 @@ struct PreferenceAgeView: View {
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
-            childTitle: "Age"
+            childTitle: "Age",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 VStack {

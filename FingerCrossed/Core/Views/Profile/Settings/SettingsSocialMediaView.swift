@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct SettingsSocialAccountView: View {
+    
+    @ObservedObject var vm: ProfileViewModel
+    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Settings",
-            childTitle: "Social Account"
+            childTitle: "Social Account",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 VStack(
@@ -20,7 +25,7 @@ struct SettingsSocialAccountView: View {
                 ) {
                     SocialAccountRow(
                         label: "Facebook",
-                        isConnected: true
+                        isConnected: vm.user.facebookConnect!
                     )
                     
                     Divider()
@@ -28,7 +33,7 @@ struct SettingsSocialAccountView: View {
                     
                     SocialAccountRow(
                         label: "Google",
-                        isConnected: false
+                        isConnected: vm.user.googleConnect!
                     )
                     
                     Divider()
@@ -36,11 +41,12 @@ struct SettingsSocialAccountView: View {
                    
                     SocialAccountRow(
                         label: "Apple",
-                        isConnected: false
+                        isConnected: vm.user.appleConnect!
                     )
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 24)
+                
                 Spacer()
             }
         }
@@ -49,12 +55,16 @@ struct SettingsSocialAccountView: View {
 
 struct SettingsSocialAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsSocialAccountView()
+        SettingsSocialAccountView(
+            vm: ProfileViewModel()
+        )
     }
 }
 
 struct SocialAccountRow: View {
+    
     @State var label: String
+    
     @State var isConnected: Bool
     
     var body: some View {
@@ -66,7 +76,7 @@ struct SocialAccountRow: View {
             Spacer()
             
             Button(isConnected ? "Disconnect" : "Connect") {
-                // TODO(): add connect method
+                // TODO(Sam): add connect method
                 isConnected.toggle()
             }
             .fontTemplate(.pMedium)

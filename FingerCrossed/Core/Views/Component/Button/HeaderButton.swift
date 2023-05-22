@@ -9,21 +9,41 @@ import SwiftUI
 
 struct HeaderButton: View {
     
+//    @Environment(\.presentationMode) var presentationMode
+    
     @Binding var name: String
     
-    var action: () -> Void = {}
+    @Binding var isLoading: Bool
+    
+    var action: () -> () = {}
     
     var body: some View {
-        Button(name) {
+        Button {
             action()
+//            presentationMode.wrappedValue.dismiss()
+        } label: {
+            if isLoading {
+                ProgressView()
+            } else {
+                Text(name)
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(Color.gold)
+            }                
         }
-        .fontTemplate(.pMedium)
-        .foregroundColor(Color.gold)
     }
 }
 
 struct HeaderButton_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderButton(name: .constant("Demo"))
+        VStack(spacing: 20) {
+            HeaderButton(
+                name: .constant("Demo"),
+                isLoading: .constant(true)
+            )
+            HeaderButton(
+                name: .constant("Demo"),
+                isLoading: .constant(false)
+            )
+        }
     }
 }

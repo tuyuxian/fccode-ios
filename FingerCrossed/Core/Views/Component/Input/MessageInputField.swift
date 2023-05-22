@@ -61,7 +61,7 @@ struct MessageInputField: View {
         .padding(.bottom, 11)
         //.padding(.bottom, self.keyboardHeight)
         .background(Color.background)
-        .onAppear{
+        .onAppear {
 //            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) {
 //                (data) in
 //
@@ -86,8 +86,7 @@ struct MessageInputField_Previews: PreviewProvider {
     }
 }
 
-
-struct ResizeableTextView: UIViewRepresentable{
+struct ResizeableTextView: UIViewRepresentable {
     
     @Binding var text: String
     
@@ -132,7 +131,7 @@ struct ResizeableTextView: UIViewRepresentable{
         ResizeableTextView.Coordinator(self)
     }
     
-    class Coordinator: NSObject, UITextViewDelegate{
+    class Coordinator: NSObject, UITextViewDelegate {
         var parent: ResizeableTextView
         
         init(_ params: ResizeableTextView) {
@@ -169,9 +168,8 @@ struct ResizeableTextView: UIViewRepresentable{
     }
 }
 
-
-extension View{
-    static func endEditing(){
+extension View {
+    static func endEditing() {
 //        UIApplication.shared.connectedScenes.first.forEach{$0.endEditing(false)}
 //        UIApplication.shared.windows.forEach{$0.endEditing(false)}
     }

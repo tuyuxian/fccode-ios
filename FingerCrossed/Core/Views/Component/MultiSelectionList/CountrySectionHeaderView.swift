@@ -10,7 +10,7 @@ import SwiftUI
 struct CountrySectionHeaderView: View {
     let text: String
     
-    //MARK: body
+    // MARK: body
     var body: some View {
         Rectangle()
             .fill(Color.white)
@@ -35,4 +35,3 @@ struct CountrySectionHeaderView_Previews: PreviewProvider {
         CountrySectionHeaderView(text: "A")
     }
 }
-

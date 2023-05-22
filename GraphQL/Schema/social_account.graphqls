@@ -1,0 +1,4 @@
+extend type Mutation {
+  createSocialAccount(input: CreateSocialAccountInput!): SocialAccount
+  updateSocialAccount(id: ID!, input: UpdateSocialAccountInput!): SocialAccount!
+}

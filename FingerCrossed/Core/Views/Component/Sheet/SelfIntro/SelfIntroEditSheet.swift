@@ -8,43 +8,70 @@
 import SwiftUI
 
 struct SelfIntroEditSheet: View {
+    
     @Environment(\.presentationMode) private var presentationMode
-        
+    
+    @State var text: String = ""
+    
+    @State private var isSatisfied: Bool = false
+    
+    @State private var isLoading: Bool = false
+            
+    let textLengthLimit: Int = 200
+    
+    private func buttonOnTap() {
+        // TODO(Sam): update to server before view dismiss
+        presentationMode.wrappedValue.dismiss()
+    }
+    
     var body: some View {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 16) {
-                    Text("Self Introduction")
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 34)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 30)
-                        .id(2)
-                    
-                    VStack(alignment: .trailing,spacing: 6) {
-                        CaptionInputBar(hint: "Type your self introduction", defaultPresentLine: 10, lineLimit: 10)
-                        Text("0/200")
-                            .fontTemplate(.captionRegular)
-                            .foregroundColor(Color.textHelper)
-                        
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
+            Color.white.edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: 16) {
+                Text("Self Introduction")
+                    .fontTemplate(.h2Medium)
+                    .foregroundColor(Color.text)
+                    .frame(height: 34)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 30)
+                    .id(2)
+                
+                VStack(
+                    alignment: .trailing,
+                    spacing: 6
+                ) {
+                    CaptionInputBar(
+                        text: $text,
+                        hint: "Type your self introduction",
+                        defaultPresentLine: 10,
+                        lineLimit: 10,
+                        textLengthLimit: textLengthLimit
+                    )
+                    .onChange(of: text) { _ in
+                        isSatisfied = true
                     }
-                    .padding(.horizontal, 1) // offset border width
-                    
-//                    Button {
-//                        presentationMode.wrappedValue.dismiss()
-//                    } label: {
-//                        Text("Save")
-//                    }
-//                    .buttonStyle(PrimaryButton())
-//                    .padding(.vertical, 4) // 20 - 16
-//                    .padding(.bottom, 30)
                 }
-
+                
+                PrimaryButton(
+                    label: "Save",
+                    action: buttonOnTap,
+                    isTappable: $isSatisfied,
+                    isLoading: $isLoading
+                )
+                .padding(.top, 4) // 20 - 16(spacing)
             }
             .padding(.horizontal, 24)
             .background(Color.white)
-            .presentationDetents([.height(436)])
-            .scrollDismissesKeyboard(.immediately)
+            .presentationDetents([.fraction(0.55)])
+            .presentationDragIndicator(.visible)
+            .scrollDismissesKeyboard(.automatic)
+        }
     }
 }
 

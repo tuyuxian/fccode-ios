@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AgeSlider: View {
-    // TODO(Sam): use these two vars to get the value
+    // TODO(Lawrence): use these two vars to get the value
     @State var from: CGFloat = 10
     @State var to: CGFloat = 80
     

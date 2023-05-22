@@ -8,12 +8,24 @@
 import SwiftUI
 
 struct LifePhotoEditSheet: View {
+    
     @Environment(\.presentationMode) private var presentationMode
+    
+    @ObservedObject var vm: ProfileViewModel
 
     @State private var selectedTag: Int = 2
-    @ObservedObject var config: LifePhotoViewModel
+    
     @State var uiImage: UIImage = UIImage()
+    
     @State var newUIImage: UIImage = UIImage()
+    
+    @State var text: String = ""
+    
+    @State private var isSatisfied: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
+    
+    let textLengthLimit: Int = 200
 
     var body: some View {
         ScrollViewReader { (proxy: ScrollViewProxy) in
@@ -27,45 +39,75 @@ struct LifePhotoEditSheet: View {
                         .padding(.top, 30)
                         .id(2)
                     
-                    
-                    
-                    VStack {
-                    }
+                    VStack {}
                     .frame(height: 342)
                     .background(
                         AsyncImage(
-                            url: URL(string: config.selectedLifePhoto?.photoUrl ?? ""),
+                            url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
                             transaction: Transaction(animation: .easeInOut)
                         ) { phase in
                             switch phase {
                             case .empty:
-                                EmptyView() // TODO(Sam): Replace with shimmer later
+                                if vm.selectedImage == nil {
+                                    EmptyView()
+                                } else {
+                                    Image(uiImage: vm.selectedImage!)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(
+                                            width: imageWidth(tag: selectedTag),
+                                            height: imageHeight(tag: selectedTag)
+                                        )
+                                        .scaleEffect(vm.imageScale)
+                                        .cornerRadius(6)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .strokeBorder(Color.yellow100, lineWidth: 1)
+                                        )
+                                        .onChange(of: uiImage, perform: { newImage in
+                                            newUIImage = UIImage(
+                                                data: newImage.jpegData(compressionQuality: 0.95)!)!
+                                        })
+                                        .gesture(
+                                            MagnificationGesture().onChanged({(value) in
+                                                vm.imageScale = value
+                                            }).onEnded({(value) in
+                                                vm.imageScale = value < 1 ? 1 : value
+                                            })
+                                        )
+                                }
                             case .success(let image):
                                 image
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: imageWidth(tag: selectedTag), height: imageHeight(tag: selectedTag))
-                                    .scaleEffect(config.imageScale)
+                                    .frame(
+                                        width: imageWidth(tag: selectedTag),
+                                        height: imageHeight(tag: selectedTag)
+                                    )
+                                    .scaleEffect(vm.imageScale)
                                     .cornerRadius(6)
                                     .background(
                                         RoundedRectangle(cornerRadius: 6)
                                             .strokeBorder(Color.yellow100, lineWidth: 1)
                                     )
-//                                    .onAppear{
-//                                        uiImage = UIImage(data: getImageData(url: config.selectedLifePhoto?.photoUrl ?? ""))!
-//                                    }
                                     .onChange(of: uiImage, perform: { newImage in
-                                        newUIImage = UIImage(data: newImage.jpegData(compressionQuality: 0.95)!)!
+                                        newUIImage = UIImage(
+                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
                                     })
                                     .gesture(
                                         MagnificationGesture().onChanged({(value) in
-                                            config.imageScale = value
+                                            vm.imageScale = value
                                         }).onEnded({(value) in
-                                            config.imageScale = value < 1 ? 1 : value
+                                            vm.imageScale = value < 1 ? 1 : value
                                         })
                                     )
                             case .failure:
-                                ProgressView() // TODO(Sam): Replace with shimmer later
+                                Shimmer(
+                                    size: CGSize(
+                                        width: UIScreen.main.bounds.size.width - 48,
+                                        height: 342
+                                    )
+                                )
                             @unknown default:
                                 EmptyView()
                             }
@@ -79,35 +121,30 @@ struct LifePhotoEditSheet: View {
                         TagButton(label: "4:3", tag: .constant(2), isSelected: $selectedTag)
                         TagButton(label: "3:4", tag: .constant(3), isSelected: $selectedTag)
                     }
-                    .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                     
-                    VStack(alignment: .trailing,spacing: 6) {
-                        CaptionInputBar(hint: "Add caption", defaultPresentLine: 6, lineLimit: 6)
-
-                        Text("0/200")
-                            .fontTemplate(.captionRegular)
-                            .foregroundColor(Color.textHelper)
-                        
+                    CaptionInputBar(
+                        text: $text,
+                        hint: "Type your self introduction",
+                        defaultPresentLine: 6,
+                        lineLimit: 6,
+                        textLengthLimit: textLengthLimit
+                    )
+                    .onChange(of: text) { _ in
+                        isSatisfied = true
                     }
-                    .padding(.horizontal, 1) // offset border width
                     .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.16)) {
-                            proxy.scrollTo(1, anchor: .center)
+                        withAnimation(.easeIn(duration: 0.16)) {
+                            proxy.scrollTo(1, anchor: .bottom)
                         }
                     }
                     
-//                    Button {
-//                        presentationMode.wrappedValue.dismiss()
-//                        
-//                    } label: {
-//                        Text("Save")
-//                    }
-//                    .buttonStyle(PrimaryButton())
-//                    .padding(.vertical, 4) // 20 - 16
-//                    .padding(.bottom, 30)
-//                    .id(1)
+                    PrimaryButton(
+                        label: "Save",
+                        isTappable: $isSatisfied,
+                        isLoading: $isLoading
+                    )
+                    .id(1)
                 }
-
             }
             .padding(.horizontal, 24)
             .background(Color.white)
@@ -115,7 +152,7 @@ struct LifePhotoEditSheet: View {
             .presentationDragIndicator(.visible)
             .scrollDismissesKeyboard(.immediately)
             .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.16)) {
+                withAnimation(.easeIn(duration: 0.16)) {
                     UIApplication.shared.closeKeyboard()
                     proxy.scrollTo(2, anchor: .top)
                 }
@@ -177,6 +214,8 @@ struct LifePhotoEditSheet: View {
 
 struct LifePhotoEditSheet_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoEditSheet(config: LifePhotoViewModel())
+        LifePhotoEditSheet(
+            vm: ProfileViewModel()
+        )
     }
 }

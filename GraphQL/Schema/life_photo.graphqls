@@ -1,0 +1,4 @@
+extend type Mutation {
+  createLifePhoto(input: CreateLifePhotoInput!): LifePhoto
+  updateLifePhoto(id: ID!, input: UpdateLifePhotoInput!): LifePhoto!
+}

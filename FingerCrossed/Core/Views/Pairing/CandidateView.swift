@@ -20,7 +20,7 @@ struct CandidateView: View {
         
         ZStack {
             GeometryReader { geometry in
-                TabView (selection: $currentTab) {
+                TabView(selection: $currentTab) {
                     ForEach(lifePhotoList) { list in
 
                         AsyncImageLoader(
@@ -39,18 +39,16 @@ struct CandidateView: View {
                 .onChange(of: currentTab) { value in
                     index = value
                 }
-                .onTapGesture (count: 2) {
+                .onTapGesture(count: 2) {
                     isLiked.toggle()
                 }
             }
             
-
-            
-            VStack (spacing: 0.0) {
+            VStack(spacing: 0.0) {
                 Spacer()
                     .frame(height: 70)
-                //carousel index section
-                HStack (spacing: 14){
+                // carousel index section
+                HStack(spacing: 14) {
                     ForEach(0..<lifePhotoList.count, id: \.self) { index in
                         
                         if index == self.index {
@@ -67,9 +65,8 @@ struct CandidateView: View {
                 
                 Spacer()
                 
-                
-                //Heart Button Section
-                VStack (spacing: 16){
+                // Heart Button Section
+                VStack(spacing: 16) {
                     
 //                    Button {
 //                        print("like")
@@ -100,7 +97,7 @@ struct CandidateView: View {
                 
                 // CandidateInfo Section
                 ZStack {
-                    VStack (spacing: 8.0) {
+                    VStack(spacing: 8.0) {
                         Text(candidateModel.username)
                             .fontTemplate(.h2Medium)
                             .foregroundColor(Color.white)
@@ -109,16 +106,36 @@ struct CandidateView: View {
                             .padding(.top, 10)
                         
                         HStack {
-                            CandidateDetailItem(iconName: "GenderNeutralWhite", label: candidateModel.gender, iconColor: Color.white, labelColor: Color.white)
+                            CandidateDetailItem(
+                                iconName: "GenderNeutralWhite",
+                                label: candidateModel.gender,
+                                iconColor: Color.white,
+                                labelColor: Color.white
+                            )
                                 
-                            CandidateDetailItem(iconName: "AgeWhite", label: String(candidateModel.age), iconColor: Color.white, labelColor: Color.white)
+                            CandidateDetailItem(
+                                iconName: "AgeWhite",
+                                label: String(candidateModel.age),
+                                iconColor: Color.white,
+                                labelColor: Color.white
+                            )
                         }
                         .padding(.horizontal, 19)
                         
                         HStack {
-                            CandidateDetailItem(iconName: "LocationWhite", label: candidateModel.location, iconColor: Color.white, labelColor: Color.white)
+                            CandidateDetailItem(
+                                iconName: "LocationWhite",
+                                label: candidateModel.location,
+                                iconColor: Color.white,
+                                labelColor: Color.white
+                            )
                             
-                            CandidateDetailItem(iconName: "GlobeWhite", label: candidateModel.nationality, iconColor: Color.white, labelColor: Color.white)
+                            CandidateDetailItem(
+                                iconName: "GlobeWhite",
+                                label: candidateModel.nationality,
+                                iconColor: Color.white,
+                                labelColor: Color.white
+                            )
                         }
                         .padding(.horizontal, 19)
                         .padding(.bottom, 12)
@@ -193,6 +210,35 @@ private var isLiked: Binding<Bool> {
 
 struct CandidateView_Previews: PreviewProvider {
     static var previews: some View {
-        CandidateView(candidateModel: CandidateModel(lifePhotoList: [LifePhoto](), username: "UserName", selfIntro: "selfIntro", gender: "Female", age: 30, location: "Tempe", nationality: "America"), lifePhotoList: [LifePhoto(photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c", caption: "caption1", position: 0), LifePhoto(photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg", caption: "caption2", position: 1)], isLiked: isLiked, isDisliked: isLiked)
+        CandidateView(
+            candidateModel:
+                CandidateModel(
+                    lifePhotoList: [LifePhoto](),
+                    username: "UserName",
+                    selfIntro: "selfIntro",
+                    gender: "Female",
+                    age: 30,
+                    location: "Tempe",
+                    nationality: "America"
+                ),
+            lifePhotoList: [
+                LifePhoto(
+                    // swiftlint: disable line_length
+                    photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
+                    // swiftlint: enable line_length
+                    caption: "caption1",
+                    position: 0
+                ),
+                LifePhoto(
+                    // swiftlint: disable line_length
+                    photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
+                    // swiftlint: enable line_length
+                    caption: "caption2",
+                    position: 1
+                )
+            ],
+            isLiked: isLiked,
+            isDisliked: isLiked
+        )
     }
 }

@@ -11,22 +11,32 @@ import SwiftUI
 struct PrimaryButton: View {
     
     @State var label: String
+    
     @State var action: () -> Void = {}
+    
     @Binding var isTappable: Bool
+    
+    @Binding var isLoading: Bool
     
     var body: some View {
         Button {
             action()
         } label: {
-            Text(label)
-                .fontTemplate(.pMedium)
-                .foregroundColor(isTappable ? Color.text : Color.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 52)
-                .background(isTappable ? Color.yellow100 : Color.surface2)
-                .cornerRadius(50)
+            HStack {
+                isLoading
+                ? LottieView(lottieFile: "spinner.json")
+                    .frame(width: 24, height: 24)
+                : nil
+                Text(label)
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(isTappable ? Color.text : Color.white)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+            .background(isTappable ? Color.yellow100 : Color.surface2)
+            .cornerRadius(50)
         }
-        .disabled(!isTappable)
+        .disabled(!isTappable || isLoading)
     }
 }
 
@@ -35,11 +45,18 @@ struct PrimaryButton_Previews: PreviewProvider {
         VStack {
             PrimaryButton(
                 label: "Button",
-                isTappable: .constant(true)
+                isTappable: .constant(true),
+                isLoading: .constant(false)
             )
             PrimaryButton(
                 label: "Button",
-                isTappable: .constant(false)
+                isTappable: .constant(true),
+                isLoading: .constant(true)
+            )
+            PrimaryButton(
+                label: "Button",
+                isTappable: .constant(false),
+                isLoading: .constant(false)
             )
         }
         .padding(.horizontal, 24)

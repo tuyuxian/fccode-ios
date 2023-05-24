@@ -173,11 +173,11 @@ struct AgeSlider: View {
 }
 
 private var valueFrom: Binding<Int> {
-    Binding.constant(18)
+    Binding.constant(20)
 }
 
 private var valueTo: Binding<Int> {
-    Binding.constant(100)
+    Binding.constant(40)
 }
 
 struct AgeSlider_Previews: PreviewProvider {

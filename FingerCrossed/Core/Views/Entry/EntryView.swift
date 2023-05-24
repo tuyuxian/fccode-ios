@@ -60,7 +60,7 @@ struct EntryView: View {
                         PrimaryInputBar(
                             input: .email,
                             value: $vm.email,
-                            hint: "Log in or sign up with email",
+                            hint: "Log in or Sign up with email",
                             isValid: $isEmailValid
                         )
                         .onChange(of: vm.email) { val in

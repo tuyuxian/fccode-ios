@@ -51,10 +51,9 @@ struct ProfileView: View {
                                 label: "Settings",
                                 subview: AnyView(SettingsView(vm: vm))
                             ),
-                            // TODO(Lawrence): add this in the future
                             ChildView(
                                 label: "Help & Support",
-                                subview: AnyView(EmptyView())
+                                subview: AnyView(HelpSupportView(vm: vm))
                             )
                         ]
                     )

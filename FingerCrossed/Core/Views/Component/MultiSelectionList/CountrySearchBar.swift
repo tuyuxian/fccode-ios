@@ -192,11 +192,11 @@ struct CountrySearchBar: View {
     }
     
     func flexibleHeight (count: Int, isDisplay: Bool) -> CGFloat {
-        if count >= 3 {
+        if count >= 3 && count < 200 {
             return 160.0
-        } else if count >= 2 {
+        } else if count >= 2 && count < 200 {
             return isDisplay ? 108.0 : 160.0
-        } else if count >= 1 {
+        } else if count >= 1 && count < 200 {
             return isDisplay ? 56.0 : 108.0
         } else {
             return 56.0

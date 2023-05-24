@@ -10,11 +10,13 @@ import SwiftUI
 struct SettingsSocialAccountView: View {
     
     @ObservedObject var vm: ProfileViewModel
+    @State var deleteAlert: Bool = false
+    @State var signOutAlert: Bool = false
     
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Settings",
-            childTitle: "Social Account"
+            childTitle: "Account"
         ) {
             Box {
                 VStack(
@@ -42,7 +44,67 @@ struct SettingsSocialAccountView: View {
                         isConnected: vm.user.appleConnect!
                     )
                 }
-                .padding(.top, 30)
+                .padding(.vertical, 30)
+                .padding(.horizontal, 24)
+                
+                Divider()
+                    .foregroundColor(Color.surface2)
+                    .padding(.horizontal, 24)
+                
+                VStack(
+                    spacing: 16
+                ) {
+                    Button {
+                        // Log out
+                        signOutAlert = true
+                    } label: {
+                        Text("Sign out")
+                            .foregroundColor(Color.text)
+                            .fontTemplate(.pMedium)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .alert("Do you really want to Sign out?", isPresented: $signOutAlert, actions: {
+                        Button(role: .cancel, action: {}) {
+                            Text("No")
+                                .foregroundColor(Color.text)
+                                .fontTemplate(.h3Medium)
+                        }
+                        
+                        Button(role: .destructive, action: {}) {
+                            Text("Yes")
+                                .foregroundColor(Color.warning)
+                                .fontTemplate(.h3Medium)
+                        }
+                    }, message: {
+                        Text("Please noted that once you delete your account, it can no longer be retrieved. ")
+                    })
+                    
+                    Button {
+                        // Delete account
+                        deleteAlert = true
+                    } label: {
+                        Text("Delete account")
+                            .foregroundColor(Color.warning)
+                            .fontTemplate(.pMedium)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .alert("Do you really want to delete account?", isPresented: $deleteAlert, actions: {
+                        Button(role: .cancel, action: {}) {
+                            Text("No")
+                                .foregroundColor(Color.text)
+                                .fontTemplate(.h3Medium)
+                        }
+                        
+                        Button(role: .destructive, action: {}) {
+                            Text("Yes")
+                                .foregroundColor(Color.warning)
+                                .fontTemplate(.h3Medium)
+                        }
+                    }, message: {
+                        Text("Please noted that once you delete your account, it can no longer be retrieved. ")
+                    })
+                }
+                .padding(.vertical, 30)
                 .padding(.horizontal, 24)
                 
                 Spacer()
@@ -68,12 +130,12 @@ struct SocialAccountRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .fontTemplate(.h3Medium)
+                .fontTemplate(.pMedium)
                 .foregroundColor(.text)
             
             Spacer()
             
-            Button(isConnected ? "Disconnect" : "Connect") {
+            Button(isConnected ? "Connected" : "Connect") {
                 // TODO(Sam): add connect method
                 isConnected.toggle()
             }

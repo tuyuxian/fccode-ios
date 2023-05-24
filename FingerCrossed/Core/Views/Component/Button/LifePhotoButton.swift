@@ -73,7 +73,9 @@ struct LifePhotoButton_Previews: PreviewProvider {
                 LifePhoto(
                     photoUrl: "https://i.pravatar.cc/150?img=6",
                     caption: "",
-                    position: 0
+                    position: 0,
+                    scale: 1,
+                    offset: CGSize.zero
                 ),
             halfSize: 75,
             fullSize: 164,

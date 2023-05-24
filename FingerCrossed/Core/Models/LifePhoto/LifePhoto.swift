@@ -13,27 +13,33 @@ struct LifePhoto: Identifiable, Equatable {
     var photoUrl: String
     var caption: String
     var position: Int
+    var scale: CGFloat
+    var offset: CGSize
     
     init(
         id: UUID = UUID(),
         photoUrl: String,
         caption: String,
-        position: Int
+        position: Int,
+        scale: CGFloat,
+        offset: CGSize
     ) {
         self.id = id
         self.photoUrl = photoUrl
         self.caption = caption
         self.position = position
+        self.scale = scale
+        self.offset = offset
     }
 }
 
 class LifePhotoViewModel: ObservableObject {
     @Published var lifePhotos = [
-        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=6", caption: "", position: 0),
-        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=7", caption: "", position: 1),
-        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=8", caption: "", position: 2),
-        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=9", caption: "", position: 3),
-        LifePhoto(photoUrl: "", caption: "", position: 4)
+        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=6", caption: "", position: 0, scale: 1, offset: CGSize.zero),
+        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=7", caption: "", position: 1, scale: 1, offset: CGSize.zero),
+        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=8", caption: "", position: 2, scale: 1, offset: CGSize.zero),
+        LifePhoto(photoUrl: "https://i.pravatar.cc/150?img=9", caption: "", position: 3, scale: 1, offset: CGSize.zero),
+        LifePhoto(photoUrl: "", caption: "", position: 4, scale: 1, offset: CGSize.zero)
     ]
     
     @Published var currentDragLifePhoto: LifePhoto?

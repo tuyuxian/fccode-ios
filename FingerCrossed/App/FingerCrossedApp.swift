@@ -14,7 +14,7 @@ struct FingerCrossedApp: App {
         
         WindowGroup {
             if loggedIn {
-                ProfileView()
+                ProfileView(vm: ProfileViewModel())
                     .preferredColorScheme(.light)
             } else {
                 LandingView()

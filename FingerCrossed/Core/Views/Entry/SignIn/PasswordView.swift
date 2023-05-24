@@ -8,39 +8,96 @@
 
 import SwiftUI
 
-struct PasswordView: View, KeyboardReadable {
-    /// Observed global view model
-    @ObservedObject var global: GlobalViewModel
+struct PasswordView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed user state view model
+    @ObservedObject var userState: UserStateViewModel
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for password validation
     @State private var isPasswordValid: Bool = true
-    /// Flag for keyboard signal
-    @State private var isKeyboardShowUp: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-
-    private func passwordOnSubmit() {
+    /// Handler for button on tap
+    private func buttonOnTap() {
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
         }
         isPasswordValid = true
-        global.isLogin = true
-        global.viewState = .main
+        userState.isLogin = true
+        userState.viewState = .main
     }
-    
+    /// Handler for forgot password
     private func forgotPasswordOnTap() {
+        self.endTextEditing()
         vm.transition = .forward
-        vm.switchView = .resetPassword
+        vm.switchView = .resetPasswordEmailCheck
     }
-    
-    private func backToEntry() {
+    /// Handler for back to email view
+    private func backToEmailView() {
+        self.endTextEditing()
         vm.transition = .backward
         vm.switchView = .email
         vm.email = ""
         vm.password = ""
         vm.isEmailSatisfied = false
+    }
+    /// Handler for facebook sso
+    private func facebookOnTap() {
+        self.endTextEditing()
+        FacebookSSOManager().signIn(
+            successAction: { email in
+                vm.email = email ?? ""
+            },
+            errorAction: { error in
+                guard let error else { return }
+                print(error.localizedDescription)
+            }
+        )
+    }
+    /// Handler for google sso
+    private func googleOnTap() {
+        self.endTextEditing()
+        GoogleSSOManager().signIn(
+            successAction: { email in
+                guard let email else {
+                    bm.banner = .init(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                vm.email = email
+                userState.isLogin = true
+                userState.viewState = .main
+            },
+            errorAction: { error in
+                guard let error else { return }
+                print(error.localizedDescription)
+            }
+        )
+    }
+    /// Handler for apple sso
+    private func appleOnTap() async {
+        self.endTextEditing()
+        Task {
+            do {
+                let email = try await AppleSSOManager().signIn()
+                guard let email else {
+                    bm.banner = .init(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                vm.email = email
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
     var body: some View {
@@ -88,7 +145,7 @@ struct PasswordView: View, KeyboardReadable {
                         
                         LazyVStack(
                             alignment: .leading,
-                            spacing: 20
+                            spacing: 30
                         ) {
                             PrimaryInputBar(
                                 input: .password,
@@ -96,25 +153,49 @@ struct PasswordView: View, KeyboardReadable {
                                 hint: "Password",
                                 isValid: $isPasswordValid
                             )
-                            .onReceive(keyboardPublisher) { val in
-                                isKeyboardShowUp = val
-                            }
                             .onChange(of: vm.password) { val in
                                 vm.isPasswordSatisfied = val.count > 0
                             }
                             
                             !isPasswordValid
-                            ? ErrorHelper(vm: vm)
+                            ? ErrorHelper(action: forgotPasswordOnTap)
                                 .padding(.leading, 16)
-                                .padding(.vertical, -10)
+                                .padding(.vertical, -20)
                             : nil
                             
                             PrimaryButton(
                                 label: "Continue",
-                                action: passwordOnSubmit,
+                                action: buttonOnTap,
                                 isTappable: $vm.isPasswordSatisfied,
                                 isLoading: $isLoading
                             )
+                            LazyVStack(alignment: .center, spacing: 30) {
+                                !isPasswordValid
+                                ? nil
+                                : Button {
+                                    forgotPasswordOnTap()
+                                } label: {
+                                    Text("Forgot password")
+                                        .fontTemplate(.noteMedium)
+                                        .foregroundColor(Color.text)
+                                        .underline(
+                                            true,
+                                            color: Color.text
+                                        )
+                                }
+                                
+                                Button {
+                                    backToEmailView()
+                                } label: {
+                                    Text("Not to continue with \(vm.email)?")
+                                        .fontTemplate(.noteMedium)
+                                        .foregroundColor(Color.text)
+                                        .underline(
+                                            true,
+                                            color: Color.text
+                                        )
+                                }
+                            }
                         }
                         
                         HStack(spacing: 10) {
@@ -122,7 +203,7 @@ struct PasswordView: View, KeyboardReadable {
                                 Divider()
                             }
                             
-                            Text("or")
+                            Text("Or")
                                 .fontTemplate(.pMedium)
                                 .foregroundColor(Color.text)
                             
@@ -131,22 +212,30 @@ struct PasswordView: View, KeyboardReadable {
                             }
                         }
                         
-                        LazyVStack(spacing: 16) {
-                            Button {
-                                forgotPasswordOnTap()
-                            } label: {
-                                Text("Forgot password")
-                                    .fontTemplate(.pMedium)
-                                    .foregroundColor(Color.gold)
-                            }
-                            
-                            Button {
-                                backToEntry()
-                            } label: {
-                                Text("Continue with social sign-in")
-                                    .fontTemplate(.pMedium)
-                                    .foregroundColor(Color.gold)
-                            }
+                        LazyHStack(
+                            alignment: .center,
+                            spacing: 20
+                        ) {
+                            SSOButton(
+                                platform: .facebook,
+                                handler: {
+                                    facebookOnTap()
+                                }
+                            )
+                            SSOButton(
+                                platform: .google,
+                                handler: {
+                                    googleOnTap()
+                                }
+                            )
+                            SSOButton(
+                                platform: .apple,
+                                handler: {
+                                    Task {
+                                        await appleOnTap()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -161,57 +250,51 @@ struct PasswordView: View, KeyboardReadable {
 struct PasswordView_Previews: PreviewProvider {
     static var previews: some View {
         PasswordView(
-            global: GlobalViewModel(),
+            userState: UserStateViewModel(),
             vm: EntryViewModel()
         )
     }
 }
 
 private struct ErrorHelper: View {
-    /// Observed entry view model
-    @ObservedObject var vm: EntryViewModel
+    
+    @State var action: () -> Void
     
     var body: some View {
         VStack(
             alignment: .leading,
             spacing: 6
         ) {
-            InputHelper(
-                isSatisfied: .constant(false),
-                label: "Please enter a valid password",
-                type: .error
-            )
-            
-            vm.checkLength(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "Password should be 8 to 36 characters",
-                type: .error
-            )
-            
-            vm.checkUpper(str: vm.password) && vm.checkLower(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "At least 1 uppercase and 1 lowercase",
-                type: .error
-            )
-            
-            vm.checkNumber(str: vm.password) && vm.checkSymbols(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "At least 1 number and 1 symbol",
-                type: .error
-            )
-            
-            // TODO(Sam): handle wrong password
-//            InputHelper(
-//                isSatisfied: .constant(false),
-//                label: "Wrong password",
-//                type: .error
-//            )
+            HStack(alignment: .top, spacing: 6.0) {
+                Image("Error")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 16, height: 16)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Hmm, that's not the right password.")
+                        .fontTemplate(.noteMedium)
+                        .foregroundColor(Color.warning)
+                    HStack(spacing: 0) {
+                        Text("Please try again or tap ")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                        Text("Forgot password")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                            .underline(
+                                true,
+                                color: Color.warning
+                            )
+                            .onTapGesture {
+                                self.endTextEditing()
+                                action()
+                            }
+                        Text(".")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                    }
+                }
+            }
         }
     }
 }

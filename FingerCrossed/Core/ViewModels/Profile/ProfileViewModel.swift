@@ -8,7 +8,7 @@
 import Foundation
 import PhotosUI
 
-class ProfileViewModel: ObservableObject, InputUtils {
+class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var user: UserEntity = UserEntity(
         id: UUID(),
         userId: 123123123,

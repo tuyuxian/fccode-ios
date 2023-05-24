@@ -1,5 +1,5 @@
 //
-//  InputUtils.swift
+//  InputProtocol.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 5/19/23.
@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol InputUtils {
+/// A protocol for input validation functions.
+public protocol InputProtocol {
     // MARK: - Input Validation functions
     func isEmailValid(str: String) -> Bool
     func isPasswordValid(str: String) -> Bool
@@ -18,7 +19,7 @@ public protocol InputUtils {
     func checkSymbols(str: String) -> Bool
 }
 
-extension InputUtils {
+extension InputProtocol {
     /// Email regex from MDN
     public func isEmailValid(
         str: String

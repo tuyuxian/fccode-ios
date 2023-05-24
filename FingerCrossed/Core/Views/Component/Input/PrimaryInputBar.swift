@@ -121,13 +121,12 @@ struct PrimaryInputBar: View {
             case .email:
                 EmptyView()
             case .password:
-                Button {
-                   isSecureMode.toggle()
-                } label: {
-                    Image(isSecureMode ? "EyeClose" : "EyeShow")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                }
+                Image(isSecureMode ? "EyeClose" : "EyeShow")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .onTapGesture {
+                        isSecureMode.toggle()
+                    }
             case .text:
                 EmptyView()
             }

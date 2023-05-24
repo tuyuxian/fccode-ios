@@ -27,7 +27,10 @@ struct PrimaryButton: View {
                 ? LottieView(lottieFile: "spinner.json")
                     .frame(width: 24, height: 24)
                 : nil
-                Text(label)
+                
+                isLoading
+                ? nil
+                : Text(label)
                     .fontTemplate(.pMedium)
                     .foregroundColor(isTappable ? Color.text : Color.white)
             }

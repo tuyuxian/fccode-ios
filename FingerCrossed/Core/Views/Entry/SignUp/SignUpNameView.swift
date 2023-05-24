@@ -10,27 +10,51 @@ import SwiftUI
 struct SignUpNameView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Flag for loction permission alert
+    @State private var showLocationAlert: Bool = false
+    /// Init location data manager
+    @StateObject var locationDataManager = LocationDataManager()
+    /// Init location permission manager
+    let locationPermissionManger = LocationPermissionManager()
+    /// Handler for button on tap
     private func buttonOnTap() {
-        vm.transition = .forward
-        vm.switchView = .birthday
+        self.endTextEditing()
+        switch locationPermissionManger.permissionStatus {
+        case .notDetermined:
+            locationPermissionManger.requestPermission { granted, _ in
+                guard granted else { return }
+                vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
+                vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
+                vm.country = locationDataManager.currentPlacemark?.country
+                vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
+                vm.transition = .forward
+                vm.switchView = .birthday
+            }
+        case .denied:
+            showLocationAlert.toggle()
+        default:
+            vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
+            vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
+            vm.country = locationDataManager.currentPlacemark?.country
+            vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
+            vm.transition = .forward
+            vm.switchView = .birthday
+        }
     }
-    
+    /// Check if the string is between 2 to 30 characters
     private func checkLength(
         str: String
     ) -> Bool {
         return str.count >= 2 && str.count <= 30
     }
-    
+    /// Check if the string contains any characters
     private func checkCharacter(
         str: String
     ) -> Bool {
         let digitsCharacters = CharacterSet(charactersIn: "0123456789")
         return !CharacterSet(charactersIn: str).isSubset(of: digitsCharacters)
     }
-     
+    /// Check if the string contains any special characters
     private func checkSymbols(
         str: String
     ) -> Bool {
@@ -129,9 +153,28 @@ struct SignUpNameView: View {
                         label: "Continue",
                         action: buttonOnTap,
                         isTappable: $vm.isNameSatisfied,
-                        isLoading: $isLoading
+                        isLoading: .constant(false)
                     )
                     .padding(.bottom, 16)
+                    .alert(isPresented: $showLocationAlert) {
+                        Alert(
+                            title:
+                                Text(locationPermissionManger.alertTitle)
+                                .font(Font.system(size: 18, weight: .medium)),
+                            message:
+                                Text(locationPermissionManger.alertMessage)
+                                .font(Font.system(size: 12, weight: .medium)),
+                            primaryButton: .default(Text("Cancel")),
+                            secondaryButton: .default(
+                                Text("Settings"),
+                                action: {
+                                    UIApplication.shared.open(
+                                        URL(string: UIApplication.openSettingsURLString)!
+                                    )
+                                }
+                            )
+                        )
+                    }
                 }
                 .padding(.top, 20)
             }

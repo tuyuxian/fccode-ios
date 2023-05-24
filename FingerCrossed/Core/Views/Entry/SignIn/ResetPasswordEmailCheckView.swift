@@ -12,37 +12,69 @@ struct ResetPasswordEmailCheckView: View {
     @ObservedObject var vm: EntryViewModel
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
-        vm.transition = .backward
-        vm.switchView = .email
-        vm.email = ""
-        vm.isEmailSatisfied = false
+        // TODO(Sam): send email
+        vm.transition = .forward
+        vm.switchView = .resetPasswordOTP
     }
     
     var body: some View {
-        ZStack {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .center,
+                vertical: .top
+            )
+        ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.password = ""
+                        vm.transition = .backward
+                        vm.switchView = .password
+                    } label: {
+                        Image("ArrowLeftBased")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
-                VStack(spacing: 33) {
-                    Text("Please check your email to reset password")
+                VStack(
+                    alignment: .center,
+                    spacing: 0
+                ) {
+                    Text("A verification code will be sent to \(vm.email).")
                         .fontTemplate(.bigBoldTitle)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
                     
-                    Text("✉️")
-                        .font(Font.system(size: 160))
+                    LottieView(
+                        lottieFile: "email.json"
+                    )
+                    .frame(
+                        width: 300,
+                        height: 300
+                    )
                 }
+                .frame(maxWidth: .infinity)
                 
                 Spacer()
                 
                 PrimaryButton(
-                    label: "Back to Login",
+                    label: "Send Code",
                     action: buttonOnTap,
                     isTappable: .constant(true),
                     isLoading: $isLoading

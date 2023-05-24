@@ -133,9 +133,7 @@ private struct BasicInfoContent: View {
     @State private var selectedSheet: BasicInfoSheetView?
     
     @State private var showAlert: Bool = false
-    
-    @State private var showBanner: Bool = false
-    
+        
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
@@ -187,8 +185,7 @@ private struct BasicInfoContent: View {
                                     )
                                 } else {
                                     UneditableRow(
-                                        showAlert: $showAlert,
-                                        showBanner: $showBanner
+                                        showAlert: $showAlert
                                     ) {
                                         ListRow(
                                             label: childView.label,
@@ -217,9 +214,7 @@ private struct UneditableRow<Content: View>: View {
     @EnvironmentObject var bm: BannerManager
     
     @Binding var showAlert: Bool
-    
-    @Binding var showBanner: Bool
-    
+        
     @ViewBuilder var row: Content
     
     var body: some View {

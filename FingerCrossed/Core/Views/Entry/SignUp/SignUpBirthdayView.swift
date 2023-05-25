@@ -10,20 +10,18 @@ import SwiftUI
 struct SignUpBirthdayView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .gender
     }
-    
+    /// Convert single digit to two digit (e.g. 1 to 01)
     private func toTwoDigit(
         index: Int
     ) -> String {
         return index + 1 < 10 ? "0\(index + 1)" : "\(index + 1)"
     }
-    
+    /// Convert seleted data to timestamp
     private func getSelectedDate() {
         let currentYear = Calendar.current.component(.year, from: Date())
         // swiftlint:disable line_length
@@ -130,7 +128,7 @@ struct SignUpBirthdayView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isAdult,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

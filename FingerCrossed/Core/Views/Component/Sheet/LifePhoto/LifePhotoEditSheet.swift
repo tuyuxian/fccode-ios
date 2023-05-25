@@ -14,10 +14,10 @@ struct LifePhotoEditSheet: View {
     @ObservedObject var vm: ProfileViewModel
 
     @State private var selectedTag: Int = 2
-    
     @State var uiImage: UIImage = UIImage()
     
     @State var newUIImage: UIImage = UIImage()
+    @State var croppedCGImage: CGImage?
     
     @State var text: String = ""
     
@@ -31,6 +31,10 @@ struct LifePhotoEditSheet: View {
         ScrollViewReader { (proxy: ScrollViewProxy) in
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 16) {
+//                    Image(uiImage: config.newUIImage)
+//
+//                    Image(uiImage: UIImage(cgImage: config.cropCGImage))
+                    
                     Text("Nice Picture!")
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
@@ -42,76 +46,126 @@ struct LifePhotoEditSheet: View {
                     VStack {}
                     .frame(height: 342)
                     .background(
-                        AsyncImage(
-                            url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
-                            transaction: Transaction(animation: .easeInOut)
-                        ) { phase in
-                            switch phase {
-                            case .empty:
-                                if vm.selectedImage == nil {
-                                    EmptyView()
-                                } else {
-                                    Image(uiImage: vm.selectedImage!)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(
-                                            width: imageWidth(tag: selectedTag),
-                                            height: imageHeight(tag: selectedTag)
-                                        )
-                                        .scaleEffect(vm.imageScale)
-                                        .cornerRadius(6)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 6)
-                                                .strokeBorder(Color.yellow100, lineWidth: 1)
-                                        )
-                                        .onChange(of: uiImage, perform: { newImage in
-                                            newUIImage = UIImage(
-                                                data: newImage.jpegData(compressionQuality: 0.95)!)!
-                                        })
-                                        .gesture(
-                                            MagnificationGesture().onChanged({(value) in
-                                                vm.imageScale = value
-                                            }).onEnded({(value) in
-                                                vm.imageScale = value < 1 ? 1 : value
-                                            })
-                                        )
-                                }
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        width: imageWidth(tag: selectedTag),
-                                        height: imageHeight(tag: selectedTag)
-                                    )
-                                    .scaleEffect(vm.imageScale)
-                                    .cornerRadius(6)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 6)
-                                            .strokeBorder(Color.yellow100, lineWidth: 1)
-                                    )
-                                    .onChange(of: uiImage, perform: { newImage in
-                                        newUIImage = UIImage(
-                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
-                                    })
-                                    .gesture(
-                                        MagnificationGesture().onChanged({(value) in
-                                            vm.imageScale = value
-                                        }).onEnded({(value) in
-                                            vm.imageScale = value < 1 ? 1 : value
-                                        })
-                                    )
-                            case .failure:
+                        AsyncEditImageLoader(
+                            url: URL(string: vm.selectedLifePhoto?.photoUrl ?? "")!,
+                            config: vm,
+                            placeholder: {
+                        // AsyncImage(
+                        //     url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
+                        //     transaction: Transaction(animation: .easeInOut)
+                        // ) { phase in
+                        //     switch phase {
+                        //     case .empty:
+                        //         if vm.selectedImage == nil {
+                        //             EmptyView()
+                        //         } else {
+                        //             Image(uiImage: vm.selectedImage!)
+                        //                 .resizable()
+                        //                 .aspectRatio(contentMode: .fill)
+                        //                 .frame(
+                        //                     width: imageWidth(tag: selectedTag),
+                        //                     height: imageHeight(tag: selectedTag)
+                        //                 )
+                        //                 .scaleEffect(vm.imageScale)
+                        //                 .cornerRadius(6)
+                        //                 .background(
+                        //                     RoundedRectangle(cornerRadius: 6)
+                        //                         .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //                 )
+                        //                 .onChange(of: uiImage, perform: { newImage in
+                        //                     newUIImage = UIImage(
+                        //                         data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //                 })
+                        //                 .gesture(
+                        //                     MagnificationGesture().onChanged({(value) in
+                        //                         vm.imageScale = value
+                        //                     }).onEnded({(value) in
+                        //                         vm.imageScale = value < 1 ? 1 : value
+                        //                     })
+                        //                 )
+                        //         }
+                        //     case .success(let image):
+                        //         image
+                        //             .resizable()
+                        //             .aspectRatio(contentMode: .fill)
+                        //             .frame(
+                        //                 width: imageWidth(tag: selectedTag),
+                        //                 height: imageHeight(tag: selectedTag)
+                        //             )
+                        //             .scaleEffect(vm.imageScale)
+                        //             .cornerRadius(6)
+                        //             .background(
+                        //                 RoundedRectangle(cornerRadius: 6)
+                        //                     .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //             )
+                        //             .onChange(of: uiImage, perform: { newImage in
+                        //                 newUIImage = UIImage(
+                        //                     data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //             })
+                        //             .gesture(
+                        //                 MagnificationGesture().onChanged({(value) in
+                        //                     vm.imageScale = value
+                        //                 }).onEnded({(value) in
+                        //                     vm.imageScale = value < 1 ? 1 : value
+                        //                 })
+                        //             )
+                        //     case .failure:
                                 Shimmer(
                                     size: CGSize(
                                         width: UIScreen.main.bounds.size.width - 48,
                                         height: 342
                                     )
                                 )
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
+                            },
+                            image: { Image(uiImage: $0)})
+                            .frame(
+                                width: imageWidth(tag: selectedTag),
+                                height: imageHeight(tag: selectedTag)
+                            )
+                        
+//                        AsyncImage(
+//                            url: URL(string: config.selectedLifePhoto?.photoUrl ?? ""),
+//                            transaction: Transaction(animation: .easeInOut)
+//                        ) { phase in
+//                            switch phase {
+//                            case .empty:
+//                                EmptyView()
+//                            case .success(let image):
+//                                image
+//                                    .resizable()
+//                                    .aspectRatio(contentMode: .fill)
+//                                    .frame(
+//                                        width: imageWidth(tag: selectedTag),
+//                                        height: imageHeight(tag: selectedTag)
+//                                    )
+//                                    .scaleEffect(config.imageScale)
+//                                    .cornerRadius(6)
+//                                    .background(
+//                                        RoundedRectangle(cornerRadius: 6)
+//                                            .strokeBorder(Color.yellow100, lineWidth: 1)
+//                                    )
+//                                    .onChange(of: uiImage, perform: { newImage in
+//                                        newUIImage = UIImage(
+//                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
+//                                    })
+//                                    .gesture(
+//                                        MagnificationGesture().onChanged({(value) in
+//                                            config.imageScale = value
+//                                        }).onEnded({(value) in
+//                                            config.imageScale = value < 1 ? 1 : value
+//                                        })
+//                                    )
+//                            case .failure:
+//                                Shimmer(
+//                                    size: CGSize(
+//                                        width: UIScreen.main.bounds.size.width - 48,
+//                                        height: 342
+//                                    )
+//                                )
+//                            @unknown default:
+//                                EmptyView()
+//                            }
+//                        }
                     )
 //                    .clipped()
                     
@@ -160,18 +214,6 @@ struct LifePhotoEditSheet: View {
         }
 
     }
-    
-//    func getImageData(url: String) -> Data {
-//        var loader: ImageLoader
-//        var image: UIImage
-//
-//        loader = ImageLoader(url: URL(string: url)!)
-//        if loader.image != nil {
-//            image = loader.image!
-//            return image.jpegData(compressionQuality: 0.95)!
-//        }
-//        return Data()
-//    }
     
     func imageHeight(tag: Int) -> (CGFloat) {
         switch tag {

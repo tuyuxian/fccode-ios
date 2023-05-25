@@ -10,11 +10,11 @@ import SwiftUI
 struct SignUpNationalityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-
-    @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Init country selector
+    @StateObject var nationalitySelectionList = NationalitySelectionList(
+        nationalitySelections: [Nationality]()
+    )
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .avatar
@@ -80,10 +80,11 @@ struct SignUpNationalityView: View {
                     spacing: 10
                 ) {
                     NationalityPicker(
-                        countrySelectionList: countrySelectionList
+                        nationalitySelectionList: nationalitySelectionList,
+                        isPreference: false
                     )
-                    .onChange(of: countrySelectionList.countrySelections) { _ in
-                        vm.nationality = countrySelectionList.countrySelections
+                    .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
+                        vm.nationality = nationalitySelectionList.nationalitySelections
                         vm.isNationalitySatisfied =
                             vm.nationality.count > 0 &&
                             vm.nationality.count <= 3
@@ -104,7 +105,7 @@ struct SignUpNationalityView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isNationalitySatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

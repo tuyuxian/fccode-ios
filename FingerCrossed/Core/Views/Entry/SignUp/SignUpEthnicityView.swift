@@ -10,9 +10,20 @@ import SwiftUI
 struct SignUpEthnicityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
+   
+    let ethnicityOptions: [String] = [
+        "American Indian",
+        "Black/African American",
+        "East Asian",
+        "Hipanic/Latino",
+        "Mid Eastern",
+        "Pacific Islander",
+        "South Asian",
+        "Southeast Asian",
+        "White/Caucasian"
+    ]
     
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .nationality
@@ -73,8 +84,10 @@ struct SignUpEthnicityView: View {
                         .frame(height: 50)
                 }
                 
-                CheckBoxEthnicityGroup(
-                    selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
+                CheckBoxGroup(
+                    selectedIdList: Array(
+                        vm.ethnicity.map { $0.type.rawValue }
+                    ),
                     ethnicityList: $vm.ethnicity,
                     callback: { _ in }
                 )
@@ -89,7 +102,7 @@ struct SignUpEthnicityView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isEthnicitySatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

@@ -10,27 +10,26 @@ import SwiftUI
 struct SignUpNameView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         vm.transition = .forward
         vm.switchView = .birthday
     }
-    
+    /// Check if the string is between 2 to 30 characters
     private func checkLength(
         str: String
     ) -> Bool {
         return str.count >= 2 && str.count <= 30
     }
-    
+    /// Check if the string contains any characters
     private func checkCharacter(
         str: String
     ) -> Bool {
         let digitsCharacters = CharacterSet(charactersIn: "0123456789")
         return !CharacterSet(charactersIn: str).isSubset(of: digitsCharacters)
     }
-     
+    /// Check if the string contains any special characters
     private func checkSymbols(
         str: String
     ) -> Bool {
@@ -129,7 +128,7 @@ struct SignUpNameView: View {
                         label: "Continue",
                         action: buttonOnTap,
                         isTappable: $vm.isNameSatisfied,
-                        isLoading: $isLoading
+                        isLoading: .constant(false)
                     )
                     .padding(.bottom, 16)
                 }

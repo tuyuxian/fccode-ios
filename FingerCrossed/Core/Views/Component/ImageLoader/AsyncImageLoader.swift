@@ -27,6 +27,7 @@ struct AsyncImageLoader<Placeholder: View>: View {
                 )
             )
         }
+    @State var config: LifePhotoViewModel = LifePhotoViewModel()
 
     var body: some View {
         content
@@ -40,6 +41,8 @@ struct AsyncImageLoader<Placeholder: View>: View {
                     image(loader.image!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .scaleEffect(config.imageScale)
+                        .offset(config.imageOffset)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .ignoresSafeArea()
                         .background(
@@ -57,6 +60,8 @@ struct AsyncImageLoader<Placeholder: View>: View {
                     image(loader.image!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .scaleEffect(config.imageScale)
+                        .offset(config.imageOffset)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .clipped()
                         .ignoresSafeArea(.all)

@@ -10,6 +10,19 @@ import SwiftUI
 struct SignUpEthnicityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+   
+    let ethnicityOptions: [String] = [
+        "American Indian",
+        "Black/African American",
+        "East Asian",
+        "Hipanic/Latino",
+        "Mid Eastern",
+        "Pacific Islander",
+        "South Asian",
+        "Southeast Asian",
+        "White/Caucasian"
+    ]
+    
     /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
@@ -71,7 +84,7 @@ struct SignUpEthnicityView: View {
                         .frame(height: 50)
                 }
                 
-                CheckBoxEthnicityGroup(
+                CheckBoxGroup(
                     selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
                     ethnicityList: $vm.ethnicity,
                     callback: { _ in }

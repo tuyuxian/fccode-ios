@@ -14,6 +14,11 @@ struct SignUpAccountView: View, KeyboardReadable {
     @State private var isPasswordValid: Bool = true
     /// Flag for keyboard signal
     @State private var isKeyboardShowUp: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
+    /// Flag for sheet
+    @State private var isTermsPresented: Bool = false
+    @State private var isPrivacyPresented: Bool = false
     /// Handler for button on tap
     private func buttonOnTap() {
         self.endTextEditing()
@@ -164,7 +169,31 @@ struct SignUpAccountView: View, KeyboardReadable {
                 }
                 
                 Spacer()
+                
+                HStack(
+                    alignment: .top,
+                    spacing: 0.0
+                ) {
+                    Text("By continuing, I agree to Fingercrossed's ")
+                        .foregroundColor(Color.surface1)
+                        .fontTemplate(.noteMedium)
+                    
+                    TermsText(isTermsPresented: false)
+                }
+                
+                HStack(
+                    alignment: .top,
+                    spacing: 0.0
+                ) {
+                    Text("and acknowledge the ")
+                        .foregroundColor(Color.surface1)
+                        .fontTemplate(.noteMedium)
+                    
+                    PrivacyText(isPrivacyPresented: false)
+                }
+                Spacer()
                     .ignoresSafeArea(.keyboard)
+                    .frame(height: 30)
                 
                 PrimaryButton(
                     label: "Continue",
@@ -184,5 +213,45 @@ struct SignUpAccountView_Previews: PreviewProvider {
         SignUpAccountView(
             vm: EntryViewModel()
         )
+    }
+}
+
+private struct TermsText: View {
+    @State var isTermsPresented: Bool = false
+    
+    var body: some View {
+        VStack {
+            Text("Terms of Service")
+                .foregroundColor(Color.surface1)
+                .fontTemplate(.noteMedium)
+                .underline()
+                .onTapGesture {
+                    isTermsPresented.toggle()
+                }
+                .sheet(isPresented: $isTermsPresented) {
+                    TermsOfServiceSheet(isPresented: $isTermsPresented)
+                }
+        }
+        
+    }
+}
+
+private struct PrivacyText: View {
+    @State var isPrivacyPresented: Bool
+    
+    var body: some View {
+        VStack {
+            Text("Privacy Policy")
+                .foregroundColor(Color.surface1)
+                .fontTemplate(.noteMedium)
+                .underline()
+                .onTapGesture {
+                    isPrivacyPresented.toggle()
+                }
+                .sheet(isPresented: $isPrivacyPresented) {
+                    PrivacySheet(isPresented: $isPrivacyPresented)
+                }
+        }
+        
     }
 }

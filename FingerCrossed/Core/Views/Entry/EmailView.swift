@@ -26,6 +26,7 @@ struct EmailView: View {
         isLoading.toggle()
         self.endTextEditing()
         guard vm.isEmailValid(str: vm.email) else {
+            isLoading.toggle()
             isEmailValid = false
             return
         }
@@ -44,19 +45,6 @@ struct EmailView: View {
             vm.transition = .forward
             vm.switchView = exist! ? .password : .account
         }
-    }
-    /// Handler for facebook sso
-    private func facebookOnTap() {
-        self.endTextEditing()
-        FacebookSSOManager().signIn(
-            successAction: { email in
-                vm.email = email ?? ""
-            },
-            errorAction: { error in
-                guard let error else { return }
-                print(error.localizedDescription)
-            }
-        )
     }
     /// Handler for google sso
     private func googleOnTap() {
@@ -245,12 +233,6 @@ struct EmailView: View {
                             alignment: .center,
                             spacing: 20
                         ) {
-                            SSOButton(
-                                platform: .facebook,
-                                handler: {
-                                    facebookOnTap()
-                                }
-                            )
                             SSOButton(
                                 platform: .google,
                                 handler: {

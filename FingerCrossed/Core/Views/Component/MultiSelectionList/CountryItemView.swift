@@ -28,8 +28,8 @@ struct CountryItemView: View {
                         maxHeight: .infinity,
                         alignment: .leading
                     )
-                
-                Image(isSelected ? "CheckCircleBased" : "")
+                isSelected
+                ? Image("CheckCircleBased")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color.gold)
@@ -38,6 +38,7 @@ struct CountryItemView: View {
                         height: 24,
                         alignment: .center
                     )
+                : nil
             }
         }
         .padding(.horizontal, 40)

@@ -27,7 +27,7 @@ struct AsyncImageLoader<Placeholder: View>: View {
                 )
             )
         }
-    @State var config: LifePhotoViewModel = LifePhotoViewModel()
+    @State var config: ProfileViewModel = ProfileViewModel()
 
     var body: some View {
         content

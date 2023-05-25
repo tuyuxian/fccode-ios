@@ -15,7 +15,8 @@ struct HelpSupportView: View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
             childTitle: "Help & Support",
-            showSaveButton: false
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 ScrollView {

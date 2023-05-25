@@ -70,6 +70,7 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
+                        .keyboardType(.alphabet)
                         .disableAutocorrection(true)
                         .autocapitalization(.none)
                     } else {
@@ -88,7 +89,9 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
+                        .keyboardType(.alphabet)
                         .disableAutocorrection(true)
+                        .autocorrectionDisabled(true)
                         .autocapitalization(.none)
                     }
                 case .text:

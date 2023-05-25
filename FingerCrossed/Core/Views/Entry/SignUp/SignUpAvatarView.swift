@@ -72,6 +72,8 @@ struct SignUpAvatarView: View {
                 }
             }
             isLoading.toggle()
+            vm.transition = .forward
+            vm.switchView = .location
         }
     }
     

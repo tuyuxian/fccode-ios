@@ -15,7 +15,7 @@ struct CandidateView: View {
     @State var isSheetPresented: Bool = false
     @Binding var isLiked: Bool
     @Binding var isDisliked: Bool
-    @State var config: LifePhotoViewModel = LifePhotoViewModel()
+    @State var config: ProfileViewModel = ProfileViewModel()
     
     var body: some View {
         

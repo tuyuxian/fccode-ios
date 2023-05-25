@@ -85,7 +85,9 @@ struct SignUpEthnicityView: View {
                 }
                 
                 CheckBoxGroup(
-                    selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
+                    selectedIdList: Array(
+                        vm.ethnicity.map { $0.type.rawValue }
+                    ),
                     ethnicityList: $vm.ethnicity,
                     callback: { _ in }
                 )

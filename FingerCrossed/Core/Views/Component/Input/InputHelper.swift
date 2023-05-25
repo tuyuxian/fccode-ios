@@ -14,16 +14,16 @@ struct InputHelper: View {
         case error
     }
     
-    // Flag for helper
-    // Use .constant(false) for error type
+    /// Flag for helper
+    /// Use .constant(false) for error type
     @Binding var isSatisfied: Bool
-    // Helper label
+    /// Helper label
     @State var label: String
-    // Type of the helper
+    /// Type of the helper
     @State var type: HelperType
     
     var body: some View {
-        HStack(spacing: 6.0) {
+        HStack(alignment: .top, spacing: 6.0) {
             switch type {
             case .info:
                 Image("CheckCircleBased")

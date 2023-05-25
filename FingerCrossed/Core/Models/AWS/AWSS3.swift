@@ -9,22 +9,23 @@ import Foundation
 
 class AWSS3 {
     
+    private var continuation: CheckedContinuation<URL?, Error>?
+    
     public func uploadImage(
         _ data: Data?,
         toPresignedURL remoteURL: URL
-    ) async -> Result<URL?, Error> {
-        return await withCheckedContinuation { continuation in
+    ) async throws -> URL {
+        return try await withCheckedThrowingContinuation { continuation in
             uploadImageImpl(
                 data,
                 toPresignedURL: remoteURL
-            ) { (result) in
+            ) { result in
                 switch result {
-                case .success:
-                    print("Upload completed")
+                case .success(let data):
+                    continuation.resume(returning: data!)
                 case .failure(let error):
-                    print(error.localizedDescription)
+                    continuation.resume(throwing: error)
                 }
-                continuation.resume(returning: result)
             }
         }
     }

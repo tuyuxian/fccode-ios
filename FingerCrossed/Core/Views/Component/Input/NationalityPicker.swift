@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct NationalityPicker: View {
-    @State var countryViewModel: CountryViewModel = CountryViewModel()
-    @ObservedObject var countrySelectionList: CountrySelectionList
+    @State var nationalityViewModel: NationalityViewModel = NationalityViewModel()
+    @ObservedObject var nationalitySelectionList: NationalitySelectionList
     @State var isSheetPresented = false
+    @State var isPreference: Bool
     @State var countryName = ""
     
     var body: some View {
@@ -28,9 +29,9 @@ struct NationalityPicker: View {
                 )
                 .padding(.trailing, 16)
             
-            if countrySelectionList.countrySelections.count != 0 {
-                CountrySearchBar(
-                    countrySelectionList: countrySelectionList,
+            if nationalitySelectionList.nationalitySelections.count != 0 {
+                NationalitySearchBar(
+                    nationalitySelectionList: nationalitySelectionList,
                     countryName: $countryName,
                     isDisplay: true
                 )
@@ -58,8 +59,11 @@ struct NationalityPicker: View {
             isSheetPresented.toggle()
         }
         .sheet(isPresented: $isSheetPresented) {
-            CountryView(countrySelectionList: countrySelectionList)
-                .presentationDetents([.large])
+            NationalityView(
+                nationalitySelectionList: nationalitySelectionList,
+                isPreference: $isPreference
+            )
+            .presentationDetents([.large])
         }
     }
 }
@@ -67,10 +71,11 @@ struct NationalityPicker: View {
 struct NationalityPicker_Previews: PreviewProvider {
     static var previews: some View {
         NationalityPicker(
-            countrySelectionList:
-                CountrySelectionList(
-                    countrySelections: [CountryModel]()
-                )
+            nationalitySelectionList:
+                NationalitySelectionList(
+                    nationalitySelections: [Nationality]()
+                ),
+            isPreference: false
         )
     }
 }

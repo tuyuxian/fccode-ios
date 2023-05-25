@@ -8,13 +8,14 @@
 import Foundation
 import SwiftUI
 
-class EntryViewModel: ObservableObject, InputUtils {
+class EntryViewModel: ObservableObject, InputProtocol {
     // MARK: Enum section
     enum CurrentView: Int {
         case email
         case password
         case resetPassword
         case resetPasswordEmailCheck
+        case resetPasswordOTP
         case account
         case name
         case birthday
@@ -22,6 +23,7 @@ class EntryViewModel: ObservableObject, InputUtils {
         case ethnicity
         case nationality
         case avatar
+        case location
     }
     
     enum Transition: Int {
@@ -36,7 +38,6 @@ class EntryViewModel: ObservableObject, InputUtils {
     @Published var switchView: CurrentView = CurrentView.email
     
     // MARK: State Management
-    @Published var isNewUser: Bool = true
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var passwordConfirmed = ""
@@ -46,14 +47,25 @@ class EntryViewModel: ObservableObject, InputUtils {
     @Published var dateOfBirth: String = ""
     @Published var selectedDate: Date = Date()
     @Published var gender: Gender?
-    @Published var nationality = [CountryModel]()
+    @Published var nationality = [Nationality]()
     @Published var ethnicity = [Ethnicity]()
-    @Published var avatarUrl: String?
+    @Published var profilePictureUrl: String?
     @Published var yearIndex = 99
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
+    @Published var latitude: Double?
+    @Published var longitude: Double?
+    @Published var country: String?
+    @Published var administrativeArea: String?
+    @Published var facebookConnect: Bool = false
+    @Published var googleConnect: Bool = false
+    @Published var appleConnect: Bool = false
+    @Published var socialAccount: SocialAccount = SocialAccount(
+        email: "",
+        platform: .FINGERCROSSED
+    )
     
     // MARK: Condition Variables for button
     /// - Email view
@@ -86,4 +98,8 @@ class EntryViewModel: ObservableObject, InputUtils {
     @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
     @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
     @Published var isNewPasswordMatched: Bool = false
+    
+    deinit {
+        print("-> EntryViewModel deinit")
+    }
 }

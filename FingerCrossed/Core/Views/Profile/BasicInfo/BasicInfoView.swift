@@ -54,7 +54,7 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Name",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: vm.user.username!)),
+                                        preview: AnyView(PreviewText(text: vm.user.username)),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -66,7 +66,7 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Gender",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: vm.user.gender?.rawValue ?? "")),
+                                        preview: AnyView(PreviewText(text: vm.user.gender.rawValue)),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -98,12 +98,16 @@ struct BasicInfoView: View {
                                     LifePhoto(
                                         photoUrl: "https://i.pravatar.cc/150?img=6",
                                         caption: "malesuada",
-                                        position: 0
+                                        position: 0,
+                                        scale: 1,
+                                        offset: CGSize.zero
                                     ),
                                     LifePhoto(
                                         photoUrl: "https://i.pravatar.cc/150?img=7",
                                         caption: "malesuada fames ac",
-                                        position: 1
+                                        position: 1,
+                                        scale: 1,
+                                        offset: CGSize.zero
                                     )
                                 ]
                             )
@@ -133,9 +137,7 @@ private struct BasicInfoContent: View {
     @State private var selectedSheet: BasicInfoSheetView?
     
     @State private var showAlert: Bool = false
-    
-    @State private var showBanner: Bool = false
-    
+        
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
@@ -168,7 +170,7 @@ private struct BasicInfoContent: View {
                         id: \.element.id
                     ) { _, childView in
                         LazyVStack(spacing: 0) {
-                            Divider().foregroundColor(Color.surface3)
+                            Divider().overlay(Color.surface3)
                                 .padding(.horizontal, 24)
                             
                             HStack(spacing: 0) {
@@ -187,8 +189,7 @@ private struct BasicInfoContent: View {
                                     )
                                 } else {
                                     UneditableRow(
-                                        showAlert: $showAlert,
-                                        showBanner: $showBanner
+                                        showAlert: $showAlert
                                     ) {
                                         ListRow(
                                             label: childView.label,
@@ -217,9 +218,7 @@ private struct UneditableRow<Content: View>: View {
     @EnvironmentObject var bm: BannerManager
     
     @Binding var showAlert: Bool
-    
-    @Binding var showBanner: Bool
-    
+        
     @ViewBuilder var row: Content
     
     var body: some View {

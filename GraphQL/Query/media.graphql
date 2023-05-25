@@ -1,0 +1,17 @@
+query GetS3PresignedPutUrl($sourceType: MediaSourceType!) {
+  getS3PresignedPutUrl(sourceType: $sourceType) {
+    status
+    statusCode
+    message
+    url
+  }
+}
+
+query GetS3PresignedDeleteUrl($fileName: String!) {
+  getS3PresignedDeleteUrl(fileName: $fileName) {
+    status
+    statusCode
+    message
+    url
+  }
+}

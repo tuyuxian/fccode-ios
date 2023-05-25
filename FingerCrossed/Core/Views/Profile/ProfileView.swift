@@ -26,12 +26,12 @@ struct ProfileView: View {
                         )
                         .overlay(
                             Avatar(
-                                avatarUrl: vm.user.avatarURL!,
+                                avatarUrl: vm.user.profilePictureUrl!,
                                 size: 121.5,
                                 isActive: false
                             )
                         )
-                    Text(vm.user.username!)
+                    Text(vm.user.username)
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                 }
@@ -51,10 +51,9 @@ struct ProfileView: View {
                                 label: "Settings",
                                 subview: AnyView(SettingsView(vm: vm))
                             ),
-                            // TODO(Lawrence): add this in the future
                             ChildView(
                                 label: "Help & Support",
-                                subview: AnyView(EmptyView())
+                                subview: AnyView(HelpSupportView(vm: vm))
                             )
                         ]
                     )

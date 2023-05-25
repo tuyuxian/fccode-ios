@@ -41,12 +41,25 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
+		<string>fbapi20130214</string>
+		<string>fbapi20130410</string>
+		<string>fbapi20130702</string>
+		<string>fbapi20131010</string>
+		<string>fbapi20131219</string>
+		<string>fbapi20140116</string>
+		<string>fbapi20140410</string>
+		<string>fbapi20150313</string>
+		<string>fbapi20150629</string>
+		<string>fbapi20160328</string>
 		<string>fb-messenger-share-api</string>
+		<string>fbauth</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Finger Crossed needs access to your camera so you can take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Access to your location</string>
+	<string>Finger Crossed needs access to your location to show you who's around.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Finger Crossed needs access to your microphone so you can record voice messages.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

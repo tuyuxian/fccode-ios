@@ -70,6 +70,7 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
+                        .keyboardType(.alphabet)
                         .disableAutocorrection(true)
                         .autocapitalization(.none)
                     } else {
@@ -88,7 +89,9 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
+                        .keyboardType(.alphabet)
                         .disableAutocorrection(true)
+                        .autocorrectionDisabled(true)
                         .autocapitalization(.none)
                     }
                 case .text:
@@ -121,13 +124,12 @@ struct PrimaryInputBar: View {
             case .email:
                 EmptyView()
             case .password:
-                Button {
-                   isSecureMode.toggle()
-                } label: {
-                    Image(isSecureMode ? "EyeClose" : "EyeShow")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                }
+                Image(isSecureMode ? "EyeClose" : "EyeShow")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .onTapGesture {
+                        isSecureMode.toggle()
+                    }
             case .text:
                 EmptyView()
             }

@@ -16,8 +16,9 @@ struct ResetPasswordView: View, KeyboardReadable {
     @State private var isKeyboardShowUp: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.newPassword) &&
                 vm.newPassword == vm.newPasswordConfirmed
         else {
@@ -26,7 +27,9 @@ struct ResetPasswordView: View, KeyboardReadable {
         }
         isPasswordValid = true
         vm.transition = .forward
-        vm.switchView = .resetPasswordEmailCheck
+        vm.switchView = .email
+        vm.email = ""
+        vm.isEmailSatisfied = false
         vm.newPassword = ""
         vm.newPasswordConfirmed = ""
     }
@@ -41,27 +44,12 @@ struct ResetPasswordView: View, KeyboardReadable {
             Color.background.ignoresSafeArea(.all)
             
             VStack(
-                alignment: .leading,
+                alignment: .center,
                 spacing: 0
             ) {
-                HStack(
-                    alignment: .center,
-                    spacing: 92
-                ) {
-                    Button {
-                        vm.transition = .backward
-                        vm.switchView = .password
-                    } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                    }
-                    .padding(.leading, -8) // 16 - 24
-                                        
-                    EntryLogo()
-                }
-                .padding(.top, 5)
-                .padding(.bottom, 55)
+                EntryLogo()
+                    .padding(.top, 5)
+                    .padding(.bottom, 55)
                 
                 !isKeyboardShowUp
                 ? Text("Reset\nPassword")
@@ -75,7 +63,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                     .padding(.bottom, 30)
                 : nil
 
-                LazyVStack(
+                VStack(
                     alignment: .leading,
                     spacing: 20
                 ) {
@@ -129,7 +117,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                         isKeyboardShowUp = val
                     }
                     
-                    LazyVStack(alignment: .leading, spacing: 6.0) {
+                    VStack(alignment: .leading, spacing: 6.0) {
                         InputHelper(
                             isSatisfied: $vm.isNewPasswordLengthSatisfied,
                             label: "Password should be 8 to 36 characters",

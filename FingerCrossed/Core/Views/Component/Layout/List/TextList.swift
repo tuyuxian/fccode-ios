@@ -57,7 +57,7 @@ struct TextList: View {
                     
                     index != $messageList.count - 1
                     ? Divider()
-                        .foregroundColor(Color.surface3)
+                        .overlay(Color.surface3)
                         .padding(
                             EdgeInsets(
                                 top: 0,

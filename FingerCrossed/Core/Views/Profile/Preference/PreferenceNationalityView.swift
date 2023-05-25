@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct PreferenceNationalityView: View {
+    /// Observed Profile view model
+    @ObservedObject var vm: ProfileViewModel
     
-    @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
+    @StateObject var nationalitySelectionList = NationalitySelectionList(
+        nationalitySelections: [Nationality]()
+    )
 
     var body: some View {
         ContainerWithHeaderView(
@@ -21,8 +25,12 @@ struct PreferenceNationalityView: View {
             Box {
                 VStack {
                     NationalityPicker(
-                        countrySelectionList: countrySelectionList
+                        nationalitySelectionList: nationalitySelectionList,
+                        isPreference: true
                     )
+                    .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
+                        vm.nationality = nationalitySelectionList.nationalitySelections
+                    }
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 24)
@@ -35,6 +43,6 @@ struct PreferenceNationalityView: View {
 
 struct PreferenceNationalityView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceNationalityView()
+        PreferenceNationalityView(vm: ProfileViewModel())
     }
 }

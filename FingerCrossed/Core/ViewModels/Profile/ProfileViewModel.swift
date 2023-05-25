@@ -8,7 +8,7 @@
 import Foundation
 import PhotosUI
 
-class ProfileViewModel: ObservableObject, InputUtils {
+class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var user: UserEntity = UserEntity(
         id: UUID(),
         userId: 123123123,
@@ -17,14 +17,15 @@ class ProfileViewModel: ObservableObject, InputUtils {
         username: "Test User",
         dateOfBirth: Date(),
         gender: .MALE,
-        avatarURL: "https://i.pravatar.cc/150?img=6",
+        profilePictureUrl: "https://i.pravatar.cc/150?img=6",
         // swiftlint: disable line_length
         selfIntro: "Hello! I'm ChatGPT, a language model designed to understand and generate human-like language.",
         // swiftlint: enable line_length
         longitude: 123.0,
         latitude: 123.0,
-        voiceContentURL: "",
-        matchingDistance: 0,
+        country: "",
+        administrativeArea: "USA",
+        voiceContentURL: "AZ",
         googleConnect: false,
         facebookConnect: false,
         appleConnect: false,
@@ -35,32 +36,51 @@ class ProfileViewModel: ObservableObject, InputUtils {
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=6",
                 caption: "123",
-                position: 0
+                position: 0,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=7",
                 caption: "123",
-                position: 1
+                position: 1,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=8",
                 caption: "123",
-                position: 2
+                position: 2,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
-                position: 3
+                position: 3,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "",
                 caption: "",
-                position: 4
+                position: 4,
+                scale: 1,
+                offset: CGSize.zero
             )
         ],
         socialAccount: [],
         ethnicity: []
     )
+    
+    @Published var distance: String = ""
+    @Published var ethnicity: [Ethnicity] = []
+    @Published var goal: [String] = []
+    @Published var sexOrientation: [String] = []
+    @Published var ageFrom: Int = 18
+    @Published var ageTo: Int = 100
+    @Published var nationality = [Nationality]()
+    
     // MARK: State Management
     @Published var currentPassword: String = ""
     @Published var newPassword: String = ""
@@ -81,7 +101,7 @@ class ProfileViewModel: ObservableObject, InputUtils {
     @Published var currentLifePhotoCount: Int = 4
     @Published var imageScale: CGFloat = 1
     @Published var selectedLifePhoto: LifePhoto?
-    
+    @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
 }

@@ -9,8 +9,13 @@ import SwiftUI
 
 struct Spinner: View {
     var body: some View {
-        LottieView(lottieFile: "spinner.json")
-            .frame(width: 24, height: 24)
+        LottieView(
+            lottieFile: "spinner.json"
+        )
+        .frame(
+            width: 24,
+            height: 24
+        )
     }
 }
 

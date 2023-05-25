@@ -55,24 +55,28 @@ struct SignUpAvatarView: View {
     }
     /// Handler for button on tap
     private func buttonOnTap() {
-        isLoading.toggle()
-        MediaRepository().getPresignedPutUrl(
-            GraphQLEnum.case(.image)
-        ) { url, error in
-            Task {
-                do {
-                    let result = try await AWSS3().uploadImage(
-                        vm.selectedImageData,
-                        // TODO(Sam): replace with presigned Url generated from backend
-                        toPresignedURL: URL(string: url!)!
-                    )
-                    print(result)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-            isLoading.toggle()
-        }
+//        isLoading.toggle()
+        vm.transition = .forward
+        vm.switchView = .location
+//        MediaRepository().getPresignedPutUrl(
+//            GraphQLEnum.case(.image)
+//        ) { url, error in
+////            Task {
+////                do {
+////                    let result = try await AWSS3().uploadImage(
+////                        vm.selectedImageData,
+////                        // TODO(Sam): replace with presigned Url generated from backend
+////                        toPresignedURL: URL(string: url!)!
+////                    )
+////                    print(result)
+////                } catch {
+////                    print(error.localizedDescription)
+////                }
+////            }
+//            isLoading.toggle()
+//            vm.transition = .forward
+//            vm.switchView = .location
+//        }
     }
     
     var body: some View {

@@ -36,27 +36,37 @@ class ProfileViewModel: ObservableObject, InputProtocol {
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=6",
                 caption: "123",
-                position: 0
+                position: 0,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=7",
                 caption: "123",
-                position: 1
+                position: 1,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=8",
                 caption: "123",
-                position: 2
+                position: 2,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
-                position: 3
+                position: 3,
+                scale: 1,
+                offset: CGSize.zero
             ),
             LifePhoto(
                 photoUrl: "",
                 caption: "",
-                position: 4
+                position: 4,
+                scale: 1,
+                offset: CGSize.zero
             )
         ],
         socialAccount: [],
@@ -69,7 +79,7 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var sexOrientation: [String] = []
     @Published var ageFrom: Int = 18
     @Published var ageTo: Int = 100
-    @Published var nationality = [CountryModel]()
+    @Published var nationality = [Nationality]()
     
     // MARK: State Management
     @Published var currentPassword: String = ""
@@ -91,7 +101,7 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var currentLifePhotoCount: Int = 4
     @Published var imageScale: CGFloat = 1
     @Published var selectedLifePhoto: LifePhoto?
-    
+    @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
 }

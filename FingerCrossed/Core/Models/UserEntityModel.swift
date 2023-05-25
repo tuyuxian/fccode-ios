@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import GraphQLAPI
 
 enum Gender: String, CaseIterable {
     case MALE = "Male"
@@ -13,6 +14,21 @@ enum Gender: String, CaseIterable {
     case TRANSGENDER = "Transgender"
     case NONBINARY = "Nonbinary"
     case PREFERNOTTOSAY = "Prefer not to say"
+    
+    var graphQLValue: GraphQLAPI.UserGender {
+        switch self {
+        case .MALE:
+            return .male
+        case .FEMALE:
+            return .female
+        case .TRANSGENDER:
+            return .transgender
+        case .NONBINARY:
+            return .nonBinary
+        case .PREFERNOTTOSAY:
+            return .preferNotToSay
+        }
+    }
 }
 
 class UserEntity: ObservableObject {
@@ -34,8 +50,8 @@ class UserEntity: ObservableObject {
     var facebookConnect: Bool?
     var appleConnect: Bool?
     var premium: Bool?
-    var goal: [GoalModel]
-    var citizen: [CountryModel]
+    var goal: [Goal]
+    var citizen: [Nationality]
     var lifePhoto: [LifePhoto]
     var socialAccount: [SocialAccount]
     var ethnicity: [Ethnicity]
@@ -59,8 +75,8 @@ class UserEntity: ObservableObject {
         facebookConnect: Bool,
         appleConnect: Bool,
         premium: Bool,
-        goal: [GoalModel],
-        citizen: [CountryModel],
+        goal: [Goal],
+        citizen: [Nationality],
         lifePhoto: [LifePhoto],
         socialAccount: [SocialAccount],
         ethnicity: [Ethnicity]

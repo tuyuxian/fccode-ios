@@ -11,7 +11,7 @@ struct CandidateDetailView: View {
     @State var candidateModel: CandidateModel
     @State var lifePhotoList: [LifePhoto]
     @State var isPlay: Bool = false
-    @State var config = LifePhotoViewModel()
+    @State var config = ProfileViewModel()
     
     var body: some View {
         ScrollView {

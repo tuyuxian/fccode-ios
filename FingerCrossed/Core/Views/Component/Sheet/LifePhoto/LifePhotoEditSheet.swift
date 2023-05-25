@@ -14,7 +14,6 @@ struct LifePhotoEditSheet: View {
     @ObservedObject var vm: ProfileViewModel
 
     @State private var selectedTag: Int = 2
-    @ObservedObject var config: LifePhotoViewModel
     @State var uiImage: UIImage = UIImage()
     
     @State var newUIImage: UIImage = UIImage()
@@ -48,8 +47,8 @@ struct LifePhotoEditSheet: View {
                     .frame(height: 342)
                     .background(
                         AsyncEditImageLoader(
-                            url: URL(string: config.selectedLifePhoto?.photoUrl ?? "")!,
-                            config: config,
+                            url: URL(string: vm.selectedLifePhoto?.photoUrl ?? "")!,
+                            config: vm,
                             placeholder: {
                         // AsyncImage(
                         //     url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),

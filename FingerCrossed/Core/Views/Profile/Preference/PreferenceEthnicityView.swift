@@ -35,10 +35,10 @@ struct PreferenceEthnicityView: View {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(items: ethnicityOptions) { list in
                         vm.ethnicity.removeAll()
-                        for item in list {
-                            let ethnicity = Ethnicity(id: UUID(), type: item)
-                            vm.ethnicity.append(ethnicity)
-                        }
+//                        for item in list {
+//                            let ethnicity = Ethnicity(id: UUID(), type: item)
+//                            vm.ethnicity.append(ethnicity)
+//                        }
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)

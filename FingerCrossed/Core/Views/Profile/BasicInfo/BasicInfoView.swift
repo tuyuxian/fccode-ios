@@ -168,7 +168,7 @@ private struct BasicInfoContent: View {
                         id: \.element.id
                     ) { _, childView in
                         LazyVStack(spacing: 0) {
-                            Divider().foregroundColor(Color.surface3)
+                            Divider().overlay(Color.surface3)
                                 .padding(.horizontal, 24)
                             
                             HStack(spacing: 0) {

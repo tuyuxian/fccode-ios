@@ -43,7 +43,7 @@ struct MenuList: View {
                         .padding(.top, index == 0 ? 14 : 0) // 30 - 16 (ListRow) for the first item
                         
                         index != childViewList.count - 1
-                        ? Divider().foregroundColor(Color.surface3)
+                        ? Divider().overlay(Color.surface3)
                             .padding(.horizontal, 24)
                         : nil
                     }

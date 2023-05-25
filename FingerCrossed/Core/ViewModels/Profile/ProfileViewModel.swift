@@ -79,7 +79,7 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var sexOrientation: [String] = []
     @Published var ageFrom: Int = 18
     @Published var ageTo: Int = 100
-    @Published var nationality = [CountryModel]()
+    @Published var nationality = [Nationality]()
     
     // MARK: State Management
     @Published var currentPassword: String = ""

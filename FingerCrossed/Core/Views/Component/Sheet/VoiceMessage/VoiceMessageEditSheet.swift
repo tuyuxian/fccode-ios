@@ -14,7 +14,6 @@ struct VoiceMessageEditSheet: View {
     // @State private var isLoading: Bool = false
     
     // @State var hasVoiceMessage: Bool = true
-    // // TODO(Lawrence): apply new design
     // var body: some View {
     //     ZStack {
     //         Color.white.edgesIgnoringSafeArea(.all)

@@ -24,11 +24,11 @@ struct PasswordView: View {
     private func buttonOnTap() {
         isLoading.toggle()
         self.endTextEditing()
-//        guard vm.isPasswordValid(str: vm.password) else {
-//            isPasswordValid = false
-//            isLoading.toggle()
-//            return
-//        }
+        guard vm.isPasswordValid(str: vm.password) else {
+            isPasswordValid = false
+            isLoading.toggle()
+            return
+        }
         isPasswordValid = true
         EntryRepository.signIn(
             email: vm.email,
@@ -108,6 +108,8 @@ struct PasswordView: View {
                     } else {
                         vm.email = email
                         vm.googleConnect = true
+                        vm.socialAccount.email = vm.email
+                        vm.socialAccount.platform = .GOOGLE
                         vm.transition = .forward
                         vm.switchView = .name
                     }
@@ -165,6 +167,8 @@ struct PasswordView: View {
                     } else {
                         vm.email = email
                         vm.appleConnect = true
+                        vm.socialAccount.email = vm.email
+                        vm.socialAccount.platform = .APPLE
                         vm.transition = .forward
                         vm.switchView = .name
                     }

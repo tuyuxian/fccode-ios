@@ -1,5 +1,5 @@
 //
-//  CountrySearchBar.swift
+//  NationalitySearchBar.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/26/23.
@@ -7,11 +7,16 @@
 
 import SwiftUI
 
-struct CountrySearchBar: View {
-    @State var countryViewModel: CountryViewModel = CountryViewModel()
-    @ObservedObject var countrySelectionList: CountrySelectionList
+struct NationalitySearchBar: View {
+    
+    @State var nationalityViewModel: NationalityViewModel = NationalityViewModel()
+    
+    @ObservedObject var nationalitySelectionList: NationalitySelectionList
+    
     @Binding var countryName: String
+    
     @FocusState private var isSearchBarFocused
+    
     @State var isDisplay = false
     
     var body: some View {
@@ -19,19 +24,19 @@ struct CountrySearchBar: View {
             alignment: .top,
             spacing: 0
         ) {
-            if countrySelectionList.countrySelections.count >= 1 {
+            if nationalitySelectionList.nationalitySelections.count >= 1 {
                 VStack(
                     alignment: .leading,
                     spacing: 10
                 ) {
-                    if countrySelectionList.countrySelections.contains(where: { $0.name == "Open to all" }) {
+                    if nationalitySelectionList.nationalitySelections.contains(where: { $0.name == "Open to all" }) {
                         HStack(spacing: 8) {
                             Text("Open to all")
                                 .padding(.leading, 10)
                                 .padding(.vertical, 6)
                             
                             Button {
-                                countrySelectionList.countrySelections.removeAll()
+                                nationalitySelectionList.nationalitySelections.removeAll()
                             } label: {
                                 Image("CloseCircle")
                                     .resizable()
@@ -50,7 +55,7 @@ struct CountrySearchBar: View {
                         )
                     }
                     else {
-                        countrySelectionList.countrySelections.count >= 3
+                        nationalitySelectionList.nationalitySelections.count >= 3
                         ? nil
                         : isDisplay
                             ? nil
@@ -79,20 +84,20 @@ struct CountrySearchBar: View {
                             alignment: .leading,
                             spacing: 10
                         ) {
-                            countrySelectionList.countrySelections.count >= 3
+                            nationalitySelectionList.nationalitySelections.count >= 3
                             ? nil
                             : isDisplay ? nil : Divider().overlay(Color.surface2)
                             
-                            ForEach(countrySelectionList.countrySelections) { countryselected in
+                            ForEach(nationalitySelectionList.nationalitySelections) { selected in
                                 
                                 HStack(spacing: 8) {
-                                    Text(countryselected.name)
+                                    Text(selected.name)
                                         .padding(.leading, 10)
                                         .padding(.vertical, 6)
                                     
                                     Button {
-                                        countrySelectionList.countrySelections.removeAll(
-                                            where: { $0 == countryselected }
+                                        nationalitySelectionList.nationalitySelections.removeAll(
+                                            where: { $0 == selected }
                                         )
                                     } label: {
                                         Image("CloseCircle")
@@ -119,16 +124,16 @@ struct CountrySearchBar: View {
             } else {
                 HStack {
                     HStack(spacing: 8.0) {
-                        ForEach(countrySelectionList.countrySelections) { countryselected in
+                        ForEach(nationalitySelectionList.nationalitySelections) { selected in
                             
                             HStack(spacing: 8.0) {
-                                Text(countryselected.name)
+                                Text(selected.name)
                                     .padding(.leading, 10)
                                     .padding(.vertical, 6)
                                 
                                 Button {
-                                    countrySelectionList.countrySelections.removeAll(
-                                        where: { $0 == countryselected }
+                                    nationalitySelectionList.nationalitySelections.removeAll(
+                                        where: { $0 == selected }
                                     )
                                 } label: {
                                     Image("CloseCircle")
@@ -169,22 +174,22 @@ struct CountrySearchBar: View {
             Image(systemName: "magnifyingglass").foregroundColor(Color.text)
                 .padding(.top, 5)
         }
-        .environmentObject(countrySelectionList)
+        .environmentObject(nationalitySelectionList)
         .frame(maxWidth: .infinity)
         .frame(
             height:
                 flexibleHeight(
-                    count: countrySelectionList.countrySelections.count,
+                    count: nationalitySelectionList.nationalitySelections.count,
                     isDisplay: isDisplay
                 )
         )
         .padding(.horizontal, 16)
         .background(
-            RoundedRectangle(cornerRadius: countrySelectionList.countrySelections.count >= 1 ? 26 : 50)
+            RoundedRectangle(cornerRadius: nationalitySelectionList.nationalitySelections.count >= 1 ? 26 : 50)
                 .stroke(Color.surface2, lineWidth: 1)
                 .background(
                     RoundedRectangle(
-                        cornerRadius: countrySelectionList.countrySelections.count >= 1 ? 26 : 50
+                        cornerRadius: nationalitySelectionList.nationalitySelections.count >= 1 ? 26 : 50
                     )
                     .fill(Color.white)
                 )
@@ -208,10 +213,12 @@ private var value: Binding<String> {
     Binding.constant("Value")
 }
 
-struct CountrySearchBar_Previews: PreviewProvider {
+struct NationalitySearchBar_Previews: PreviewProvider {
     static var previews: some View {
-        CountrySearchBar(
-            countrySelectionList: CountrySelectionList(countrySelections: [CountryModel]()),
+        NationalitySearchBar(
+            nationalitySelectionList: NationalitySelectionList(
+                nationalitySelections: [Nationality]()
+            ),
             countryName: value
         )
     }

@@ -1,5 +1,5 @@
 //
-//  CountryItemView.swift
+//  NationalityItem.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/10/23.
@@ -7,19 +7,21 @@
 
 import SwiftUI
 
-struct CountryItemView: View {
-    let countryModel: CountryModel
+struct NationalityItem: View {
+    
+    let nationality: Nationality
+    
     var isSelected: Bool = false
     
-    init(countryModel: CountryModel, isSelected: Bool) {
-        self.countryModel = countryModel
+    init(nationality: Nationality, isSelected: Bool) {
+        self.nationality = nationality
         self.isSelected = isSelected
     }
     
     var body: some View {
         VStack {
             HStack(spacing: 6.0) {
-                Text(countryModel.name)
+                Text(nationality.name)
                     .fontTemplate(.pMedium)
                     .foregroundColor(Color.text)
                     .padding(.vertical, 2)
@@ -46,8 +48,14 @@ struct CountryItemView: View {
     }
 }
 
-struct CountryItemView_Previews: PreviewProvider {
+struct NationalityItem_Previews: PreviewProvider {
     static var previews: some View {
-        CountryItemView(countryModel: CountryModel(name: "Taiwan", code: "TW"), isSelected: true)
+        NationalityItem(
+            nationality: Nationality(
+                name: "Taiwan",
+                code: "TW"
+            ),
+            isSelected: true
+        )
     }
 }

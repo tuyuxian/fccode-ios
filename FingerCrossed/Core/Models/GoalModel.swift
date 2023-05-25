@@ -15,7 +15,7 @@ enum GoatlType {
     case GT5 // Boost Self-esteem
 }
 
-struct GoalModel {
+struct Goal {
     var id: UUID
     var goalID: Int
     var goalType: GoatlType

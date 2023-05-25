@@ -1,5 +1,5 @@
 //
-//  CountryView.swift
+//  NationalityView.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/10/23.
@@ -7,19 +7,30 @@
 
 import SwiftUI
 
-struct CountryView: View {
+struct NationalityView: View {
+    
     @Environment(\.dismiss) private var dismiss
-    @State var countryViewModel: CountryViewModel = CountryViewModel()
-    @ObservedObject var countrySelectionList: CountrySelectionList
+    
+    @State var nationalityViewModel: NationalityViewModel = NationalityViewModel()
+    
+    @ObservedObject var nationalitySelectionList: NationalitySelectionList
+    
     @State private var countryName: String = ""
+    
     @FocusState private var isSearchBarFocused
+    
     @Binding var isPreference: Bool
-    var openCountryModel = CountryModel(name: "Open to all", code: "OA")
+    
+    var openCountryModel = Nationality(name: "Open to all", code: "OA")
+    
     @State var isAllSelected: Bool = false
     
     // MARK: init
-    init(countrySelectionList: CountrySelectionList, isPreference: Binding<Bool>) {
-        self.countrySelectionList = countrySelectionList
+    init(
+        nationalitySelectionList: NationalitySelectionList,
+        isPreference: Binding<Bool>
+    ) {
+        self.nationalitySelectionList = nationalitySelectionList
         self._isPreference = isPreference
         UITextField.appearance().clearButtonMode = .whileEditing
     }
@@ -50,9 +61,12 @@ struct CountryView: View {
                 .padding(.top, 3)
                 .padding(.bottom, 7)
             
-            CountrySearchBar(countrySelectionList: countrySelectionList, countryName: $countryName)
-                .padding(.horizontal, 24)
-                .padding(.vertical, 20)
+            NationalitySearchBar(
+                nationalitySelectionList: nationalitySelectionList,
+                countryName: $countryName
+            )
+            .padding(.horizontal, 24)
+            .padding(.vertical, 20)
             
             countriesListView
         }
@@ -62,23 +76,23 @@ struct CountryView: View {
         ScrollView {
             LazyVStack {
                 isPreference
-                ? CountryItemView(countryModel: openCountryModel, isSelected: isAllSelected)
+                ? NationalityItem(nationality: openCountryModel, isSelected: isAllSelected)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         openToAll()
                     }
                 : nil
                 
-                ForEach(countryViewModel.countries.filter { (countryModel) -> Bool in  self.searchForCountry(countryModel.name) }) { countryModel in
-                    CountryItemView(countryModel: countryModel, isSelected: isSelected(selected: countryModel))
+                ForEach(nationalityViewModel.nationalities.filter { (nationality) -> Bool in  self.searchForCountry(nationality.name) }) { nationality in
+                    NationalityItem(nationality: nationality, isSelected: isSelected(selected: nationality))
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            selectCountryCode(selectedCountry: countryModel)
+                            selectCountryCode(selectedCountry: nationality)
                         }
                     }
                 }
-                .onChange(of: countrySelectionList.countrySelections) { _ in
-                    if countrySelectionList.countrySelections.contains(where: { $0.name == "Open to all" }) && countrySelectionList.countrySelections.count - 1 == countryViewModel.countries.count {
+                .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
+                    if nationalitySelectionList.nationalitySelections.contains(where: { $0.name == "Open to all" }) && nationalitySelectionList.nationalitySelections.count - 1 == nationalityViewModel.nationalities.count {
                         isAllSelected = true
                     } else {
                         isAllSelected = false
@@ -93,7 +107,7 @@ struct CountryView: View {
     }
     // swiftlint: enable line_length
     func openToAll() {
-        let allSelected = countrySelectionList.countrySelections.contains(where: { item in
+        let allSelected = nationalitySelectionList.nationalitySelections.contains(where: { item in
             item.name == "Open to all"
         })
         
@@ -101,41 +115,42 @@ struct CountryView: View {
         
         if allSelected {
             isAllSelected = false
-            countrySelectionList.countrySelections.removeAll()
+            nationalitySelectionList.nationalitySelections.removeAll()
         } else {
             isAllSelected = true
-            countrySelectionList.countrySelections.removeAll()
-            countrySelectionList.countrySelections.append(openCountryModel)
-            for country in countryViewModel.countries {
-                countrySelectionList.countrySelections.append(country)
+            nationalitySelectionList.nationalitySelections.removeAll()
+            nationalitySelectionList.nationalitySelections.append(openCountryModel)
+            for country in nationalityViewModel.nationalities {
+                nationalitySelectionList.nationalitySelections.append(country)
             }
         }
     }
     
-    func isSelected (selected: CountryModel) -> Bool {
-        let contain = countrySelectionList.countrySelections.first { country in
+    func isSelected(selected: Nationality) -> Bool {
+        let contain = nationalitySelectionList.nationalitySelections.first { country in
             country.name == selected.name
         }
         return contain != nil
     }
 
-    func selectCountryCode(selectedCountry: CountryModel) {
+    func selectCountryCode(selectedCountry: Nationality) {
         if isSelected(selected: selectedCountry) {
-            countrySelectionList.countrySelections.removeAll { country in
+            nationalitySelectionList.nationalitySelections.removeAll { country in
                 country.name == selectedCountry.name
             }
         }
         else {
             if isPreference {
-                countrySelectionList.countrySelections.append(selectedCountry)
+                nationalitySelectionList.nationalitySelections.append(selectedCountry)
             } else {
-                countrySelectionList.countrySelections.count >= 3 ? nil
-                : countrySelectionList.countrySelections.append(selectedCountry)
+                nationalitySelectionList.nationalitySelections.count >= 3
+                ? nil
+                : nationalitySelectionList.nationalitySelections.append(selectedCountry)
             }
         }
         
         if selectedCountry.name != "Open to all" {
-            if countryViewModel.countries.count == countrySelectionList.countrySelections.count - 1 {
+            if nationalitySelectionList.nationalitySelections.count == nationalitySelectionList.nationalitySelections.count - 1 {
                 isAllSelected = true
             } else {
                 isAllSelected = false
@@ -143,7 +158,7 @@ struct CountryView: View {
         }
 
         countryName = ""
-        countrySelectionList.objectWillChange.send()
+        nationalitySelectionList.objectWillChange.send()
         }
 }
 
@@ -151,10 +166,12 @@ private var bool: Binding<Bool> {
     Binding.constant(false)
 }
 
-struct CountryView_Previews: PreviewProvider {
+struct NationalityView_Previews: PreviewProvider {
     static var previews: some View {
-        CountryView(
-            countrySelectionList: CountrySelectionList(countrySelections: [CountryModel]()),
+        NationalityView(
+            nationalitySelectionList: NationalitySelectionList(
+                nationalitySelections: [Nationality]()
+            ),
             isPreference: bool
         )
     }

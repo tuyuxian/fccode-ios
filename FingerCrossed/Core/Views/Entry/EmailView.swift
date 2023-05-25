@@ -8,6 +8,7 @@
 
 import SwiftUI
 import AuthenticationServices
+import GraphQLAPI
 
 struct EmailView: View {
     /// Global banner
@@ -22,14 +23,27 @@ struct EmailView: View {
     @State private var isLoading: Bool = false
     /// Handler for button on submit
     private func buttonOnTap() {
+        isLoading.toggle()
         self.endTextEditing()
         guard vm.isEmailValid(str: vm.email) else {
             isEmailValid = false
             return
         }
         isEmailValid = true
-        vm.transition = .forward
-        vm.switchView = .password
+        EntryRepository.checkEmail(email: vm.email) { exist, error in
+            guard error == nil else {
+                isLoading.toggle()
+                print(error!)
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+                return
+            }
+            isLoading.toggle()
+            vm.transition = .forward
+            vm.switchView = exist! ? .password : .account
+        }
     }
     /// Handler for facebook sso
     private func facebookOnTap() {
@@ -56,12 +70,46 @@ struct EmailView: View {
                     )
                     return
                 }
-                vm.email = email
-                userState.isLogin = true
-                userState.viewState = .main
+                EntryRepository.checkEmail(email: email) { exist, error in
+                    guard error == nil else {
+                        print(error!)
+                        bm.banner = .init(
+                            title: "Something went wrong.",
+                            type: .error
+                        )
+                        return
+                    }
+                    if exist! {
+                        EntryRepository.socialSignIn(
+                            email: email,
+                            platform: GraphQLEnum.case(.google)) { valid, _, error in
+                                guard error == nil else {
+                                    print(error!)
+                                    bm.banner = .init(
+                                        title: "Something went wrong.",
+                                        type: .error
+                                    )
+                                    return
+                                }
+                                if valid {
+                                    userState.isLogin = true
+                                    userState.viewState = .main
+                                }
+                            }
+                    } else {
+                        vm.email = email
+                        vm.googleConnect = true
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    }
+                }
             },
             errorAction: { error in
                 guard let error else { return }
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
                 print(error.localizedDescription)
             }
         )
@@ -79,8 +127,44 @@ struct EmailView: View {
                     )
                     return
                 }
-                vm.email = email
+                EntryRepository.checkEmail(email: email) { exist, error in
+                    guard error == nil else {
+                        print(error!)
+                        bm.banner = .init(
+                            title: "Something went wrong.",
+                            type: .error
+                        )
+                        return
+                    }
+                    if exist! {
+                        EntryRepository.socialSignIn(
+                            email: email,
+                            platform: GraphQLEnum.case(.apple)) { valid, _, error in
+                                guard error == nil else {
+                                    print(error!)
+                                    bm.banner = .init(
+                                        title: "Something went wrong.",
+                                        type: .error
+                                    )
+                                    return
+                                }
+                                if valid {
+                                    userState.isLogin = true
+                                    userState.viewState = .main
+                                }
+                            }
+                    } else {
+                        vm.email = email
+                        vm.appleConnect = true
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    }
+                }
             } catch {
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
                 print(error.localizedDescription)
             }
         }

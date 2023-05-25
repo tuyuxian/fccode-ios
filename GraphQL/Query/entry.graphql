@@ -1,5 +1,5 @@
-query EmailCheck($email: String!) {
-  emailCheck(email: $email) {
+query CheckEmail($email: String!) {
+  checkEmail(email: $email) {
     status
     statusCode
     message
@@ -7,8 +7,20 @@ query EmailCheck($email: String!) {
   }
 }
 
-query Login($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
+query SignIn($email: String!, $password: String!) {
+  signIn(email: $email, password: $password) {
+    status
+    statusCode
+    message
+    user {
+      id # and others
+    }
+    token
+  }
+}
+
+query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
+  socialSignIn(email: $email, platform: $platform) {
     status
     statusCode
     message

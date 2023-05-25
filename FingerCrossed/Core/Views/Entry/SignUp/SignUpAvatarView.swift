@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
 struct SignUpAvatarView: View {
     /// Observed entry view model
@@ -54,15 +55,23 @@ struct SignUpAvatarView: View {
     }
     /// Handler for button on tap
     private func buttonOnTap() {
-        Task {
-            do {
-                let result = await AWSS3().uploadImage(
-                    vm.selectedImageData,
-                    // TODO(Sam): replace with presigned Url generated from backend
-                    toPresignedURL: URL(string: "")!
-                )
-                print(result)
+        isLoading.toggle()
+        MediaRepository().getPresignedPutUrl(
+            GraphQLEnum.case(.image)
+        ) { url, error in
+            Task {
+                do {
+                    let result = try await AWSS3().uploadImage(
+                        vm.selectedImageData,
+                        // TODO(Sam): replace with presigned Url generated from backend
+                        toPresignedURL: URL(string: url!)!
+                    )
+                    print(result)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
+            isLoading.toggle()
         }
     }
     

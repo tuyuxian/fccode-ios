@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
 struct PasswordView: View {
     /// Global banner
@@ -21,14 +22,35 @@ struct PasswordView: View {
     @State private var isLoading: Bool = false
     /// Handler for button on tap
     private func buttonOnTap() {
+        isLoading.toggle()
         self.endTextEditing()
-        guard vm.isPasswordValid(str: vm.password) else {
-            isPasswordValid = false
-            return
-        }
+//        guard vm.isPasswordValid(str: vm.password) else {
+//            isPasswordValid = false
+//            isLoading.toggle()
+//            return
+//        }
         isPasswordValid = true
-        userState.isLogin = true
-        userState.viewState = .main
+        EntryRepository.signIn(
+            email: vm.email,
+            password: vm.password
+        ) { valid, _, error in
+            guard error == nil else {
+                isLoading.toggle()
+                print(error!)
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+                return
+            }
+            isLoading.toggle()
+            if valid {
+                userState.isLogin = true
+                userState.viewState = .main
+            } else {
+                isPasswordValid = false
+            }
+        }
     }
     /// Handler for forgot password
     private func forgotPasswordOnTap() {
@@ -70,12 +92,46 @@ struct PasswordView: View {
                     )
                     return
                 }
-                vm.email = email
-                userState.isLogin = true
-                userState.viewState = .main
+                EntryRepository.checkEmail(email: email) { exist, error in
+                    guard error == nil else {
+                        print(error!)
+                        bm.banner = .init(
+                            title: "Something went wrong.",
+                            type: .error
+                        )
+                        return
+                    }
+                    if exist! {
+                        EntryRepository.socialSignIn(
+                            email: email,
+                            platform: GraphQLEnum.case(.google)) { valid, _, error in
+                                guard error == nil else {
+                                    print(error!)
+                                    bm.banner = .init(
+                                        title: "Something went wrong.",
+                                        type: .error
+                                    )
+                                    return
+                                }
+                                if valid {
+                                    userState.isLogin = true
+                                    userState.viewState = .main
+                                }
+                            }
+                    } else {
+                        vm.email = email
+                        vm.googleConnect = true
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    }
+                }
             },
             errorAction: { error in
                 guard let error else { return }
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
                 print(error.localizedDescription)
             }
         )
@@ -93,8 +149,44 @@ struct PasswordView: View {
                     )
                     return
                 }
-                vm.email = email
+                EntryRepository.checkEmail(email: email) { exist, error in
+                    guard error == nil else {
+                        print(error!)
+                        bm.banner = .init(
+                            title: "Something went wrong.",
+                            type: .error
+                        )
+                        return
+                    }
+                    if exist! {
+                        EntryRepository.socialSignIn(
+                            email: email,
+                            platform: GraphQLEnum.case(.apple)) { valid, _, error in
+                                guard error == nil else {
+                                    print(error!)
+                                    bm.banner = .init(
+                                        title: "Something went wrong.",
+                                        type: .error
+                                    )
+                                    return
+                                }
+                                if valid {
+                                    userState.isLogin = true
+                                    userState.viewState = .main
+                                }
+                            }
+                    } else {
+                        vm.email = email
+                        vm.appleConnect = true
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    }
+                }
             } catch {
+                bm.banner = .init(
+                    title: "Something went wrong.",
+                    type: .error
+                )
                 print(error.localizedDescription)
             }
         }
@@ -114,7 +206,7 @@ struct PasswordView: View {
                     alignment: .leading,
                     spacing: 0
                 ) {
-                    HStack(
+                    LazyHStack(
                         alignment: .center,
                         spacing: 92
                     ) {

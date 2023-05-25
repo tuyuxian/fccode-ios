@@ -54,7 +54,7 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Name",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: vm.user.username!)),
+                                        preview: AnyView(PreviewText(text: vm.user.username)),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -66,7 +66,7 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Gender",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: vm.user.gender?.rawValue ?? "")),
+                                        preview: AnyView(PreviewText(text: vm.user.gender.rawValue)),
                                         hasSubview: false
                                     ),
                                     ChildView(

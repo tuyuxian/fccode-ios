@@ -37,7 +37,6 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var switchView: CurrentView = CurrentView.email
     
     // MARK: State Management
-    @Published var isNewUser: Bool = true
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var passwordConfirmed = ""
@@ -49,7 +48,7 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var gender: Gender?
     @Published var nationality = [CountryModel]()
     @Published var ethnicity = [Ethnicity]()
-    @Published var avatarUrl: String?
+    @Published var profilePictureUrl: String?
     @Published var yearIndex = 99
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
@@ -59,6 +58,9 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var longitude: Float?
     @Published var country: String?
     @Published var administrativeArea: String?
+    @Published var facebookConnect: Bool = false
+    @Published var googleConnect: Bool = false
+    @Published var appleConnect: Bool = false
     
     // MARK: Condition Variables for button
     /// - Email view
@@ -91,4 +93,8 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
     @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
     @Published var isNewPasswordMatched: Bool = false
+    
+    deinit {
+        print("-> EntryViewModel deinit")
+    }
 }

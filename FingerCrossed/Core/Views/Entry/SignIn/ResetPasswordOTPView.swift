@@ -95,7 +95,7 @@ struct ResetPasswordOTPView: View {
                 
                 VStack(spacing: 74) {
                     Text("Enter 6-digit code")
-                        .fontTemplate(.bigBoldTitle)
+                        .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
                         .frame(height: 42)
@@ -119,7 +119,7 @@ struct ResetPasswordOTPView: View {
                 
                 HStack(spacing: 12) {
                     Button {
-                        timeRemaining = 5
+                        timeRemaining = 60
                     } label: {
                         Text("Resend code")
                             .fontTemplate(.noteMedium)
@@ -127,6 +127,12 @@ struct ResetPasswordOTPView: View {
                                 timeRemaining > 0
                                 ? Color.textHelper
                                 : Color.text)
+                            .underline(
+                                true,
+                                color: timeRemaining > 0
+                                ? Color.textHelper
+                                : Color.text
+                            )
                     }
                     .disabled(timeRemaining > 0)
                     

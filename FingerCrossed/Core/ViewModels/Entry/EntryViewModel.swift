@@ -23,6 +23,7 @@ class EntryViewModel: ObservableObject, InputProtocol {
         case ethnicity
         case nationality
         case avatar
+        case location
     }
     
     enum Transition: Int {

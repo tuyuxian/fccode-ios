@@ -10,36 +10,11 @@ import SwiftUI
 struct SignUpNameView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loction permission alert
-    @State private var showLocationAlert: Bool = false
-    /// Init location data manager
-    @StateObject var locationDataManager = LocationDataManager()
-    /// Init location permission manager
-    let locationPermissionManger = LocationPermissionManager()
     /// Handler for button on tap
     private func buttonOnTap() {
         self.endTextEditing()
-        switch locationPermissionManger.permissionStatus {
-        case .notDetermined:
-            locationPermissionManger.requestPermission { granted, _ in
-                guard granted else { return }
-                vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
-                vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
-                vm.country = locationDataManager.currentPlacemark?.country
-                vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
-                vm.transition = .forward
-                vm.switchView = .birthday
-            }
-        case .denied:
-            showLocationAlert.toggle()
-        default:
-            vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
-            vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
-            vm.country = locationDataManager.currentPlacemark?.country
-            vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
-            vm.transition = .forward
-            vm.switchView = .birthday
-        }
+        vm.transition = .forward
+        vm.switchView = .birthday
     }
     /// Check if the string is between 2 to 30 characters
     private func checkLength(
@@ -156,25 +131,6 @@ struct SignUpNameView: View {
                         isLoading: .constant(false)
                     )
                     .padding(.bottom, 16)
-                    .alert(isPresented: $showLocationAlert) {
-                        Alert(
-                            title:
-                                Text(locationPermissionManger.alertTitle)
-                                .font(Font.system(size: 18, weight: .medium)),
-                            message:
-                                Text(locationPermissionManger.alertMessage)
-                                .font(Font.system(size: 12, weight: .medium)),
-                            primaryButton: .default(Text("Cancel")),
-                            secondaryButton: .default(
-                                Text("Settings"),
-                                action: {
-                                    UIApplication.shared.open(
-                                        URL(string: UIApplication.openSettingsURLString)!
-                                    )
-                                }
-                            )
-                        )
-                    }
                 }
                 .padding(.top, 20)
             }

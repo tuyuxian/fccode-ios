@@ -56,8 +56,8 @@ struct ResetPasswordEmailCheckView: View {
                     alignment: .center,
                     spacing: 0
                 ) {
-                    Text("A verification code will be sent to \(vm.email).")
-                        .fontTemplate(.bigBoldTitle)
+                    Text("Verification code\nwill be sent to\n \(vm.email).")
+                        .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
                     

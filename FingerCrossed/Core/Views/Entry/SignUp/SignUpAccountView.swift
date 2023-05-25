@@ -14,10 +14,9 @@ struct SignUpAccountView: View, KeyboardReadable {
     @State private var isPasswordValid: Bool = true
     /// Flag for keyboard signal
     @State private var isKeyboardShowUp: Bool = false
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
@@ -171,7 +170,7 @@ struct SignUpAccountView: View, KeyboardReadable {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isAccountPasswordSatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

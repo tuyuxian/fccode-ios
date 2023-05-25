@@ -77,6 +77,7 @@ struct SocialAccountRow: View {
             
             Button(isConnected ? "Disconnect" : "Connect") {
                 // TODO(Sam): add connect method
+                GoogleSSOManager().disconnect()
                 isConnected.toggle()
             }
             .fontTemplate(.pMedium)

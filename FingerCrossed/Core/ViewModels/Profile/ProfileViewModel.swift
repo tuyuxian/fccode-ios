@@ -8,7 +8,7 @@
 import Foundation
 import PhotosUI
 
-class ProfileViewModel: ObservableObject, InputUtils {
+class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var user: UserEntity = UserEntity(
         id: UUID(),
         userId: 123123123,
@@ -17,14 +17,15 @@ class ProfileViewModel: ObservableObject, InputUtils {
         username: "Test User",
         dateOfBirth: Date(),
         gender: .MALE,
-        avatarURL: "https://i.pravatar.cc/150?img=6",
+        profilePictureUrl: "https://i.pravatar.cc/150?img=6",
         // swiftlint: disable line_length
         selfIntro: "Hello! I'm ChatGPT, a language model designed to understand and generate human-like language.",
         // swiftlint: enable line_length
         longitude: 123.0,
         latitude: 123.0,
-        voiceContentURL: "",
-        matchingDistance: 0,
+        country: "",
+        administrativeArea: "USA",
+        voiceContentURL: "AZ",
         googleConnect: false,
         facebookConnect: false,
         appleConnect: false,

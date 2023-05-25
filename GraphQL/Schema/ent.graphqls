@@ -62,12 +62,13 @@ input CreateUserInput {
   lastName: String
   dateOfBirth: Time!
   gender: UserGender!
-  avatarURL: String
+  profilePictureURL: String
   voiceContentURL: String
   selfIntro: String
-  longitude: Float
-  latitude: Float
-  matchingDistance: Int
+  longitude: Float!
+  latitude: Float!
+  country: String
+  administrativeArea: String
   googleConnect: Boolean
   facebookConnect: Boolean
   appleConnect: Boolean
@@ -100,6 +101,8 @@ enum EthnicityEthnicityType @goModel(model: "user_service/internal/ent/ethnicity
   ET5
   ET6
   ET7
+  ET8
+  ET9
 }
 type Goal implements Node {
   id: ID!
@@ -112,7 +115,6 @@ enum GoalGoalType @goModel(model: "user_service/internal/ent/goal.GoalType") {
   GT2
   GT3
   GT4
-  GT5
 }
 type LifePhoto implements Node {
   id: ID!
@@ -202,7 +204,7 @@ enum SocialAccountOrderField {
 }
 """SocialAccountPlatform is enum for the field platform"""
 enum SocialAccountPlatform @goModel(model: "user_service/internal/ent/socialaccount.Platform") {
-  FC
+  FINGERCROSSED
   GOOGLE
   FACEBOOK
   APPLE
@@ -274,17 +276,18 @@ input UpdateUserInput {
   clearLastName: Boolean
   dateOfBirth: Time
   gender: UserGender
-  avatarURL: String
-  clearAvatarURL: Boolean
+  profilePictureURL: String
+  clearProfilePictureURL: Boolean
   voiceContentURL: String
   clearVoiceContentURL: Boolean
   selfIntro: String
   clearSelfIntro: Boolean
   longitude: Float
-  clearLongitude: Boolean
   latitude: Float
-  clearLatitude: Boolean
-  matchingDistance: Int
+  country: String
+  clearCountry: Boolean
+  administrativeArea: String
+  clearAdministrativeArea: Boolean
   googleConnect: Boolean
   facebookConnect: Boolean
   appleConnect: Boolean
@@ -325,12 +328,13 @@ type User implements Node {
   lastName: String
   dateOfBirth: Time!
   gender: UserGender!
-  avatarURL: String
+  profilePictureURL: String
   voiceContentURL: String
   selfIntro: String
-  longitude: Float
-  latitude: Float
-  matchingDistance: Int!
+  longitude: Float!
+  latitude: Float!
+  country: String
+  administrativeArea: String
   googleConnect: Boolean!
   facebookConnect: Boolean!
   appleConnect: Boolean!

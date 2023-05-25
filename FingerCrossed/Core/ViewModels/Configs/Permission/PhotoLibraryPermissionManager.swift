@@ -28,8 +28,8 @@ final class PhotoLibraryPermissionManager {
     }
     
     public func requestPermission(
-        completion: @escaping (Bool, Error?
-        ) -> Void) {
+        completion: @escaping (Bool, Error?) -> Void
+    ) {
         PHPhotoLibrary.requestAuthorization { authStatus in
             switch authStatus {
             case .authorized:

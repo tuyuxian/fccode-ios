@@ -18,13 +18,13 @@ struct Banner {
         var leadingIcon: String {
             switch self {
             case .info:
-                return "HeartBased"
+                return "InfoBased"
             case .success:
                 return "HeartBased"
             case .warning:
-                return "HeartBased"
+                return "WarningBased"
             case .error:
-                return "HeartBased"
+                return "ErrorBased"
             }
         }
     }
@@ -86,7 +86,7 @@ struct BannerContent: View {
                 alignment: .center
             )
         }
-        .padding(.bottom, UIScreen.main.bounds.height * 0.02)
+        .padding(.bottom, UIScreen.main.bounds.height * 0.07)
         .transition(.opacity)
         .onAppear {
             DispatchQueue.main.asyncAfter(

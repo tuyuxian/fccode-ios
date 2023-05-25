@@ -3,13 +3,13 @@
 
 @_exported import ApolloAPI
 
-public class LoginQuery: GraphQLQuery {
-  public static let operationName: String = "Login"
+public class SignInQuery: GraphQLQuery {
+  public static let operationName: String = "SignIn"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query Login($email: String!, $password: String!) {
-        login(email: $email, password: $password) {
+      query SignIn($email: String!, $password: String!) {
+        signIn(email: $email, password: $password) {
           __typename
           status
           statusCode
@@ -46,38 +46,38 @@ public class LoginQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("login", Login.self, arguments: [
+      .field("signIn", SignIn.self, arguments: [
         "email": .variable("email"),
         "password": .variable("password")
       ]),
     ] }
 
-    public var login: Login { __data["login"] }
+    public var signIn: SignIn { __data["signIn"] }
 
-    /// Login
+    /// SignIn
     ///
-    /// Parent Type: `LoginResponse`
-    public struct Login: GraphQLAPI.SelectionSet {
+    /// Parent Type: `SignInResponse`
+    public struct SignIn: GraphQLAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.LoginResponse }
+      public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.SignInResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
         .field("statusCode", Int.self),
         .field("message", String.self),
         .field("user", User?.self),
-        .field("token", String.self),
+        .field("token", String?.self),
       ] }
 
       public var status: String { __data["status"] }
       public var statusCode: Int { __data["statusCode"] }
       public var message: String { __data["message"] }
       public var user: User? { __data["user"] }
-      public var token: String { __data["token"] }
+      public var token: String? { __data["token"] }
 
-      /// Login.User
+      /// SignIn.User
       ///
       /// Parent Type: `User`
       public struct User: GraphQLAPI.SelectionSet {

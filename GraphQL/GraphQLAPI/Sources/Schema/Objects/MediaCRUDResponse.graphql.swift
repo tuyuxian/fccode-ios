@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let LoginResponse = Object(
-    typename: "LoginResponse",
+  static let MediaCRUDResponse = Object(
+    typename: "MediaCRUDResponse",
     implementedInterfaces: [Interfaces.Response.self]
   )
 }

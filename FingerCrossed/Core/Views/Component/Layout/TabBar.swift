@@ -12,6 +12,8 @@ struct TabBar: View {
     @State var currentTab = "Profile"
     @StateObject var vm = TabViewModel()
     
+    let notificationPermissionManager = NotificationPermissionManager()
+    
     init() {
         UITabBar.appearance().isHidden = true
     }
@@ -22,7 +24,7 @@ struct TabBar: View {
                     .tag("Chat")
                 PairingView()
                     .tag("Pairing")
-                    .environment(\.colorScheme, .dark)
+                    .preferredColorScheme(.dark)
                 ProfileView()
                     .tag("Profile")
             }
@@ -47,6 +49,9 @@ struct TabBar: View {
             
         }
         .environmentObject(vm)
+        .onAppear {
+            notificationPermissionManager.requestPermission { _, _ in}
+        }
     }
 }
 

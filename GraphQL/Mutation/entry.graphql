@@ -1,0 +1,32 @@
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    status
+    statusCode
+    message
+    user {
+      id
+      email
+      password
+      username
+      dateOfBirth
+      gender
+      profilePictureURL
+      voiceContentURL
+      selfIntro
+      longitude
+      latitude
+      country
+      administrativeArea
+      googleConnect
+      facebookConnect
+      appleConnect
+      premium
+      lifePhoto {
+        id
+        caption
+        contentURL
+      }
+    }
+    token
+  }
+}

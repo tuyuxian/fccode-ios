@@ -49,7 +49,12 @@ struct LifePhotoEditSheet: View {
                             switch phase {
                             case .empty:
                                 if vm.selectedImage == nil {
-                                    EmptyView()
+                                    Shimmer(
+                                        size: CGSize(
+                                            width: UIScreen.main.bounds.size.width - 48,
+                                            height: 342
+                                        )
+                                    )
                                 } else {
                                     Image(uiImage: vm.selectedImage!)
                                         .resizable()

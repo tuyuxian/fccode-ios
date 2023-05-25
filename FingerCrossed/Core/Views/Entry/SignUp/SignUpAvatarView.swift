@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
 struct SignUpAvatarView: View {
     /// Observed entry view model
@@ -16,24 +17,15 @@ struct SignUpAvatarView: View {
     @State private var showCamera: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    
+    /// Flag for camera permission alert
     @State var showCameraAlert: Bool = false
-    
+    /// Flag for photo library permission alert
     @State var showPhotoLibraryAlert: Bool = false
-    
-    let imagePermissionManager = PhotoLibraryPermissionManager()
-    
+    /// Init photo library permission manager
+    let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
+    /// Init camera permission manager
     let cameraPermissionManager = CameraPermissionManager()
-
-    let cameraAlertTitle: String = "Allow camera access in device settings"
-    
-    let photoLibraryAlertTitle: String = "Allow photos access in device settings"
-    // swiftlint: disable line_length
-    let cameraAlertMessage: String = "Finger Crossed uses your device's camera so you can take photos"
-        
-    let photoLibraryAlertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
-    // swiftlint: enable line_length
-    
+    /// Handler for camera on tap
     private func cameraOnTap() {
         switch cameraPermissionManager.permissionStatus {
         case .notDetermined:
@@ -47,11 +39,11 @@ struct SignUpAvatarView: View {
             showCamera = true
         }
     }
-    
+    /// Handler for photo library on tap
     private func photoLibraryOnTap() {
-        switch imagePermissionManager.permissionStatus {
+        switch photoLibraryPermissionManager.permissionStatus {
         case .notDetermined:
-            imagePermissionManager.requestPermission { granted, _ in
+            photoLibraryPermissionManager.requestPermission { granted, _ in
                 guard granted else { return }
                 showImagePicker = true
             }
@@ -61,17 +53,25 @@ struct SignUpAvatarView: View {
             showImagePicker = true
         }
     }
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
-        Task {
-            do {
-                let result = await AWSS3().uploadImage(
-                    vm.selectedImageData,
-                    // TODO(Sam): replace with presigned Url generated from backend
-                    toPresignedURL: URL(string: "")!
-                )
-                print(result)
+        isLoading.toggle()
+        MediaRepository().getPresignedPutUrl(
+            GraphQLEnum.case(.image)
+        ) { url, error in
+            Task {
+                do {
+                    let result = try await AWSS3().uploadImage(
+                        vm.selectedImageData,
+                        // TODO(Sam): replace with presigned Url generated from backend
+                        toPresignedURL: URL(string: url!)!
+                    )
+                    print(result)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
+            isLoading.toggle()
         }
     }
     
@@ -189,10 +189,10 @@ struct SignUpAvatarView: View {
                         ) .alert(isPresented: $showCameraAlert) {
                             Alert(
                                 title:
-                                    Text(cameraAlertTitle)
+                                    Text(cameraPermissionManager.alertTitle)
                                     .font(Font.system(size: 18, weight: .medium)),
                                 message:
-                                    Text(cameraAlertMessage)
+                                    Text(cameraPermissionManager.alertMessage)
                                     .font(Font.system(size: 12, weight: .medium)),
                                 primaryButton: .default(Text("Cancel")),
                                 secondaryButton: .default(
@@ -237,10 +237,10 @@ struct SignUpAvatarView: View {
                         .alert(isPresented: $showPhotoLibraryAlert) {
                             Alert(
                                 title:
-                                    Text(photoLibraryAlertTitle)
+                                    Text(photoLibraryPermissionManager.alertTitle)
                                     .font(Font.system(size: 18, weight: .medium)),
                                 message:
-                                    Text(photoLibraryAlertMessage)
+                                    Text(photoLibraryPermissionManager.alertMessage)
                                     .font(Font.system(size: 12, weight: .medium)),
                                 primaryButton: .default(Text("Cancel")),
                                 secondaryButton: .default(

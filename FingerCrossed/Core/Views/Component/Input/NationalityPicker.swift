@@ -11,6 +11,7 @@ struct NationalityPicker: View {
     @State var countryViewModel: CountryViewModel = CountryViewModel()
     @ObservedObject var countrySelectionList: CountrySelectionList
     @State var isSheetPresented = false
+    @State var isPreference: Bool
     @State var countryName = ""
     
     var body: some View {
@@ -58,7 +59,7 @@ struct NationalityPicker: View {
             isSheetPresented.toggle()
         }
         .sheet(isPresented: $isSheetPresented) {
-            CountryView(countrySelectionList: countrySelectionList)
+            CountryView(countrySelectionList: countrySelectionList, isPreference: $isPreference)
                 .presentationDetents([.large])
         }
     }
@@ -70,7 +71,8 @@ struct NationalityPicker_Previews: PreviewProvider {
             countrySelectionList:
                 CountrySelectionList(
                     countrySelections: [CountryModel]()
-                )
+                ),
+            isPreference: false
         )
     }
 }

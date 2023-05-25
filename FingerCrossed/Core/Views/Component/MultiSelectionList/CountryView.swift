@@ -12,18 +12,20 @@ struct CountryView: View {
     @State var countryViewModel: CountryViewModel = CountryViewModel()
     @ObservedObject var countrySelectionList: CountrySelectionList
     @State private var countryName: String = ""
-    @State private var scrollTarget: String?
     @FocusState private var isSearchBarFocused
+    @Binding var isPreference: Bool
+    var openCountryModel = CountryModel(name: "Open to all", code: "OA")
+    @State var isAllSelected: Bool = false
     
     // MARK: init
-    init(countrySelectionList: CountrySelectionList) {
+    init(countrySelectionList: CountrySelectionList, isPreference: Binding<Bool>) {
         self.countrySelectionList = countrySelectionList
+        self._isPreference = isPreference
         UITextField.appearance().clearButtonMode = .whileEditing
     }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            
             ZStack {
                 Text("Nationality")
                     .fontTemplate(.h2Medium)
@@ -52,181 +54,108 @@ struct CountryView: View {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 20)
             
-//            searchBar
-//                .padding(.horizontal, 24)
-//                .padding(.vertical, 20)
-            
             countriesListView
         }
     }
-    
-    var searchBar: some View {
-        HStack (alignment: .top, spacing: 0) {
-            if countrySelectionList.countrySelections.count >= 1 {
-                VStack (alignment: .leading, spacing: 10.0){
-                    countrySelectionList.countrySelections.count >= 3 ? nil
-                    : TextField("",
-                              text: $countryName,
-                              prompt: Text("Search").foregroundColor(.textHelper).font(Font.system(size: 16, weight: .regular)))
-                                .fontTemplate(.pRegular)
-                                .foregroundColor(Color.text)
-                                .frame(height: 24)
-                                .padding(.leading, 8)
-                                .padding(.bottom, 0)
-                                .focused($isSearchBarFocused)
-                                .onAppear {
-                                    isSearchBarFocused = false
-                                }
-                    
-                    VStack (alignment: .leading, spacing: 10.0) {
-                        countrySelectionList.countrySelections.count >= 3 ? nil : Divider()
-                        
-                        ForEach(countrySelectionList.countrySelections) { countryselected in
-                            
-                            HStack (spacing: 8.0){
-                                Text(countryselected.name)
-                                    .padding(.leading, 10)
-                                    .padding(.vertical, 6)
-                                
-                                Button{
-                                    countrySelectionList.countrySelections.removeAll(where: { $0 == countryselected })
-                                } label: {
-                                    Image("CloseCircle")
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
-                                }
-                                .padding(.trailing, 10)
-                                .padding(.vertical, 6)
-                            }
-                            .frame(height: 36)
-                            .background(
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(Color.yellow20)
-                            )
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                HStack {
-                    HStack(spacing: 8.0) {
-                        ForEach(countrySelectionList.countrySelections) { countryselected in
-                            
-                            HStack(spacing: 8.0) {
-                                Text(countryselected.name)
-                                    .padding(.leading, 10)
-                                    .padding(.vertical, 6)
-                                
-                                Button {
-                                    countrySelectionList.countrySelections.removeAll(where: { $0 == countryselected })
-                                } label: {
-                                    Image("CloseCircle")
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
-                                }
-                                .padding(.trailing, 10)
-                                .padding(.vertical, 6)
-                            }
-                            .frame(height: 36)
-                            .background(
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(Color.yellow20)
-                            )
-                        }
-                    }
-                    
-                    TextField("",
-                              text: $countryName,
-                              prompt: Text("Search").foregroundColor(.textHelper).font(Font.system(size: 16, weight: .regular)))
-                        .fontTemplate(.pRegular)
-                        .foregroundColor(Color.text)
-                        .focused($isSearchBarFocused)
-                        .onAppear {
-                            isSearchBarFocused = false
-                        }
-                }
-            }
-            
-            Image(systemName: "magnifyingglass").foregroundColor(Color.text)
-                .padding(.top, 5)
-        }
-        .environmentObject(countrySelectionList)
-        .frame(maxWidth: .infinity)
-        .frame(height: countrySelectionList.countrySelections.count >= 1 ? (countrySelectionList.countrySelections.count >= 2 ? 160 : 108) : 56)
-        .padding(.horizontal, 16)
-        .background(
-            RoundedRectangle(cornerRadius: countrySelectionList.countrySelections.count >= 1 ? 26 : 50)
-                .stroke(Color.surface2, lineWidth: 1)
-                .background(
-                    RoundedRectangle(cornerRadius: 50)
-                        .fill(Color.white)
-                )
-        )
-    }
-    
-    
+    // swiftlint: disable line_length
     var countriesListView: some View {
         ScrollView {
-            ScrollViewReader { scrollProxy in
-                LazyVStack(pinnedViews:[.sectionHeaders]) {
-                    ForEach(countryViewModel.sections.filter{ self.searchForSection($0)}, id: \.self) { letter in
-                        Section() {
-                            ForEach(countryViewModel.countries.filter{ (countryModel) -> Bool in countryModel.name.prefix(1) == letter && self.searchForCountry(countryModel.name) }) { countryModel in
-//                                CountryItemView(countryModel: countryModel, isSelected: (countryModel.code == countryViewModel.code) ? true : false)
-                                CountryItemView(countryModel: countryModel, isSelected: (countrySelectionList.countrySelections.contains(countryModel)))
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        selectCountryCode(selectedCountry: countryModel)
-                                    }
-                            }
+            LazyVStack {
+                isPreference
+                ? CountryItemView(countryModel: openCountryModel, isSelected: isAllSelected)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        openToAll()
+                    }
+                : nil
+                
+                ForEach(countryViewModel.countries.filter { (countryModel) -> Bool in  self.searchForCountry(countryModel.name) }) { countryModel in
+                    CountryItemView(countryModel: countryModel, isSelected: isSelected(selected: countryModel))
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectCountryCode(selectedCountry: countryModel)
                         }
                     }
                 }
-                .onChange(of: scrollTarget) { target in
-                    if let target = target {
-                        scrollTarget = nil
-                        withAnimation {
-                            scrollProxy.scrollTo(target, anchor: .topLeading)
-                        }
+                .onChange(of: countrySelectionList.countrySelections) { _ in
+                    if countrySelectionList.countrySelections.contains(where: { $0.name == "Open to all" }) && countrySelectionList.countrySelections.count - 1 == countryViewModel.countries.count {
+                        isAllSelected = true
+                    } else {
+                        isAllSelected = false
                     }
                 }
             }
         }
-    }
 
-    
-    //MARK: functions
+    // MARK: functions
     private func searchForCountry(_ txt: String) -> Bool {
         return (txt.lowercased(with: .current).hasPrefix(countryName.lowercased(with: .current)) || countryName.isEmpty)
     }
-
-    private func searchForSection(_ txt: String) -> Bool {
-        return (txt.prefix(1).lowercased(with: .current).hasPrefix(countryName.prefix(1).lowercased(with: .current)) || countryName.isEmpty)
+    // swiftlint: enable line_length
+    func openToAll() {
+        let allSelected = countrySelectionList.countrySelections.contains(where: { item in
+            item.name == "Open to all"
+        })
+        
+        print("isAllselected: \(allSelected)")
+        
+        if allSelected {
+            isAllSelected = false
+            countrySelectionList.countrySelections.removeAll()
+        } else {
+            isAllSelected = true
+            countrySelectionList.countrySelections.removeAll()
+            countrySelectionList.countrySelections.append(openCountryModel)
+            for country in countryViewModel.countries {
+                countrySelectionList.countrySelections.append(country)
+            }
+        }
     }
     
-    func selectCountryCode(selectedCountry: CountryModel){
-            //countryViewModel.countryCodeNumber = selectedCountry.dial_code
-//        countryViewModel.country = selectedCountry.name
-//        countryViewModel.code = selectedCountry.code
-        
-        if countrySelectionList.countrySelections.contains(selectedCountry) {
-            countrySelectionList.countrySelections.removeAll(where: { $0 == selectedCountry })
+    func isSelected (selected: CountryModel) -> Bool {
+        let contain = countrySelectionList.countrySelections.first { country in
+            country.name == selected.name
+        }
+        return contain != nil
+    }
+
+    func selectCountryCode(selectedCountry: CountryModel) {
+        if isSelected(selected: selectedCountry) {
+            countrySelectionList.countrySelections.removeAll { country in
+                country.name == selectedCountry.name
+            }
         }
         else {
-            countrySelectionList.countrySelections.count >= 3 ? nil
-            : countrySelectionList.countrySelections.append(selectedCountry)
+            if isPreference {
+                countrySelectionList.countrySelections.append(selectedCountry)
+            } else {
+                countrySelectionList.countrySelections.count >= 3 ? nil
+                : countrySelectionList.countrySelections.append(selectedCountry)
+            }
         }
         
-        //countrySelections.append(selectedCountry)
+        if selectedCountry.name != "Open to all" {
+            if countryViewModel.countries.count == countrySelectionList.countrySelections.count - 1 {
+                isAllSelected = true
+            } else {
+                isAllSelected = false
+            }
+        }
+
         countryName = ""
         countrySelectionList.objectWillChange.send()
         }
 }
 
-struct CountryView_Previews: PreviewProvider {
-    static var previews: some View {
-        CountryView(countrySelectionList: CountrySelectionList(countrySelections: [CountryModel]()))
-    }
+private var bool: Binding<Bool> {
+    Binding.constant(false)
 }
 
-
+struct CountryView_Previews: PreviewProvider {
+    static var previews: some View {
+        CountryView(
+            countrySelectionList: CountrySelectionList(countrySelections: [CountryModel]()),
+            isPreference: bool
+        )
+    }
+}

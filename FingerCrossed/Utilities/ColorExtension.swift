@@ -16,6 +16,7 @@ extension Color {
     static let surface2 = Color("Surface2")
     static let surface3 = Color("Surface3")
     static let surface4 = Color("Surface4")
+    static let surface5 = Color("Surface5")
     static let facebook = Color("FB")
     static let google = Color("Google")
     static let blue = Color("Blue")

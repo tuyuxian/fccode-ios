@@ -78,7 +78,8 @@ struct SignUpNationalityView: View {
                     spacing: 10
                 ) {
                     NationalityPicker(
-                        countrySelectionList: countrySelectionList
+                        countrySelectionList: countrySelectionList,
+                        isPreference: false
                     )
                     .onChange(of: countrySelectionList.countrySelections) { _ in
                         vm.nationality = countrySelectionList.countrySelections

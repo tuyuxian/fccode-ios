@@ -25,7 +25,12 @@ struct PreferenceEthnicityView: View {
     ]
 
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Ethnicity") {
+        ContainerWithHeaderView(
+            parentTitle: "Preference",
+            childTitle: "Ethnicity",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
+        ) {
             Box {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(items: ethnicityOptions) { list in

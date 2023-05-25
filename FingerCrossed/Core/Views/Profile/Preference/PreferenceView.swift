@@ -15,7 +15,8 @@ struct PreferenceView: View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
             childTitle: "Preference",
-            showSaveButton: false
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 MenuList(
@@ -46,6 +47,7 @@ struct PreferenceView: View {
                         )
                     ]
                 )
+                .scrollDisabled(true)
                 
                 Spacer()
             }

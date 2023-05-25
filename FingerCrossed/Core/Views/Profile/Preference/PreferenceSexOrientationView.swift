@@ -19,7 +19,12 @@ struct PreferenceSexOrientationView: View {
     ]
     
     var body: some View {
-        ContainerWithHeaderView(parentTitle: "Preference", childTitle: "Sex Orientation") {
+        ContainerWithHeaderView(
+            parentTitle: "Preference",
+            childTitle: "Sex Orientation",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
+        ) {
             Box {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(items: sexOrientationOptions) { list in

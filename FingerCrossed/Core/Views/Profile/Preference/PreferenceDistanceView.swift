@@ -22,7 +22,9 @@ struct PreferenceDistanceView: View {
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
-            childTitle: "Distance"
+            childTitle: "Distance",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
         ) {
             Box {
                 RadioButtonWithDivider(callback: { selected in

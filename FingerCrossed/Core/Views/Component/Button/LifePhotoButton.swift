@@ -8,26 +8,25 @@
 import SwiftUI
 
 struct LifePhotoButton: View {
-    @State var lifePhoto: LifePhoto
-    @State var halfSize: CGFloat
-    @State var fullSize: CGFloat
-        
-    @ObservedObject var config: LifePhotoViewModel
     
+    @ObservedObject var vm: ProfileViewModel
+        
+    @State var position: Int
+    
+    @State var halfSize: CGFloat
+    
+    @State var fullSize: CGFloat
+            
     var body: some View {
         Button {
-            if lifePhoto.position <= config.currentLifePhotoCount {
-                self.config.showEditSheet = true
-                self.config.selectedLifePhoto = lifePhoto
-                if lifePhoto.photoUrl == "" {
-                    self.config.hasLifePhoto = false
-                } else {
-                    self.config.hasLifePhoto = true
-                }
+            if position <= vm.currentLifePhotoCount {
+                vm.showEditSheet = true
+                vm.selectedLifePhoto = vm.user.lifePhoto[position]
+                vm.hasLifePhoto = vm.user.lifePhoto[position].photoUrl != ""
             }
         } label: {
             AsyncImage(
-                url: URL(string: lifePhoto.photoUrl),
+                url: URL(string: vm.user.lifePhoto[position].photoUrl),
                 transaction: Transaction(animation: .easeInOut)
             ) { phase in
                 switch phase {
@@ -57,12 +56,19 @@ struct LifePhotoButton: View {
             }
         }
         .frame(
-            width: lifePhoto.position == 0 ? fullSize : halfSize,
-            height: lifePhoto.position == 0 ? fullSize : halfSize
+            width: position == 0 ? fullSize : halfSize,
+            height: position == 0 ? fullSize : halfSize
         )
-        .background(lifePhoto.position <= config.currentLifePhotoCount ? Color.yellow100 : Color.yellow20)
+        .background(
+            position <= vm.currentLifePhotoCount
+            ? Color.yellow100
+            : Color.yellow20
+        )
         .cornerRadius(16)
-        .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 16))
+        .contentShape(
+            .dragPreview,
+            RoundedRectangle(cornerRadius: 16)
+        )
     }
 }
 
@@ -77,9 +83,10 @@ struct LifePhotoButton_Previews: PreviewProvider {
                     scale: 1,
                     offset: CGSize.zero
                 ),
+            vm: ProfileViewModel(),
+            position: 0,
             halfSize: 75,
-            fullSize: 164,
-            config: LifePhotoViewModel()
+            fullSize: 164
         )
     }
 }

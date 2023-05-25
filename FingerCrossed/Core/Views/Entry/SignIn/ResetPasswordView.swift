@@ -12,26 +12,23 @@ struct ResetPasswordView: View, KeyboardReadable {
     @ObservedObject var vm: EntryViewModel
     /// Flag for password validation
     @State private var isPasswordValid: Bool = true
-    /// Flag for button tappable
-    @State private var isStatisfied: Bool = false
-    /// Flags for input helpers
-    @State private var isLengthStatisfied: Bool = false
-    @State private var isUpperAndLowerStatisfied: Bool = false
-    @State private var isNumberAndSymbolStatisfied: Bool = false
-    @State private var isNewPasswordMatched: Bool = false
     /// Flag for keyboard signal
     @State private var isKeyboardShowUp: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
     private func buttonOnTap() {
-        guard vm.isNewPasswordValid() else {
+        guard vm.isPasswordValid(str: vm.newPassword) &&
+                vm.newPassword == vm.newPasswordConfirmed
+        else {
             isPasswordValid = false
             return
         }
         isPasswordValid = true
         vm.transition = .forward
         vm.switchView = .resetPasswordEmailCheck
+        vm.newPassword = ""
+        vm.newPasswordConfirmed = ""
     }
 
     var body: some View {
@@ -78,7 +75,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                     .padding(.bottom, 30)
                 : nil
 
-                VStack(
+                LazyVStack(
                     alignment: .leading,
                     spacing: 20
                 ) {
@@ -89,18 +86,23 @@ struct ResetPasswordView: View, KeyboardReadable {
                         isValid: $isPasswordValid
                     )
                     .onChange(of: vm.newPassword) { password in
-                        isLengthStatisfied = vm.checkLength(str: password)
-                        isUpperAndLowerStatisfied =
+                        vm.isNewPasswordLengthSatisfied =
+                            vm.checkLength(str: password)
+                        vm.isNewPasswordUpperAndLowerSatisfied =
                             vm.checkUpper(str: password) &&
                             vm.checkLower(str: password)
-                        isNumberAndSymbolStatisfied =
+                        vm.isNewPasswordNumberAndSymbolSatisfied =
                             vm.checkNumber(str: password) &&
                             vm.checkSymbols(str: password)
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
-                            isNewPasswordMatched
+                        vm.isNewPasswordMatched =
+                            !vm.newPassword.isEmpty &&
+                            !password.isEmpty &&
+                            vm.newPasswordConfirmed == password
+                        vm.isNewPasswordSatisfied =
+                            vm.isNewPasswordLengthSatisfied &&
+                            vm.isNewPasswordUpperAndLowerSatisfied &&
+                            vm.isNewPasswordNumberAndSymbolSatisfied &&
+                            vm.isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -113,41 +115,41 @@ struct ResetPasswordView: View, KeyboardReadable {
                         isValid: $isPasswordValid
                     )
                     .onChange(of: vm.newPasswordConfirmed) { password in
-                        isNewPasswordMatched =
+                        vm.isNewPasswordMatched =
                             !vm.newPassword.isEmpty &&
                             !password.isEmpty &&
                             vm.newPassword == password
-                        isStatisfied =
-                            isLengthStatisfied &&
-                            isUpperAndLowerStatisfied &&
-                            isNumberAndSymbolStatisfied &&
-                            isNewPasswordMatched
+                        vm.isNewPasswordSatisfied =
+                            vm.isNewPasswordLengthSatisfied &&
+                            vm.isNewPasswordUpperAndLowerSatisfied &&
+                            vm.isNewPasswordNumberAndSymbolSatisfied &&
+                            vm.isNewPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
                     }
                     
-                    VStack(alignment: .leading, spacing: 6.0) {
+                    LazyVStack(alignment: .leading, spacing: 6.0) {
                         InputHelper(
-                            isSatisfied: $isLengthStatisfied,
+                            isSatisfied: $vm.isNewPasswordLengthSatisfied,
                             label: "Password should be 8 to 36 characters",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isUpperAndLowerStatisfied,
+                            isSatisfied: $vm.isNewPasswordUpperAndLowerSatisfied,
                             label: "At least 1 uppercase & 1 lowercase",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isNumberAndSymbolStatisfied,
+                            isSatisfied: $vm.isNewPasswordNumberAndSymbolSatisfied,
                             label: "At least 1 number & 1 symbol",
                             type: .info
                         )
                         
                         InputHelper(
-                            isSatisfied: $isNewPasswordMatched,
+                            isSatisfied: $vm.isNewPasswordMatched,
                             label: "New passwords are matched",
                             type: .info
                         )
@@ -162,7 +164,7 @@ struct ResetPasswordView: View, KeyboardReadable {
                 PrimaryButton(
                     label: "Reset Password",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied,
+                    isTappable: $vm.isNewPasswordSatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

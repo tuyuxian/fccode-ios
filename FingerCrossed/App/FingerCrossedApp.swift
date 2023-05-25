@@ -9,24 +9,41 @@ import SwiftUI
 
 @main
 struct FingerCrossedApp: App {
-    @State var loggedIn: Bool = false
+    
+    @StateObject var global: GlobalViewModel = GlobalViewModel()
+    
+    @StateObject var bannerManager: BannerManager = BannerManager()
+    
     var body: some Scene {
         
         WindowGroup {
-            if loggedIn {
-                ProfileView(vm: ProfileViewModel())
-                    .preferredColorScheme(.light)
-            } else {
-                LandingView()
-                    .transition(.opacity)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            withAnimation(.easeInOut) {
-                                loggedIn.toggle()
-                            }
-                        }
-                    }
+            ZStack {
+                ProfileView()
+                    .environmentObject(bannerManager)
+
+                if bannerManager.isPresented {
+                    BannerContent(bm: bannerManager)
+                }
             }
+//            switch global.viewState {
+//            case .landing:
+//                LandingView()
+//                    .transition(.opacity)
+//                    .onAppear {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                            withAnimation(.easeInOut) {
+//                                global.viewState = global.isLogin ? .main : .onboarding
+//                            }
+//                        }
+//                    }
+//                    .preferredColorScheme(.light)
+//            case .onboarding:
+//                EntryView(global: global)
+//                    .preferredColorScheme(.light)
+//            case .main:
+//                TabBar()
+//                    .preferredColorScheme(.light)
+//            }
         }
         
     }

@@ -10,8 +10,6 @@ import SwiftUI
 struct SignUpGenderView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for name validation
-    @State private var isSatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
@@ -53,7 +51,7 @@ struct SignUpGenderView: View {
                 .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
-                    SignUpProcessBar(status: 2)
+                    SignUpProcessBar(status: 3)
                         .padding(.bottom, 30)
                     
                     Text("Tell us about your...")
@@ -75,14 +73,17 @@ struct SignUpGenderView: View {
                         .frame(height: 50)
                 }
                 
-                RadioButtonGroup { selected in
-                    vm.gender = Gender.allCases.first { gender in
-                        gender.rawValue == selected
-                    }
-                }
+                RadioButtonGroup(
+                    callback: { selected in
+                        vm.gender = Gender.allCases.first { gender in
+                            gender.rawValue == selected
+                        }
+                    },
+                    selectedId: vm.gender?.rawValue ?? ""
+                )
                 .padding(.vertical, 30)
-                .onChange(of: vm.gender) { _ in
-                    isSatisfied = vm.gender != nil
+                .onChange(of: vm.gender) { val in
+                    vm.isGenderSatisfied = val != nil
                 }
                         
                 Spacer()
@@ -90,7 +91,7 @@ struct SignUpGenderView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isSatisfied,
+                    isTappable: $vm.isGenderSatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

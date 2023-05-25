@@ -13,8 +13,11 @@ struct MenuList: View {
     
     var body: some View {
         List {
-            ForEach(Array(childViewList.enumerated()), id: \.element.id) { index, childView in
-                    VStack(spacing: 0) {
+            ForEach(
+                Array(childViewList.enumerated()),
+                id: \.element.id
+            ) { index, childView in
+                    LazyVStack(spacing: 0) {
                         HStack(spacing: 0) {
                             ZStack {
                                 ListRow(
@@ -41,23 +44,43 @@ struct MenuList: View {
                         
                         index != childViewList.count - 1
                         ? Divider().overlay(Color.surface3)
-                            .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
+                            .padding(.horizontal, 24)
                         : nil
                     }
             }
             .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .listRowInsets(
+                EdgeInsets(
+                    top: 0,
+                    leading: 0,
+                    bottom: 0,
+                    trailing: 0
+                )
+            )
             .background(Color.white)
         }
         .scrollIndicators(.hidden)
-        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        .padding(
+            EdgeInsets(
+                top: 0,
+                leading: 0,
+                bottom: 0,
+                trailing: 0
+            )
+        )
         .listStyle(PlainListStyle())
     }
 }
 
 struct MenuList_Previews: PreviewProvider {
     static var previews: some View {
-        MenuList(childViewList: [ChildView(label: "Demo", subview: AnyView(EmptyView()))])
+        MenuList(
+            childViewList: [
+                ChildView(
+                    label: "Demo",
+                    subview: AnyView(EmptyView()))
+            ]
+        )
     }
 }
 

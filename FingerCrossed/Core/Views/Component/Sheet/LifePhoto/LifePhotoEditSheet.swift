@@ -8,17 +8,24 @@
 import SwiftUI
 
 struct LifePhotoEditSheet: View {
+    
     @Environment(\.presentationMode) private var presentationMode
+    
+    @ObservedObject var vm: ProfileViewModel
 
     @State private var selectedTag: Int = 2
     @ObservedObject var config: LifePhotoViewModel
-    @State private var text: String = ""
-    @State private var isStatisfied: Bool = false
     @State var uiImage: UIImage = UIImage()
+    
     @State var newUIImage: UIImage = UIImage()
     @State var croppedCGImage: CGImage?
+    
+    @State var text: String = ""
+    
+    @State private var isSatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
+    
     let textLengthLimit: Int = 200
 
     var body: some View {
@@ -37,14 +44,73 @@ struct LifePhotoEditSheet: View {
                         .padding(.top, 30)
                         .id(2)
                     
-                    VStack {
-                    }
+                    VStack {}
                     .frame(height: 342)
                     .background(
                         AsyncEditImageLoader(
                             url: URL(string: config.selectedLifePhoto?.photoUrl ?? "")!,
                             config: config,
                             placeholder: {
+                        // AsyncImage(
+                        //     url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
+                        //     transaction: Transaction(animation: .easeInOut)
+                        // ) { phase in
+                        //     switch phase {
+                        //     case .empty:
+                        //         if vm.selectedImage == nil {
+                        //             EmptyView()
+                        //         } else {
+                        //             Image(uiImage: vm.selectedImage!)
+                        //                 .resizable()
+                        //                 .aspectRatio(contentMode: .fill)
+                        //                 .frame(
+                        //                     width: imageWidth(tag: selectedTag),
+                        //                     height: imageHeight(tag: selectedTag)
+                        //                 )
+                        //                 .scaleEffect(vm.imageScale)
+                        //                 .cornerRadius(6)
+                        //                 .background(
+                        //                     RoundedRectangle(cornerRadius: 6)
+                        //                         .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //                 )
+                        //                 .onChange(of: uiImage, perform: { newImage in
+                        //                     newUIImage = UIImage(
+                        //                         data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //                 })
+                        //                 .gesture(
+                        //                     MagnificationGesture().onChanged({(value) in
+                        //                         vm.imageScale = value
+                        //                     }).onEnded({(value) in
+                        //                         vm.imageScale = value < 1 ? 1 : value
+                        //                     })
+                        //                 )
+                        //         }
+                        //     case .success(let image):
+                        //         image
+                        //             .resizable()
+                        //             .aspectRatio(contentMode: .fill)
+                        //             .frame(
+                        //                 width: imageWidth(tag: selectedTag),
+                        //                 height: imageHeight(tag: selectedTag)
+                        //             )
+                        //             .scaleEffect(vm.imageScale)
+                        //             .cornerRadius(6)
+                        //             .background(
+                        //                 RoundedRectangle(cornerRadius: 6)
+                        //                     .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //             )
+                        //             .onChange(of: uiImage, perform: { newImage in
+                        //                 newUIImage = UIImage(
+                        //                     data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //             })
+                        //             .gesture(
+                        //                 MagnificationGesture().onChanged({(value) in
+                        //                     vm.imageScale = value
+                        //                 }).onEnded({(value) in
+                        //                     vm.imageScale = value < 1 ? 1 : value
+                        //                 })
+                        //             )
+                        //     case .failure:
                                 Shimmer(
                                     size: CGSize(
                                         width: UIScreen.main.bounds.size.width - 48,
@@ -110,29 +176,29 @@ struct LifePhotoEditSheet: View {
                         TagButton(label: "4:3", tag: .constant(2), isSelected: $selectedTag)
                         TagButton(label: "3:4", tag: .constant(3), isSelected: $selectedTag)
                     }
-                    .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                     
                     CaptionInputBar(
                         text: $text,
                         hint: "Type your self introduction",
-                        defaultPresentLine: 10,
-                        lineLimit: 10,
+                        defaultPresentLine: 6,
+                        lineLimit: 6,
                         textLengthLimit: textLengthLimit
                     )
                     .onChange(of: text) { _ in
-                        isStatisfied = true
+                        isSatisfied = true
                     }
                     .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.16)) {
-                            proxy.scrollTo(1, anchor: .center)
+                        withAnimation(.easeIn(duration: 0.16)) {
+                            proxy.scrollTo(1, anchor: .bottom)
                         }
                     }
                     
                     PrimaryButton(
                         label: "Save",
-                        isTappable: $isStatisfied,
+                        isTappable: $isSatisfied,
                         isLoading: $isLoading
                     )
+                    .id(1)
                 }
             }
             .padding(.horizontal, 24)
@@ -141,7 +207,7 @@ struct LifePhotoEditSheet: View {
             .presentationDragIndicator(.visible)
             .scrollDismissesKeyboard(.immediately)
             .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.16)) {
+                withAnimation(.easeIn(duration: 0.16)) {
                     UIApplication.shared.closeKeyboard()
                     proxy.scrollTo(2, anchor: .top)
                 }
@@ -191,6 +257,8 @@ struct LifePhotoEditSheet: View {
 
 struct LifePhotoEditSheet_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoEditSheet(config: LifePhotoViewModel())
+        LifePhotoEditSheet(
+            vm: ProfileViewModel()
+        )
     }
 }

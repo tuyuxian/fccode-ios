@@ -12,8 +12,6 @@ struct SignUpNationalityView: View {
     @ObservedObject var vm: EntryViewModel
 
     @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
-    /// Flag for button tappable
-    @State private var isStatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
@@ -87,13 +85,13 @@ struct SignUpNationalityView: View {
                     )
                     .onChange(of: countrySelectionList.countrySelections) { _ in
                         vm.nationality = countrySelectionList.countrySelections
-                        isStatisfied =
+                        vm.isNationalitySatisfied =
                             vm.nationality.count > 0 &&
                             vm.nationality.count <= 3
                     }
                     
                     InputHelper(
-                        isSatisfied: $isStatisfied,
+                        isSatisfied: $vm.isNationalitySatisfied,
                         label: "Up to 3 Nationalities",
                         type: .info
                     )
@@ -106,7 +104,7 @@ struct SignUpNationalityView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isStatisfied,
+                    isTappable: $vm.isNationalitySatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

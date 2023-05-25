@@ -10,8 +10,6 @@ import SwiftUI
 struct SignUpEthnicityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for name validation
-    @State private var isSatisfied: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
@@ -87,16 +85,14 @@ struct SignUpEthnicityView: View {
                         .frame(height: 50)
                 }
                 
-                CheckBoxGroup(items: ethnicityOptions) { list in
-                    vm.ethnicity.removeAll()
-                    for item in list {
-                        let ethnicity = Ethnicity(id: UUID(), type: item)
-                        vm.ethnicity.append(ethnicity)
-                    }
-                }
+                CheckBoxGroup(
+                    selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
+                    ethnicityList: $vm.ethnicity,
+                    callback: { _ in }
+                )
                 .padding(.vertical, 20)
                 .onChange(of: vm.ethnicity) { _ in
-                    isSatisfied = vm.ethnicity.count > 0
+                    vm.isEthnicitySatisfied = vm.ethnicity.count > 0
                 }
                 
                 Spacer()
@@ -104,7 +100,7 @@ struct SignUpEthnicityView: View {
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
-                    isTappable: $isSatisfied,
+                    isTappable: $vm.isEthnicitySatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

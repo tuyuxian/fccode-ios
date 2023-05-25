@@ -61,6 +61,15 @@ class ProfileViewModel: ObservableObject, InputUtils {
         socialAccount: [],
         ethnicity: []
     )
+    
+    @Published var distance: String = ""
+    @Published var ethnicity: [Ethnicity] = []
+    @Published var goal: [String] = []
+    @Published var sexOrientation: [String] = []
+    @Published var ageFrom: Int = 18
+    @Published var ageTo: Int = 100
+    @Published var nationality = [CountryModel]()
+    
     // MARK: State Management
     @Published var currentPassword: String = ""
     @Published var newPassword: String = ""

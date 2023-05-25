@@ -40,7 +40,7 @@ struct TabBar: View {
                     }
                 }
                 .padding(.top, 10)
-                .overlay(Divider().foregroundColor(Color.surface2), alignment: .top)
+                .overlay(Divider().overlay(Color.surface2), alignment: .top)
                 .background(currentTab == "Pairing" ? Color.surface4 : Color.surface3)
                 .transition(.customTransition)
             : nil

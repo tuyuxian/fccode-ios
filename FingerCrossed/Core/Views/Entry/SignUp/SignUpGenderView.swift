@@ -73,7 +73,7 @@ struct SignUpGenderView: View {
                         .frame(height: 50)
                 }
                 
-                RadioButtonGenderGroup(
+                RadioButtonGroup(
                     callback: { selected in
                         vm.gender = Gender.allCases.first { gender in
                             gender.rawValue == selected

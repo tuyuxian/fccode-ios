@@ -1,5 +1,5 @@
 //
-//  RadioButtonGenderGroup.swift
+//  RadioButtonGroup.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/25/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RadioButtonGenderGroup: View {
+struct RadioButtonGroup: View {
     
     let callback: (String) -> ()
     @State var items: [String] = [
@@ -42,9 +42,9 @@ struct RadioButtonGenderGroup: View {
     }
 }
 
-struct RadioButtonGenderGroup_Previews: PreviewProvider {
+struct RadioButtonGroup_Previews: PreviewProvider {
     static var previews: some View {
-        RadioButtonGenderGroup { _ in}
+        RadioButtonGroup { _ in}
             .padding(.horizontal, 24)
     }
 }

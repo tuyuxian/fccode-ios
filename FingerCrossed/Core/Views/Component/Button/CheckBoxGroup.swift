@@ -21,14 +21,20 @@ struct CheckBoxGroup: View {
         "White/Caucasian"
     ]
     @State var selectedIdList: [String] = []
+    @State var hasDivider: Bool = false
+    @Binding var ethnicityList: [Ethnicity]
     
-    let callback: ([String]) -> ()
+    let callback: (String) -> ()
     
     private func checkBoxGroupCallback(
         id: String
     ) {
         let hasItem: Bool = selectedIdList.contains(where: { selected in
             selected == id
+        })
+        
+        let et = EthnicityType.allCases.first(where: {
+            $0.rawValue == id
         })
         
         if hasItem {
@@ -72,7 +78,7 @@ private var selectedValues: Binding<[Ethnicity]> {
 
 struct CheckBoxGroup_Previews: PreviewProvider {
     static var previews: some View {
-        CheckBoxGroup { _ in}
+        CheckBoxGroup(ethnicityList: selectedValues) {_ in}
             .padding(.horizontal, 24)
         
     }

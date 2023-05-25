@@ -75,14 +75,6 @@ struct LifePhotoButton: View {
 struct LifePhotoButton_Previews: PreviewProvider {
     static var previews: some View {
         LifePhotoButton(
-            lifePhoto:
-                LifePhoto(
-                    photoUrl: "https://i.pravatar.cc/150?img=6",
-                    caption: "",
-                    position: 0,
-                    scale: 1,
-                    offset: CGSize.zero
-                ),
             vm: ProfileViewModel(),
             position: 0,
             halfSize: 75,

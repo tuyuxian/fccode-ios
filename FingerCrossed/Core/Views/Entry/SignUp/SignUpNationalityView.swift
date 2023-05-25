@@ -11,7 +11,9 @@ struct SignUpNationalityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Init country selector
-    @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
+    @StateObject var nationalitySelectionList = NationalitySelectionList(
+        nationalitySelections: [Nationality]()
+    )
     /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
@@ -78,11 +80,11 @@ struct SignUpNationalityView: View {
                     spacing: 10
                 ) {
                     NationalityPicker(
-                        countrySelectionList: countrySelectionList,
+                        nationalitySelectionList: nationalitySelectionList,
                         isPreference: false
                     )
-                    .onChange(of: countrySelectionList.countrySelections) { _ in
-                        vm.nationality = countrySelectionList.countrySelections
+                    .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
+                        vm.nationality = nationalitySelectionList.nationalitySelections
                         vm.isNationalitySatisfied =
                             vm.nationality.count > 0 &&
                             vm.nationality.count <= 3

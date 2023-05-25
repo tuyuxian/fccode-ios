@@ -98,12 +98,16 @@ struct BasicInfoView: View {
                                     LifePhoto(
                                         photoUrl: "https://i.pravatar.cc/150?img=6",
                                         caption: "malesuada",
-                                        position: 0
+                                        position: 0,
+                                        scale: 1,
+                                        offset: CGSize.zero
                                     ),
                                     LifePhoto(
                                         photoUrl: "https://i.pravatar.cc/150?img=7",
                                         caption: "malesuada fames ac",
-                                        position: 1
+                                        position: 1,
+                                        scale: 1,
+                                        offset: CGSize.zero
                                     )
                                 ]
                             )

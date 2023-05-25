@@ -1,5 +1,5 @@
 //
-//  CountryViewModel.swift
+//  NationalityViewModel.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/10/23.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-class CountryViewModel: ObservableObject {
-    var countries = [CountryModel]()
+class NationalityViewModel: ObservableObject {
+    var nationalities = [Nationality]()
 
     @Published var country = ""
     @Published var code = ""
@@ -28,13 +28,13 @@ class CountryViewModel: ObservableObject {
                 contentsOfFile: countryCodePath
             ).data(using: .utf8)!
             let decoder = JSONDecoder()
-            countries = try decoder.decode(
-                [CountryModel].self,
+            nationalities = try decoder.decode(
+                [Nationality].self,
                 from: fileCountries!
             )
         }
         catch {
-            print(error)
+            print(error.localizedDescription)
         }
     }
 }

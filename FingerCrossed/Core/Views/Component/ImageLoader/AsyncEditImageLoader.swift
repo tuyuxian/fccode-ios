@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AsyncEditImageLoader<Placeholder: View>: View {
     @StateObject private var loader: ImageLoader
-    @ObservedObject var config: LifePhotoViewModel
+    @ObservedObject var config: ProfileViewModel
     private let placeholder: Placeholder
     private let url: URL
     private let image: (UIImage) -> Image
@@ -18,7 +18,7 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
         
         init(
             url: URL,
-            config: LifePhotoViewModel,
+            config: ProfileViewModel,
             @ViewBuilder placeholder: () -> Placeholder,
             @ViewBuilder image: @escaping (UIImage) -> Image = Image.init(uiImage:)
         ) {
@@ -73,17 +73,17 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                             config.imageScale = value < 1 ? 1 : value
                             }
                     )
-                    .onChange(of: config.imageScale, perform: { newScale in
-                        let data = loader.image!.jpegData(compressionQuality: 0.95)!
-                        config.newUIImage = UIImage(data: data, scale: newScale)!
-                        
-                        config.cropCGRect = CGRect(x: config.imageOffset.width, y: config.imageOffset.height, width: geometry.size.width, height: geometry.size.height)
-                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
-                    })
-                    .onChange(of: config.imageOffset, perform: { newOffset in
-                        config.cropCGRect = CGRect(x: newOffset.width, y: newOffset.height, width: geometry.size.width, height: geometry.size.height)
-                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
-                    })
+//                    .onChange(of: config.imageScale, perform: { newScale in
+//                        let data = loader.image!.jpegData(compressionQuality: 0.95)!
+//                        config.newUIImage = UIImage(data: data, scale: newScale)!
+//                        
+//                        config.cropCGRect = CGRect(x: config.imageOffset.width, y: config.imageOffset.height, width: geometry.size.width, height: geometry.size.height)
+//                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
+//                    })
+//                    .onChange(of: config.imageOffset, perform: { newOffset in
+//                        config.cropCGRect = CGRect(x: newOffset.width, y: newOffset.height, width: geometry.size.width, height: geometry.size.height)
+//                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
+//                    })
                     .overlay(
                         ZStack {
                             RoundedRectangle(cornerRadius: 6)

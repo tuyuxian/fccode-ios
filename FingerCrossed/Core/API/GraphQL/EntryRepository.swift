@@ -93,32 +93,48 @@ class EntryRepository {
             }
         }
     }
-    
+    // swiftlint: disable function_parameter_count
     public class func createUser(
         email: String,
+        password: GraphQLNullable<String>,
         username: String,
         dataOfBirth: Time,
         gender: GraphQLEnum<GraphQLAPI.UserGender>,
         longitude: Double,
         latitude: Double,
+        country: GraphQLNullable<String>,
+        administrativeArea: GraphQLNullable<String>,
+        googleConnect: GraphQLNullable<Bool>,
+        appleConnect: GraphQLNullable<Bool>,
+        nationality: GraphQLNullable<[GraphQLAPI.CreateCitizenInput]>,
+        ethinicty: GraphQLNullable<[GraphQLAPI.CreateEthnicityInput]>,
+        socialAccount: GraphQLNullable<[GraphQLAPI.CreateSocialAccountInput]>,
         completion: @escaping (Bool, String?, String?) -> ()
     ) {
         Network.shared.apollo.perform(
             mutation: CreateUserMutation(
                 input: CreateUserInput(
                     email: email,
+                    password: password,
                     username: username,
                     dateOfBirth: dataOfBirth,
                     gender: gender,
                     longitude: longitude,
-                    latitude: latitude
+                    latitude: latitude,
+                    country: country,
+                    administrativeArea: administrativeArea,
+                    googleConnect: googleConnect,
+                    appleConnect: appleConnect,
+                    createUserCitizen: nationality,
+                    createUserEthnicity: ethinicty,
+                    createUserSocialAccount: socialAccount
                 )
             )
         ) { result in
+            print(result)
             switch result {
             case .success:
                 guard let data = try? result.get().data else { return }
-                
                 switch data.createUser.statusCode {
                 case 200:
                     completion(true, data.createUser.token, nil)
@@ -130,7 +146,8 @@ class EntryRepository {
             case .failure(let error):
                 completion(false, nil, error.localizedDescription)
             }
-
+            // default
         }
     }
+    // swiftlint: enable function_parameter_count
 }

@@ -6,33 +6,118 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
 struct SignUpLocationView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed user state view model
+    @ObservedObject var userState: UserStateViewModel
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loction permission alert
     @State private var showLocationAlert: Bool = false
+    /// Flag for loading state
+    @State private var isLoading: Bool = false
     /// Init location permission manager
     let locationPermissionManger = LocationPermissionManager()
     /// Handler for button on tap
     private func buttonOnTap() {
+        
         let locationDataManager = LocationDataManager()
+        isLoading.toggle()
         switch locationPermissionManger.permissionStatus {
         case .notDetermined:
             locationPermissionManger.requestPermission { granted, _ in
                 guard granted else { return }
-                vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
-                vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
+                vm.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude
+                vm.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude
                 vm.country = locationDataManager.currentPlacemark?.country
                 vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
+                isLoading.toggle()
+                //                EntryRepository.createUser(
+                //                    email: vm.email,
+                //                    password: vm.password != "" ? .some(vm.password) : nil,
+                //                    username: vm.name,
+                //                    dataOfBirth: vm.dateOfBirth,
+                //                    gender: GraphQLEnum.case(
+                //                        vm.gender?.graphQLValue ?? .preferNotToSay
+                //                    ),
+                //                    longitude: 0,
+                //                    latitude: 0,
+                //                    country: .some(""),
+                //                    administrativeArea: .some(""),
+                //                    googleConnect: .some(vm.googleConnect),
+                //                    appleConnect: .some(vm.appleConnect),
+                //                    nationality: .some(
+                //                        vm.nationality.map { $0.getGraphQLInput() }
+                //                    ),
+                //                    ethinicty: .some(
+                //                        vm.ethnicity.map { $0.getGraphQLInput() }
+                //                    ),
+                //                    socialAccount: .some(
+                //                        [vm.socialAccount.getGraphQLInput()]
+                //                    )
+                //                ) { _, _, error in
+                //                    guard error == nil else {
+                //                        isLoading.toggle()
+                //                        print(error!)
+                //                        bm.banner = .init(
+                //                            title: "Something went wrong.",
+                //                            type: .error
+                //                        )
+                //                        return
+                //                    }
+                //                    userState.isLogin = true
+                //                    userState.viewState = .main
+                //                }
+                
             }
         case .denied:
             showLocationAlert.toggle()
         default:
-            vm.latitude = Float((locationDataManager.lastSeenLocation?.coordinate.latitude)!)
-            vm.longitude = Float((locationDataManager.lastSeenLocation?.coordinate.longitude)!)
+            vm.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude
+            vm.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude
             vm.country = locationDataManager.currentPlacemark?.country
             vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
+            isLoading.toggle()
+            //            EntryRepository.createUser(
+            //                email: vm.email,
+            //                password: vm.password != "" ? .some(vm.password) : nil,
+            //                username: vm.name,
+            //                dataOfBirth: vm.dateOfBirth,
+            //                gender: GraphQLEnum.case(
+            //                    vm.gender?.graphQLValue ?? .preferNotToSay
+            //                ),
+            //                longitude: 0,
+            //                latitude: 0,
+            //                country: .some(""),
+            //                administrativeArea: .some(""),
+            //                googleConnect: .some(vm.googleConnect),
+            //                appleConnect: .some(vm.appleConnect),
+            //                nationality: .some(
+            //                    vm.nationality.map { $0.getGraphQLInput() }
+            //                ),
+            //                ethinicty: .some(
+            //                    vm.ethnicity.map { $0.getGraphQLInput() }
+            //                ),
+            //                socialAccount: .some(
+            //                    [vm.socialAccount.getGraphQLInput()]
+            //                )
+            //            ) { _, _, error in
+            //                guard error == nil else {
+            //                    isLoading.toggle()
+            //                    print(error!)
+            //                    bm.banner = .init(
+            //                        title: "Something went wrong.",
+            //                        type: .error
+            //                    )
+            //                    return
+            //                }
+            //                userState.isLogin = true
+            //                userState.viewState = .main
+            //            }
+            //        }
         }
     }
     
@@ -96,7 +181,7 @@ struct SignUpLocationView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: .constant(true),
-                    isLoading: .constant(false)
+                    isLoading: $isLoading
                 )
                 .padding(.bottom, 16)
                 .alert(isPresented: $showLocationAlert) {
@@ -127,6 +212,7 @@ struct SignUpLocationView: View {
 struct SignUpLocationView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpLocationView(
+            userState: UserStateViewModel(),
             vm: EntryViewModel()
         )
     }

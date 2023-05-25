@@ -47,7 +47,7 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var dateOfBirth: String = ""
     @Published var selectedDate: Date = Date()
     @Published var gender: Gender?
-    @Published var nationality = [CountryModel]()
+    @Published var nationality = [Nationality]()
     @Published var ethnicity = [Ethnicity]()
     @Published var profilePictureUrl: String?
     @Published var yearIndex = 99
@@ -55,13 +55,17 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
-    @Published var latitude: Float?
-    @Published var longitude: Float?
+    @Published var latitude: Double?
+    @Published var longitude: Double?
     @Published var country: String?
     @Published var administrativeArea: String?
     @Published var facebookConnect: Bool = false
     @Published var googleConnect: Bool = false
     @Published var appleConnect: Bool = false
+    @Published var socialAccount: SocialAccount = SocialAccount(
+        email: "",
+        platform: .FINGERCROSSED
+    )
     
     // MARK: Condition Variables for button
     /// - Email view

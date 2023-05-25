@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
-class CountryModel: Codable, Identifiable, Equatable, ObservableObject {
+class Nationality: Codable, Identifiable, Equatable, ObservableObject {
     static func == (
-        lhs: CountryModel,
-        rhs: CountryModel
+        lhs: Nationality,
+        rhs: Nationality
     ) -> Bool {
         return lhs.id == rhs.id
     }
@@ -46,17 +47,25 @@ class CountryModel: Codable, Identifiable, Equatable, ObservableObject {
     }
 }
 
-class CountrySelectionList: ObservableObject, Equatable {
+class NationalitySelectionList: ObservableObject, Equatable {
     static func == (
-        lhs: CountrySelectionList,
-        rhs: CountrySelectionList
+        lhs: NationalitySelectionList,
+        rhs: NationalitySelectionList
     ) -> Bool {
-        lhs.countrySelections == rhs.countrySelections
+        lhs.nationalitySelections == rhs.nationalitySelections
     }
     
-    @Published var countrySelections = [CountryModel]()
+    @Published var nationalitySelections = [Nationality]()
     
-    init(countrySelections: [CountryModel]) {
-        self.countrySelections = countrySelections
+    init(nationalitySelections: [Nationality]) {
+        self.nationalitySelections = nationalitySelections
+    }
+}
+
+extension Nationality {
+    func getGraphQLInput() -> GraphQLAPI.CreateCitizenInput {
+        return GraphQLAPI.CreateCitizenInput(
+            countryName: self.name
+        )
     }
 }

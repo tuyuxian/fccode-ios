@@ -138,12 +138,15 @@ struct EntryView: View {
                         : transitionBackward
                     )
             case .location:
-                SignUpLocationView(vm: vm)
-                    .transition(
-                        vm.transition == .forward
-                        ? transitionForward
-                        : transitionBackward
-                    )
+                SignUpLocationView(
+                    userState: userState,
+                    vm: vm
+                )
+                .transition(
+                    vm.transition == .forward
+                    ? transitionForward
+                    : transitionBackward
+                )
             }
         }
         .animation(.easeInOut(duration: 0.5), value: vm.switchView)

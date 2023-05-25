@@ -17,7 +17,7 @@ final class NotificationPermissionManager {
     ) {
         notificationManager.requestAuthorization(
             options: [.badge, .alert, .sound]
-        ){ granted, error in
+        ) { granted, error in
             completion(granted, error)
         }
        

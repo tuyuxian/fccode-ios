@@ -58,16 +58,16 @@ private struct ContactUs: View {
     var body: some View {
         Group {
             Text("Contact Us")
-                .foregroundColor(Color.warning)
-                .fontTemplate(.pSemibold)
+                .foregroundColor(Color.text)
+                .fontTemplate(.h3Bold)
             
             Text("If you have any questions or concerns about this privacy policy, please contact us via our email: ")
                 .foregroundColor(Color.text)
-                .fontTemplate(.noteMedium)
+                .fontTemplate(.pRegular)
             
             Text(.init("[fingercrossed.work@gmail.com](mailto:fingercrossed.work@gmail.com)"))
                 .accentColor(Color.text)
-                .fontTemplate(.noteMedium)
+                .fontTemplate(.pRegular)
                 .underline()
             
             Spacer()

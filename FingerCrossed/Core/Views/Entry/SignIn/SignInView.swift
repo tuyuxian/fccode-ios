@@ -115,6 +115,7 @@ struct SignInView: View, KeyboardReadable {
                     HStack(spacing: 10) {
                         VStack {
                             Divider()
+                                .overlay(Color.surface1)
                         }
                         
                         Text("or")
@@ -123,6 +124,7 @@ struct SignInView: View, KeyboardReadable {
                         
                         VStack {
                             Divider()
+                                .overlay(Color.surface1)
                         }
                     }
                     

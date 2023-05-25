@@ -29,7 +29,7 @@ struct SettingsSocialAccountView: View {
                     )
                     
                     Divider()
-                        .foregroundColor(Color.surface3)
+                        .overlay(Color.surface3)
                     
                     SocialAccountRow(
                         label: "Google",
@@ -37,7 +37,7 @@ struct SettingsSocialAccountView: View {
                     )
                     
                     Divider()
-                        .foregroundColor(Color.surface3)
+                        .overlay(Color.surface3)
                    
                     SocialAccountRow(
                         label: "Apple",
@@ -48,7 +48,7 @@ struct SettingsSocialAccountView: View {
                 .padding(.horizontal, 24)
                 
                 Divider()
-                    .foregroundColor(Color.surface2)
+                    .overlay(Color.surface2)
                     .padding(.horizontal, 24)
                 
                 VStack(
@@ -89,13 +89,13 @@ struct SettingsSocialAccountView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .alert("Do you really want to delete account?", isPresented: $deleteAlert, actions: {
-                        Button(role: .cancel, action: {}) {
+                        Button(action: {}) {
                             Text("No")
                                 .foregroundColor(Color.text)
                                 .fontTemplate(.h3Medium)
                         }
                         
-                        Button(role: .destructive, action: {}) {
+                        Button(action: {}) {
                             Text("Yes")
                                 .foregroundColor(Color.warning)
                                 .fontTemplate(.h3Medium)

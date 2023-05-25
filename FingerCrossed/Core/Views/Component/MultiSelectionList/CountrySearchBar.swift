@@ -81,7 +81,7 @@ struct CountrySearchBar: View {
                         ) {
                             countrySelectionList.countrySelections.count >= 3
                             ? nil
-                            : isDisplay ? nil : Divider()
+                            : isDisplay ? nil : Divider().overlay(Color.surface2)
                             
                             ForEach(countrySelectionList.countrySelections) { countryselected in
                                 

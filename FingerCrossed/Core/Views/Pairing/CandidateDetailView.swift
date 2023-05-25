@@ -79,6 +79,7 @@ struct CandidateDetailView: View {
                 .padding(.horizontal, 24)
                 
                 Divider()
+                    .overlay(Color.surface3)
                     .padding(.horizontal, 24)
                 
                 ForEach(lifePhotoList) { list in

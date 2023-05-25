@@ -116,7 +116,7 @@ struct BasicInfoContent: View {
                     
                     ForEach(Array(basicInfoOptions.enumerated()), id: \.element.id) { _, childView in
                         VStack(spacing: 0) {
-                            Divider().foregroundColor(Color.surface3)
+                            Divider().overlay(Color.surface3)
                                 .padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
                             HStack(spacing: 0) {
                                 if childView.hasSubview {

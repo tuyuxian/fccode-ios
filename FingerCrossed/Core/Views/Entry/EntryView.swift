@@ -88,6 +88,7 @@ struct EntryView: View {
                     HStack(spacing: 10) {
                         VStack {
                             Divider()
+                                .overlay(Color.surface1)
                         }
                         
                         Text("or")
@@ -96,6 +97,7 @@ struct EntryView: View {
                         
                         VStack {
                             Divider()
+                                .overlay(Color.surface1)
                         }
                     }
                     

@@ -38,7 +38,7 @@ struct RadioButtonWithDivider: View {
                 )
                 
                 index != items.count - 1
-                ? Divider().foregroundColor(Color.surface3)
+                ? Divider().overlay(Color.surface3)
                 : nil
             }
         }

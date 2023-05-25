@@ -10,11 +10,9 @@ import SwiftUI
 struct SignUpNationalityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-
+    /// Init country selector
     @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .avatar
@@ -105,7 +103,7 @@ struct SignUpNationalityView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isNationalitySatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

@@ -19,8 +19,9 @@ struct SignUpAccountView: View, KeyboardReadable {
     /// Flag for sheet
     @State private var isTermsPresented: Bool = false
     @State private var isPrivacyPresented: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
@@ -198,7 +199,7 @@ struct SignUpAccountView: View, KeyboardReadable {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isAccountPasswordSatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

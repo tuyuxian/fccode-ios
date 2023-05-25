@@ -1,5 +1,5 @@
 //
-//  InputUtils.swift
+//  InputProtocol.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 5/19/23.
@@ -7,7 +7,8 @@
 
 import Foundation
 
-public protocol InputUtils {
+/// A protocol for input validation functions.
+public protocol InputProtocol {
     // MARK: - Input Validation functions
     func isEmailValid(str: String) -> Bool
     func isPasswordValid(str: String) -> Bool
@@ -18,14 +19,14 @@ public protocol InputUtils {
     func checkSymbols(str: String) -> Bool
 }
 
-extension InputUtils {
-    /// Email regex from MDN
+extension InputProtocol {
+    /// Email regex
+    /// Rules
+    /// - simplified RFC5322
     public func isEmailValid(
         str: String
     ) -> Bool {
-        // swiftlint:disable line_length
-        let emailRegex = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-        // swiftlint:enable line_length
+        let emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPredicate.evaluate(with: str)
     }

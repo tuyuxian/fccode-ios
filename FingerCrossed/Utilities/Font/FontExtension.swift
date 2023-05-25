@@ -11,6 +11,7 @@ enum AppFonts {
     case bigBoldTitle
     case h1Medium
     case h1Regular
+    case h2Bold
     case h2Medium
     case h2Regular
     case h3Medium
@@ -38,12 +39,15 @@ struct Template {
             
         case .h1Regular:
             return FontTemplate(font: Font.system(size: 28), weight: .regular, size: 28, lineHeight: 40)
+        
+        case .h2Bold:
+            return FontTemplate(font: Font.system(size: 24), weight: .bold, size: 24, lineHeight: 34)
             
         case .h2Medium:
             return FontTemplate(font: Font.system(size: 24), weight: .medium, size: 24, lineHeight: 34)
             
         case .h2Regular:
-            return FontTemplate(font: Font.system(size: 20), weight: .regular, size: 20, lineHeight: 28)
+            return FontTemplate(font: Font.system(size: 24), weight: .regular, size: 24, lineHeight: 34)
             
         case .h3Medium:
             return FontTemplate(font: Font.system(size: 18), weight: .medium, size: 18, lineHeight: 24)

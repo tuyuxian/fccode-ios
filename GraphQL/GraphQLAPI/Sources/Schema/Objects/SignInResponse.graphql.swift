@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let EmailCheckResponse = Object(
-    typename: "EmailCheckResponse",
+  static let SignInResponse = Object(
+    typename: "SignInResponse",
     implementedInterfaces: [Interfaces.Response.self]
   )
 }

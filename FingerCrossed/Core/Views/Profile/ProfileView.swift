@@ -26,12 +26,12 @@ struct ProfileView: View {
                         )
                         .overlay(
                             Avatar(
-                                avatarUrl: vm.user.avatarURL!,
+                                avatarUrl: vm.user.profilePictureUrl!,
                                 size: 121.5,
                                 isActive: false
                             )
                         )
-                    Text(vm.user.username!)
+                    Text(vm.user.username)
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                 }

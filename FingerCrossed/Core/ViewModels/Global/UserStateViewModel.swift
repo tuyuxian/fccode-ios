@@ -1,5 +1,5 @@
 //
-//  GlobalViewModel.swift
+//  UserStateViewModel.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 5/18/23.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class GlobalViewModel: ObservableObject {
+class UserStateViewModel: ObservableObject {
         
     enum ViewState: Int {
         case landing

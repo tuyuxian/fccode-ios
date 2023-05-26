@@ -22,12 +22,12 @@ struct SettingsView: View {
                 MenuList(
                     childViewList: [
                         ChildView(
-                            label: "Password",
-                            subview: AnyView(SettingsResetPasswordView(vm: vm))
+                            label: "Account",
+                            subview: AnyView(SettingsAccountView(vm: vm))
                         ),
                         ChildView(
-                            label: "Social Account",
-                            subview: AnyView(SettingsSocialAccountView(vm: vm))
+                            label: "Password",
+                            subview: AnyView(SettingsResetPasswordView(vm: vm))
                         )
                     ]
                 )

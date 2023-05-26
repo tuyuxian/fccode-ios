@@ -1,5 +1,5 @@
 //
-//  SettingsSocialAccountView.swift
+//  SettingsAccountView.swift
 //  FingerCrossed
 //
 //  Created by Kevin Tsai on 4/10/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsSocialAccountView: View {
+struct SettingsAccountView: View {
     
     @ObservedObject var vm: ProfileViewModel
     @State var deleteAlert: Bool = false
@@ -115,9 +115,9 @@ struct SettingsSocialAccountView: View {
     }
 }
 
-struct SettingsSocialAccountView_Previews: PreviewProvider {
+struct SettingsAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsSocialAccountView(
+        SettingsAccountView(
             vm: ProfileViewModel()
         )
     }

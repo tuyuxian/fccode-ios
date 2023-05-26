@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TabBar: View {
     
-    @State var currentTab = "Profile"
+    @State var currentTab = "Pairing"
     @StateObject var vm = TabViewModel()
     
     let notificationPermissionManager = NotificationPermissionManager()

@@ -27,7 +27,12 @@ struct CandidateView: View {
                         AsyncImageLoader(
                             url: URL(string: list.photoUrl)!,
                             placeholder: {
-                                Text("Loading...")
+                                Shimmer(
+                                    size: CGSize(
+                                        width: geometry.size.width,
+                                        height: geometry.size.height
+                                    )
+                                )
                             },
                             image: { Image(uiImage: $0)})
                         .tag(lifePhotoList.firstIndex(where: { $0 == list })!)

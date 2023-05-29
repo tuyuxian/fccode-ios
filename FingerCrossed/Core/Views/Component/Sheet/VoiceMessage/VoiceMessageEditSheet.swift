@@ -119,7 +119,7 @@ struct VoiceMessageEditSheet: View {
                              ? stopPlaying()
                              : startPlaying()
                          } label: {
-                             Image(isPlaying ? "pause" : "play")
+                             Image(isPlaying ? "Pause" : "Play")
                                  .renderingMode(.template)
                                  .resizable()
                                  .foregroundColor(Color.white)

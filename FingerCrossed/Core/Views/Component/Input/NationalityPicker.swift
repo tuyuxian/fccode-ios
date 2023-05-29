@@ -25,7 +25,7 @@ struct NationalityPicker: View {
                 .frame(height: 56)
                 .cornerRadius(50)
             
-            Image("search")
+            Image("Search")
                 .foregroundColor(Color.text)
                 .frame(
                     maxWidth: .infinity,

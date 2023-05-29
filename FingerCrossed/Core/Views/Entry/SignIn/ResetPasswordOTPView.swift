@@ -143,7 +143,7 @@ struct ResetPasswordOTPView: View {
                         vm.transition = .backward
                         vm.switchView = .resetPasswordEmailCheck
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
@@ -191,7 +191,7 @@ struct ResetPasswordOTPView: View {
                     alignment: .top,
                     spacing: 6.0
                 ) {
-                    Image("Error")
+                    Image("ErrorCircleRed")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(

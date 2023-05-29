@@ -112,7 +112,7 @@ struct SignUpAvatarView: View {
                         vm.transition = .backward
                         vm.switchView = .nationality
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
@@ -184,7 +184,7 @@ struct SignUpAvatarView: View {
                                     height: 54
                                 )
                                 .overlay(
-                                    Image("CameraBased")
+                                    Image("Camera")
                                         .renderingMode(.template)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
@@ -232,7 +232,7 @@ struct SignUpAvatarView: View {
                                     height: 54
                                 )
                                 .overlay(
-                                    Image("PictureBased")
+                                    Image("Picture")
                                         .renderingMode(.template)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)

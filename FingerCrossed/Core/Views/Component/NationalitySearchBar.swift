@@ -42,7 +42,7 @@ struct NationalitySearchBar: View {
                             Button {
                                 nationalityList.removeAll()
                             } label: {
-                                Image("CloseCircle")
+                                Image("CloseCircleYellow")
                                     .resizable()
                                     .frame(
                                         width: 24,
@@ -50,6 +50,7 @@ struct NationalitySearchBar: View {
                                     )
                             }
                         }
+                        .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .frame(height: 36)
                         .background(
@@ -126,7 +127,7 @@ struct NationalitySearchBar: View {
                 }
             }
             
-            Image("search")
+            Image("Search")
                 .foregroundColor(Color.text)
                 .frame(height: 36)
                 .frame(

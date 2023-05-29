@@ -46,7 +46,7 @@ struct SignUpGenderView: View {
                         vm.transition = .backward
                         vm.switchView = .birthday
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }

@@ -35,7 +35,7 @@ struct NationalityItem: View {
                         alignment: .leading
                     )
                 isSelected
-                ? Image("CheckCircleBased")
+                ? Image("CheckCircle")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color.gold)

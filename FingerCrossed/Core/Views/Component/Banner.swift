@@ -18,13 +18,13 @@ struct Banner {
         var leadingIcon: String {
             switch self {
             case .info:
-                return "InfoBased"
+                return "Info"
             case .success:
-                return "HeartBased"
+                return "Heart"
             case .warning:
-                return "WarningBased"
+                return "Warning"
             case .error:
-                return "ErrorBased"
+                return "ErrorCircle"
             }
         }
     }

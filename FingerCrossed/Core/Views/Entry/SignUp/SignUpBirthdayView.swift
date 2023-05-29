@@ -61,7 +61,7 @@ struct SignUpBirthdayView: View {
                         vm.transition = .backward
                         vm.switchView = .name
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }

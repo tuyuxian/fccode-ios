@@ -113,7 +113,7 @@ struct CandidateView: View {
                         
                         HStack {
                             CandidateDetailItem(
-                                iconName: "GenderNeutralWhite",
+                                iconName: "GenderWhite",
                                 label: candidateModel.gender,
                                 iconColor: Color.white,
                                 labelColor: Color.white

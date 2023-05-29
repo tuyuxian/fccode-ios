@@ -12,7 +12,7 @@ struct ListRow<Content: View>: View {
     @State var label: String
     
     // Replace the icon in different use cases
-    @State var icon: String = "ArrowRightBased"
+    @State var icon: String = "ArrowRight"
     
     @State var showIndicator: Bool = true
         

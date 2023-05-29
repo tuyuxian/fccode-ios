@@ -204,7 +204,7 @@ private struct LifePhotoActionRow: View {
         HStack(spacing: 20) {
             switch actionType {
             case .camera:
-                Image("CameraBased")
+                Image("Camera")
                     .resizable()
                     .frame(width: 24, height: 24)
                 Text("Take Photos")
@@ -230,7 +230,7 @@ private struct LifePhotoActionRow: View {
                     .foregroundColor(Color.text)
                 Spacer()
             case .photo:
-                Image("PictureBased")
+                Image("Picture")
                     .resizable()
                     .frame(width: 24, height: 24)
 

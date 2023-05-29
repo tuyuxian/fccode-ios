@@ -53,31 +53,31 @@ struct BasicInfoView: View {
                                     ),
                                     ChildView(
                                         label: "Name",
-                                        icon: "InfoBased",
+                                        icon: "InfoCircle",
                                         preview: AnyView(PreviewText(text: vm.user.username)),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Birthday",
-                                        icon: "InfoBased",
+                                        icon: "InfoCircle",
                                         preview: AnyView(PreviewText(text: vm.user.dateOfBirth)),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Gender",
-                                        icon: "InfoBased",
+                                        icon: "InfoCircle",
                                         preview: AnyView(PreviewText(text: vm.user.gender.getString())),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Nationality",
-                                        icon: "InfoBased",
+                                        icon: "InfoCircle",
                                         preview: AnyView(PreviewText(text: "Taiwan")),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Ethnicity",
-                                        icon: "InfoBased",
+                                        icon: "InfoCircle",
                                         preview: AnyView(PreviewText(text: "Asian")),
                                         hasSubview: false
                                     )

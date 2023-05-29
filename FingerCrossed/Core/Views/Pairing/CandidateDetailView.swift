@@ -25,7 +25,7 @@ struct CandidateDetailView: View {
                         .padding(.bottom, 2)
                     
                     HStack {
-                        CandidateDetailItem(iconName: "GenderNeutralWhite", label: candidateModel.gender)
+                        CandidateDetailItem(iconName: "GenderWhite", label: candidateModel.gender)
                             
                         CandidateDetailItem(iconName: "AgeWhite", label: String(candidateModel.age))
                     }
@@ -60,7 +60,7 @@ struct CandidateDetailView: View {
                                 isPlay.toggle()
                             }
                         } label: {
-                            Image(isPlay ? "pause" : "play")
+                            Image(isPlay ? "Pause" : "Play")
                                 .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)

@@ -31,7 +31,7 @@ struct LifePhotoButton: View {
             ) { phase in
                 switch phase {
                 case .empty:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)
@@ -41,13 +41,13 @@ struct LifePhotoButton: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 case .failure:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)
                         .foregroundColor(Color.white)
                 @unknown default:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)

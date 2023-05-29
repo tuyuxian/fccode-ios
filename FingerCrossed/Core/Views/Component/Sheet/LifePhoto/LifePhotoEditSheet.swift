@@ -47,7 +47,7 @@ struct LifePhotoEditSheet: View {
                     .frame(height: 342)
                     .background(
                         AsyncEditImageLoader(
-                            url: URL(string: vm.selectedLifePhoto?.photoUrl ?? "")!,
+                            url: URL(string: vm.selectedLifePhoto?.contentUrl ?? "")!,
                             config: vm,
                             placeholder: {
                         // AsyncImage(

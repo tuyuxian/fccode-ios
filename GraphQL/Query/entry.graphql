@@ -12,8 +12,48 @@ query SignIn($email: String!, $password: String!) {
     status
     statusCode
     message
+    status
+    statusCode
+    message
     user {
-      id # and others
+      id
+      email
+      password
+      username
+      dateOfBirth
+      gender
+      profilePictureURL
+      voiceContentURL
+      selfIntro
+      longitude
+      latitude
+      country
+      administrativeArea
+      googleConnect
+      facebookConnect
+      appleConnect
+      premium
+      lifePhoto {
+        id
+        caption
+        contentURL
+      }
+      citizen {
+        id
+        countryName
+      }
+      ethnicity {
+        id
+        ethnicityType
+      }
+      socialAccount {
+        email
+        platform
+      }
+      goal {
+        id
+        goalType
+      }
     }
     token
   }
@@ -24,9 +64,67 @@ query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
     status
     statusCode
     message
+    status
+    statusCode
+    message
     user {
-      id # and others
+      id
+      email
+      password
+      username
+      dateOfBirth
+      gender
+      profilePictureURL
+      voiceContentURL
+      selfIntro
+      longitude
+      latitude
+      country
+      administrativeArea
+      googleConnect
+      facebookConnect
+      appleConnect
+      premium
+      lifePhoto {
+        id
+        caption
+        contentURL
+      }
+      citizen {
+        id
+        countryName
+      }
+      ethnicity {
+        id
+        ethnicityType
+      }
+      socialAccount {
+        email
+        platform
+      }
+      goal {
+        id
+        goalType
+      }
     }
     token
+  }
+}
+
+query RequestOTP($email: String!) {
+  requestOTP(email: $email) {
+    status
+    statusCode
+    message
+    valid
+  }
+}
+
+query VerifyOTP($email: String!, $userOTP: String!) {
+  verifyOTP(email: $email, userOTP: $userOTP) {
+    status
+    statusCode
+    message
+    valid
   }
 }

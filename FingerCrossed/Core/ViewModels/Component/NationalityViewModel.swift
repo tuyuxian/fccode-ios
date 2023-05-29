@@ -8,16 +8,17 @@
 import Foundation
 
 class NationalityViewModel: ObservableObject {
-    var nationalities = [Nationality]()
+    var nationalities: [Nationality] = []
 
     @Published var country = ""
+    
     @Published var code = ""
     
     init() {
         loadCountryCode()
     }
     
-    func loadCountryCode() {
+    private func loadCountryCode() {
         let countryCodePath = Bundle.main.path(
             forResource: "countries",
             ofType: "json"

@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct NationalityTag: View {
-    var nationality: Nationality = Nationality(
-        name: "Taiwan",
-        code: "TW"
-    )
+    
+    @State var nationality: Nationality
+
+    var action: () -> Void = {}
     
     var body: some View {
         HStack(spacing: 8) {
             Text(nationality.name)
-                .padding(.leading, 10)
-                .padding(.vertical, 6)
+                .fontTemplate(.pMedium)
+                .foregroundColor(Color.text)
             
             Button {
-                print("remove")
+                action()
             } label: {
                 Image("CloseCircle")
                     .resizable()
@@ -29,10 +29,10 @@ struct NationalityTag: View {
                         height: 24
                     )
             }
-            .padding(.trailing, 10)
-            .padding(.vertical, 8)
+
         }
-        .frame(height: 32)
+        .padding(.horizontal, 10)
+        .frame(height: 36)
         .background(
             RoundedRectangle(cornerRadius: 50)
                 .fill(Color.yellow20)
@@ -42,6 +42,11 @@ struct NationalityTag: View {
 
 struct NationalityTag_Previews: PreviewProvider {
     static var previews: some View {
-        NationalityTag()
+        NationalityTag(
+            nationality: Nationality(
+                name: "Taiwan",
+                code: "TW"
+            )
+        )
     }
 }

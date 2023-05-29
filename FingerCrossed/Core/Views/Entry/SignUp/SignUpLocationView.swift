@@ -23,101 +23,42 @@ struct SignUpLocationView: View {
     let locationPermissionManger = LocationPermissionManager()
     /// Handler for button on tap
     private func buttonOnTap() {
-        
-        let locationDataManager = LocationDataManager()
         isLoading.toggle()
         switch locationPermissionManger.permissionStatus {
         case .notDetermined:
             locationPermissionManger.requestPermission { granted, _ in
                 guard granted else { return }
-                vm.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude
-                vm.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude
-                vm.country = locationDataManager.currentPlacemark?.country
-                vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
-                isLoading.toggle()
-                //                EntryRepository.createUser(
-                //                    email: vm.email,
-                //                    password: vm.password != "" ? .some(vm.password) : nil,
-                //                    username: vm.name,
-                //                    dataOfBirth: vm.dateOfBirth,
-                //                    gender: GraphQLEnum.case(
-                //                        vm.gender?.graphQLValue ?? .preferNotToSay
-                //                    ),
-                //                    longitude: 0,
-                //                    latitude: 0,
-                //                    country: .some(""),
-                //                    administrativeArea: .some(""),
-                //                    googleConnect: .some(vm.googleConnect),
-                //                    appleConnect: .some(vm.appleConnect),
-                //                    nationality: .some(
-                //                        vm.nationality.map { $0.getGraphQLInput() }
-                //                    ),
-                //                    ethinicty: .some(
-                //                        vm.ethnicity.map { $0.getGraphQLInput() }
-                //                    ),
-                //                    socialAccount: .some(
-                //                        [vm.socialAccount.getGraphQLInput()]
-                //                    )
-                //                ) { _, _, error in
-                //                    guard error == nil else {
-                //                        isLoading.toggle()
-                //                        print(error!)
-                //                        bm.banner = .init(
-                //                            title: "Something went wrong.",
-                //                            type: .error
-                //                        )
-                //                        return
-                //                    }
-                //                    userState.isLogin = true
-                //                    userState.viewState = .main
-                //                }
-                
+                createUser()
             }
         case .denied:
             showLocationAlert.toggle()
         default:
-            vm.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude
-            vm.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude
-            vm.country = locationDataManager.currentPlacemark?.country
-            vm.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea
-            isLoading.toggle()
-            //            EntryRepository.createUser(
-            //                email: vm.email,
-            //                password: vm.password != "" ? .some(vm.password) : nil,
-            //                username: vm.name,
-            //                dataOfBirth: vm.dateOfBirth,
-            //                gender: GraphQLEnum.case(
-            //                    vm.gender?.graphQLValue ?? .preferNotToSay
-            //                ),
-            //                longitude: 0,
-            //                latitude: 0,
-            //                country: .some(""),
-            //                administrativeArea: .some(""),
-            //                googleConnect: .some(vm.googleConnect),
-            //                appleConnect: .some(vm.appleConnect),
-            //                nationality: .some(
-            //                    vm.nationality.map { $0.getGraphQLInput() }
-            //                ),
-            //                ethinicty: .some(
-            //                    vm.ethnicity.map { $0.getGraphQLInput() }
-            //                ),
-            //                socialAccount: .some(
-            //                    [vm.socialAccount.getGraphQLInput()]
-            //                )
-            //            ) { _, _, error in
-            //                guard error == nil else {
-            //                    isLoading.toggle()
-            //                    print(error!)
-            //                    bm.banner = .init(
-            //                        title: "Something went wrong.",
-            //                        type: .error
-            //                    )
-            //                    return
-            //                }
-            //                userState.isLogin = true
-            //                userState.viewState = .main
-            //            }
-            //        }
+            createUser()
+        }
+    }
+    /// Handler for create user
+    private func createUser() {
+        let locationDataManager = LocationDataManager()
+        Task {
+            do {
+                try await Task.sleep(nanoseconds: 500_000_000)
+                vm.user.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0
+                vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
+                vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
+                // swiftlint: disable line_length
+                vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
+                // swiftlint: enable line_length
+                let (user, token) = try await EntryRepository.createUser(
+                    input: vm.user.getGraphQLInput()
+                )
+                isLoading.toggle()
+                userState.user = user
+                userState.token = token
+                userState.isLogin = true
+                userState.viewState = .main
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
     

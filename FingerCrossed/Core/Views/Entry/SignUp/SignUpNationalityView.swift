@@ -10,10 +10,6 @@ import SwiftUI
 struct SignUpNationalityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Init country selector
-    @StateObject var nationalitySelectionList = NationalitySelectionList(
-        nationalitySelections: [Nationality]()
-    )
     /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
@@ -80,14 +76,13 @@ struct SignUpNationalityView: View {
                     spacing: 10
                 ) {
                     NationalityPicker(
-                        nationalitySelectionList: nationalitySelectionList,
+                        nationalityList: $vm.user.citizen,
                         isPreference: false
                     )
-                    .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
-                        vm.nationality = nationalitySelectionList.nationalitySelections
+                    .onChange(of: vm.user.citizen) { val in
                         vm.isNationalitySatisfied =
-                            vm.nationality.count > 0 &&
-                            vm.nationality.count <= 3
+                        val.count > 0 &&
+                        val.count <= 3
                     }
                     
                     InputHelper(

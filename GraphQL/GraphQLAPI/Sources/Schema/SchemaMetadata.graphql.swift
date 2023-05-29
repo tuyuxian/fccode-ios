@@ -26,6 +26,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "SignInResponse": return GraphQLAPI.Objects.SignInResponse
     case "CheckEmailResponse": return GraphQLAPI.Objects.CheckEmailResponse
     case "CRUDResponse": return GraphQLAPI.Objects.CRUDResponse
+    case "OTPResponse": return GraphQLAPI.Objects.OTPResponse
     case "MediaCRUDResponse": return GraphQLAPI.Objects.MediaCRUDResponse
     case "MatchResponse": return GraphQLAPI.Objects.MatchResponse
     case "User": return GraphQLAPI.Objects.User

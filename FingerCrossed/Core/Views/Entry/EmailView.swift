@@ -25,29 +25,35 @@ struct EmailView: View {
     private func buttonOnTap() {
         isLoading.toggle()
         self.endTextEditing()
-        guard vm.isEmailValid(str: vm.email) else {
+        guard vm.isEmailValid(str: vm.user.email) else {
             isLoading.toggle()
             isEmailValid = false
             return
         }
         isEmailValid = true
-        vm.transition = .forward
-        vm.switchView = .account
-//        EntryRepository.checkEmail(email: vm.email) { exist, error in
-//            guard error == nil else {
-//                isLoading.toggle()
-//                print(error!)
-//                bm.banner = .init(
-//                    title: "Something went wrong.",
-//                    type: .error
-//                )
-//                return
-//            }
-//            isLoading.toggle()
-//            vm.socialAccount.email = vm.email
-//            vm.transition = .forward
-//            vm.switchView = exist! ? .password : .account
-//        }
+        Task {
+            do {
+                let exist = try await EntryRepository.checkEmail(
+                    email: vm.user.email
+                )
+                vm.user.socialAccount.append(
+                    SocialAccount(
+                        email: vm.user.email,
+                        platform: .FINGERCROSSED
+                    )
+                )
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = exist ? .password : .account
+            } catch {
+                print(error.localizedDescription)
+                isLoading.toggle()
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
     /// Handler for google sso
     private func googleOnTap() {
@@ -55,56 +61,48 @@ struct EmailView: View {
         GoogleSSOManager().signIn(
             successAction: { email in
                 guard let email else {
-                    bm.banner = .init(
+                    bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                vm.transition = .forward
-                vm.switchView = .name
-//                EntryRepository.checkEmail(email: email) { exist, error in
-//                    guard error == nil else {
-//                        print(error!)
-//                        bm.banner = .init(
-//                            title: "Something went wrong.",
-//                            type: .error
-//                        )
-//                        return
-//                    }
-//                    if exist! {
-//                        EntryRepository.socialSignIn(
-//                            email: email,
-//                            platform: GraphQLEnum.case(.google)) { valid, _, error in
-//                                guard error == nil else {
-//                                    print(error!)
-//                                    bm.banner = .init(
-//                                        title: "Something went wrong.",
-//                                        type: .error
-//                                    )
-//                                    return
-//                                }
-//                                if valid {
-//                                    userState.isLogin = true
-//                                    userState.viewState = .main
-//                                }
-//                            }
-//                    } else {
-//                        vm.email = email
-//                        vm.googleConnect = true
-//                        vm.socialAccount.email = vm.email
-//                        vm.socialAccount.platform = .GOOGLE
-//                        vm.transition = .forward
-//                        vm.switchView = .name
-//                    }
-//                }
+                Task {
+                    do {
+                        let exist = try await EntryRepository.checkEmail(
+                            email: vm.user.email
+                        )
+                        if exist {
+                            let (user, token) = try await EntryRepository.socialSignIn(
+                                email: email,
+                                platform: GraphQLEnum.case(.google)
+                            )
+                            userState.user = user
+                            userState.token = token
+                            userState.isLogin = true
+                            userState.viewState = .main
+                        }
+                        vm.user.email = email
+                        vm.user.googleConnect = true
+                        vm.user.socialAccount.append(
+                            SocialAccount(
+                                email: email,
+                                platform: .GOOGLE
+                            )
+                        )
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    } catch {
+                        print(error.localizedDescription)
+                        bm.pop(
+                            title: "Something went wrong.",
+                            type: .error
+                        )
+                    }
+                }
             },
             errorAction: { error in
                 guard let error else { return }
-                bm.banner = .init(
-                    title: "Something went wrong.",
-                    type: .error
-                )
                 print(error.localizedDescription)
             }
         )
@@ -116,55 +114,41 @@ struct EmailView: View {
             do {
                 let email = try await AppleSSOManager().signIn()
                 guard let email else {
-                    bm.banner = .init(
+                    bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
+                let exist = try await EntryRepository.checkEmail(
+                    email: email
+                )
+                if exist {
+                    let (user, token) = try await EntryRepository.socialSignIn(
+                        email: email,
+                        platform: GraphQLEnum.case(.apple)
+                    )
+                    userState.user = user
+                    userState.token = token
+                    userState.isLogin = true
+                    userState.viewState = .main
+                }
+                vm.user.email = email
+                vm.user.appleConnect = true
+                vm.user.socialAccount.append(
+                    SocialAccount(
+                        email: email,
+                        platform: .APPLE
+                    )
+                )
                 vm.transition = .forward
                 vm.switchView = .name
-//                EntryRepository.checkEmail(email: email) { exist, error in
-//                    guard error == nil else {
-//                        print(error!)
-//                        bm.banner = .init(
-//                            title: "Something went wrong.",
-//                            type: .error
-//                        )
-//                        return
-//                    }
-//                    if exist! {
-//                        EntryRepository.socialSignIn(
-//                            email: email,
-//                            platform: GraphQLEnum.case(.apple)) { valid, _, error in
-//                                guard error == nil else {
-//                                    print(error!)
-//                                    bm.banner = .init(
-//                                        title: "Something went wrong.",
-//                                        type: .error
-//                                    )
-//                                    return
-//                                }
-//                                if valid {
-//                                    userState.isLogin = true
-//                                    userState.viewState = .main
-//                                }
-//                            }
-//                    } else {
-//                        vm.email = email
-//                        vm.appleConnect = true
-//                        vm.socialAccount.email = vm.email
-//                        vm.socialAccount.platform = .APPLE
-//                        vm.transition = .forward
-//                        vm.switchView = .name
-//                    }
-//                }
             } catch {
-                bm.banner = .init(
+                print(error.localizedDescription)
+                bm.pop(
                     title: "Something went wrong.",
                     type: .error
                 )
-                print(error.localizedDescription)
             }
         }
     }
@@ -200,11 +184,11 @@ struct EmailView: View {
                         ) {
                             PrimaryInputBar(
                                 input: .email,
-                                value: $vm.email,
+                                value: $vm.user.email,
                                 hint: "Log in or sign up with email",
                                 isValid: $isEmailValid
                             )
-                            .onChange(of: vm.email) { val in
+                            .onChange(of: vm.user.email) { val in
                                 vm.isEmailSatisfied = val.count > 0
                             }
                             

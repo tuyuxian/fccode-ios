@@ -8,43 +8,55 @@
 import SwiftUI
 
 struct TermsOfServiceSheet: View {
-    @Binding var isPresented: Bool
     
+    @Environment(\.presentationMode) private var presentationMode
+        
     var body: some View {
-        VStack {
-            VStack {
-                Button {
-                    isPresented = false
-                } label: {
-                    Text("Done")
-                        .foregroundColor(Color.gold)
-                        .fontTemplate(.pMedium)
-                }
-            }
-            .padding(.top, 35)
-            .frame(maxWidth: .infinity, alignment: .trailing)
+        ZStack(
+            alignment: Alignment(
+                horizontal: .leading,
+                vertical: .top
+            )
+        ) {
+            Color.white.edgesIgnoringSafeArea(.all)
             
-            ScrollView {
-                VStack(
-                    alignment: .leading,
-                    spacing: 0
-                ) {
-                    TermsOfService()
+            VStack(spacing: 0) {
+                HStack {
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text("Done")
+                            .foregroundColor(Color.gold)
+                            .fontTemplate(.pMedium)
+                    }
                 }
-                .padding(.vertical, 16)
+                .padding(.top, 35)
+                .padding(.bottom, 16)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .trailing
+                )
+                
+                ScrollView {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 0
+                    ) {
+                        TermsOfService()
+                    }
+                }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
+            .padding(.horizontal, 24)
+            .background(Color.white)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
-        .padding(.horizontal, 24)
     }
-}
-
-private var bool: Binding<Bool> {
-    Binding.constant(false)
 }
 
 struct TermsOfServiceSheet_Previews: PreviewProvider {
     static var previews: some View {
-        TermsOfServiceSheet(isPresented: bool)
+        TermsOfServiceSheet()
     }
 }

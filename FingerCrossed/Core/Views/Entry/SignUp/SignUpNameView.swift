@@ -49,27 +49,13 @@ struct SignUpNameView: View {
             Color.background.ignoresSafeArea(.all)
             
             VStack(
-                alignment: .leading,
+                alignment: .center,
                 spacing: 0
             ) {
-                HStack(
-                    alignment: .center,
-                    spacing: 92
-                ) {
-                    Button {
-                        vm.transition = .backward
-                        vm.switchView = .account
-                    } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                    }
-                    .padding(.leading, -8) // 16 - 24
-                                        
-                    EntryLogo()
-                }
-                .padding(.top, 5)
-                .padding(.bottom, 55)
+
+                EntryLogo()
+                    .padding(.top, 5)
+                    .padding(.bottom, 55)
                 
                 VStack(spacing: 0) {
                     SignUpProcessBar(status: 1)
@@ -100,12 +86,12 @@ struct SignUpNameView: View {
                 ) {
                     PrimaryInputBar(
                         input: .text,
-                        value: $vm.name,
+                        value: $vm.user.username,
                         hint: "Enter your name",
                         isValid: .constant(true)
                     )
-                    .onChange(of: vm.name) { name in
-                        vm.name = String(name.prefix(30))
+                    .onChange(of: vm.user.username) { name in
+                        vm.user.username = String(name.prefix(30))
                         vm.isNameSatisfied =
                             checkLength(str: name) &&
                             checkCharacter(str: name) &&

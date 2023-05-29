@@ -40,6 +40,7 @@ struct PrimaryButton: View {
             .cornerRadius(50)
         }
         .disabled(!isTappable || isLoading)
+        
     }
 }
 

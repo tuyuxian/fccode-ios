@@ -104,12 +104,12 @@ struct VoiceMessageEditSheet: View {
     private func buttonOnTap() {
         Task {
             do {
-                let result = await AWSS3().uploadAudio(
-                    audioRecorder.url,
-                    // TODO(Sam): replace with presigned Url generated from backend
-                    toPresignedURL: URL(string: "")!
-                )
-                print(result)
+//                let result = await AWSS3().uploadAudio(
+//                    audioRecorder.url,
+//                    // TODO(Sam): replace with presigned Url generated from backend
+//                    toPresignedURL: URL(string: "")!
+//                )
+//                print(result)
                 presentationMode.wrappedValue.dismiss()
             }
         }
@@ -128,8 +128,8 @@ struct VoiceMessageEditSheet: View {
             let documentUrl = FileManager.default.urls(
                 for: .documentDirectory,
                 in: .userDomainMask
-            )[0]
-            let fileName = documentUrl.appendingPathComponent("\(UUID()).m4a")
+            ).first
+            let fileName = documentUrl!.appendingPathComponent("\(UUID()).m4a")
             let settings = [
                 AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
                 AVSampleRateKey: 12000,

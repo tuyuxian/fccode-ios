@@ -9,13 +9,12 @@ import Foundation
 import PhotosUI
 
 class ProfileViewModel: ObservableObject, InputProtocol {
-    @Published var user: UserEntity = UserEntity(
-        id: UUID(),
-        userId: 123123123,
+    @Published var user: User = User(
+        userId: "123123123",
         email: "test@gmail.com",
         password: "123123",
         username: "Test User",
-        dateOfBirth: Date(),
+        dateOfBirth: "",
         gender: .MALE,
         profilePictureUrl: "https://i.pravatar.cc/150?img=6",
         // swiftlint: disable line_length
@@ -34,35 +33,35 @@ class ProfileViewModel: ObservableObject, InputProtocol {
         citizen: [],
         lifePhoto: [
             LifePhoto(
-                photoUrl: "https://i.pravatar.cc/150?img=6",
+                contentUrl: "https://i.pravatar.cc/150?img=6",
                 caption: "123",
                 position: 0,
                 scale: 1,
                 offset: CGSize.zero
             ),
             LifePhoto(
-                photoUrl: "https://i.pravatar.cc/150?img=7",
+                contentUrl: "https://i.pravatar.cc/150?img=7",
                 caption: "123",
                 position: 1,
                 scale: 1,
                 offset: CGSize.zero
             ),
             LifePhoto(
-                photoUrl: "https://i.pravatar.cc/150?img=8",
+                contentUrl: "https://i.pravatar.cc/150?img=8",
                 caption: "123",
                 position: 2,
                 scale: 1,
                 offset: CGSize.zero
             ),
             LifePhoto(
-                photoUrl: "https://i.pravatar.cc/150?img=9",
+                contentUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
                 position: 3,
                 scale: 1,
                 offset: CGSize.zero
             ),
             LifePhoto(
-                photoUrl: "",
+                contentUrl: "",
                 caption: "",
                 position: 4,
                 scale: 1,

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ResetPasswordView: View, KeyboardReadable {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for password validation
@@ -26,12 +28,36 @@ struct ResetPasswordView: View, KeyboardReadable {
             return
         }
         isPasswordValid = true
-        vm.transition = .forward
-        vm.switchView = .email
-        vm.email = ""
-        vm.isEmailSatisfied = false
-        vm.newPassword = ""
-        vm.newPasswordConfirmed = ""
+        isLoading.toggle()
+        Task {
+            do {
+                let success = try await EntryRepository.resetPassword(
+                    email: vm.user.email,
+                    password: vm.newPassword
+                )
+                guard success else {
+                    isLoading.toggle()
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = .email
+                vm.user.email = ""
+                vm.isEmailSatisfied = false
+                vm.newPassword = ""
+                vm.newPasswordConfirmed = ""
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
 
     var body: some View {

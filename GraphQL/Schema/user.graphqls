@@ -5,10 +5,18 @@ extend type Mutation {
   deleteUserById(id: ID!): CRUDResponse!
 
   ##### Field modification only #####
+  # Entry
+  resetPassword(email: String!, password: String!): OTPResponse!
   # Basic Info
   updateBasicInfoSelfIntro(id: ID!, selfIntro: String!): CRUDResponse!
   updateBasicInfoUsername(id: ID!, username: String!): CRUDResponse!
   updateBasicInfoVoiceMessage(id: ID!, voiceContentUrl: String!): CRUDResponse!
+  resetSettingsPassword(id: ID!, password: String!): CRUDResponse!
+  updateSettingsPassword(
+    id: ID!
+    oldPassword: String!
+    newPassword: String!
+  ): CRUDResponse!
 
   ##### With Ent modification #####
   # Basic Info
@@ -18,12 +26,6 @@ extend type Mutation {
   ): CRUDResponse!
   deleteBasicInfoLifePhoto(id: ID!, lifePhotoId: ID!): CRUDResponse!
   # Settings
-  resetSettingsPassword(id: ID!, password: String!): CRUDResponse!
-  updateSettingsPassword(
-    id: ID!
-    oldPassword: String!
-    newPassword: String!
-  ): CRUDResponse!
   createSettingsSocialAccount(
     id: ID!
     socialAccounts: [CreateSocialAccountInput!]
@@ -46,6 +48,8 @@ extend type Query {
     platform: SocialAccountPlatform!
   ): SignInResponse!
   checkEmail(email: String!): CheckEmailResponse!
+  requestOTP(email: String!): OTPResponse!
+  verifyOTP(email: String!, userOTP: String!): OTPResponse!
   getUserById(id: ID!): CRUDResponse!
 }
 
@@ -70,4 +74,11 @@ type CRUDResponse implements Response {
   statusCode: Int!
   message: String!
   user: User
+}
+
+type OTPResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  valid: Boolean!
 }

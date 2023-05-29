@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ResetPasswordOTPView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loading state
@@ -15,7 +17,11 @@ struct ResetPasswordOTPView: View {
     /// One time password
     @State private var otp: String = ""
     /// Time for count down usage
-    @State private var timeRemaining = 0
+    @State private var timeRemaining = 60
+    /// Flag for otp validation
+    @State private var isOTPValid: Bool = true
+    /// Flag for button tappable
+    @State private var isOTPSatisfied: Bool = false
     /// Flag for keyboard signal
     @FocusState private var isKeyboardShowUp: Bool
     /// Time ticker
@@ -26,15 +32,64 @@ struct ResetPasswordOTPView: View {
     ).autoconnect()
     /// Handler for button on tap
     private func buttonOnTap() {
-        // TODO(Sam): add otp verifitcation
-        self.endTextEditing()
-        vm.transition = .forward
-        vm.switchView = .resetPassword
+        isLoading.toggle()
+        Task {
+            do {
+                let valid = try await EntryRepository.verifyOTP(
+                    email: vm.user.email,
+                    userOTP: otp
+                )
+                guard valid else {
+                    isLoading.toggle()
+                    isOTPValid = false
+                    return
+                }
+                isLoading.toggle()
+                self.endTextEditing()
+                vm.transition = .forward
+                vm.switchView = .resetPassword
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
+    }
+    /// Handler for resend
+    private func resendOnTap() {
+        isLoading.toggle()
+        Task {
+            do {
+                let success = try await EntryRepository.requestOTP(
+                    email: vm.user.email
+                )
+                guard success else {
+                    isLoading.toggle()
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = .resetPasswordOTP
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
     
     @ViewBuilder
     private func OTPTextField(
-        _ index: Int
+        _ index: Int,
+        _ isValid: Bool
     ) -> some View {
         ZStack {
             if otp.count > index {
@@ -51,7 +106,13 @@ struct ResetPasswordOTPView: View {
         .frame(width: 40, height: 40)
         .overlay(
             RoundedRectangle(cornerRadius: 50)
-                .fill(otp.count == index ? Color.text : Color.surface2)
+                .fill(
+                    isValid
+                    ? otp.count == index
+                        ? Color.text
+                        : Color.surface2
+                    : Color.warning
+                )
                 .frame(
                     width: 40,
                     height: 2
@@ -94,7 +155,7 @@ struct ResetPasswordOTPView: View {
                 .padding(.bottom, 55)
                 
                 VStack(spacing: 74) {
-                    Text("Enter 6-digit code")
+                    Text("Enter verification code")
                         .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
@@ -102,7 +163,10 @@ struct ResetPasswordOTPView: View {
                     
                     HStack(spacing: 20) {
                         ForEach(0..<6, id: \.self) { index in
-                            OTPTextField(index)
+                            OTPTextField(
+                                index,
+                                isOTPValid
+                            )
                         }
                     }
                     .background {
@@ -115,10 +179,34 @@ struct ResetPasswordOTPView: View {
                             .focused($isKeyboardShowUp)
                     }
                     .contentShape(Rectangle())
+                    .onChange(of: otp) { _ in
+                        isOTPValid = true
+                        isOTPSatisfied = isOTPValid && otp.count == 6
+                    }
                 }
+                
+                isOTPValid
+                ? nil
+                : HStack(
+                    alignment: .top,
+                    spacing: 6.0
+                ) {
+                    Image("Error")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(
+                            width: 16,
+                            height: 16
+                        )
+                    Text("Hmm, that's not the right verification code.")
+                        .fontTemplate(.noteMedium)
+                        .foregroundColor(Color.warning)
+                }
+                .padding(.top, 10)
                 
                 HStack(spacing: 12) {
                     Button {
+                        resendOnTap()
                         timeRemaining = 60
                     } label: {
                         Text("Resend code")
@@ -154,7 +242,7 @@ struct ResetPasswordOTPView: View {
                 PrimaryButton(
                     label: "Verify",
                     action: buttonOnTap,
-                    isTappable: .constant(true),
+                    isTappable: $isOTPSatisfied,
                     isLoading: $isLoading
                 )
                 .padding(.bottom, 16)

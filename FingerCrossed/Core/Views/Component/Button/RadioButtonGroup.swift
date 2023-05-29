@@ -10,6 +10,7 @@ import SwiftUI
 struct RadioButtonGroup: View {
     
     let callback: (String) -> ()
+    
     @State var items: [String] = [
         "Male",
         "Female",
@@ -17,8 +18,8 @@ struct RadioButtonGroup: View {
         "Nonbinary",
         "Prefer not to say"
     ]
+    
     @State var selectedId: String = ""
-    @State var hasDivider: Bool = false
     
     private func radioGroupCallback(
         id: String

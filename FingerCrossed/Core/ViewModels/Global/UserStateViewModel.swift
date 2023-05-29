@@ -17,7 +17,11 @@ class UserStateViewModel: ObservableObject {
     }
     
     @AppStorage("isLogin") var isLogin: Bool = false
-
+    
+    @AppStorage("token") var token: String?
+    
+    @Published var user: User?
+    
     @Published var viewState: ViewState = .landing
     
 }

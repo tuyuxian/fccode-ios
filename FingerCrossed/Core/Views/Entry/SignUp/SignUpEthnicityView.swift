@@ -86,14 +86,14 @@ struct SignUpEthnicityView: View {
                 
                 CheckBoxGroup(
                     selectedIdList: Array(
-                        vm.ethnicity.map { $0.type.rawValue }
+                        vm.user.ethnicity.map { $0.type.getString() }
                     ),
-                    ethnicityList: $vm.ethnicity,
+                    ethnicityList: $vm.user.ethnicity,
                     callback: { _ in }
                 )
                 .padding(.vertical, 20)
-                .onChange(of: vm.ethnicity) { _ in
-                    vm.isEthnicitySatisfied = vm.ethnicity.count > 0
+                .onChange(of: vm.user.ethnicity) { _ in
+                    vm.isEthnicitySatisfied = vm.user.ethnicity.count > 0
                 }
                 
                 Spacer()

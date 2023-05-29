@@ -12,6 +12,7 @@ struct SignUpGenderView: View {
     @ObservedObject var vm: EntryViewModel
     /// Handler for button on tap
     private func buttonOnTap() {
+        vm.user.gender = vm.gender!
         vm.transition = .forward
         vm.switchView = .ethnicity
     }
@@ -74,10 +75,10 @@ struct SignUpGenderView: View {
                 RadioButtonGroup(
                     callback: { selected in
                         vm.gender = Gender.allCases.first { gender in
-                            gender.rawValue == selected
+                            gender.getString() == selected
                         }
                     },
-                    selectedId: vm.gender?.rawValue ?? ""
+                    selectedId: vm.gender?.getString() ?? ""
                 )
                 .padding(.vertical, 30)
                 .onChange(of: vm.gender) { val in

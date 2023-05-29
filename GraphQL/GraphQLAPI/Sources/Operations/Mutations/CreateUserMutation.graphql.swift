@@ -39,6 +39,26 @@ public class CreateUserMutation: GraphQLMutation {
               caption
               contentURL
             }
+            citizen {
+              __typename
+              id
+              countryName
+            }
+            ethnicity {
+              __typename
+              id
+              ethnicityType
+            }
+            socialAccount {
+              __typename
+              email
+              platform
+            }
+            goal {
+              __typename
+              id
+              goalType
+            }
           }
           token
         }
@@ -116,6 +136,10 @@ public class CreateUserMutation: GraphQLMutation {
           .field("appleConnect", Bool.self),
           .field("premium", Bool.self),
           .field("lifePhoto", [LifePhoto]?.self),
+          .field("citizen", [Citizen]?.self),
+          .field("ethnicity", [Ethnicity]?.self),
+          .field("socialAccount", [SocialAccount]?.self),
+          .field("goal", [Goal]?.self),
         ] }
 
         public var id: GraphQLAPI.ID { __data["id"] }
@@ -136,6 +160,10 @@ public class CreateUserMutation: GraphQLMutation {
         public var appleConnect: Bool { __data["appleConnect"] }
         public var premium: Bool { __data["premium"] }
         public var lifePhoto: [LifePhoto]? { __data["lifePhoto"] }
+        public var citizen: [Citizen]? { __data["citizen"] }
+        public var ethnicity: [Ethnicity]? { __data["ethnicity"] }
+        public var socialAccount: [SocialAccount]? { __data["socialAccount"] }
+        public var goal: [Goal]? { __data["goal"] }
 
         /// CreateUser.User.LifePhoto
         ///
@@ -155,6 +183,78 @@ public class CreateUserMutation: GraphQLMutation {
           public var id: GraphQLAPI.ID { __data["id"] }
           public var caption: String? { __data["caption"] }
           public var contentURL: String { __data["contentURL"] }
+        }
+
+        /// CreateUser.User.Citizen
+        ///
+        /// Parent Type: `Citizen`
+        public struct Citizen: GraphQLAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Citizen }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("id", GraphQLAPI.ID.self),
+            .field("countryName", String.self),
+          ] }
+
+          public var id: GraphQLAPI.ID { __data["id"] }
+          public var countryName: String { __data["countryName"] }
+        }
+
+        /// CreateUser.User.Ethnicity
+        ///
+        /// Parent Type: `Ethnicity`
+        public struct Ethnicity: GraphQLAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Ethnicity }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("id", GraphQLAPI.ID.self),
+            .field("ethnicityType", GraphQLEnum<GraphQLAPI.EthnicityEthnicityType>.self),
+          ] }
+
+          public var id: GraphQLAPI.ID { __data["id"] }
+          public var ethnicityType: GraphQLEnum<GraphQLAPI.EthnicityEthnicityType> { __data["ethnicityType"] }
+        }
+
+        /// CreateUser.User.SocialAccount
+        ///
+        /// Parent Type: `SocialAccount`
+        public struct SocialAccount: GraphQLAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.SocialAccount }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("email", String.self),
+            .field("platform", GraphQLEnum<GraphQLAPI.SocialAccountPlatform>.self),
+          ] }
+
+          public var email: String { __data["email"] }
+          public var platform: GraphQLEnum<GraphQLAPI.SocialAccountPlatform> { __data["platform"] }
+        }
+
+        /// CreateUser.User.Goal
+        ///
+        /// Parent Type: `Goal`
+        public struct Goal: GraphQLAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Goal }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("id", GraphQLAPI.ID.self),
+            .field("goalType", GraphQLEnum<GraphQLAPI.GoalGoalType>.self),
+          ] }
+
+          public var id: GraphQLAPI.ID { __data["id"] }
+          public var goalType: GraphQLEnum<GraphQLAPI.GoalGoalType> { __data["goalType"] }
         }
       }
     }

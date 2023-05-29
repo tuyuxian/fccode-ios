@@ -27,7 +27,7 @@ struct SettingsAccountView: View {
                 ) {
                     SocialAccountRow(
                         label: "Facebook",
-                        isConnected: vm.user.facebookConnect!
+                        isConnected: vm.user.facebookConnect
                     )
                     
                     Divider()
@@ -35,7 +35,7 @@ struct SettingsAccountView: View {
                     
                     SocialAccountRow(
                         label: "Google",
-                        isConnected: vm.user.googleConnect!
+                        isConnected: vm.user.googleConnect
                     )
                     
                     Divider()
@@ -43,7 +43,7 @@ struct SettingsAccountView: View {
                    
                     SocialAccountRow(
                         label: "Apple",
-                        isConnected: vm.user.appleConnect!
+                        isConnected: vm.user.appleConnect
                     )
                 }
                 .padding(.vertical, 30)

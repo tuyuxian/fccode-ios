@@ -22,11 +22,11 @@ struct LifePhotoButton: View {
             if position <= vm.currentLifePhotoCount {
                 vm.showEditSheet = true
                 vm.selectedLifePhoto = vm.user.lifePhoto[position]
-                vm.hasLifePhoto = vm.user.lifePhoto[position].photoUrl != ""
+                vm.hasLifePhoto = vm.user.lifePhoto[position].contentUrl != ""
             }
         } label: {
             AsyncImage(
-                url: URL(string: vm.user.lifePhoto[position].photoUrl),
+                url: URL(string: vm.user.lifePhoto[position].contentUrl),
                 transaction: Transaction(animation: .easeInOut)
             ) { phase in
                 switch phase {

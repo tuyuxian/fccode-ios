@@ -9,6 +9,8 @@ import SwiftUI
 import GraphQLAPI
 
 struct SignUpAvatarView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for image picker's signal
@@ -55,28 +57,38 @@ struct SignUpAvatarView: View {
     }
     /// Handler for button on tap
     private func buttonOnTap() {
-//        isLoading.toggle()
-        vm.transition = .forward
-        vm.switchView = .location
-//        MediaRepository().getPresignedPutUrl(
-//            GraphQLEnum.case(.image)
-//        ) { url, error in
-////            Task {
-////                do {
-////                    let result = try await AWSS3().uploadImage(
-////                        vm.selectedImageData,
-////                        // TODO(Sam): replace with presigned Url generated from backend
-////                        toPresignedURL: URL(string: url!)!
-////                    )
-////                    print(result)
-////                } catch {
-////                    print(error.localizedDescription)
-////                }
-////            }
-//            isLoading.toggle()
-//            vm.transition = .forward
-//            vm.switchView = .location
-//        }
+        isLoading.toggle()
+        Task {
+            do {
+                let url = try await MediaRepository.getPresignedPutUrl(
+                    GraphQLEnum.case(.image)
+                )
+                let result = try await AWSS3().uploadImage(
+                    vm.selectedImageData,
+                    toPresignedURL: URL(string: url!)!
+                )
+                vm.user.profilePictureUrl = result.absoluteString
+                vm.user.lifePhoto.append(
+                    LifePhoto(
+                        contentUrl: result.absoluteString,
+                        caption: "",
+                        position: 0,
+                        scale: 1,
+                        offset: CGSize.zero
+                    )
+                )
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = .location
+                
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
     
     var body: some View {

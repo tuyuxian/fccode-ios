@@ -60,13 +60,13 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Birthday",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: "01/01/2000")),
+                                        preview: AnyView(PreviewText(text: vm.user.dateOfBirth)),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Gender",
                                         icon: "InfoBased",
-                                        preview: AnyView(PreviewText(text: vm.user.gender.rawValue)),
+                                        preview: AnyView(PreviewText(text: vm.user.gender.getString())),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -96,14 +96,14 @@ struct BasicInfoView: View {
                                 ),
                                 lifePhotoList: [
                                     LifePhoto(
-                                        photoUrl: "https://i.pravatar.cc/150?img=6",
+                                        contentUrl: "https://i.pravatar.cc/150?img=6",
                                         caption: "malesuada",
                                         position: 0,
                                         scale: 1,
                                         offset: CGSize.zero
                                     ),
                                     LifePhoto(
-                                        photoUrl: "https://i.pravatar.cc/150?img=7",
+                                        contentUrl: "https://i.pravatar.cc/150?img=7",
                                         caption: "malesuada fames ac",
                                         position: 1,
                                         scale: 1,

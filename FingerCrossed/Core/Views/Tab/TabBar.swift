@@ -9,14 +9,21 @@ import SwiftUI
 
 struct TabBar: View {
     
-    @State var currentTab = "Pairing"
     @StateObject var vm = TabViewModel()
+
+    @State var currentTab = "Profile"
+    
+    @ObservedObject var userState: UserStateViewModel
     
     let notificationPermissionManager = NotificationPermissionManager()
     
-    init() {
+    init(
+        userState: UserStateViewModel
+    ) {
         UITabBar.appearance().isHidden = true
+        self.userState = userState
     }
+    
     var body: some View {
         VStack(spacing: 0) {
             TabView(selection: $currentTab) {
@@ -51,13 +58,16 @@ struct TabBar: View {
         .environmentObject(vm)
         .onAppear {
             notificationPermissionManager.requestPermission { _, _ in}
+            print(userState.token ?? "failed to get token")
         }
     }
 }
 
 struct TabBar_Previews: PreviewProvider {
     static var previews: some View {
-        TabBar()
+        TabBar(
+            userState: UserStateViewModel()
+        )
     }
 }
 

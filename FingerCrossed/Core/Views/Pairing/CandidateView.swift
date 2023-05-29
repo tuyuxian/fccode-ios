@@ -25,7 +25,7 @@ struct CandidateView: View {
                     ForEach(lifePhotoList) { list in
 
                         AsyncImageLoader(
-                            url: URL(string: list.photoUrl)!,
+                            url: URL(string: list.contentUrl)!,
                             placeholder: {
                                 Shimmer(
                                     size: CGSize(
@@ -230,7 +230,7 @@ struct CandidateView_Previews: PreviewProvider {
             lifePhotoList: [
                 LifePhoto(
                     // swiftlint: disable line_length
-                    photoUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
+                    contentUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
                     // swiftlint: enable line_length
                     caption: "caption1",
                     position: 0,
@@ -239,7 +239,7 @@ struct CandidateView_Previews: PreviewProvider {
                 ),
                 LifePhoto(
                     // swiftlint: disable line_length
-                    photoUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
+                    contentUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
                     // swiftlint: enable line_length
                     caption: "caption2",
                     position: 1,

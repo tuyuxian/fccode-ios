@@ -38,35 +38,42 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var switchView: CurrentView = CurrentView.email
     
     // MARK: State Management
-    @Published var email: String = ""
-    @Published var password: String = ""
+    @Published var user: User = User(
+        userId: "0",
+        email: "",
+        password: "",
+        username: "",
+        dateOfBirth: "",
+        gender: .MALE,
+        profilePictureUrl: "",
+        selfIntro: "",
+        longitude: 0,
+        latitude: 0,
+        country: "",
+        administrativeArea: "",
+        voiceContentURL: "",
+        googleConnect: false,
+        facebookConnect: false,
+        appleConnect: false,
+        premium: false,
+        goal: [],
+        citizen: [],
+        lifePhoto: [],
+        socialAccount: [],
+        ethnicity: []
+    )
+    @Published var password = ""
     @Published var passwordConfirmed = ""
     @Published var newPassword: String = ""
     @Published var newPasswordConfirmed: String = ""
-    @Published var name: String = ""
-    @Published var dateOfBirth: String = ""
     @Published var selectedDate: Date = Date()
     @Published var gender: Gender?
-    @Published var nationality = [Nationality]()
-    @Published var ethnicity = [Ethnicity]()
-    @Published var profilePictureUrl: String?
     @Published var yearIndex = 99
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
-    @Published var latitude: Double?
-    @Published var longitude: Double?
-    @Published var country: String?
-    @Published var administrativeArea: String?
-    @Published var facebookConnect: Bool = false
-    @Published var googleConnect: Bool = false
-    @Published var appleConnect: Bool = false
-    @Published var socialAccount: SocialAccount = SocialAccount(
-        email: "",
-        platform: .FINGERCROSSED
-    )
-    
+
     // MARK: Condition Variables for button
     /// - Email view
     @Published var isEmailSatisfied: Bool = false

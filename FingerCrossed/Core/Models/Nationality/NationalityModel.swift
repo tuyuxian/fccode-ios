@@ -1,5 +1,5 @@
 //
-//  CountryModel.swift
+//  NationalityModel.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/4/23.
@@ -47,18 +47,20 @@ class Nationality: Codable, Identifiable, Equatable, ObservableObject {
     }
 }
 
-class NationalitySelectionList: ObservableObject, Equatable {
+class NationalityList: ObservableObject, Equatable {
     static func == (
-        lhs: NationalitySelectionList,
-        rhs: NationalitySelectionList
+        lhs: NationalityList,
+        rhs: NationalityList
     ) -> Bool {
-        lhs.nationalitySelections == rhs.nationalitySelections
+        lhs.selections == rhs.selections
     }
     
-    @Published var nationalitySelections = [Nationality]()
+    @Published var selections: [Nationality] = []
     
-    init(nationalitySelections: [Nationality]) {
-        self.nationalitySelections = nationalitySelections
+    init(
+        selections: [Nationality]
+    ) {
+        self.selections = selections
     }
 }
 

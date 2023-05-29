@@ -30,25 +30,23 @@ struct PasswordView: View {
             return
         }
         isPasswordValid = true
-        EntryRepository.signIn(
-            email: vm.email,
-            password: vm.password
-        ) { valid, _, error in
-            guard error == nil else {
+        Task {
+            do {
+                let (user, token) = try await EntryRepository.signIn(
+                    email: vm.user.email,
+                    password: vm.password
+                )
                 isLoading.toggle()
-                print(error!)
-                bm.banner = .init(
+                userState.user = user
+                userState.token = token
+                userState.isLogin = true
+                userState.viewState = .main
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
                     title: "Something went wrong.",
                     type: .error
                 )
-                return
-            }
-            isLoading.toggle()
-            if valid {
-                userState.isLogin = true
-                userState.viewState = .main
-            } else {
-                isPasswordValid = false
             }
         }
     }
@@ -63,7 +61,7 @@ struct PasswordView: View {
         self.endTextEditing()
         vm.transition = .backward
         vm.switchView = .email
-        vm.email = ""
+        vm.user.email = ""
         vm.password = ""
         vm.isEmailSatisfied = false
     }
@@ -73,54 +71,48 @@ struct PasswordView: View {
         GoogleSSOManager().signIn(
             successAction: { email in
                 guard let email else {
-                    bm.banner = .init(
+                    bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                EntryRepository.checkEmail(email: email) { exist, error in
-                    guard error == nil else {
-                        print(error!)
-                        bm.banner = .init(
+                Task {
+                    do {
+                        let exist = try await EntryRepository.checkEmail(
+                            email: vm.user.email
+                        )
+                        if exist {
+                            let (user, token) = try await EntryRepository.socialSignIn(
+                                email: email,
+                                platform: GraphQLEnum.case(.google)
+                            )
+                            userState.user = user
+                            userState.token = token
+                            userState.isLogin = true
+                            userState.viewState = .main
+                        }
+                        vm.user.email = email
+                        vm.user.googleConnect = true
+                        vm.user.socialAccount.append(
+                            SocialAccount(
+                                email: email,
+                                platform: .GOOGLE
+                            )
+                        )
+                        vm.transition = .forward
+                        vm.switchView = .name
+                    } catch {
+                        print(error.localizedDescription)
+                        bm.pop(
                             title: "Something went wrong.",
                             type: .error
                         )
-                        return
-                    }
-                    if exist! {
-                        EntryRepository.socialSignIn(
-                            email: email,
-                            platform: GraphQLEnum.case(.google)) { valid, _, error in
-                                guard error == nil else {
-                                    print(error!)
-                                    bm.banner = .init(
-                                        title: "Something went wrong.",
-                                        type: .error
-                                    )
-                                    return
-                                }
-                                if valid {
-                                    userState.isLogin = true
-                                    userState.viewState = .main
-                                }
-                            }
-                    } else {
-                        vm.email = email
-                        vm.googleConnect = true
-                        vm.socialAccount.email = vm.email
-                        vm.socialAccount.platform = .GOOGLE
-                        vm.transition = .forward
-                        vm.switchView = .name
                     }
                 }
             },
             errorAction: { error in
                 guard let error else { return }
-                bm.banner = .init(
-                    title: "Something went wrong.",
-                    type: .error
-                )
                 print(error.localizedDescription)
             }
         )
@@ -132,53 +124,41 @@ struct PasswordView: View {
             do {
                 let email = try await AppleSSOManager().signIn()
                 guard let email else {
-                    bm.banner = .init(
+                    bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                EntryRepository.checkEmail(email: email) { exist, error in
-                    guard error == nil else {
-                        print(error!)
-                        bm.banner = .init(
-                            title: "Something went wrong.",
-                            type: .error
-                        )
-                        return
-                    }
-                    if exist! {
-                        EntryRepository.socialSignIn(
-                            email: email,
-                            platform: GraphQLEnum.case(.apple)) { valid, _, error in
-                                guard error == nil else {
-                                    print(error!)
-                                    bm.banner = .init(
-                                        title: "Something went wrong.",
-                                        type: .error
-                                    )
-                                    return
-                                }
-                                if valid {
-                                    userState.isLogin = true
-                                    userState.viewState = .main
-                                }
-                            }
-                    } else {
-                        vm.email = email
-                        vm.appleConnect = true
-                        vm.socialAccount.email = vm.email
-                        vm.socialAccount.platform = .APPLE
-                        vm.transition = .forward
-                        vm.switchView = .name
-                    }
+                let exist = try await EntryRepository.checkEmail(
+                    email: email
+                )
+                if exist {
+                    let (user, token) = try await EntryRepository.socialSignIn(
+                        email: email,
+                        platform: GraphQLEnum.case(.apple)
+                    )
+                    userState.user = user
+                    userState.token = token
+                    userState.isLogin = true
+                    userState.viewState = .main
                 }
+                vm.user.email = email
+                vm.user.appleConnect = true
+                vm.user.socialAccount.append(
+                    SocialAccount(
+                        email: email,
+                        platform: .APPLE
+                    )
+                )
+                vm.transition = .forward
+                vm.switchView = .name
             } catch {
-                bm.banner = .init(
+                print(error.localizedDescription)
+                bm.pop(
                     title: "Something went wrong.",
                     type: .error
                 )
-                print(error.localizedDescription)
             }
         }
     }
@@ -270,7 +250,7 @@ struct PasswordView: View {
                                 Button {
                                     backToEmailView()
                                 } label: {
-                                    Text("Not to continue with \(vm.email)?")
+                                    Text("Not to continue with \(vm.user.email)?")
                                         .fontTemplate(.noteMedium)
                                         .foregroundColor(Color.text)
                                         .underline(
@@ -342,11 +322,17 @@ private struct ErrorHelper: View {
             alignment: .leading,
             spacing: 6
         ) {
-            HStack(alignment: .top, spacing: 6.0) {
+            HStack(
+                alignment: .top,
+                spacing: 6
+            ) {
                 Image("Error")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 16, height: 16)
+                    .frame(
+                        width: 16,
+                        height: 16
+                    )
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Hmm, that's not the right password.")
                         .fontTemplate(.noteMedium)

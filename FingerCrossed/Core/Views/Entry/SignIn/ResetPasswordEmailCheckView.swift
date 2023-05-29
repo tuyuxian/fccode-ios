@@ -8,15 +8,39 @@
 import SwiftUI
 
 struct ResetPasswordEmailCheckView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loading state
     @State private var isLoading: Bool = false
     /// Handler for button on tap
     private func buttonOnTap() {
-        // TODO(Sam): send email
-        vm.transition = .forward
-        vm.switchView = .resetPasswordOTP
+        isLoading.toggle()
+        Task {
+            do {
+                let success = try await EntryRepository.requestOTP(
+                    email: vm.user.email
+                )
+                guard success else {
+                    isLoading.toggle()
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = .resetPasswordOTP
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
     
     var body: some View {
@@ -37,7 +61,7 @@ struct ResetPasswordEmailCheckView: View {
                     spacing: 92
                 ) {
                     Button {
-                        vm.password = ""
+                        vm.user.password = ""
                         vm.transition = .backward
                         vm.switchView = .password
                     } label: {
@@ -56,7 +80,7 @@ struct ResetPasswordEmailCheckView: View {
                     alignment: .center,
                     spacing: 0
                 ) {
-                    Text("Verification code\nwill be sent to\n \(vm.email).")
+                    Text("Verification code\nwill be sent to\n \(vm.user.email).")
                         .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)

@@ -11,9 +11,7 @@ struct PreferenceNationalityView: View {
     /// Observed Profile view model
     @ObservedObject var vm: ProfileViewModel
     
-    @StateObject var nationalitySelectionList = NationalitySelectionList(
-        nationalitySelections: [Nationality]()
-    )
+    @State var nationalityList = [Nationality]()
 
     var body: some View {
         ContainerWithHeaderView(
@@ -25,11 +23,11 @@ struct PreferenceNationalityView: View {
             Box {
                 VStack {
                     NationalityPicker(
-                        nationalitySelectionList: nationalitySelectionList,
+                        nationalityList: $nationalityList,
                         isPreference: true
                     )
-                    .onChange(of: nationalitySelectionList.nationalitySelections) { _ in
-                        vm.nationality = nationalitySelectionList.nationalitySelections
+                    .onChange(of: nationalityList) { _ in
+                        vm.nationality = nationalityList
                     }
                 }
                 .padding(.top, 30)
@@ -43,6 +41,8 @@ struct PreferenceNationalityView: View {
 
 struct PreferenceNationalityView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceNationalityView(vm: ProfileViewModel())
+        PreferenceNationalityView(
+            vm: ProfileViewModel()
+        )
     }
 }

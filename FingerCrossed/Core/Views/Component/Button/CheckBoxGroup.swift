@@ -34,7 +34,7 @@ struct CheckBoxGroup: View {
         })
         
         let et = EthnicityType.allCases.first(where: {
-            $0.rawValue == id
+            $0.getString() == id
         })
         
         if hasItem {
@@ -47,8 +47,9 @@ struct CheckBoxGroup: View {
         } else {
             selectedIdList.append(id)
             let ethnicity = Ethnicity(
-                id: UUID(),
-                type: EthnicityType(rawValue: id) ?? .ET1
+                type: EthnicityType.allCases.first(where: {
+                    $0.getString() == id
+                }) ?? .ET1
             )
             ethnicityList.append(ethnicity)
             callback(id)
@@ -73,7 +74,7 @@ struct CheckBoxGroup: View {
 }
 
 private var selectedValues: Binding<[Ethnicity]> {
-    Binding.constant([Ethnicity(id: UUID(), type: .ET1)])
+    Binding.constant([Ethnicity(type: .ET1)])
 }
 
 struct CheckBoxGroup_Previews: PreviewProvider {

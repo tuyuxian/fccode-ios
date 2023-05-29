@@ -47,7 +47,7 @@ struct LifePhotoStack: View {
                             Array(vm.user.lifePhoto[1...2].enumerated()),
                             id: \.element.id
                         ) { index, lifePhoto in
-                            if lifePhoto.photoUrl != "" {
+                            if lifePhoto.contentUrl != "" {
                                 LifePhotoButton(
                                     vm: vm,
                                     position: index + 1,
@@ -83,7 +83,7 @@ struct LifePhotoStack: View {
                             Array(vm.user.lifePhoto[3...4].enumerated()),
                             id: \.element.id
                         ) { index, lifePhoto in
-                            if lifePhoto.photoUrl != "" {
+                            if lifePhoto.contentUrl != "" {
                                 LifePhotoButton(
                                     vm: vm,
                                     position: index + 3,

@@ -48,6 +48,16 @@ final class BannerManager: ObservableObject {
             isPresented = false
         }
     }
+    
+    public func pop(
+        title: String,
+        type: Banner.BannerType
+    ) {
+        self.banner = .init(
+            title: title,
+            type: type
+        )
+    }
 }
 
 struct BannerContent: View {

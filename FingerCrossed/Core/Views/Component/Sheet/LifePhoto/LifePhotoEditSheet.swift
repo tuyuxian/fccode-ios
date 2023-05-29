@@ -25,11 +25,11 @@ struct LifePhotoEditSheet: View {
     /// Flag for loading state
     @State private var isLoading: Bool = false
     
+    @State private var bottomPadding: CGFloat = 0
+    
     let textLengthLimit: Int = 200
 
     var body: some View {
-        ScrollViewReader { (proxy: ScrollViewProxy) in
-            ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 16) {
 //                    Image(uiImage: config.newUIImage)
 //
@@ -42,133 +42,132 @@ struct LifePhotoEditSheet: View {
                         .multilineTextAlignment(.center)
                         .padding(.top, 30)
                         .id(2)
-                    
-                    VStack {}
-                    .frame(height: 342)
-                    .background(
-                        AsyncEditImageLoader(
-                            url: URL(string: vm.selectedLifePhoto?.contentUrl ?? "")!,
-                            config: vm,
-                            placeholder: {
-                        // AsyncImage(
-                        //     url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
-                        //     transaction: Transaction(animation: .easeInOut)
-                        // ) { phase in
-                        //     switch phase {
-                        //     case .empty:
-                        //         if vm.selectedImage == nil {
-                        //             EmptyView()
-                        //         } else {
-                        //             Image(uiImage: vm.selectedImage!)
-                        //                 .resizable()
-                        //                 .aspectRatio(contentMode: .fill)
-                        //                 .frame(
-                        //                     width: imageWidth(tag: selectedTag),
-                        //                     height: imageHeight(tag: selectedTag)
-                        //                 )
-                        //                 .scaleEffect(vm.imageScale)
-                        //                 .cornerRadius(6)
-                        //                 .background(
-                        //                     RoundedRectangle(cornerRadius: 6)
-                        //                         .strokeBorder(Color.yellow100, lineWidth: 1)
-                        //                 )
-                        //                 .onChange(of: uiImage, perform: { newImage in
-                        //                     newUIImage = UIImage(
-                        //                         data: newImage.jpegData(compressionQuality: 0.95)!)!
-                        //                 })
-                        //                 .gesture(
-                        //                     MagnificationGesture().onChanged({(value) in
-                        //                         vm.imageScale = value
-                        //                     }).onEnded({(value) in
-                        //                         vm.imageScale = value < 1 ? 1 : value
-                        //                     })
-                        //                 )
-                        //         }
-                        //     case .success(let image):
-                        //         image
-                        //             .resizable()
-                        //             .aspectRatio(contentMode: .fill)
-                        //             .frame(
-                        //                 width: imageWidth(tag: selectedTag),
-                        //                 height: imageHeight(tag: selectedTag)
-                        //             )
-                        //             .scaleEffect(vm.imageScale)
-                        //             .cornerRadius(6)
-                        //             .background(
-                        //                 RoundedRectangle(cornerRadius: 6)
-                        //                     .strokeBorder(Color.yellow100, lineWidth: 1)
-                        //             )
-                        //             .onChange(of: uiImage, perform: { newImage in
-                        //                 newUIImage = UIImage(
-                        //                     data: newImage.jpegData(compressionQuality: 0.95)!)!
-                        //             })
-                        //             .gesture(
-                        //                 MagnificationGesture().onChanged({(value) in
-                        //                     vm.imageScale = value
-                        //                 }).onEnded({(value) in
-                        //                     vm.imageScale = value < 1 ? 1 : value
-                        //                 })
-                        //             )
-                        //     case .failure:
-                                Shimmer(
-                                    size: CGSize(
-                                        width: UIScreen.main.bounds.size.width - 48,
-                                        height: 342
-                                    )
-                                )
-                            },
-                            image: { Image(uiImage: $0)})
-                            .frame(
-                                width: imageWidth(tag: selectedTag),
-                                height: imageHeight(tag: selectedTag)
-                            )
+                        VStack {}
+                            .frame(height: 342)
+                        //                    .background(
+                        //                        AsyncEditImageLoader(
+                        //                            url: URL(string: vm.selectedLifePhoto?.contentUrl ?? "")!,
+                        //                            config: vm,
+                        //                            placeholder: {
+                        //                        // AsyncImage(
+                        //                        //     url: URL(string: vm.selectedLifePhoto?.photoUrl ?? ""),
+                        //                        //     transaction: Transaction(animation: .easeInOut)
+                        //                        // ) { phase in
+                        //                        //     switch phase {
+                        //                        //     case .empty:
+                        //                        //         if vm.selectedImage == nil {
+                        //                        //             EmptyView()
+                        //                        //         } else {
+                        //                        //             Image(uiImage: vm.selectedImage!)
+                        //                        //                 .resizable()
+                        //                        //                 .aspectRatio(contentMode: .fill)
+                        //                        //                 .frame(
+                        //                        //                     width: imageWidth(tag: selectedTag),
+                        //                        //                     height: imageHeight(tag: selectedTag)
+                        //                        //                 )
+                        //                        //                 .scaleEffect(vm.imageScale)
+                        //                        //                 .cornerRadius(6)
+                        //                        //                 .background(
+                        //                        //                     RoundedRectangle(cornerRadius: 6)
+                        //                        //                         .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //                        //                 )
+                        //                        //                 .onChange(of: uiImage, perform: { newImage in
+                        //                        //                     newUIImage = UIImage(
+                        //                        //                         data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //                        //                 })
+                        //                        //                 .gesture(
+                        //                        //                     MagnificationGesture().onChanged({(value) in
+                        //                        //                         vm.imageScale = value
+                        //                        //                     }).onEnded({(value) in
+                        //                        //                         vm.imageScale = value < 1 ? 1 : value
+                        //                        //                     })
+                        //                        //                 )
+                        //                        //         }
+                        //                        //     case .success(let image):
+                        //                        //         image
+                        //                        //             .resizable()
+                        //                        //             .aspectRatio(contentMode: .fill)
+                        //                        //             .frame(
+                        //                        //                 width: imageWidth(tag: selectedTag),
+                        //                        //                 height: imageHeight(tag: selectedTag)
+                        //                        //             )
+                        //                        //             .scaleEffect(vm.imageScale)
+                        //                        //             .cornerRadius(6)
+                        //                        //             .background(
+                        //                        //                 RoundedRectangle(cornerRadius: 6)
+                        //                        //                     .strokeBorder(Color.yellow100, lineWidth: 1)
+                        //                        //             )
+                        //                        //             .onChange(of: uiImage, perform: { newImage in
+                        //                        //                 newUIImage = UIImage(
+                        //                        //                     data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        //                        //             })
+                        //                        //             .gesture(
+                        //                        //                 MagnificationGesture().onChanged({(value) in
+                        //                        //                     vm.imageScale = value
+                        //                        //                 }).onEnded({(value) in
+                        //                        //                     vm.imageScale = value < 1 ? 1 : value
+                        //                        //                 })
+                        //                        //             )
+                        //                        //     case .failure:
+                        //                                Shimmer(
+                        //                                    size: CGSize(
+                        //                                        width: UIScreen.main.bounds.size.width - 48,
+                        //                                        height: 342
+                        //                                    )
+                        //                                )
+                        //                            },
+                        //                            image: { Image(uiImage: $0)})
+                        //                            .frame(
+                        //                                width: imageWidth(tag: selectedTag),
+                        //                                height: imageHeight(tag: selectedTag)
+                        //                            )
+                        //
+                        ////                        AsyncImage(
+                        ////                            url: URL(string: config.selectedLifePhoto?.photoUrl ?? ""),
+                        ////                            transaction: Transaction(animation: .easeInOut)
+                        ////                        ) { phase in
+                        ////                            switch phase {
+                        ////                            case .empty:
+                        ////                                EmptyView()
+                        ////                            case .success(let image):
+                        ////                                image
+                        ////                                    .resizable()
+                        ////                                    .aspectRatio(contentMode: .fill)
+                        ////                                    .frame(
+                        ////                                        width: imageWidth(tag: selectedTag),
+                        ////                                        height: imageHeight(tag: selectedTag)
+                        ////                                    )
+                        ////                                    .scaleEffect(config.imageScale)
+                        ////                                    .cornerRadius(6)
+                        ////                                    .background(
+                        ////                                        RoundedRectangle(cornerRadius: 6)
+                        ////                                            .strokeBorder(Color.yellow100, lineWidth: 1)
+                        ////                                    )
+                        ////                                    .onChange(of: uiImage, perform: { newImage in
+                        ////                                        newUIImage = UIImage(
+                        ////                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
+                        ////                                    })
+                        ////                                    .gesture(
+                        ////                                        MagnificationGesture().onChanged({(value) in
+                        ////                                            config.imageScale = value
+                        ////                                        }).onEnded({(value) in
+                        ////                                            config.imageScale = value < 1 ? 1 : value
+                        ////                                        })
+                        ////                                    )
+                        ////                            case .failure:
+                        ////                                Shimmer(
+                        ////                                    size: CGSize(
+                        ////                                        width: UIScreen.main.bounds.size.width - 48,
+                        ////                                        height: 342
+                        ////                                    )
+                        ////                                )
+                        ////                            @unknown default:
+                        ////                                EmptyView()
+                        ////                            }
+                        ////                        }
+                        //                    )
+                        //                    .clipped()
                         
-//                        AsyncImage(
-//                            url: URL(string: config.selectedLifePhoto?.photoUrl ?? ""),
-//                            transaction: Transaction(animation: .easeInOut)
-//                        ) { phase in
-//                            switch phase {
-//                            case .empty:
-//                                EmptyView()
-//                            case .success(let image):
-//                                image
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fill)
-//                                    .frame(
-//                                        width: imageWidth(tag: selectedTag),
-//                                        height: imageHeight(tag: selectedTag)
-//                                    )
-//                                    .scaleEffect(config.imageScale)
-//                                    .cornerRadius(6)
-//                                    .background(
-//                                        RoundedRectangle(cornerRadius: 6)
-//                                            .strokeBorder(Color.yellow100, lineWidth: 1)
-//                                    )
-//                                    .onChange(of: uiImage, perform: { newImage in
-//                                        newUIImage = UIImage(
-//                                            data: newImage.jpegData(compressionQuality: 0.95)!)!
-//                                    })
-//                                    .gesture(
-//                                        MagnificationGesture().onChanged({(value) in
-//                                            config.imageScale = value
-//                                        }).onEnded({(value) in
-//                                            config.imageScale = value < 1 ? 1 : value
-//                                        })
-//                                    )
-//                            case .failure:
-//                                Shimmer(
-//                                    size: CGSize(
-//                                        width: UIScreen.main.bounds.size.width - 48,
-//                                        height: 342
-//                                    )
-//                                )
-//                            @unknown default:
-//                                EmptyView()
-//                            }
-//                        }
-                    )
-//                    .clipped()
-                    
                     HStack(spacing: 12) {
                         TagButton(label: "16:9", tag: .constant(0), isSelected: $selectedTag)
                         TagButton(label: "9:16", tag: .constant(1), isSelected: $selectedTag)
@@ -178,7 +177,7 @@ struct LifePhotoEditSheet: View {
                     
                     CaptionInputBar(
                         text: $text,
-                        hint: "Type your self introduction",
+                        hint: "Write a caption...",
                         defaultPresentLine: 6,
                         lineLimit: 6,
                         textLengthLimit: textLengthLimit
@@ -186,34 +185,37 @@ struct LifePhotoEditSheet: View {
                     .onChange(of: text) { _ in
                         isSatisfied = true
                     }
-                    .onTapGesture {
-                        withAnimation(.easeIn(duration: 0.16)) {
-                            proxy.scrollTo(1, anchor: .bottom)
-                        }
-                    }
+
+                    Spacer()
                     
                     PrimaryButton(
                         label: "Save",
                         isTappable: $isSatisfied,
                         isLoading: $isLoading
                     )
-                    .id(1)
+                    .padding(.bottom, 16)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: bottomPadding, trailing: 0))
+                    .onReceive(NotificationCenter.default.publisher(for: UIWindow.keyboardWillShowNotification),
+                               perform: updateFrame)
+                    .onReceive(NotificationCenter.default.publisher(for: UIWindow.keyboardWillHideNotification),
+                               perform: updateFrame)
                 }
-            }
             .padding(.horizontal, 24)
             .background(Color.white)
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
             .scrollDismissesKeyboard(.immediately)
-            .onTapGesture {
-                withAnimation(.easeIn(duration: 0.16)) {
-                    UIApplication.shared.closeKeyboard()
-                    proxy.scrollTo(2, anchor: .top)
-                }
+    }
+    
+    private func updateFrame(_ notification: Notification) {
+            let nsValue = (notification.userInfo?[UIWindow.keyboardFrameEndUserInfoKey] as? NSValue)
+            let keyboardHeight = nsValue?.cgRectValue.height ?? 0
+        if notification.name == UIWindow.keyboardWillShowNotification {
+                bottomPadding = keyboardHeight - 16
+            } else {
+                bottomPadding = 0
             }
         }
-
-    }
     
     func imageHeight(tag: Int) -> (CGFloat) {
         switch tag {

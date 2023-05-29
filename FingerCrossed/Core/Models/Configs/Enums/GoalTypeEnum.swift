@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAPI
 
 public enum GoalType: CaseIterable {
+    case GT0
     case GT1
     case GT2
     case GT3
@@ -16,6 +17,8 @@ public enum GoalType: CaseIterable {
     
     public func getString() -> String {
         switch self {
+        case .GT0:
+            return "Not sure yet"
         case .GT1:
             return "Serious relationship"
         case .GT2:
@@ -37,6 +40,8 @@ public enum GoalType: CaseIterable {
             return .gt3
         case .GT4:
             return .gt4
+        default:
+            return .gt1
         }
     }
 }

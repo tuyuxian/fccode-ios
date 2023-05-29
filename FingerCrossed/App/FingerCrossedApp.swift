@@ -36,7 +36,7 @@ struct FingerCrossedApp: App {
                         .environmentObject(bannerManager)
                 case .main:
                     TabBar(userState: userState)
-                        .preferredColorScheme(.light)
+                        .environmentObject(userState)
                         .environmentObject(bannerManager)
                 }
 

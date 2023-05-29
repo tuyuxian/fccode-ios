@@ -16,23 +16,23 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
     @State private var currentOffset: CGSize = .zero
     @State private var currentScale: CGFloat = 0.0
         
-        init(
-            url: URL,
-            config: ProfileViewModel,
-            @ViewBuilder placeholder: () -> Placeholder,
-            @ViewBuilder image: @escaping (UIImage) -> Image = Image.init(uiImage:)
-        ) {
-            self.url = url
-            self.config = config
-            self.placeholder = placeholder()
-            self.image = image
-            _loader = StateObject(
-                wrappedValue: ImageLoader(
-                    url: url,
-                    cache: Environment(\.imageCache).wrappedValue
-                )
+    init(
+        url: URL,
+        config: ProfileViewModel,
+        @ViewBuilder placeholder: () -> Placeholder,
+        @ViewBuilder image: @escaping (UIImage) -> Image = Image.init(uiImage:)
+    ) {
+        self.url = url
+        self.config = config
+        self.placeholder = placeholder()
+        self.image = image
+        _loader = StateObject(
+            wrappedValue: ImageLoader(
+                url: url,
+                cache: Environment(\.imageCache).wrappedValue
             )
-        }
+        )
+    }
 
     var body: some View {
         content

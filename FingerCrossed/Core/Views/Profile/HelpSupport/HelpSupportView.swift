@@ -27,11 +27,10 @@ struct HelpSupportView: View {
                         Spacer()
                             .frame(height: 30)
                         
-                        // Contact Us
                         ContactUs()
-                        // Terms of Service
+                        
                         TermsOfService()
-                        // Privacy
+
                         Privacy()
                         
                         Spacer()

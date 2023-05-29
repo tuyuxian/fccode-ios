@@ -39,9 +39,7 @@ struct SelectionButton: View {
     }
     
     var body: some View {
-        Button {
-            callback(id)
-        } label: {
+        HStack {
             Text(label)
                 .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
@@ -76,6 +74,10 @@ struct SelectionButton: View {
                     )
                 // swiftlint:enable void_function_in_ternary
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            callback(id)
         }
     }
 }

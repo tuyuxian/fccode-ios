@@ -45,9 +45,7 @@ struct SignUpLocationView: View {
                 vm.user.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0
                 vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
                 vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
-                // swiftlint: disable line_length
                 vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
-                // swiftlint: enable line_length
                 let (user, token) = try await EntryRepository.createUser(
                     input: vm.user.getGraphQLInput()
                 )

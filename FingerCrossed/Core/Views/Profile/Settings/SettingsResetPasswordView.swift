@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct SettingsResetPasswordView: View {
-    
+    /// View controller
     @Environment(\.presentationMode) var presentationMode
-
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed profile view model
     @ObservedObject var vm: ProfileViewModel
     /// Flag for password validation
     @State private var isNewPasswordValid: Bool = true
@@ -24,6 +26,7 @@ struct SettingsResetPasswordView: View {
             isNewPasswordValid = false
             return
         }
+        // TODO(Sam): integrate graphql
         isNewPasswordValid = true
         vm.currentPassword = ""
         vm.newPassword = ""

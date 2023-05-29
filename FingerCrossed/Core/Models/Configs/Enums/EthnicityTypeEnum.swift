@@ -9,6 +9,7 @@ import Foundation
 import GraphQLAPI
 
 public enum EthnicityType: CaseIterable {
+    case ET0
     case ET1
     case ET2
     case ET3
@@ -21,6 +22,8 @@ public enum EthnicityType: CaseIterable {
     
     public func getString() -> String {
         switch self {
+        case .ET0:
+            return "Open to all"
         case .ET1:
             return "American Indian"
         case .ET2:
@@ -62,6 +65,8 @@ public enum EthnicityType: CaseIterable {
             return .et8
         case .ET9:
             return .et9
+        default:
+            return .et1
         }
     }
 }

@@ -10,6 +10,14 @@ import SwiftUI
 struct SignUpGenderView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Gender option list
+    let genderOptions: [String] = [
+        "Male",
+        "Female",
+        "Transgender",
+        "Nonbinary",
+        "Prefer not to say"
+    ]
     /// Handler for button on tap
     private func buttonOnTap() {
         vm.user.gender = vm.gender!
@@ -73,12 +81,13 @@ struct SignUpGenderView: View {
                 }
                 
                 RadioButtonGroup(
+                    items: genderOptions,
+                    selectedId: vm.gender?.getString() ?? "",
                     callback: { selected in
                         vm.gender = Gender.allCases.first { gender in
                             gender.getString() == selected
                         }
-                    },
-                    selectedId: vm.gender?.getString() ?? ""
+                    }
                 )
                 .padding(.vertical, 30)
                 .onChange(of: vm.gender) { val in

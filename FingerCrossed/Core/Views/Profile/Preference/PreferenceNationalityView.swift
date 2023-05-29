@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct PreferenceNationalityView: View {
-    /// Observed Profile view model
+    /// View controller
+    @Environment(\.presentationMode) var presentationMode
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed profile view model
     @ObservedObject var vm: ProfileViewModel
+    /// Flag to show up save button
+    @State private var showSaveButton: Bool = false
+    /// Nationality list
+    @State var nationalityList: [Nationality] = []
     
-    @State var nationalityList = [Nationality]()
-
+    // TODO(Lawerence): apply new design
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",

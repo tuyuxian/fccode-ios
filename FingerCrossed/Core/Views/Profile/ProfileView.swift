@@ -11,6 +11,8 @@ struct ProfileView: View {
     
     @StateObject var vm: ProfileViewModel = ProfileViewModel()
     
+    @EnvironmentObject var userState: UserStateViewModel
+    
     var body: some View {
         ContainerWithLogoHeaderView(
             headerTitle: "Profile"
@@ -63,11 +65,16 @@ struct ProfileView: View {
                 .padding(.top, -104)
             }
         }
+        .onAppear {
+            guard let user = userState.user else { return }
+            vm.user = user
+        }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView()
+            .environmentObject(UserStateViewModel())
     }
 }

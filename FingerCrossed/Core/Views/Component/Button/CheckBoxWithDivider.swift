@@ -8,20 +8,11 @@
 import SwiftUI
 
 struct CheckBoxWithDivider: View {
-    @State var items: [String] = [
-        "Open to all",
-        "American Indian",
-        "Black/African American",
-        "East Asian",
-        "Hipanic/Latino",
-        "Mid Eastern",
-        "Pacific Islander",
-        "South Asian",
-        "Southeast Asian",
-        "White/Caucasian"
-    ]
-    @State var selectedIdList: [String] = []
     
+    @State var items: [String] = []
+    
+    @State var selectedIdList: [String] = []
+        
     let callback: ([String]) -> ()
     
     private func checkBoxGroupCallback(
@@ -31,11 +22,22 @@ struct CheckBoxWithDivider: View {
             id == "Open to all"
         }
         
-        if id != "Open to all" {
+        let openToAll = id == "Open to all"
+        
+        if openToAll {
+            selectedIdList.removeAll()
+            if isAllSelected {
+                callback(selectedIdList)
+            } else {
+                for item in items {
+                    selectedIdList.append(item)
+                }
+                callback(selectedIdList)
+            }
+        } else {
             let hasItem: Bool = selectedIdList.contains(where: { selected in
                 selected == id
             })
-            
             if hasItem {
                 selectedIdList.removeAll(where: { item in
                     item == id
@@ -45,7 +47,6 @@ struct CheckBoxWithDivider: View {
                 selectedIdList.append(id)
                 callback(selectedIdList)
             }
-            
             if selectedIdList.count == items.count - 1 {
                 if isAllSelected {
                     selectedIdList.removeAll(where: { id in
@@ -63,23 +64,14 @@ struct CheckBoxWithDivider: View {
                 callback(selectedIdList)
             }
         }
-        else {
-            if isAllSelected {
-                selectedIdList.removeAll()
-                callback(selectedIdList)
-            } else {
-                selectedIdList.removeAll()
-                for item in items {
-                    selectedIdList.append(item)
-                }
-                callback(selectedIdList)
-            }
-        }
     }
     
     var body: some View {
         VStack(spacing: 16) {
-            ForEach(Array(items.enumerated()), id: \.element.self) { index, item in
+            ForEach(
+                Array(items.enumerated()),
+                id: \.element.self
+            ) { index, item in
                 SelectionButton(
                     id: item,
                     type: .checkbox,
@@ -101,7 +93,21 @@ struct CheckBoxWithDivider: View {
 
 struct CheckBoxWithDivider_Previews: PreviewProvider {
     static var previews: some View {
-        CheckBoxWithDivider { _ in}
-            .padding(.horizontal, 24)
+        CheckBoxWithDivider(
+            items: [
+                "Open to all",
+                "American Indian",
+                "Black/African American",
+                "East Asian",
+                "Hipanic/Latino",
+                "Mid Eastern",
+                "Pacific Islander",
+                "South Asian",
+                "Southeast Asian",
+                "White/Caucasian"
+            ],
+            callback: { _ in }
+        )
+        .padding(.horizontal, 24)
     }
 }

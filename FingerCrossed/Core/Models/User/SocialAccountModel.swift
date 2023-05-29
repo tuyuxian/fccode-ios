@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-struct SocialAccount {
+struct SocialAccount: Equatable {
     public var id = UUID()
     public var email: String
     public var platform: SocialAccountPlatform

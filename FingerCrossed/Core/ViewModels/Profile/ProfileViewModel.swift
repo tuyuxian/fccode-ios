@@ -22,9 +22,9 @@ class ProfileViewModel: ObservableObject, InputProtocol {
         // swiftlint: enable line_length
         longitude: 123.0,
         latitude: 123.0,
-        country: "",
-        administrativeArea: "USA",
-        voiceContentURL: "AZ",
+        country: "USA",
+        administrativeArea: "AZ",
+        voiceContentURL: "",
         googleConnect: false,
         facebookConnect: false,
         appleConnect: false,
@@ -72,13 +72,13 @@ class ProfileViewModel: ObservableObject, InputProtocol {
         ethnicity: []
     )
     
-    @Published var distance: String = ""
+    @Published var distance: Int = 0
     @Published var ethnicity: [Ethnicity] = []
-    @Published var goal: [String] = []
-    @Published var sexOrientation: [String] = []
+    @Published var goal: [Goal] = []
+    @Published var sexOrientation: [SexOrientation] = []
     @Published var ageFrom: Int = 18
     @Published var ageTo: Int = 100
-    @Published var nationality = [Nationality]()
+    @Published var nationality: [Nationality] = []
     
     // MARK: State Management
     @Published var currentPassword: String = ""

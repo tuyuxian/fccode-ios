@@ -32,9 +32,13 @@ class MediaRepository {
                     case 200:
                         continuation.resume(returning: data.getS3PresignedPutUrl.url)
                     case 401:
-                        continuation.resume(throwing: GraphQLError.customError(data.getS3PresignedPutUrl.message))
+                        continuation.resume(throwing: GraphQLError.customError(
+                            data.getS3PresignedPutUrl.message)
+                        )
                     default:
-                        continuation.resume(throwing: GraphQLError.customError(data.getS3PresignedPutUrl.message))
+                        continuation.resume(throwing: GraphQLError.customError(
+                            data.getS3PresignedPutUrl.message)
+                        )
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)

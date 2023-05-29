@@ -147,7 +147,7 @@ struct NationalitySearchBar: View {
                 cornerRadius: nationalityList.count >= 1
                 ? isDisplay && nationalityList.count == 1
                     ? 50
-                    : 16
+                    : 26
                 : 50
             )
             .stroke(Color.surface2, lineWidth: 1)
@@ -156,7 +156,7 @@ struct NationalitySearchBar: View {
                     cornerRadius: nationalityList.count >= 1
                     ? isDisplay && nationalityList.count == 1
                         ? 50
-                        : 16
+                        : 26
                     : 50
                 )
                 .fill(Color.white)

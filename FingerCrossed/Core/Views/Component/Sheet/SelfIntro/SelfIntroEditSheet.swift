@@ -40,22 +40,16 @@ struct SelfIntroEditSheet: View {
                     .frame(height: 34)
                     .multilineTextAlignment(.center)
                     .padding(.top, 30)
-                    .id(2)
                 
-                VStack(
-                    alignment: .trailing,
-                    spacing: 6
-                ) {
-                    CaptionInputBar(
-                        text: $text,
-                        hint: "Type your self introduction",
-                        defaultPresentLine: 10,
-                        lineLimit: 10,
-                        textLengthLimit: textLengthLimit
-                    )
-                    .onChange(of: text) { _ in
-                        isSatisfied = true
-                    }
+                CaptionInputBar(
+                    text: $text,
+                    hint: "Type your self introduction",
+                    defaultPresentLine: 10,
+                    lineLimit: 10,
+                    textLengthLimit: textLengthLimit
+                )
+                .onChange(of: text) { _ in
+                    isSatisfied = true
                 }
                 
                 PrimaryButton(
@@ -65,6 +59,7 @@ struct SelfIntroEditSheet: View {
                     isLoading: $isLoading
                 )
                 .padding(.top, 4) // 20 - 16(spacing)
+                .padding(.bottom, 16)
             }
             .padding(.horizontal, 24)
             .background(Color.white)

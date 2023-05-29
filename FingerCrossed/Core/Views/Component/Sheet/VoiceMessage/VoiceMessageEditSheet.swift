@@ -82,8 +82,6 @@ struct VoiceMessageEditSheet: View {
         isPlaying.toggle()
     }
     
-    
-    
     public func stopPlaying() {
         audioPlayer.pause()
         isPlaying.toggle()

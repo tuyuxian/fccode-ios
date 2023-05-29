@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-struct Goal {
+struct Goal: Equatable {
     public var id: UUID = UUID()
     public var type: GoalType
     

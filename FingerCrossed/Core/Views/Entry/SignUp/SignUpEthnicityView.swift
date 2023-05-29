@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUpEthnicityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-   
+    /// Ethnicity option list
     let ethnicityOptions: [String] = [
         "American Indian",
         "Black/African American",
@@ -85,11 +85,22 @@ struct SignUpEthnicityView: View {
                 }
                 
                 CheckBoxGroup(
+                    items: ethnicityOptions,
                     selectedIdList: Array(
                         vm.user.ethnicity.map { $0.type.getString() }
                     ),
-                    ethnicityList: $vm.user.ethnicity,
-                    callback: { _ in }
+                    callback: { list in
+                        vm.user.ethnicity.removeAll()
+                        for item in list {
+                            vm.user.ethnicity.append(
+                                Ethnicity(
+                                    type: EthnicityType.allCases.first(where: {
+                                        $0.getString() == item
+                                    }) ?? .ET1
+                                )
+                            )
+                        }
+                    }
                 )
                 .padding(.vertical, 20)
                 .onChange(of: vm.user.ethnicity) { _ in

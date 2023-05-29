@@ -25,7 +25,7 @@ struct SignUpBirthdayView: View {
     private func getSelectedDate() {
         let currentYear = Calendar.current.component(.year, from: Date())
         // swiftlint:disable line_length
-        vm.dateOfBirth = "\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))-\(toTwoDigit(index: vm.monthIndex))-\(toTwoDigit(index: vm.dayIndex))T00:00:00Z"
+        vm.user.dateOfBirth = "\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))-\(toTwoDigit(index: vm.monthIndex))-\(toTwoDigit(index: vm.dayIndex))T00:00:00Z"
         
         let selectedString = "0\(toTwoDigit(index: vm.dayIndex))/0\(toTwoDigit(index: vm.monthIndex))/\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))"
         // swiftlint:enable line_length

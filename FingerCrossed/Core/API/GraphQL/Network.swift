@@ -16,3 +16,10 @@ struct Network {
         return ApolloClient(url: url)
     }()
 }
+
+public enum GraphQLError: Error {
+    case userIsNil
+    case tokenIsNil
+    case unknown
+    case customError(String)
+}

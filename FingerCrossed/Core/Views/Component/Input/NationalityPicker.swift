@@ -8,20 +8,24 @@
 import SwiftUI
 
 struct NationalityPicker: View {
-    @State var nationalityViewModel: NationalityViewModel = NationalityViewModel()
-    @ObservedObject var nationalitySelectionList: NationalitySelectionList
+    
+    @StateObject var vm: NationalityViewModel = NationalityViewModel()
+    
+    @Binding var nationalityList: [Nationality]
+
     @State var isSheetPresented = false
+    
     @State var isPreference: Bool
+    
     @State var countryName = ""
     
     var body: some View {
-
         ZStack {
             Color.white
                 .frame(height: 56)
                 .cornerRadius(50)
             
-            Image(systemName: "magnifyingglass")
+            Image("search")
                 .foregroundColor(Color.text)
                 .frame(
                     maxWidth: .infinity,
@@ -29,9 +33,10 @@ struct NationalityPicker: View {
                 )
                 .padding(.trailing, 16)
             
-            if nationalitySelectionList.nationalitySelections.count != 0 {
+            if nationalityList.count != 0 {
                 NationalitySearchBar(
-                    nationalitySelectionList: nationalitySelectionList,
+                    vm: vm,
+                    nationalityList: $nationalityList,
                     countryName: $countryName,
                     isDisplay: true
                 )
@@ -44,7 +49,7 @@ struct NationalityPicker: View {
                         alignment: .leading
                     )
                     .padding(.leading, 16)
-                    .frame(height: 54)
+                    .frame(height: 56)
                     .overlay(
                         RoundedRectangle(cornerRadius: 50)
                             .stroke(
@@ -59,11 +64,11 @@ struct NationalityPicker: View {
             isSheetPresented.toggle()
         }
         .sheet(isPresented: $isSheetPresented) {
-            NationalityView(
-                nationalitySelectionList: nationalitySelectionList,
+            NationalityEditSheet(
+                vm: vm,
+                nationalityList: $nationalityList,
                 isPreference: $isPreference
             )
-            .presentationDetents([.large])
         }
     }
 }
@@ -71,11 +76,14 @@ struct NationalityPicker: View {
 struct NationalityPicker_Previews: PreviewProvider {
     static var previews: some View {
         NationalityPicker(
-            nationalitySelectionList:
-                NationalitySelectionList(
-                    nationalitySelections: [Nationality]()
-                ),
+            nationalityList: .constant([
+                Nationality(
+                    name: "Taiwan",
+                    code: "Tw"
+                )
+            ]),
             isPreference: false
         )
+        .padding(.horizontal, 24)
     }
 }

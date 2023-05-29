@@ -13,21 +13,25 @@ struct NationalityItem: View {
     
     var isSelected: Bool = false
     
-    init(nationality: Nationality, isSelected: Bool) {
+    init(
+        nationality: Nationality,
+        isSelected: Bool
+    ) {
         self.nationality = nationality
         self.isSelected = isSelected
     }
     
     var body: some View {
         VStack {
-            HStack(spacing: 6.0) {
+            HStack(
+                alignment: .center,
+                spacing: 6
+            ) {
                 Text(nationality.name)
                     .fontTemplate(.pMedium)
                     .foregroundColor(Color.text)
-                    .padding(.vertical, 2)
                     .frame(
                         maxWidth: .infinity,
-                        maxHeight: .infinity,
                         alignment: .leading
                     )
                 isSelected
@@ -37,14 +41,11 @@ struct NationalityItem: View {
                     .foregroundColor(Color.gold)
                     .frame(
                         width: 24,
-                        height: 24,
-                        alignment: .center
+                        height: 24
                     )
                 : nil
             }
         }
-        .padding(.horizontal, 40)
-        .padding(.vertical, 10)
     }
 }
 
@@ -57,5 +58,6 @@ struct NationalityItem_Previews: PreviewProvider {
             ),
             isSelected: true
         )
+        .padding(.horizontal, 24)
     }
 }

@@ -26,7 +26,32 @@ mutation CreateUser($input: CreateUserInput!) {
         caption
         contentURL
       }
+      citizen {
+        id
+        countryName
+      }
+      ethnicity {
+        id
+        ethnicityType
+      }
+      socialAccount {
+        email
+        platform
+      }
+      goal {
+        id
+        goalType
+      }
     }
     token
+  }
+}
+
+mutation ResetPassword($email: String!, $password: String!) {
+  resetPassword(email: $email, password: $password) {
+    status
+    statusCode
+    message
+    valid
   }
 }

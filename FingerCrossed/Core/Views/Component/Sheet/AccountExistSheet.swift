@@ -1,65 +1,33 @@
 //
-//  EmailView.swift
+//  AccountExistSheet.swift
 //  FingerCrossed
 //
-//  Created by Lawrence on 3/31/23.
-//  Modified by Sam on 5/5/23.
+//  Created by Lawrence on 6/1/23.
 //
 
 import SwiftUI
-import AuthenticationServices
 import GraphQLAPI
 
-struct EmailView: View {
+struct AccountExistSheet: View {
+    @Environment(\.presentationMode) private var presentationMode
     /// Global banner
     @EnvironmentObject var bm: BannerManager
     /// Observed user state view model
     @ObservedObject var userState: UserStateViewModel
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for email validation
-    @State private var isEmailValid: Bool = true
-    /// Flag for loading state
+    
+    @State private var isSatisfied: Bool = false
+    
     @State private var isLoading: Bool = false
-    /// Flag for accountExist Sheet
-    @State private var isPresented: Bool = false
-    /// Handler for button on submit
+    
+    @State private var isSSO: Bool = false
+    
     private func buttonOnTap() {
-        /// if account exists
-        // isPresented.toggle
-        
-        isLoading.toggle()
-        self.endTextEditing()
-        guard vm.isEmailValid(str: vm.user.email) else {
-            isLoading.toggle()
-            isEmailValid = false
-            return
-        }
-        isEmailValid = true
-        Task {
-            do {
-                let exist = try await EntryRepository.checkEmail(
-                    email: vm.user.email
-                )
-                vm.user.socialAccount.append(
-                    SocialAccount(
-                        email: vm.user.email,
-                        platform: .FINGERCROSSED
-                    )
-                )
-                isLoading.toggle()
-                vm.transition = .forward
-                vm.switchView = exist ? .password : .account
-            } catch {
-                print(error.localizedDescription)
-                isLoading.toggle()
-                bm.pop(
-                    title: "Something went wrong.",
-                    type: .error
-                )
-            }
-        }
+        // TODO(Sam): update to server before view dismiss
+        presentationMode.wrappedValue.dismiss()
     }
+    
     /// Handler for google sso
     private func googleOnTap() {
         self.endTextEditing()
@@ -161,66 +129,60 @@ struct EmailView: View {
     var body: some View {
         ZStack(
             alignment: Alignment(
-                horizontal: .center,
+                horizontal: .leading,
                 vertical: .top
             )
         ) {
-            Color.background.ignoresSafeArea(.all)
+            Color.white.edgesIgnoringSafeArea(.all)
             
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    EntryLogo()
-                        .padding(.top, 5)
-                        .padding(.bottom, 55)
+            VStack(spacing: 0) {
+                ZStack {
+                    Text("Account Exists")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 34)
+                        .multilineTextAlignment(.center)
                     
-                    LazyVStack(spacing: 30) {
-                        Text("Find Your\nPerfect match")
-                            .fontTemplate(.bigBoldTitle)
-                            .foregroundColor(Color.text)
-                            .frame(
-                                maxWidth: .infinity,
-                                alignment: .leading
-                            )
-                            .frame(height: 100)
-                        
-                        LazyVStack(
-                            alignment: .leading,
-                            spacing: 30
-                        ) {
-                            PrimaryInputBar(
-                                input: .email,
-                                value: $vm.user.email,
-                                hint: "Log in or sign up with email",
-                                isValid: $isEmailValid
-                            )
-                            .onChange(of: vm.user.email) { val in
-                                vm.isEmailSatisfied = val.count > 0
-                            }
-                            
-                            !isEmailValid
-                            ? InputHelper(
-                                isSatisfied: .constant(false),
-                                label: "Please enter a valid email address",
-                                type: .error
-                            )
-                            .padding(.leading, 16)
-                            .padding(.vertical, -20)
-                            : nil
-                            
-                            PrimaryButton(
-                                label: "Continue",
-                                action: buttonOnTap,
-                                isTappable: $vm.isEmailSatisfied,
-                                isLoading: $isLoading
-                            )
-                        }
-                        
+                    Button {
+                        //
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Text("Close")
+                            .fontTemplate(.pMedium)
+                            .foregroundColor(Color.gold)
+                    }
+                    .frame(height: 34)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .padding(.top, 30)
+                
+                Text("Looks like you already have an account\nPlease log in instead")
+                    .fontTemplate(.noteMedium)
+                    .foregroundColor(Color.text)
+                    .frame(height: 32)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 18)
+                
+                VStack(
+                spacing: 20
+                ) {
+                    Image("LandingBG")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 120)
+                    .clipShape(RoundedRectangle(cornerRadius: 100))
+                    
+                    Text("Testing123@gamil.com")
+                        .accentColor(Color.text)
+                        .fontTemplate(.pMedium)
+                    
+                    if isSSO {
                         HStack(spacing: 10) {
                             LazyVStack {
                                 Divider()
                             }
                             
-                            Text("Or")
+                            Text("Continue with")
                                 .fontTemplate(.pMedium)
                                 .foregroundColor(Color.text)
                             
@@ -229,7 +191,7 @@ struct EmailView: View {
                             }
                         }
                         
-                        LazyHStack(
+                        HStack(
                             alignment: .center,
                             spacing: 20
                         ) {
@@ -248,25 +210,35 @@ struct EmailView: View {
                                 }
                             )
                         }
+                        .padding(.bottom, 10)
+                    } else {
+                        PrimaryInputBar(
+                            input: .password,
+                            value: .constant("Value"),
+                            isValid: .constant(true)
+                        )
+                        
+                        PrimaryButton(
+                            label: "Continue",
+                            isTappable: $isSatisfied,
+                            isLoading: $isLoading
+                        )
+                        .padding(.bottom, 10)
                     }
                 }
-                .padding(.horizontal, 24)
             }
-            .sheet(isPresented: $isPresented) {
-                AccountExistSheet(
-                    userState: userState,
-                    vm: vm
-                )
-            }
-            .scrollDisabled(true)
-            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .padding(.horizontal, 24)
+            .background(Color.white)
+            .presentationDetents([.fraction(0.55)])
+            .presentationDragIndicator(.visible)
+            .scrollDismissesKeyboard(.automatic)
         }
     }
 }
 
-struct EmailView_Previews: PreviewProvider {
+struct AccountExistSheet_Previews: PreviewProvider {
     static var previews: some View {
-        EmailView(
+        AccountExistSheet(
             userState: UserStateViewModel(),
             vm: EntryViewModel()
         )

@@ -19,9 +19,9 @@ struct NationalityEditSheet: View {
     
     @Binding var isPreference: Bool
         
-    @State var isAllSelected: Bool = false
+//    @State var isAllSelected: Bool = false
     
-    var openCountryModel = Nationality(name: "Open to all", code: "OTA")
+//    var openCountryModel = Nationality(name: "Open to all", code: "OTA")
     
 //    // MARK: init
 //    init(
@@ -62,7 +62,8 @@ struct NationalityEditSheet: View {
             NationalitySearchBar(
                 vm: vm,
                 nationalityList: $nationalityList,
-                countryName: $countryName
+                countryName: $countryName,
+                isSheet: true
             )
             .padding(.vertical, 20)
             
@@ -76,16 +77,24 @@ struct NationalityEditSheet: View {
     var countriesListView: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-                isPreference
-                ? NationalityItem(
-                    nationality: openCountryModel,
-                    isSelected: isAllSelected
-                )
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    openToAll()
-                }
-                : nil
+//                isPreference
+//                ? NationalityItem(
+//                    nationality: openCountryModel,
+//                    isSelected: isAllSelected
+//                )
+//                .onAppear {
+//                    isAllSelected = true
+//                    nationalityList.removeAll()
+//                    nationalityList.append(openCountryModel)
+//                    for country in vm.nationalities {
+//                        nationalityList.append(country)
+//                    }
+//                }
+//                .contentShape(Rectangle())
+//                .onTapGesture {
+//                    openToAll()
+//                }
+//                : nil
                 
                 ForEach(
                     vm.nationalities.filter { nationality -> Bool in
@@ -102,14 +111,14 @@ struct NationalityEditSheet: View {
                     }
                 }
             }
-            .onChange(of: nationalityList) { _ in
-                if nationalityList.contains(where: { $0.name == "Open to all" }) &&
-                    nationalityList.count - 1 == vm.nationalities.count {
-                    isAllSelected = true
-                } else {
-                    isAllSelected = false
-                }
-            }
+//            .onChange(of: nationalityList) { _ in
+//                if nationalityList.contains(where: { $0.name == "Open to all" }) &&
+//                    nationalityList.count - 1 == vm.nationalities.count {
+//                    isAllSelected = true
+//                } else {
+//                    isAllSelected = false
+//                }
+//            }
         }
     }
 
@@ -122,25 +131,25 @@ struct NationalityEditSheet: View {
         // swiftlint: enable line_length
     }
 
-    private func openToAll() {
-        let allSelected = nationalityList.contains(where: { item in
-            item.name == "Open to all"
-        })
-        
-        print("isAllselected: \(allSelected)")
-        
-        if allSelected {
-            isAllSelected = false
-            nationalityList.removeAll()
-        } else {
-            isAllSelected = true
-            nationalityList.removeAll()
-            nationalityList.append(openCountryModel)
-            for country in vm.nationalities {
-                nationalityList.append(country)
-            }
-        }
-    }
+//    private func openToAll() {
+//        let allSelected = nationalityList.contains(where: { item in
+//            item.name == "Open to all"
+//        })
+//
+//        print("isAllselected: \(allSelected)")
+//
+//        if allSelected {
+//            isAllSelected = false
+//            nationalityList.removeAll()
+//        } else {
+//            isAllSelected = true
+//            nationalityList.removeAll()
+//            nationalityList.append(openCountryModel)
+//            for country in vm.nationalities {
+//                nationalityList.append(country)
+//            }
+//        }
+//    }
     
     private func isSelected(
         selected: Nationality
@@ -160,22 +169,22 @@ struct NationalityEditSheet: View {
             }
         }
         else {
-            if isPreference {
-                nationalityList.append(selectedCountry)
-            } else {
+//            if isPreference {
+//                nationalityList.append(selectedCountry)
+//            } else {
                 nationalityList.count >= 3
                 ? nil
                 : nationalityList.append(selectedCountry)
-            }
+//            }
         }
         
-        if selectedCountry.name != "Open to all" {
-            if nationalityList.count == nationalityList.count - 1 {
-                isAllSelected = true
-            } else {
-                isAllSelected = false
-            }
-        }
+//        if isPreference && selectedCountry.name != "Open to all" {
+//            if nationalityList.count > 3 {
+//                nationalityList.removeAll()
+//            } else {
+//                isAllSelected = false
+//            }
+//        }
 
         countryName = ""
     }

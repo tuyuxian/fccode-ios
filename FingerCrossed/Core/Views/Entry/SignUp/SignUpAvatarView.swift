@@ -7,6 +7,7 @@
 
 import SwiftUI
 import GraphQLAPI
+import Photos
 
 struct SignUpAvatarView: View {
     /// Global banner
@@ -45,14 +46,32 @@ struct SignUpAvatarView: View {
     private func photoLibraryOnTap() {
         switch photoLibraryPermissionManager.permissionStatus {
         case .notDetermined:
-            photoLibraryPermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showImagePicker = true
+//            photoLibraryPermissionManager.requestPermission { granted, _ in
+//                guard granted else { return }
+//                showImagePicker = true
+//            }
+            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
+                if photoAuthStatus.isAllowed {
+                    showImagePicker = true
+                }
+            }
+        case .limited:
+            DispatchQueue.main.async {
+                if let window =
+                    UIApplication.shared.windows.first {
+                    PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: window.rootViewController!)
+                }
+            }
+        case .authorized:
+            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
+                if photoAuthStatus.isAllowed {
+                    showImagePicker = true
+                }
             }
         case .denied:
             showPhotoLibraryAlert.toggle()
         default:
-            showImagePicker = true
+            showImagePicker = false
         }
     }
     /// Handler for button on tap
@@ -240,16 +259,21 @@ struct SignUpAvatarView: View {
                                         .frame(width: 36, height: 36)
                                 )
                         }
-                        .sheet(
-                            isPresented: $showImagePicker,
-                            content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
-                                )
-                            }
-                        )
+//                        .sheet(
+//                            isPresented: $showImagePicker,
+//                            content: {
+//                                ImagePicker(
+//                                    sourceType: .photoLibrary,
+//                                    selectedImage: $vm.selectedImage,
+//                                    imageData: $vm.selectedImageData
+//                                )
+//                            }
+//                        )
+                        .sheet(isPresented: $showImagePicker) {
+                            PhotoPicker(selectedImage: $vm.selectedImage,
+                                        imageData: $vm.selectedImageData,
+                                        isPresented: $showImagePicker)
+                        }
                         .alert(isPresented: $showPhotoLibraryAlert) {
                             Alert(
                                 title:

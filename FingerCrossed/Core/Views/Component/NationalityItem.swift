@@ -34,6 +34,7 @@ struct NationalityItem: View {
                         maxWidth: .infinity,
                         alignment: .leading
                     )
+                    .frame(height: 24)
                 isSelected
                 ? Image("CheckCircle")
                     .resizable()

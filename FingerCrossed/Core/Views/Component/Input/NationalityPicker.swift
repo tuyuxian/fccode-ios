@@ -38,7 +38,8 @@ struct NationalityPicker: View {
                     vm: vm,
                     nationalityList: $nationalityList,
                     countryName: $countryName,
-                    isDisplay: true
+                    isDisplay: true,
+                    isSheet: false
                 )
             } else {
                 Text("Search")

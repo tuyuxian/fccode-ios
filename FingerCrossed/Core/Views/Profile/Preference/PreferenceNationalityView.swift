@@ -18,8 +18,7 @@ struct PreferenceNationalityView: View {
     @State private var showSaveButton: Bool = false
     /// Nationality list
     @State var nationalityList: [Nationality] = []
-    
-    // TODO(Lawerence): apply new design
+
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
@@ -29,6 +28,12 @@ struct PreferenceNationalityView: View {
         ) {
             Box {
                 VStack {
+                    Text("Pick your favorite top three or \n leave it blank to connect people worldwide!")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fontTemplate(.h4Medium)
+                        .foregroundColor(Color.textHelper)
+                        .padding(.bottom, 30)
+                    
                     NationalityPicker(
                         nationalityList: $nationalityList,
                         isPreference: true

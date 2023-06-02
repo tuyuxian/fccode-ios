@@ -80,18 +80,22 @@ struct ResetPasswordEmailCheckView: View {
                     alignment: .center,
                     spacing: 0
                 ) {
-                    Text("Verification code\nwill be sent to\n \(vm.user.email).")
+                    Text("Verification code\nwill be sent to\n \(vm.user.email)")
                         .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
+                    
+                    Spacer()
                     
                     LottieView(
                         lottieFile: "email.json"
                     )
                     .frame(
-                        width: 300,
-                        height: 300
+                        width: 240,
+                        height: 240
                     )
+                    
+                    Spacer()
                 }
                 .frame(maxWidth: .infinity)
                 

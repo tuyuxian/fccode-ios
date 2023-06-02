@@ -19,6 +19,8 @@ struct NationalitySearchBar: View {
         
     @State var isDisplay: Bool = false
     
+    @State var isSheet: Bool
+    
     @State var test: String = ""
     
     var body: some View {
@@ -85,19 +87,40 @@ struct NationalitySearchBar: View {
                         ? nil
                         : isDisplay ? nil : Divider().overlay(Color.surface2)
                         
-                        VStack(
-                            alignment: .leading,
-                            spacing: 10
-                        ) {
-                            ForEach(nationalityList) { selected in
-                                NationalityTag(
-                                    nationality: selected,
-                                    action: {
-                                        nationalityList.removeAll(
-                                            where: { $0 == selected }
+                        if isSheet {
+                            ScrollView(.horizontal) {
+                                HStack(
+                                    alignment: .center,
+                                    spacing: 10
+                                ) {
+                                    ForEach(nationalityList) { selected in
+                                        NationalityTag(
+                                            nationality: selected,
+                                            action: {
+                                                nationalityList.removeAll(
+                                                    where: { $0 == selected }
+                                                )
+                                            }
                                         )
                                     }
-                                )
+                                }
+                            }
+                        } else {
+                            
+                            VStack(
+                                alignment: .leading,
+                                spacing: 10
+                            ) {
+                                ForEach(nationalityList) { selected in
+                                    NationalityTag(
+                                        nationality: selected,
+                                        action: {
+                                            nationalityList.removeAll(
+                                                where: { $0 == selected }
+                                            )
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -127,19 +150,27 @@ struct NationalitySearchBar: View {
                 }
             }
             
-            Image("Search")
-                .foregroundColor(Color.text)
-                .frame(height: 36)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing
+            HStack {
+                Spacer()
+                
+                Image("Search")
+                    .foregroundColor(Color.text)
+                    .frame(width: 24, height: 36)
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.white.opacity(0), Color.white]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
                 )
+            }
         }
         .frame(
             height:
                 flexibleHeight(
                     count: nationalityList.count,
-                    isDisplay: isDisplay
+                    isDisplay: isDisplay,
+                    isSheet: isSheet
                 )
         )
         .padding(.horizontal, 16)
@@ -165,15 +196,25 @@ struct NationalitySearchBar: View {
         )
     }
     
-    private func flexibleHeight (count: Int, isDisplay: Bool) -> CGFloat {
-        if count >= 3 && count < 200 {
-            return 160.0
-        } else if count >= 2 && count < 200 {
-            return isDisplay ? 108.0 : 160.0
-        } else if count >= 1 && count < 200 {
-            return isDisplay ? 56.0 : 108.0
+    private func flexibleHeight (count: Int, isDisplay: Bool, isSheet: Bool) -> CGFloat {
+        if isSheet {
+            if count >= 3 {
+                return 56.0
+            } else if count >= 1 {
+                return 108.0
+            } else {
+                return 56.0
+            }
         } else {
-            return 54.0
+            if count >= 3 && count < 200 {
+                return 160.0
+            } else if count >= 2 && count < 200 {
+                return isDisplay ? 108.0 : 160.0
+            } else if count >= 1 && count < 200 {
+                return isDisplay ? 56.0 : 108.0
+            } else {
+                return 56.0
+            }
         }
     }
 }
@@ -184,7 +225,8 @@ struct NationalitySearchBar_Previews: PreviewProvider {
             NationalitySearchBar(
                 vm: NationalityViewModel(),
                 nationalityList: .constant([]),
-                countryName: .constant("Taiwan")
+                countryName: .constant("Taiwan"),
+                isSheet: true
             )
             NationalitySearchBar(
                 vm: NationalityViewModel(),
@@ -194,7 +236,8 @@ struct NationalitySearchBar_Previews: PreviewProvider {
                         code: "TW"
                     )
                 ]),
-                countryName: .constant("")
+                countryName: .constant(""),
+                isSheet: true
             )
         }
         .padding(.horizontal, 24)

@@ -28,7 +28,7 @@ class LocationDataManager:
         switch manager.authorizationStatus {
         case .authorizedWhenInUse:
             // Insert code here of what should happen when Location services are authorized
-            locationManager.requestLocation()
+            locationManager.startUpdatingLocation()
         case .restricted, .denied:
             break
         case .notDetermined:

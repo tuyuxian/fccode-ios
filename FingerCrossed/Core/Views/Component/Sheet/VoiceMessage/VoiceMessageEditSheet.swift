@@ -24,6 +24,14 @@ struct VoiceMessageEditSheet: View {
     @State var isPlaying: Bool = false
     
     @State var hasVoiceMessage: Bool = false
+    
+    @State var voiceMessageDuration: Int = 0
+    
+    @State var timeRemaining: Int = 59
+    
+    @State var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    let numberFormatter = NumberFormatter()
 
     private func buttonOnTap() {
         Task {
@@ -39,7 +47,7 @@ struct VoiceMessageEditSheet: View {
         }
     }
     
-    public func startRecording() {
+    private func startRecording() {
         let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
         
         do {
@@ -55,36 +63,82 @@ struct VoiceMessageEditSheet: View {
             ).first
             let fileName = documentUrl!.appendingPathComponent("\(UUID()).m4a")
             let settings = [
-                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 12000,
-                AVNumberOfChannelsKey: 1,
-                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+                AVFormatIDKey: Int(kAudioFormatAppleLossless),
+                AVSampleRateKey: 44100,
+                AVNumberOfChannelsKey: 2,
+                AVEncoderAudioQualityKey: AVAudioQuality.max.rawValue
             ]
+//            let settings = [
+//                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+//                AVSampleRateKey: 12000,
+//                AVNumberOfChannelsKey: 1,
+//                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+//            ]
             audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
             audioRecorder.record()
+            startTimer()
             isRecording.toggle()
         } catch {
             print(error.localizedDescription)
         }
     }
     
-    public func stopRecording() {
+    private func stopRecording() async {
         audioRecorder.stop()
+        stopTimer()
         isRecording.toggle()
         hasVoiceMessage = true
-    }
-    
-    public func startPlaying() {
+        
         let playerItem = AVPlayerItem(url: audioRecorder.url)
         audioPlayer = AVPlayer(playerItem: playerItem)
         
+        do {
+            let duration = try await playerItem.asset.load(.duration)
+            numberFormatter.maximumFractionDigits = 0
+            numberFormatter.minimumIntegerDigits = 2
+            
+            voiceMessageDuration = Int(numberFormatter.string(from: ceil(CMTimeGetSeconds(duration)) as NSNumber)!)!
+            
+            timeRemaining = voiceMessageDuration
+        } catch {
+            print("durationError: \(error)")
+        }
+    }
+    
+    private func startPlaying() {
+        let playerItem = AVPlayerItem(url: audioRecorder.url)
+        audioPlayer = AVPlayer(playerItem: playerItem)
+
+        audioPlayer.volume = 500
         audioPlayer.play()
+        startTimer()
         isPlaying.toggle()
     }
     
-    public func stopPlaying() {
+    private func stopPlaying() {
         audioPlayer.pause()
+        timeRemaining = voiceMessageDuration
+        stopTimer()
         isPlaying.toggle()
+    }
+    
+    private func removeRecording() {
+        do {
+            try FileManager.default.removeItem(at: audioRecorder.url)
+            timeRemaining = 59
+        } catch {
+            print("Can't delete")
+        }
+    }
+    
+    private func startTimer() {
+        self.timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+        print("startTimer")
+    }
+    
+    private func stopTimer() {
+        self.timer.upstream.connect().cancel()
+        print("stopTimer")
     }
     
     var body: some View {
@@ -97,87 +151,118 @@ struct VoiceMessageEditSheet: View {
             Color.white.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 20) {
+                ZStack {
+                    Text("Voice Message")
+                         .fontTemplate(.h2Medium)
+                         .foregroundColor(Color.text)
+                    
+                    Button {
+                        buttonOnTap()
+                    } label: {
+                        Text("Save")
+                            .foregroundColor(Color.gold)
+                            .fontTemplate(.pMedium)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                .padding(.top, 30)
                 
-                Text("Voice Message")
-                     .fontTemplate(.h2Medium)
-                     .foregroundColor(Color.text)
-                     .padding(.top, 30)
-                
-                 Text("01:00")
+                Text(hasVoiceMessage || isRecording ? "00:\(numberFormatter.string(from: timeRemaining as NSNumber)!)" : "01:00")
                      .fontTemplate(.h3Bold)
                      .foregroundColor(Color.surface1)
+                     .onAppear {
+                         numberFormatter.minimumIntegerDigits = 2
+                         numberFormatter.maximumFractionDigits = 0
+                         stopTimer()
+                     }
                 
-                Spacer()
+//                Spacer()
                 
                 if hasVoiceMessage {
-                    HStack(
-                         alignment: .center,
-                         spacing: 16
-                     ) {
-                         Button {
-                             isPlaying
-                             ? stopPlaying()
-                             : startPlaying()
-                         } label: {
-                             Image(isPlaying ? "Pause" : "Play")
-                                 .renderingMode(.template)
-                                 .resizable()
-                                 .foregroundColor(Color.white)
-                                 .frame(width: 18, height: 18)
-                                 .background(
-                                     Circle()
-                                         .fill(Color.yellow100)
-                                         .frame(width: 50, height: 50)
-                                 )
-                         }
-                        
-                         VStack {
-                             LottieView(lottieFile: "soundWave")
-                                 .frame(height: 100)
-                         }
-                         .frame(maxWidth: .infinity, alignment: .center)
+                     VStack {
+                         LottieView(lottieFile: "soundWave")
+                             .frame(height: 133)
                      }
-                     .padding(.leading, 16)
+                     .frame(maxWidth: .infinity, alignment: .center)
                 } else {
-                    LottieView(lottieFile: "soundWave")
-                        .frame(height: 100)
-                        .padding(.bottom, 20)
+                    if isRecording {
+                        VStack {
+                            LottieView(lottieFile: "soundWave")
+                                .frame(height: 133)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        Text("Press to Record")
+                            .foregroundColor(Color.text)
+                            .fontTemplate(.h2Medium)
+                            .padding(.top, 56)
+                            .padding(.bottom, 43)
+                    }
                 }
                 
-                Spacer()
+//                Spacer()
                 
-                if hasVoiceMessage {
-                    PrimaryButton(
-                        label: "Save",
-                        action: buttonOnTap,
-                        isTappable: $isSatisfied,
-                        isLoading: $isLoading
-                    )
-                } else {
-                    Button {
-                        isRecording
+                Button {
+                    hasVoiceMessage
+                    ?
+                    isPlaying
+                    ?
+                    Task {
+                        stopPlaying()
+                    }
+                    :
+                    Task {
+                        startPlaying()
+                    }
+                    :
+                    Task {
+                        await isRecording
                         ? stopRecording()
                         : startRecording()
-                     } label: {
-                         Image("Mic")
-                             .renderingMode(.template)
-                             .resizable()
-                             .frame(width: 38.4, height: 38.4)
-                             .foregroundColor(Color.white)
-                             .background(
-                                 Circle()
-                                     .fill(Color.yellow100)
-                                     .frame(width: 80, height: 80)
-                             )
-                     }
-                     .padding(.top, 20.8)
-                     .padding(.bottom, 62)
+                    }
+                    
+                 } label: {
+                     Image(hasVoiceMessage ? isPlaying ? "Pause" : "Play" : isRecording ? "Stop" : "Mic")
+                         .renderingMode(.template)
+                         .resizable()
+                         .frame(width: 33.6, height: 33.6)
+                         .foregroundColor(Color.white)
+                         .background(
+                             Circle()
+                                 .fill(Color.yellow100)
+                                 .frame(width: 70, height: 70)
+                         )
+                 }
+                 .padding(.top, 18.2)
+                 .padding(.bottom, hasVoiceMessage ? 22.2 : 83.2)
+
+                hasVoiceMessage ?
+                Button {
+                    // remove record file
+                    removeRecording()
+                    hasVoiceMessage.toggle()
+                } label: {
+                    Text("Re-record")
+                        .foregroundColor(Color.text)
+                        .fontTemplate(.noteMedium)
+                        .underline()
                 }
+                .padding(.bottom, 25)
+                : nil
+
             }
             .padding(.horizontal, 24)
             .background(Color.white)
             .presentationDetents([.fraction(0.55)])
             .presentationDragIndicator(.visible)
+        }
+        .onReceive(timer) { _ in
+            if timeRemaining > 0 {
+                timeRemaining -= 1
+            } else {
+                stopTimer()
+                stopPlaying()
+            }
         }
     }
 }

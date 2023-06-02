@@ -84,7 +84,7 @@ struct CandidateView: View {
 //                            .frame(width: 30, height: 30)
 //                    }
 //                    .buttonStyle(IconButtonWithBackground(size: 50, buttonColor: Color.text.opacity(0.4)))
-                    
+//
 //                    Button {
 //                        print("dislike")
 //                        isDisliked.toggle()
@@ -147,6 +147,7 @@ struct CandidateView: View {
                         .padding(.bottom, 12)
                         
                     }
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         print("\(isSheetPresented)")
                         isSheetPresented.toggle()

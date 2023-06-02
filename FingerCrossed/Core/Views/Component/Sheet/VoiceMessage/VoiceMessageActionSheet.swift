@@ -13,6 +13,8 @@ struct VoiceMessageActionSheet: View {
     @State var showEditSheet: Bool = false
     
     @State var showAlert: Bool = false
+    
+    @State var hasVoiceMessage: Bool = false
         
     let audioPermissionManager = AudioPermissionManager()
     
@@ -62,10 +64,10 @@ struct VoiceMessageActionSheet: View {
                     buttonOnTap()
                 } label: {
                     HStack(spacing: 20) {
-                        Image("Edit")
+                        Image(hasVoiceMessage ? "Edit": "Mic")
                             .resizable()
                             .frame(width: 24, height: 24)
-                        Text("Edit Voice Message")
+                        Text(hasVoiceMessage ? "Edit Voice Message" : "Record Voice Message")
                             .fontTemplate(.h3Medium)
                             .foregroundColor(Color.text)
                         Spacer()

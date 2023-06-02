@@ -73,9 +73,9 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     )
     
     @Published var distance: Int = 0
-    @Published var ethnicity: [Ethnicity] = []
-    @Published var goal: [Goal] = []
-    @Published var sexOrientation: [SexOrientation] = []
+    @Published var ethnicity: [Ethnicity] = [Ethnicity(type: .ET0)]
+    @Published var goal: [Goal] = [Goal(type: .GT0)]
+    @Published var sexOrientation: [SexOrientation] = [SexOrientation(type: .SO1)]
     @Published var ageFrom: Int = 18
     @Published var ageTo: Int = 100
     @Published var nationality: [Nationality] = []

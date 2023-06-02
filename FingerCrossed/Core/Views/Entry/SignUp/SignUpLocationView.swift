@@ -41,19 +41,26 @@ struct SignUpLocationView: View {
         let locationDataManager = LocationDataManager()
         Task {
             do {
-                try await Task.sleep(nanoseconds: 500_000_000)
+                try await Task.sleep(nanoseconds: 300_000_000)
                 vm.user.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0
                 vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
                 vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
                 vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
-                let (user, token) = try await EntryRepository.createUser(
-                    input: vm.user.getGraphQLInput()
-                )
+                
+                print("latitude: \(locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0)")
+                print("longitude: \(locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0)")
+                print("country: \(locationDataManager.currentPlacemark?.country ?? "")")
+                
                 isLoading.toggle()
-                userState.user = user
-                userState.token = token
-                userState.isLogin = true
-                userState.viewState = .main
+                
+//                let (user, token) = try await EntryRepository.createUser(
+//                    input: vm.user.getGraphQLInput()
+//                )
+//                isLoading.toggle()
+//                userState.user = user
+//                userState.token = token
+//                userState.isLogin = true
+//                userState.viewState = .main
             } catch {
                 print(error.localizedDescription)
             }

@@ -1,4 +1,12 @@
 extend type Mutation {
-  createSocialAccount(input: CreateSocialAccountInput!): SocialAccount
-  updateSocialAccount(id: ID!, input: UpdateSocialAccountInput!): SocialAccount!
+  createSocialAccount(
+    userId: ID!
+    input: CreateSocialAccountInput!
+  ): CRUDResponse!
+  updateSocialAccount(
+    userId: ID!
+    socialAccountId: ID!
+    input: UpdateSocialAccountInput!
+  ): CRUDResponse!
+  deleteSocialAccount(userId: ID!, socialAccountId: ID!): CRUDResponse!
 }

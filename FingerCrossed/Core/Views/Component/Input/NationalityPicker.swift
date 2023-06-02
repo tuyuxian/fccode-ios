@@ -50,6 +50,7 @@ struct NationalityPicker: View {
                         alignment: .leading
                     )
                     .padding(.leading, 16)
+                    .padding(.trailing, 40)
                     .frame(height: 56)
                     .overlay(
                         RoundedRectangle(cornerRadius: 50)
@@ -76,15 +77,21 @@ struct NationalityPicker: View {
 
 struct NationalityPicker_Previews: PreviewProvider {
     static var previews: some View {
-        NationalityPicker(
-            nationalityList: .constant([
-                Nationality(
-                    name: "Taiwan",
-                    code: "Tw"
-                )
-            ]),
-            isPreference: false
-        )
+        VStack {
+            NationalityPicker(
+                nationalityList: .constant([]),
+                isPreference: false
+            )
+            NationalityPicker(
+                nationalityList: .constant([
+                    Nationality(
+                        name: "Taiwan",
+                        code: "Tw"
+                    )
+                ]),
+                isPreference: false
+            )
+        }
         .padding(.horizontal, 24)
     }
 }

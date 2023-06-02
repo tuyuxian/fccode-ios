@@ -41,12 +41,11 @@ public class CreateUserMutation: GraphQLMutation {
             }
             citizen {
               __typename
-              id
               countryName
+              code
             }
             ethnicity {
               __typename
-              id
               ethnicityType
             }
             socialAccount {
@@ -195,12 +194,12 @@ public class CreateUserMutation: GraphQLMutation {
           public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Citizen }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
-            .field("id", GraphQLAPI.ID.self),
             .field("countryName", String.self),
+            .field("code", String.self),
           ] }
 
-          public var id: GraphQLAPI.ID { __data["id"] }
           public var countryName: String { __data["countryName"] }
+          public var code: String { __data["code"] }
         }
 
         /// CreateUser.User.Ethnicity
@@ -213,11 +212,9 @@ public class CreateUserMutation: GraphQLMutation {
           public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Ethnicity }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
-            .field("id", GraphQLAPI.ID.self),
             .field("ethnicityType", GraphQLEnum<GraphQLAPI.EthnicityEthnicityType>.self),
           ] }
 
-          public var id: GraphQLAPI.ID { __data["id"] }
           public var ethnicityType: GraphQLEnum<GraphQLAPI.EthnicityEthnicityType> { __data["ethnicityType"] }
         }
 

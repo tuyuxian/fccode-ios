@@ -109,4 +109,60 @@ class EntryViewModel: ObservableObject, InputProtocol {
     deinit {
         print("-> EntryViewModel deinit")
     }
+    
+    public func reinit() {
+        self.user = User(
+            userId: "0",
+            email: "",
+            password: "",
+            username: "",
+            dateOfBirth: "",
+            gender: .MALE,
+            profilePictureUrl: "",
+            selfIntro: "",
+            longitude: 0,
+            latitude: 0,
+            country: "",
+            administrativeArea: "",
+            voiceContentURL: "",
+            googleConnect: false,
+            facebookConnect: false,
+            appleConnect: false,
+            premium: false,
+            goal: [],
+            citizen: [],
+            lifePhoto: [],
+            socialAccount: [],
+            ethnicity: []
+        )
+        self.password = ""
+        self.passwordConfirmed = ""
+        self.newPassword = ""
+        self.newPasswordConfirmed = ""
+        self.selectedDate = Date()
+        self.gender = nil
+        self.yearIndex = 99
+        self.monthIndex = Calendar.current.component(.month, from: Date()) - 1
+        self.dayIndex = Calendar.current.component(.day, from: Date()) - 1
+        self.selectedImage = nil
+        self.selectedImageData = nil
+        self.isEmailSatisfied = false
+        self.isPasswordSatisfied = false
+        self.isAccountPasswordSatisfied = false
+        self.isAccountPasswordLengthSatisfied = false
+        self.isAccountPasswordUpperAndLowerSatisfied = false
+        self.isAccountPasswordNumberAndSymbolSatisfied = false
+        self.isAccountPasswordMatched = false
+        self.isNameSatisfied = false
+        self.isAdult = false
+        self.isGenderSatisfied = false
+        self.isEthnicitySatisfied = false
+        self.isNationalitySatisfied = false
+        self.isAvatarSatisfied = false
+        self.isNewPasswordSatisfied = false
+        self.isNewPasswordLengthSatisfied = false
+        self.isNewPasswordUpperAndLowerSatisfied = false
+        self.isNewPasswordNumberAndSymbolSatisfied = false
+        self.isNewPasswordMatched = false
+    }
 }

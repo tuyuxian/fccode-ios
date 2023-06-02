@@ -86,7 +86,7 @@ extension User {
     public func getGraphQLInput() -> GraphQLAPI.CreateUserInput {
         return GraphQLAPI.CreateUserInput(
             email: self.email,
-            password: self.password != nil ? .some(self.password!) : nil,
+            password: self.password != nil && self.password != "" ? .some(self.password!) : nil,
             username: self.username,
             dateOfBirth: self.dateOfBirth,
             gender: GraphQLEnum.case(self.gender.graphQLValue),
@@ -103,12 +103,8 @@ extension User {
             createUserEthnicity: .some(
                 self.ethnicity.map { $0.getGraphQLInput() }
             ),
-            createUserSocialAccount: .some(
-                self.socialAccount.map { $0.getGraphQLInput() }
-            ),
-            createUserLifePhoto: .some(
-                self.lifePhoto.map { $0.getGraphQLInput() }
-            )
+            createUserSocialAccount: (self.socialAccount.first?.getGraphQLInput())!,
+            createUserLifePhoto: (self.lifePhoto.first?.getGraphQLInput())!
         )
     }
 }

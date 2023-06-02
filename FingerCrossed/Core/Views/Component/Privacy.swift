@@ -10,21 +10,10 @@ import SwiftUI
 struct Privacy: View {
     var body: some View {
         Group {
-            Text("Privacy")
-                .foregroundColor(Color.text)
-                .fontTemplate(.h3Bold)
-            
-            Text("Welcome to Fingercrossed Privacy Policy!")
-                .foregroundColor(Color.text)
-                .fontTemplate(.pRegular)
-            
-            Spacer()
-                .frame(height: 16)
-            // Introduction
             Group {
                 Text("Introduction")
                     .foregroundColor(Color.text)
-                .fontTemplate(.pSemibold)
+                    .fontTemplate(.pSemibold)
                 
                 Text("We respect the privacy of our users and are committed to protecting their personal information. This privacy policy explains how we collect, use, and disclose user data when you use our dating app. By using our app, you agree to the terms of this privacy policy.")
                     .foregroundColor(Color.text)

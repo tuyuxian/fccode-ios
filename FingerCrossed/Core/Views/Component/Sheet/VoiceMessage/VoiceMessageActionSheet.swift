@@ -33,56 +33,51 @@ struct VoiceMessageActionSheet: View {
     }
     
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(
-                alignment: .leading,
-                spacing: 30
-            ) {
-                Button {
-                    // TODO(Sam): add delete method
-                } label: {
-                    HStack(spacing: 20) {
-                        Image("Trash")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+        Sheet(
+            size: [.height(138)],
+            hasHeader: false,
+            hasFooter: false,
+            content: {
+                VStack(
+                    alignment: .leading,
+                    spacing: 30
+                ) {
+                    Button {
+                        // TODO(Sam): add delete method
+                    } label: {
+                        HStack(spacing: 20) {
+                            Image("Trash")
+                                .resizable()
+                                .frame(width: 24, height: 24)
 
-                        Text("Delete")
-                            .fontTemplate(.h3Medium)
-                            .foregroundColor(Color.text)
-                        Spacer()
+                            Text("Delete")
+                                .fontTemplate(.h3Medium)
+                                .foregroundColor(Color.text)
+                            Spacer()
+                        }
+                    }
+                    
+                    Button {
+                        buttonOnTap()
+                    } label: {
+                        HStack(spacing: 20) {
+                            Image("Edit")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                            Text("Edit Voice Message")
+                                .fontTemplate(.h3Medium)
+                                .foregroundColor(Color.text)
+                            Spacer()
+                        }
+                    }
+                    .sheet(isPresented: $showEditSheet) {
+                        VoiceMessageEditSheet()
                     }
                 }
-                
-                Button {
-                    buttonOnTap()
-                } label: {
-                    HStack(spacing: 20) {
-                        Image(hasVoiceMessage ? "Edit": "Mic")
-                            .resizable()
-                            .frame(width: 24, height: 24)
-                        Text(hasVoiceMessage ? "Edit Voice Message" : "Record Voice Message")
-                            .fontTemplate(.h3Medium)
-                            .foregroundColor(Color.text)
-                        Spacer()
-                    }
-                }
-                .sheet(isPresented: $showEditSheet) {
-                    VoiceMessageEditSheet()
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 30)
-            .background(Color.white)
-            .presentationDetents([.height(138)])
-            .presentationDragIndicator(.visible)
-        }
+                .padding(.top, 15) // 30 - 15
+            },
+            footer: {}
+        )
         .alert(isPresented: $showAlert) {
             Alert(
                 title:

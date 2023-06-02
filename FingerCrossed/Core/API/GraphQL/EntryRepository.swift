@@ -12,11 +12,11 @@ class EntryRepository {
     
     public class func checkEmail(
         email: String
-    ) async throws -> Bool {
+    ) async throws -> (Bool, Bool?, Bool?, Bool?, Bool?, String?, String?, String?, String?) {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: CheckEmailQuery(email: email),
-                cachePolicy: .returnCacheDataElseFetch
+                cachePolicy: .fetchIgnoringCacheCompletely
             ) { result in
                 switch result {
                 case .success:
@@ -28,9 +28,30 @@ class EntryRepository {
                         continuation.resume(throwing: GraphQLError.unknown)
                         return
                     }
+                    let appleSocialAccount = data.checkEmail.user?.socialAccount?.first { sa in
+                        sa.platform == .apple
+                    }
+                    let facebookSocialAccount = data.checkEmail.user?.socialAccount?.first { sa in
+                        sa.platform == .facebook
+                    }
+                    let googleSocialAccount = data.checkEmail.user?.socialAccount?.first { sa in
+                        sa.platform == .google
+                    }
                     switch data.checkEmail.statusCode {
                     case 200:
-                        continuation.resume(returning: data.checkEmail.exist)
+                        continuation.resume(
+                            returning: (
+                                data.checkEmail.user != nil,
+                                data.checkEmail.user?.password != "",
+                                data.checkEmail.user?.appleConnect,
+                                data.checkEmail.user?.facebookConnect,
+                                data.checkEmail.user?.googleConnect,
+                                data.checkEmail.user?.profilePictureURL,
+                                appleSocialAccount?.email,
+                                facebookSocialAccount?.email,
+                                googleSocialAccount?.email
+                            )
+                        )
                     default:
                         continuation.resume(throwing: GraphQLError.customError(data.checkEmail.message))
                     }
@@ -95,10 +116,67 @@ class EntryRepository {
                          appleConnect: userData.appleConnect,
                          premium: userData.premium,
                          goal: [],
-                         citizen: [],
-                         lifePhoto: [],
+                         citizen: Array(userData.citizen?.map {
+                             Nationality(
+                                name: $0.countryName,
+                                code: $0.code
+                             )
+                         } ?? []),
+ //                        lifePhoto: Array(userData.lifePhoto?.map {
+ //                            LifePhoto(
+ //                                contentUrl: $0.contentURL,
+ //                                caption: $0.caption ?? "",
+ //                                position: 0,
+ //                                scale: 1,
+ //                                offset: CGSize.zero
+ //                            )
+ //                        } ?? []),
+                         lifePhoto: [
+                             LifePhoto(
+                                 contentUrl: userData.lifePhoto?[0].contentURL ?? "",
+                                 caption: "",
+                                 position: 0,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 1,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 2,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 3,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 4,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             )
+                         ],
                          socialAccount: [],
-                         ethnicity: []
+                         ethnicity: Array(userData.ethnicity?.map {
+                             let item = $0.ethnicityType.rawValue
+                             return Ethnicity(
+                                 type: EthnicityType.allCases.first { et in
+                                     et.getString() == item
+                                 } ?? .ET0
+                             )
+                         } ?? [])
                         )
                         continuation.resume(returning: (user, tokenData))
                     case 401:
@@ -167,10 +245,67 @@ class EntryRepository {
                          appleConnect: userData.appleConnect,
                          premium: userData.premium,
                          goal: [],
-                         citizen: [],
-                         lifePhoto: [],
+                         citizen: Array(userData.citizen?.map {
+                             Nationality(
+                                name: $0.countryName,
+                                code: $0.code
+                             )
+                         } ?? []),
+ //                        lifePhoto: Array(userData.lifePhoto?.map {
+ //                            LifePhoto(
+ //                                contentUrl: $0.contentURL,
+ //                                caption: $0.caption ?? "",
+ //                                position: 0,
+ //                                scale: 1,
+ //                                offset: CGSize.zero
+ //                            )
+ //                        } ?? []),
+                         lifePhoto: [
+                             LifePhoto(
+                                 contentUrl: userData.lifePhoto?[0].contentURL ?? "",
+                                 caption: "",
+                                 position: 0,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 1,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 2,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 3,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             ),
+                             LifePhoto(
+                                 contentUrl: "",
+                                 caption: "",
+                                 position: 4,
+                                 scale: 1,
+                                 offset: CGSize.zero
+                             )
+                         ],
                          socialAccount: [],
-                         ethnicity: []
+                         ethnicity: Array(userData.ethnicity?.map {
+                             let item = $0.ethnicityType.rawValue
+                             return Ethnicity(
+                                 type: EthnicityType.allCases.first { et in
+                                     et.getString() == item
+                                 } ?? .ET0
+                             )
+                         } ?? [])
                         )
                         continuation.resume(returning: (user, tokenData))
                     case 401:
@@ -215,7 +350,6 @@ class EntryRepository {
                            continuation.resume(throwing: GraphQLError.tokenIsNil)
                            return
                        }
-                       
                        let user = User(
                         userId: userData.id,
                         email: userData.email,
@@ -237,10 +371,67 @@ class EntryRepository {
                         appleConnect: userData.appleConnect,
                         premium: userData.premium,
                         goal: [],
-                        citizen: [],
-                        lifePhoto: [],
+                        citizen: Array(userData.citizen?.map {
+                            Nationality(
+                                name: $0.countryName,
+                                code: $0.code
+                            )
+                        } ?? []),
+//                        lifePhoto: Array(userData.lifePhoto?.map {
+//                            LifePhoto(
+//                                contentUrl: $0.contentURL,
+//                                caption: $0.caption ?? "",
+//                                position: 0,
+//                                scale: 1,
+//                                offset: CGSize.zero
+//                            )
+//                        } ?? []),
+                        lifePhoto: [
+                            LifePhoto(
+                                contentUrl: userData.lifePhoto?[0].contentURL ?? "",
+                                caption: "",
+                                position: 0,
+                                scale: 1,
+                                offset: CGSize.zero
+                            ),
+                            LifePhoto(
+                                contentUrl: "",
+                                caption: "",
+                                position: 1,
+                                scale: 1,
+                                offset: CGSize.zero
+                            ),
+                            LifePhoto(
+                                contentUrl: "",
+                                caption: "",
+                                position: 2,
+                                scale: 1,
+                                offset: CGSize.zero
+                            ),
+                            LifePhoto(
+                                contentUrl: "",
+                                caption: "",
+                                position: 3,
+                                scale: 1,
+                                offset: CGSize.zero
+                            ),
+                            LifePhoto(
+                                contentUrl: "",
+                                caption: "",
+                                position: 4,
+                                scale: 1,
+                                offset: CGSize.zero
+                            )
+                        ],
                         socialAccount: [],
-                        ethnicity: []
+                        ethnicity: Array(userData.ethnicity?.map {
+                            let item = $0.ethnicityType.rawValue
+                            return Ethnicity(
+                                type: EthnicityType.allCases.first { et in
+                                    et.getString() == item
+                                } ?? .ET0
+                            )
+                        } ?? [])
                        )
                        continuation.resume(returning: (user, tokenData))
                    case 401:

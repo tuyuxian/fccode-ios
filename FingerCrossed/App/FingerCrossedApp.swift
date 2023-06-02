@@ -14,6 +14,8 @@ struct FingerCrossedApp: App {
     
     @StateObject var bannerManager: BannerManager = BannerManager()
     
+    @StateObject var pageSpinnerManager: PageSpinnerManager = PageSpinnerManager()
+    
     var body: some Scene {
         
         WindowGroup {
@@ -34,6 +36,7 @@ struct FingerCrossedApp: App {
                     EntryView(userState: userState)
                         .preferredColorScheme(.light)
                         .environmentObject(bannerManager)
+                        .environmentObject(pageSpinnerManager)
                 case .main:
                     TabBar(userState: userState)
                         .environmentObject(userState)
@@ -42,6 +45,10 @@ struct FingerCrossedApp: App {
 
                 if bannerManager.isPresented {
                     BannerContent(bm: bannerManager)
+                }
+                
+                if pageSpinnerManager.isPresented {
+                    PageSpinner()
                 }
             }
         }

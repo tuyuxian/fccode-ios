@@ -14,7 +14,7 @@ class ProfileViewModel: ObservableObject, InputProtocol {
         email: "test@gmail.com",
         password: "123123",
         username: "Test User",
-        dateOfBirth: "",
+        dateOfBirth: "2000-01-10T17:30:15+05:30",
         gender: .MALE,
         profilePictureUrl: "https://i.pravatar.cc/150?img=6",
         // swiftlint: disable line_length
@@ -103,4 +103,15 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
+    
+    public func getDateString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        
+        if let date = ISO8601DateFormatter().date(from: self.user.dateOfBirth) {
+            return dateFormatter.string(from: date)
+        } else {
+            return "Invalid timestamp"
+        }
+    }
 }

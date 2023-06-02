@@ -12,45 +12,45 @@ struct PrivacySheet: View {
     @Environment(\.presentationMode) private var presentationMode
 
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                HStack {
-                    Button {
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Text("Done")
-                            .foregroundColor(Color.gold)
-                            .fontTemplate(.pMedium)
+        Sheet(
+            size: [.large],
+            hasHeader: false,
+            hasFooter: false,
+            content: {
+                VStack(spacing: 0) {
+                    ZStack(alignment: .top) {
+                        Text("Privacy")
+                            .fontTemplate(.h2Medium)
+                            .foregroundColor(Color.text)
+                            .frame(height: 34)
+                        
+                        Button("Close") {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                        .fontTemplate(.pMedium)
+                        .foregroundColor(Color.gold)
+                        .frame(height: 34, alignment: .center)
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .trailing
+                        )
                     }
-                }
-                .padding(.top, 35)
-                .padding(.bottom, 16)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing)
-                
-                ScrollView {
-                    VStack(
-                        alignment: .leading,
-                        spacing: 0
-                    ) {
-                        Privacy()
+                    .padding(.top, 15) // 30 - 15
+                    .padding(.bottom, 30)
+                    
+                    ScrollView {
+                        VStack(
+                            alignment: .leading,
+                            spacing: 0
+                        ) {
+                            Privacy()
+                        }
                     }
+                    .scrollIndicators(.hidden)
                 }
-                .scrollIndicators(.hidden)
-            }
-            .padding(.horizontal, 24)
-            .background(Color.white)
-            .presentationDetents([.large])
-            .presentationDragIndicator(.visible)
-        }
+            },
+            footer: {}
+        )
     }
 }
 

@@ -1,4 +1,9 @@
 extend type Mutation {
-  createLifePhoto(input: CreateLifePhotoInput!): LifePhoto
-  updateLifePhoto(id: ID!, input: UpdateLifePhotoInput!): LifePhoto!
+  createLifePhoto(userId: ID!, input: CreateLifePhotoInput!): CRUDResponse!
+  updateLifePhoto(
+    userId: ID!
+    lifePhotoId: ID!
+    input: UpdateLifePhotoInput!
+  ): CRUDResponse!
+  deleteLifePhoto(userId: ID!, lifePhotoId: ID!): CRUDResponse!
 }

@@ -52,7 +52,7 @@ struct PrimaryInputBar: View {
                     .frame(height: 54)
                     .disableAutocorrection(true)
                     .autocapitalization(.none)
-                    .textContentType(.password)
+                    .keyboardType(.emailAddress)
                 case .password:
                     if isSecureMode {
                         SecureField(

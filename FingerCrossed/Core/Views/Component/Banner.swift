@@ -18,7 +18,7 @@ struct Banner {
         var leadingIcon: String {
             switch self {
             case .info:
-                return "Info"
+                return "InfoCircle"
             case .success:
                 return "Heart"
             case .warning:

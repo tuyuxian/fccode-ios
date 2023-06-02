@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  SettingsView.swift
 //  FingerCrossed
 //
 //  Created by Kevin Tsai on 4/10/23.
@@ -37,7 +37,7 @@ struct SettingsView: View {
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(
             vm: ProfileViewModel()

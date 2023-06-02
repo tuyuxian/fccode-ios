@@ -49,7 +49,9 @@ struct Avatar: View {
                 width: size,
                 height: size
             )
-            .clipShape(Circle())
+            .clipShape(
+                RoundedRectangle(cornerRadius: 100)
+            )
             
             isActive
             ? Circle()

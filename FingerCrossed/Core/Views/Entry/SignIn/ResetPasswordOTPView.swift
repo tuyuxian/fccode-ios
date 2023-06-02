@@ -59,21 +59,18 @@ struct ResetPasswordOTPView: View {
     }
     /// Handler for resend
     private func resendOnTap() {
-        isLoading.toggle()
         Task {
             do {
                 let success = try await EntryRepository.requestOTP(
                     email: vm.user.email
                 )
                 guard success else {
-                    isLoading.toggle()
                     bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                isLoading.toggle()
                 vm.transition = .forward
                 vm.switchView = .resetPasswordOTP
             } catch {
@@ -198,7 +195,7 @@ struct ResetPasswordOTPView: View {
                             width: 16,
                             height: 16
                         )
-                    Text("Hmm, that's not the right verification code.")
+                    Text("Invalid code")
                         .fontTemplate(.noteMedium)
                         .foregroundColor(Color.warning)
                 }

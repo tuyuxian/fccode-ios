@@ -76,38 +76,8 @@ struct SignUpAvatarView: View {
     }
     /// Handler for button on tap
     private func buttonOnTap() {
-        isLoading.toggle()
-        Task {
-            do {
-                let url = try await MediaRepository.getPresignedPutUrl(
-                    GraphQLEnum.case(.image)
-                )
-                let result = try await AWSS3().uploadImage(
-                    vm.selectedImageData,
-                    toPresignedURL: URL(string: url!)!
-                )
-                vm.user.profilePictureUrl = result.absoluteString
-                vm.user.lifePhoto.append(
-                    LifePhoto(
-                        contentUrl: result.absoluteString,
-                        caption: "",
-                        position: 0,
-                        scale: 1,
-                        offset: CGSize.zero
-                    )
-                )
-                isLoading.toggle()
-                vm.transition = .forward
-                vm.switchView = .location
-                
-            } catch {
-                print(error.localizedDescription)
-                bm.pop(
-                    title: "Something went wrong.",
-                    type: .error
-                )
-            }
-        }
+        vm.transition = .forward
+        vm.switchView = .location
     }
     
     var body: some View {
@@ -259,21 +229,21 @@ struct SignUpAvatarView: View {
                                         .frame(width: 36, height: 36)
                                 )
                         }
-//                        .sheet(
-//                            isPresented: $showImagePicker,
-//                            content: {
-//                                ImagePicker(
-//                                    sourceType: .photoLibrary,
-//                                    selectedImage: $vm.selectedImage,
-//                                    imageData: $vm.selectedImageData
-//                                )
-//                            }
-//                        )
-                        .sheet(isPresented: $showImagePicker) {
-                            PhotoPicker(selectedImage: $vm.selectedImage,
-                                        imageData: $vm.selectedImageData,
-                                        isPresented: $showImagePicker)
-                        }
+                        .sheet(
+                            isPresented: $showImagePicker,
+                            content: {
+                                ImagePicker(
+                                    sourceType: .photoLibrary,
+                                    selectedImage: $vm.selectedImage,
+                                    imageData: $vm.selectedImageData
+                                )
+                            }
+                        )
+//                        .sheet(isPresented: $showImagePicker) {
+//                            PhotoPicker(selectedImage: $vm.selectedImage,
+//                                        imageData: $vm.selectedImageData,
+//                                        isPresented: $showImagePicker)
+//                        }
                         .alert(isPresented: $showPhotoLibraryAlert) {
                             Alert(
                                 title:

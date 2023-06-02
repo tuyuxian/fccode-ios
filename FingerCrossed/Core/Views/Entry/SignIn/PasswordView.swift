@@ -12,10 +12,16 @@ import GraphQLAPI
 struct PasswordView: View {
     /// Global banner
     @EnvironmentObject var bm: BannerManager
+    /// Global page spinner
+    @EnvironmentObject var psm: PageSpinnerManager
     /// Observed user state view model
     @ObservedObject var userState: UserStateViewModel
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Init account sheet view model
+    @StateObject var accountSheetVM: AccountSheetViewModel = AccountSheetViewModel()
+    /// Flag for account sheet
+    @State private var isAccountPresented: Bool = false
     /// Flag for password validation
     @State private var isPasswordValid: Bool = true
     /// Flag for loading state
@@ -42,6 +48,11 @@ struct PasswordView: View {
                 userState.isLogin = true
                 userState.viewState = .main
             } catch {
+                if error.localizedDescription == "Wrong password" {
+                    isPasswordValid = false
+                    return
+                }
+                isLoading.toggle()
                 print(error.localizedDescription)
                 bm.pop(
                     title: "Something went wrong.",
@@ -68,41 +79,74 @@ struct PasswordView: View {
     /// Handler for google sso
     private func googleOnTap() {
         self.endTextEditing()
+        psm.show()
         GoogleSSOManager().signIn(
             successAction: { email in
                 guard let email else {
+                    psm.dismiss()
                     bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
+                psm.dismiss()
                 Task {
                     do {
-                        let exist = try await EntryRepository.checkEmail(
-                            email: vm.user.email
+                        let (
+                            userExist,
+                            hasPassword,
+                            hasAppleSSO,
+                            _,
+                            hasGoogleSSO,
+                            profilePictureUrl,
+                            appleEmail,
+                            facebookEmail,
+                            googleEmail
+                        ) = try await EntryRepository.checkEmail(
+                            email: email
                         )
-                        if exist {
-                            let (user, token) = try await EntryRepository.socialSignIn(
-                                email: email,
-                                platform: GraphQLEnum.case(.google)
+                        guard userExist else {
+                            vm.user.socialAccount.append(
+                                SocialAccount(
+                                    email: email,
+                                    platform: .GOOGLE
+                                )
                             )
-                            userState.user = user
-                            userState.token = token
-                            userState.isLogin = true
-                            userState.viewState = .main
+                            vm.user.email = email
+                            vm.user.googleConnect = true
+                            vm.transition = .forward
+                            vm.switchView = .name
+                            return
                         }
-                        vm.user.email = email
-                        vm.user.googleConnect = true
-                        vm.user.socialAccount.append(
-                            SocialAccount(
-                                email: email,
-                                platform: .GOOGLE
-                            )
+                        guard hasGoogleSSO ?? false else {
+                            guard hasPassword ?? true else {
+                                accountSheetVM.isSSO = true
+                                accountSheetVM.showAppleSSO = hasAppleSSO ?? false
+                                accountSheetVM.email = email
+                                accountSheetVM.appleEmail = appleEmail
+                                accountSheetVM.facebookEmail = facebookEmail
+                                accountSheetVM.googleEmail = googleEmail
+                                accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                                isAccountPresented.toggle()
+                                return
+                            }
+                            accountSheetVM.isSSO = false
+                            accountSheetVM.email = email
+                            accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                            isAccountPresented.toggle()
+                            return
+                        }
+                        let (user, token) = try await EntryRepository.socialSignIn(
+                            email: email,
+                            platform: GraphQLEnum.case(.google)
                         )
-                        vm.transition = .forward
-                        vm.switchView = .name
+                        userState.user = user
+                        userState.token = token
+                        userState.isLogin = true
+                        userState.viewState = .main
                     } catch {
+                        psm.dismiss()
                         print(error.localizedDescription)
                         bm.pop(
                             title: "Something went wrong.",
@@ -112,17 +156,20 @@ struct PasswordView: View {
                 }
             },
             errorAction: { error in
+                psm.dismiss()
                 guard let error else { return }
                 print(error.localizedDescription)
             }
         )
     }
     /// Handler for apple sso
-    private func appleOnTap() async {
+    private func appleOnTap() {
         self.endTextEditing()
+        psm.show()
         Task {
             do {
                 let email = try await AppleSSOManager().signIn()
+                psm.dismiss()
                 guard let email else {
                     bm.pop(
                         title: "Something went wrong.",
@@ -130,35 +177,61 @@ struct PasswordView: View {
                     )
                     return
                 }
-                let exist = try await EntryRepository.checkEmail(
+                let (
+                    userExist,
+                    hasPassword,
+                    hasAppleSSO,
+                    _,
+                    hasGoogleSSO,
+                    profilePictureUrl,
+                    appleEmail,
+                    facebookEmail,
+                    googleEmail
+                ) = try await EntryRepository.checkEmail(
                     email: email
                 )
-                if exist {
-                    let (user, token) = try await EntryRepository.socialSignIn(
-                        email: email,
-                        platform: GraphQLEnum.case(.apple)
+                guard userExist else {
+                    vm.user.socialAccount.append(
+                        SocialAccount(
+                            email: email,
+                            platform: .APPLE
+                        )
                     )
-                    userState.user = user
-                    userState.token = token
-                    userState.isLogin = true
-                    userState.viewState = .main
+                    vm.user.email = email
+                    vm.user.appleConnect = true
+                    vm.transition = .forward
+                    vm.switchView = .name
+                    return
                 }
-                vm.user.email = email
-                vm.user.appleConnect = true
-                vm.user.socialAccount.append(
-                    SocialAccount(
-                        email: email,
-                        platform: .APPLE
-                    )
+                guard hasAppleSSO ?? false else {
+                    guard hasPassword ?? true else {
+                        accountSheetVM.isSSO = true
+                        accountSheetVM.showGoogleSSO = hasGoogleSSO ?? false
+                        accountSheetVM.email = email
+                        accountSheetVM.appleEmail = appleEmail
+                        accountSheetVM.facebookEmail = facebookEmail
+                        accountSheetVM.googleEmail = googleEmail
+                        accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                        isAccountPresented.toggle()
+                        return
+                    }
+                    accountSheetVM.isSSO = false
+                    accountSheetVM.email = email
+                    accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                    isAccountPresented.toggle()
+                    return
+                }
+                let (user, token) = try await EntryRepository.socialSignIn(
+                    email: email,
+                    platform: GraphQLEnum.case(.apple)
                 )
-                vm.transition = .forward
-                vm.switchView = .name
+                userState.user = user
+                userState.token = token
+                userState.isLogin = true
+                userState.viewState = .main
             } catch {
+                psm.dismiss()
                 print(error.localizedDescription)
-                bm.pop(
-                    title: "Something went wrong.",
-                    type: .error
-                )
             }
         }
     }
@@ -232,6 +305,7 @@ struct PasswordView: View {
                                 isTappable: $vm.isPasswordSatisfied,
                                 isLoading: $isLoading
                             )
+                            
                             LazyVStack(alignment: .center, spacing: 30) {
                                 !isPasswordValid
                                 ? nil
@@ -288,9 +362,7 @@ struct PasswordView: View {
                             SSOButton(
                                 platform: .apple,
                                 handler: {
-                                    Task {
-                                        await appleOnTap()
-                                    }
+                                    appleOnTap()
                                 }
                             )
                         }
@@ -300,6 +372,13 @@ struct PasswordView: View {
             }
             .scrollDisabled(true)
             .ignoresSafeArea(.keyboard, edges: .bottom)
+            .sheet(isPresented: $isAccountPresented) {
+                AccountSheet(
+                    userState: userState,
+                    entry: vm,
+                    vm: accountSheetVM
+                )
+            }
         }
     }
 }

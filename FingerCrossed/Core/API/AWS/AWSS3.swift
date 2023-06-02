@@ -13,6 +13,7 @@ class AWSS3 {
         case networkError
         case permissionDenied
         case unknownError
+        case dataMissingError
     }
         
     public func uploadImage(
@@ -20,6 +21,10 @@ class AWSS3 {
         toPresignedURL remoteURL: URL
     ) async throws -> URL {
         return try await withCheckedThrowingContinuation { continuation in
+            guard let data = data else {
+                continuation.resume(throwing: AWSError.dataMissingError)
+                return
+            }
             uploadImageImpl(
                 data,
                 toPresignedURL: remoteURL

@@ -67,7 +67,8 @@ class NationalityList: ObservableObject, Equatable {
 extension Nationality {
     func getGraphQLInput() -> GraphQLAPI.CreateCitizenInput {
         return GraphQLAPI.CreateCitizenInput(
-            countryName: self.name
+            countryName: self.name,
+            code: self.code
         )
     }
 }

@@ -14,7 +14,19 @@ public class CheckEmailQuery: GraphQLQuery {
           status
           statusCode
           message
-          exist
+          user {
+            __typename
+            password
+            profilePictureURL
+            appleConnect
+            facebookConnect
+            googleConnect
+            socialAccount {
+              __typename
+              email
+              platform
+            }
+          }
         }
       }
       """#
@@ -41,24 +53,68 @@ public class CheckEmailQuery: GraphQLQuery {
 
     /// CheckEmail
     ///
-    /// Parent Type: `CheckEmailResponse`
+    /// Parent Type: `CRUDResponse`
     public struct CheckEmail: GraphQLAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.CheckEmailResponse }
+      public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.CRUDResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
         .field("statusCode", Int.self),
         .field("message", String.self),
-        .field("exist", Bool.self),
+        .field("user", User?.self),
       ] }
 
       public var status: String { __data["status"] }
       public var statusCode: Int { __data["statusCode"] }
       public var message: String { __data["message"] }
-      public var exist: Bool { __data["exist"] }
+      public var user: User? { __data["user"] }
+
+      /// CheckEmail.User
+      ///
+      /// Parent Type: `User`
+      public struct User: GraphQLAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.User }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("password", String?.self),
+          .field("profilePictureURL", String?.self),
+          .field("appleConnect", Bool.self),
+          .field("facebookConnect", Bool.self),
+          .field("googleConnect", Bool.self),
+          .field("socialAccount", [SocialAccount]?.self),
+        ] }
+
+        public var password: String? { __data["password"] }
+        public var profilePictureURL: String? { __data["profilePictureURL"] }
+        public var appleConnect: Bool { __data["appleConnect"] }
+        public var facebookConnect: Bool { __data["facebookConnect"] }
+        public var googleConnect: Bool { __data["googleConnect"] }
+        public var socialAccount: [SocialAccount]? { __data["socialAccount"] }
+
+        /// CheckEmail.User.SocialAccount
+        ///
+        /// Parent Type: `SocialAccount`
+        public struct SocialAccount: GraphQLAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.SocialAccount }
+          public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
+            .field("email", String.self),
+            .field("platform", GraphQLEnum<GraphQLAPI.SocialAccountPlatform>.self),
+          ] }
+
+          public var email: String { __data["email"] }
+          public var platform: GraphQLEnum<GraphQLAPI.SocialAccountPlatform> { __data["platform"] }
+        }
+      }
     }
   }
 }

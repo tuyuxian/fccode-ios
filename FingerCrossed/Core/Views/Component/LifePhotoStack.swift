@@ -15,7 +15,7 @@ struct LifePhotoStack: View {
 
     var body: some View {
         GeometryReader { proxy in
-            LazyHStack(spacing: 14) {
+            HStack(spacing: 14) {
                 ForEach(
                     Array(vm.user.lifePhoto[0...0].enumerated()),
                     id: \.element.id
@@ -41,8 +41,8 @@ struct LifePhotoStack: View {
                     )
                 }
                 
-                LazyVStack(spacing: 14) {
-                    LazyHStack(spacing: 14) {
+                VStack(spacing: 14) {
+                    HStack(spacing: 14) {
                         ForEach(
                             Array(vm.user.lifePhoto[1...2].enumerated()),
                             id: \.element.id
@@ -78,7 +78,7 @@ struct LifePhotoStack: View {
                         }
                     }
                     
-                    LazyHStack(spacing: 14) {
+                    HStack(spacing: 14) {
                         ForEach(
                             Array(vm.user.lifePhoto[3...4].enumerated()),
                             id: \.element.id

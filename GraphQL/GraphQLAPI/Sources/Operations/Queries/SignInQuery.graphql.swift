@@ -44,12 +44,11 @@ public class SignInQuery: GraphQLQuery {
             }
             citizen {
               __typename
-              id
               countryName
+              code
             }
             ethnicity {
               __typename
-              id
               ethnicityType
             }
             socialAccount {
@@ -209,12 +208,12 @@ public class SignInQuery: GraphQLQuery {
           public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Citizen }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
-            .field("id", GraphQLAPI.ID.self),
             .field("countryName", String.self),
+            .field("code", String.self),
           ] }
 
-          public var id: GraphQLAPI.ID { __data["id"] }
           public var countryName: String { __data["countryName"] }
+          public var code: String { __data["code"] }
         }
 
         /// SignIn.User.Ethnicity
@@ -227,11 +226,9 @@ public class SignInQuery: GraphQLQuery {
           public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Ethnicity }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
-            .field("id", GraphQLAPI.ID.self),
             .field("ethnicityType", GraphQLEnum<GraphQLAPI.EthnicityEthnicityType>.self),
           ] }
 
-          public var id: GraphQLAPI.ID { __data["id"] }
           public var ethnicityType: GraphQLEnum<GraphQLAPI.EthnicityEthnicityType> { __data["ethnicityType"] }
         }
 

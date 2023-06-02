@@ -3,7 +3,17 @@ query CheckEmail($email: String!) {
     status
     statusCode
     message
-    exist
+    user {
+      password
+      profilePictureURL
+      appleConnect
+      facebookConnect
+      googleConnect
+      socialAccount {
+        email
+        platform
+      }
+    }
   }
 }
 
@@ -39,11 +49,10 @@ query SignIn($email: String!, $password: String!) {
         contentURL
       }
       citizen {
-        id
         countryName
+        code
       }
       ethnicity {
-        id
         ethnicityType
       }
       socialAccount {
@@ -91,11 +100,10 @@ query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
         contentURL
       }
       citizen {
-        id
         countryName
+        code
       }
       ethnicity {
-        id
         ethnicityType
       }
       socialAccount {

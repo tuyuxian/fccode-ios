@@ -60,7 +60,11 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Birthday",
                                         icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.user.dateOfBirth)),
+                                        preview: AnyView(
+                                            PreviewText(
+                                                text: vm.getDateString()
+                                            )
+                                        ),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -72,13 +76,29 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Nationality",
                                         icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: "Taiwan")),
+                                        preview: AnyView(
+                                            PreviewText(
+                                                text: String(
+                                                    vm.user.citizen.reduce("") { result, nationality in
+                                                        return result + nationality.name + ", "
+                                                    }.dropLast(2)
+                                                )
+                                            )
+                                        ),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Ethnicity",
                                         icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: "Asian")),
+                                        preview: AnyView(
+                                            PreviewText(
+                                                text: String(
+                                                    vm.user.ethnicity.reduce("") { result, ethnicity in
+                                                        return result + ethnicity.type.getString() + ", "
+                                                    }.dropLast(2)
+                                                )
+                                            )
+                                        ),
                                         hasSubview: false
                                     )
                                  ]
@@ -141,7 +161,7 @@ private struct BasicInfoContent: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     VStack(
                         alignment: .leading,
                         spacing: 12
@@ -169,7 +189,7 @@ private struct BasicInfoContent: View {
                         Array(basicInfoOptions.enumerated()),
                         id: \.element.id
                     ) { _, childView in
-                        LazyVStack(spacing: 0) {
+                        VStack(spacing: 0) {
                             Divider().overlay(Color.surface3)
                                 .padding(.horizontal, 24)
                             

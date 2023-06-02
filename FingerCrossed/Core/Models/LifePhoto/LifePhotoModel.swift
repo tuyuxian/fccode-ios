@@ -36,7 +36,9 @@ extension LifePhoto {
         return GraphQLAPI.CreateLifePhotoInput(
             contentURL: self.contentUrl,
             caption: .some(self.caption),
-            position: self.position
+            position: self.position,
+            scale: self.scale,
+            offset: self.offset.width // TODO(Sam): add height
         )
     }
 }

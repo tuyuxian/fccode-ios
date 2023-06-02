@@ -18,84 +18,55 @@ struct NationalityEditSheet: View {
     @State private var countryName: String = ""
     
     @Binding var isPreference: Bool
-        
-//    @State var isAllSelected: Bool = false
-    
-//    var openCountryModel = Nationality(name: "Open to all", code: "OTA")
-    
-//    // MARK: init
-//    init(
-//    ) {
-//        UITextField.appearance().clearButtonMode = .whileEditing
-//    }
     
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: 0
-        ) {
-            ZStack(alignment: .top) {
-                VStack(spacing: 0) {
-                    Text("Nationality")
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 34)
-                    Text("Up to 3 Nationalities")
-                        .fontTemplate(.captionMedium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 14)
+        Sheet(
+            size: [.large],
+            hasHeader: false,
+            hasFooter: false,
+            content: {
+                ZStack(alignment: .top) {
+                    VStack(spacing: 0) {
+                        Text("Nationality")
+                            .fontTemplate(.h2Medium)
+                            .foregroundColor(Color.text)
+                            .frame(height: 34)
+                        Text("Up to 3 Nationalities")
+                            .fontTemplate(.captionMedium)
+                            .foregroundColor(Color.text)
+                            .frame(height: 14)
+                    }
+                    
+                    Button("Done") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(Color.gold)
+                    .frame(height: 34, alignment: .center)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .trailing
+                    )
                 }
+                .padding(.top, 15) // 30 - 15
                 
-                Button("Done") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-                .fontTemplate(.pMedium)
-                .foregroundColor(Color.gold)
-                .frame(height: 34, alignment: .center)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing
+                NationalitySearchBar(
+                    vm: vm,
+                    nationalityList: $nationalityList,
+                    countryName: $countryName,
+                    isSheet: true
                 )
-            }
-            .padding(.top, 30)
-            
-            NationalitySearchBar(
-                vm: vm,
-                nationalityList: $nationalityList,
-                countryName: $countryName,
-                isSheet: true
-            )
-            .padding(.vertical, 20)
-            
-            countriesListView
-        }
-        .padding(.horizontal, 24)
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+                .padding(.vertical, 20)
+                
+                countriesListView
+            },
+            footer: {}
+        )
     }
 
     var countriesListView: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
-//                isPreference
-//                ? NationalityItem(
-//                    nationality: openCountryModel,
-//                    isSelected: isAllSelected
-//                )
-//                .onAppear {
-//                    isAllSelected = true
-//                    nationalityList.removeAll()
-//                    nationalityList.append(openCountryModel)
-//                    for country in vm.nationalities {
-//                        nationalityList.append(country)
-//                    }
-//                }
-//                .contentShape(Rectangle())
-//                .onTapGesture {
-//                    openToAll()
-//                }
-//                : nil
-                
                 ForEach(
                     vm.nationalities.filter { nationality -> Bool in
                         self.searchForCountry(nationality.name)
@@ -111,14 +82,6 @@ struct NationalityEditSheet: View {
                     }
                 }
             }
-//            .onChange(of: nationalityList) { _ in
-//                if nationalityList.contains(where: { $0.name == "Open to all" }) &&
-//                    nationalityList.count - 1 == vm.nationalities.count {
-//                    isAllSelected = true
-//                } else {
-//                    isAllSelected = false
-//                }
-//            }
         }
     }
 
@@ -130,26 +93,6 @@ struct NationalityEditSheet: View {
         return txt.lowercased(with: .current).hasPrefix(countryName.lowercased(with: .current)) || countryName.isEmpty
         // swiftlint: enable line_length
     }
-
-//    private func openToAll() {
-//        let allSelected = nationalityList.contains(where: { item in
-//            item.name == "Open to all"
-//        })
-//
-//        print("isAllselected: \(allSelected)")
-//
-//        if allSelected {
-//            isAllSelected = false
-//            nationalityList.removeAll()
-//        } else {
-//            isAllSelected = true
-//            nationalityList.removeAll()
-//            nationalityList.append(openCountryModel)
-//            for country in vm.nationalities {
-//                nationalityList.append(country)
-//            }
-//        }
-//    }
     
     private func isSelected(
         selected: Nationality
@@ -167,24 +110,11 @@ struct NationalityEditSheet: View {
             nationalityList.removeAll { country in
                 country.name == selectedCountry.name
             }
+        } else {
+            nationalityList.count >= 3
+            ? nil
+            : nationalityList.append(selectedCountry)
         }
-        else {
-//            if isPreference {
-//                nationalityList.append(selectedCountry)
-//            } else {
-                nationalityList.count >= 3
-                ? nil
-                : nationalityList.append(selectedCountry)
-//            }
-        }
-        
-//        if isPreference && selectedCountry.name != "Open to all" {
-//            if nationalityList.count > 3 {
-//                nationalityList.removeAll()
-//            } else {
-//                isAllSelected = false
-//            }
-//        }
 
         countryName = ""
     }

@@ -25,22 +25,10 @@ struct SelfIntroEditSheet: View {
     }
     
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 16) {
-                Text("Self Introduction")
-                    .fontTemplate(.h2Medium)
-                    .foregroundColor(Color.text)
-                    .frame(height: 34)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 30)
-                
+        Sheet(
+            size: [.medium],
+            header: "Self Introduction",
+            content: {
                 CaptionInputBar(
                     text: $text,
                     hint: "Type your self introduction",
@@ -51,22 +39,20 @@ struct SelfIntroEditSheet: View {
                 .onChange(of: text) { _ in
                     isSatisfied = true
                 }
+                .padding(.top, 30)
                 
+                Spacer()
+            },
+            footer: {
                 PrimaryButton(
                     label: "Save",
                     action: buttonOnTap,
                     isTappable: $isSatisfied,
                     isLoading: $isLoading
                 )
-                .padding(.top, 4) // 20 - 16(spacing)
                 .padding(.bottom, 16)
             }
-            .padding(.horizontal, 24)
-            .background(Color.white)
-            .presentationDetents([.fraction(0.55)])
-            .presentationDragIndicator(.visible)
-            .scrollDismissesKeyboard(.automatic)
-        }
+        )
     }
 }
 

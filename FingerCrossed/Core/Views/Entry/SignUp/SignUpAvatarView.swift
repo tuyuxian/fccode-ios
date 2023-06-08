@@ -7,13 +7,15 @@
 
 import SwiftUI
 import GraphQLAPI
-import Photos
+import PhotosUI
 
 struct SignUpAvatarView: View {
     /// Global banner
     @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Flag for selected photo list sheet' signal
+    @State var showSelectedPhotoList: Bool = false
     /// Flag for image picker's signal
     @State private var showImagePicker: Bool = false
     /// Flag for camera's signal
@@ -24,6 +26,8 @@ struct SignUpAvatarView: View {
     @State var showCameraAlert: Bool = false
     /// Flag for photo library permission alert
     @State var showPhotoLibraryAlert: Bool = false
+    /// Flag for selected photo not image alert
+    @State var showNotImageAlert: Bool = false
     /// Init photo library permission manager
     let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
     /// Init camera permission manager
@@ -44,34 +48,30 @@ struct SignUpAvatarView: View {
     }
     /// Handler for photo library on tap
     private func photoLibraryOnTap() {
-        switch photoLibraryPermissionManager.permissionStatus {
+        switch photoLibraryPermissionManager.authorizationStatus {
         case .notDetermined:
-//            photoLibraryPermissionManager.requestPermission { granted, _ in
-//                guard granted else { return }
-//                showImagePicker = true
-//            }
             photoLibraryPermissionManager.requestPermission { photoAuthStatus in
                 if photoAuthStatus.isAllowed {
-                    showImagePicker = true
+                    if photoAuthStatus.isLimited {
+                        showSelectedPhotoList.toggle()
+                    } else {
+                        showImagePicker = true
+                    }
+                }
+                else {
+                    showPhotoLibraryAlert.toggle()
                 }
             }
-        case .limited:
-            DispatchQueue.main.async {
-                if let window =
-                    UIApplication.shared.windows.first {
-                    PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: window.rootViewController!)
-                }
-            }
-        case .authorized:
-            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
-                if photoAuthStatus.isAllowed {
-                    showImagePicker = true
-                }
-            }
+        case .restricted:
+            showPhotoLibraryAlert.toggle()
         case .denied:
             showPhotoLibraryAlert.toggle()
-        default:
-            showImagePicker = false
+        case .authorized:
+            showImagePicker = true
+        case .limited:
+            showSelectedPhotoList.toggle()
+        @unknown default:
+            fatalError()
         }
     }
     /// Handler for button on tap
@@ -229,21 +229,34 @@ struct SignUpAvatarView: View {
                                         .frame(width: 36, height: 36)
                                 )
                         }
+//                        .sheet(
+//                            isPresented: $showImagePicker,
+//                            content: {
+//                                ImagePicker(
+//                                    sourceType: .photoLibrary,
+//                                    selectedImage: $vm.selectedImage,
+//                                    imageData: $vm.selectedImageData
+//                                )
+//                            }
+//                        )
                         .sheet(
-                            isPresented: $showImagePicker,
+                            isPresented: $showSelectedPhotoList,
                             content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
+                                SelectedPhotoListSheet(
                                     selectedImage: $vm.selectedImage,
                                     imageData: $vm.selectedImageData
                                 )
                             }
                         )
-//                        .sheet(isPresented: $showImagePicker) {
-//                            PhotoPicker(selectedImage: $vm.selectedImage,
-//                                        imageData: $vm.selectedImageData,
-//                                        isPresented: $showImagePicker)
-//                        }
+                        .sheet(isPresented: $showImagePicker,
+                               content: {
+                                PhotoPicker(
+                                    selectedImage: $vm.selectedImage,
+                                    imageData: $vm.selectedImageData,
+                                    isPresented: $showImagePicker
+                                )
+                            }
+                        )
                         .alert(isPresented: $showPhotoLibraryAlert) {
                             Alert(
                                 title:

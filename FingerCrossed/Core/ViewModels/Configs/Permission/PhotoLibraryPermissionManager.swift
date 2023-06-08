@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Photos
+import PhotosUI
 import UIKit
 
 final class PhotoLibraryPermissionManager {
@@ -17,6 +17,8 @@ final class PhotoLibraryPermissionManager {
     
     typealias PhotoAuthStatus = (isAllowed: Bool, isLimited: Bool)
 
+    public var authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+    
     public var permissionStatus: PermissionStatus {
         switch PHPhotoLibrary.authorizationStatus() {
         case .authorized:
@@ -30,28 +32,8 @@ final class PhotoLibraryPermissionManager {
         }
     }
     
-//    public func requestPermission(
-//        completion: @escaping (Bool, Error?) -> Void
-//    ) {
-//        PHPhotoLibrary.requestAuthorization { authStatus in
-//            switch authStatus {
-//            case .authorized:
-//                completion(true, nil)
-//            case .notDetermined:
-//                completion(false, nil)
-//            case .limited:
-//                completion(true, nil)
-//            default:
-//                completion(false, nil)
-//            }
-//        }
-//    }
-    
     public func requestPermission (completion: @escaping (PhotoAuthStatus) -> Void) {
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-//            DispatchQueue.main.async {
-//                self.showUI(for: status)
-//            }
             switch status {
             case .notDetermined:
                 // The user hasn't determined this app's access.
@@ -70,26 +52,4 @@ final class PhotoLibraryPermissionManager {
             }
         }
     }
-    
-//    private func showUI(for status: PHAuthorizationStatus) {
-//        switch status {
-//            case .authorized:
-//                showFullAccessUI()
-//
-//            case .limited:
-//                showLimittedAccessUI()
-//
-//            case .restricted:
-//                showRestrictedAccessUI()
-//
-//            case .denied:
-//                showAccessDeniedUI()
-//
-//            case .notDetermined:
-//                break
-//
-//            @unknown default:
-//                break
-//            }
-//    }
 }

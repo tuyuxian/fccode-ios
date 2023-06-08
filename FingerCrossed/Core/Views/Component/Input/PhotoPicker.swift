@@ -12,7 +12,6 @@ import PhotosUI
 struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     @Binding var imageData: Data?
-//    @Binding var pickerResult: UIImage? // pass images back to the SwiftUI view
     @Binding var isPresented: Bool // close the modal view
 
     func makeUIViewController(context: Context) -> some UIViewController {

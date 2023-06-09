@@ -8,14 +8,22 @@
 import SwiftUI
 
 struct SettingsAccountView: View {
-    /// Observed user state model
-    @EnvironmentObject var userState: UserStateViewModel
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Flag for delete alert
-    @State var showDeleteAlert: Bool = false
-    /// Flag for sign out alert
-    @State var showSignOutAlert: Bool = false
+    /// Observed settings account view model
+    @StateObject var vm: SettingsAccountViewModel
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    
+    init(
+        appleConnect: Bool,
+        googleConnect: Bool
+    ) {
+        _vm = StateObject(
+            wrappedValue: SettingsAccountViewModel(
+                appleConnect: appleConnect,
+                googleConnect: googleConnect
+            )
+        )
+    }
     
     var body: some View {
         ContainerWithHeaderView(
@@ -31,7 +39,9 @@ struct SettingsAccountView: View {
                 ) {
                     SocialAccountRow(
                         label: "Google",
-                        isConnected: vm.user.googleConnect
+                        isConnected: vm.googleConnect,
+                        action: vm.connectGoogle,
+                        state: $vm.state
                     )
                     
                     Divider()
@@ -39,7 +49,9 @@ struct SettingsAccountView: View {
                    
                     SocialAccountRow(
                         label: "Apple",
-                        isConnected: vm.user.appleConnect
+                        isConnected: vm.appleConnect,
+                        action: vm.connectApple,
+                        state: $vm.state
                     )
                 }
                 .padding(.vertical, 30)
@@ -54,104 +66,19 @@ struct SettingsAccountView: View {
                     spacing: 16
                 ) {
                     Button {
-                        showSignOutAlert = true
+                        vm.signOutOnTap()
                     } label: {
                         Text("Sign out")
                             .foregroundColor(Color.text)
                             .fontTemplate(.pMedium)
                     }
-                    .alert(isPresented: $showSignOutAlert) {
-                        Alert(
-                            title: Text(
-                                "Are you sure you want to sign out?"
-                            )
-                            .foregroundColor(Color.text)
-                            .font(
-                                Font.system(
-                                    size: 18,
-                                    weight: .medium
-                                )
-                            ),
-                            primaryButton: .destructive(
-                                Text("Yes")
-                                    .font(
-                                        Font.system(
-                                            size: 18,
-                                            weight: .medium
-                                        )
-                                    ),
-                                action: {
-                                    userState.token = nil
-                                    userState.user = nil
-                                    userState.isLogin = false
-                                    userState.viewState = .onboarding
-                                }
-                            ),
-                            secondaryButton: .cancel(
-                                Text("No")
-                                    .font(
-                                        Font.system(
-                                            size: 18,
-                                            weight: .medium
-                                        )
-                                    )
-                            )
-                        )
-                    }
                     
                     Button {
-                        showDeleteAlert = true
+                        vm.deleteAccountOnTap()
                     } label: {
                         Text("Delete account")
                             .foregroundColor(Color.warning)
                             .fontTemplate(.pMedium)
-                    }
-                    .alert(isPresented: $showDeleteAlert) {
-                        Alert(
-                            title: Text(
-                                "Are you sure you want to sign out?"
-                            )
-                            .foregroundColor(Color.text)
-                            .font(
-                                Font.system(
-                                    size: 18,
-                                    weight: .medium
-                                )
-                            ),
-                            message: Text(
-                                // swiftlint: disable line_length
-                                "Please noted that once you delete your account, you will need to sign up again for our service."
-                                // swiftlint: enable line_length
-                            )
-                            .foregroundColor(Color.text)
-                            .font(
-                                Font.system(
-                                    size: 12,
-                                    weight: .medium
-                                )
-                            ),
-                            primaryButton: .destructive(
-                                Text("Yes")
-                                    .font(
-                                        Font.system(
-                                            size: 18,
-                                            weight: .medium
-                                        )
-                                    ),
-                                action: {
-                                    // TODO(Sam): delete account handler
-                                }
-                            ),
-                            secondaryButton: .cancel(
-                                Text("No")
-                                    .font(
-                                        Font.system(
-                                            size: 18,
-                                            weight: .medium
-                                        )
-                                    )
-                            )
-                        )
                     }
                 }
                 .padding(.vertical, 30)
@@ -163,6 +90,21 @@ struct SettingsAccountView: View {
                 
                 Spacer()
             }
+            .appAlert($vm.appAlert)
+            .overlay {
+                vm.state == .loading
+                ? PageSpinner()
+                : nil
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
+                }
+            }
         }
     }
 }
@@ -170,8 +112,10 @@ struct SettingsAccountView: View {
 struct SettingsAccountView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsAccountView(
-            vm: ProfileViewModel()
+            appleConnect: false,
+            googleConnect: false
         )
+        .environmentObject(BannerManager())
     }
 }
 
@@ -181,6 +125,10 @@ struct SocialAccountRow: View {
     
     @State var isConnected: Bool
     
+    @State var action: () async -> Void
+    
+    @Binding var state: ViewStatus
+    
     var body: some View {
         HStack {
             Text(label)
@@ -189,17 +137,24 @@ struct SocialAccountRow: View {
             
             Spacer()
             
-            Button(isConnected ? "Connected" : "Connect") {
-                // TODO(Sam): add connect method
-//                GoogleSSOManager().disconnect()
-                isConnected.toggle()
-            }
-            .fontTemplate(.pMedium)
-            .frame(width: 108, height: 38)
-            .foregroundColor(isConnected ? Color.yellow100 : Color.text)
-            .background(isConnected ? Color.white : Color.yellow100)
-            .disabled(isConnected)
-            .clipShape(Capsule())
+            Text(isConnected ? "Connected" : "Connect")
+                .fontTemplate(.pMedium)
+                .foregroundColor(isConnected ? Color.yellow100 : Color.text)
+                .frame(width: 108, height: 38)
+                .background(isConnected ? Color.white : Color.yellow100)
+                .cornerRadius(50)
+                .contentShape(Rectangle())
+                .clipShape(Capsule())
+                .onTapGesture {
+                    Task {
+                        await action()
+                        print(state)
+                        if state == .complete {
+                            isConnected.toggle()
+                        }
+                    }
+                }
+                .disabled(isConnected)
         }
     }
 }

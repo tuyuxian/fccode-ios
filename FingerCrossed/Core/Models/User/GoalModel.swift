@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-struct Goal: Equatable {
+struct Goal: Equatable, Codable {
     public var id: UUID = UUID()
     public var type: GoalType
     
@@ -22,7 +22,7 @@ struct Goal: Equatable {
 extension Goal {
     public func getGraphQLInput() -> GraphQLAPI.CreateGoalInput {
         return GraphQLAPI.CreateGoalInput(
-            goalType: GraphQLEnum.case(self.type.graphQLValue)
+            goalType: GraphQLEnum.case(self.type)
         )
     }
 }

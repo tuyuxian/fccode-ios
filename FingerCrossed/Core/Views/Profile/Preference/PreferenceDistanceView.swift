@@ -8,73 +8,53 @@
 import SwiftUI
 
 struct PreferenceDistanceView: View {
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Distance option list
-    let distanceOptions: [String] = [
-        "25 miles",
-        "50 miles",
-        "75 miles",
-        "100 miles",
-        "Any"
-    ]
+    /// View controller
+    @Environment(\.presentationMode) var presentationMode
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed preference distance view model
+    @StateObject var vm = PreferenceDistanceViewModel()
     /// Handler for save button on tap
-    private func saveButtonOnTap() {
-        
-    }
-    /// Helper to get distance option
-    private func getStringFromDistance(
-        _ distance: Int
-    ) -> String {
-        switch distance {
-        case 25:
-            return "25 miles"
-        case 50:
-            return "50 miles"
-        case 75:
-            return "75 miles"
-        case 100:
-            return "100 miles"
-        default:
-            return "Any"
+    private func buttonOnTap() {
+        Task {
+            await vm.buttonOnTap()
+            guard vm.state == .complete else { return }
+            presentationMode.wrappedValue.dismiss()
         }
     }
-    /// Helper to get distance value
-    private func getIntFromDistanceOption(
-        _ distance: String
-    ) -> Int {
-        switch distance {
-        case "25 miles":
-            return 25
-        case "50 miles":
-            return 50
-        case "75 miles":
-            return 75
-        case "100 miles":
-            return 100
-        default:
-            return 0
-        }
-    }
+    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
             childTitle: "Distance",
-            showSaveButton: .constant(false),
-            isLoading: .constant(false)
+            showSaveButton: $vm.showSaveButton,
+            isLoading: .constant(vm.state == .loading),
+            action: buttonOnTap
         ) {
             Box {
                 RadioButtonWithDivider(
-                    items: distanceOptions,
-                    selectedId: getStringFromDistance(vm.distance),
+                    items: vm.distanceOptions,
+                    selectedId: vm.getStringFromDistance(vm.preference.distance),
                     callback: { selected in
-                        vm.distance = getIntFromDistanceOption(selected)
+                        vm.preference.distance = vm.getIntFromDistanceOption(selected)
                     }
                 )
                 .padding(.vertical, 30)
                 .padding(.horizontal, 24)
+                .onChange(of: vm.preference.distance) { _ in
+                    vm.showSaveButton = true
+                }
                 
                 Spacer()
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
+                }
             }
         }
     }
@@ -82,8 +62,7 @@ struct PreferenceDistanceView: View {
 
 struct PreferenceDistanceView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceDistanceView(
-            vm: ProfileViewModel()
-        )
+        PreferenceDistanceView()
+            .environmentObject(BannerManager())
     }
 }

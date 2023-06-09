@@ -40,7 +40,8 @@ input CreateLifePhotoInput {
   caption: String
   position: Int!
   scale: Float!
-  offset: Float!
+  offsetX: Float!
+  offsetY: Float!
   lifePhotoOwnerID: ID
 }
 """
@@ -126,7 +127,8 @@ type LifePhoto implements Node {
   caption: String
   position: Int!
   scale: Float!
-  offset: Float!
+  offsetX: Float!
+  offsetY: Float!
   lifePhotoOwner: User
 }
 """
@@ -255,7 +257,8 @@ input UpdateLifePhotoInput {
   clearCaption: Boolean
   position: Int
   scale: Float
-  offset: Float
+  offsetX: Float
+  offsetY: Float
   lifePhotoOwnerID: ID
   clearLifePhotoOwner: Boolean
 }

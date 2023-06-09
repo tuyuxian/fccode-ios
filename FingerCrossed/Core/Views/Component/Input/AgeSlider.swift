@@ -34,6 +34,9 @@ struct AgeSlider: View {
                                 .padding(.bottom, 6.85)
                         )
                         .offset(x: self.from)
+                        .onChange(of: from) { val in
+                            ageFrom = Int(self.getValue(val: ((val / (proxy.size.width - 56)) * 82))) ?? 18
+                        }
                     : nil
                     isToDragging
                     ? Image("DragIndicator")
@@ -49,6 +52,9 @@ struct AgeSlider: View {
                                 .padding(.bottom, 6.85)
                         )
                         .offset(x: isFromDragging ? self.to : self.to + 28)
+                        .onChange(of: to) { val in
+                            ageTo = Int(self.getValue(val: ((val / (proxy.size.width - 56)) * 82))) ?? 100
+                        }
                     : nil
                     Spacer()
                 }

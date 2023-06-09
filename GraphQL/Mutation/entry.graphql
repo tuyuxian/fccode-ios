@@ -3,45 +3,7 @@ mutation CreateUser($input: CreateUserInput!) {
     status
     statusCode
     message
-    user {
-      id
-      email
-      password
-      username
-      dateOfBirth
-      gender
-      profilePictureURL
-      voiceContentURL
-      selfIntro
-      longitude
-      latitude
-      country
-      administrativeArea
-      googleConnect
-      facebookConnect
-      appleConnect
-      premium
-      lifePhoto {
-        id
-        caption
-        contentURL
-      }
-      citizen {
-        countryName
-        code
-      }
-      ethnicity {
-        ethnicityType
-      }
-      socialAccount {
-        email
-        platform
-      }
-      goal {
-        id
-        goalType
-      }
-    }
+    userId
     token
   }
 }

@@ -23,9 +23,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         
-        /// Set the appearance for the drag indicator and keyboard
+        /// Set the appearance for keyboard
         UITextField.appearance().keyboardAppearance = .light
-        UIScrollView.appearance().indicatorStyle = .default
         
         return true
     }

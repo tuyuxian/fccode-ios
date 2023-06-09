@@ -8,11 +8,11 @@
 import Foundation
 import GraphQLAPI
 
-class EntryRepository {
+extension GraphAPI {
     
     public class func checkEmail(
         email: String
-    ) async throws -> (Bool, Bool?, Bool?, Bool?, Bool?, String?, String?, String?, String?) {
+    ) async throws -> (Bool, Bool?, Bool?, Bool?, Bool?, String?, String?, String?, String?, String?) {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: CheckEmailQuery(email: email),
@@ -46,6 +46,7 @@ class EntryRepository {
                                 data.checkEmail.user?.appleConnect,
                                 data.checkEmail.user?.facebookConnect,
                                 data.checkEmail.user?.googleConnect,
+                                data.checkEmail.user?.username,
                                 data.checkEmail.user?.profilePictureURL,
                                 appleSocialAccount?.email,
                                 facebookSocialAccount?.email,
@@ -65,7 +66,7 @@ class EntryRepository {
     public class func signIn(
         email: String,
         password: String
-    ) async throws -> (User?, String?) {
+    ) async throws -> (Int, String, String) {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: SignInQuery(
@@ -86,101 +87,17 @@ class EntryRepository {
                     }
                     switch data.signIn.statusCode {
                     case 200:
-                        guard let userData = data.signIn.user else {
-                            continuation.resume(throwing: GraphQLError.userIsNil)
-                            return
-                        }
-                        
                         guard let tokenData = data.signIn.token else {
                             continuation.resume(throwing: GraphQLError.tokenIsNil)
                             return
                         }
-                        let user = User(
-                         userId: userData.id,
-                         email: userData.email,
-                         password: userData.password,
-                         username: userData.username,
-                         dateOfBirth: userData.dateOfBirth,
-                         gender: Gender.allCases.first { gender in
-                             gender.getString() == userData.gender.rawValue
-                         } ?? .PREFERNOTTOSAY,
-                         profilePictureUrl: userData.profilePictureURL,
-                         selfIntro: userData.selfIntro ?? "",
-                         longitude: userData.longitude,
-                         latitude: userData.latitude,
-                         country: userData.country ?? "",
-                         administrativeArea: userData.administrativeArea ?? "",
-                         voiceContentURL: userData.voiceContentURL,
-                         googleConnect: userData.googleConnect,
-                         facebookConnect: userData.facebookConnect,
-                         appleConnect: userData.appleConnect,
-                         premium: userData.premium,
-                         goal: [],
-                         citizen: Array(userData.citizen?.map {
-                             Nationality(
-                                name: $0.countryName,
-                                code: $0.code
-                             )
-                         } ?? []),
- //                        lifePhoto: Array(userData.lifePhoto?.map {
- //                            LifePhoto(
- //                                contentUrl: $0.contentURL,
- //                                caption: $0.caption ?? "",
- //                                position: 0,
- //                                scale: 1,
- //                                offset: CGSize.zero
- //                            )
- //                        } ?? []),
-                         lifePhoto: [
-                             LifePhoto(
-                                 contentUrl: userData.lifePhoto?[0].contentURL ?? "",
-                                 caption: "",
-                                 position: 0,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 1,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 2,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 3,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 4,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             )
-                         ],
-                         socialAccount: [],
-                         ethnicity: Array(userData.ethnicity?.map {
-                             let item = $0.ethnicityType.rawValue
-                             return Ethnicity(
-                                 type: EthnicityType.allCases.first { et in
-                                     et.getString() == item
-                                 } ?? .ET0
-                             )
-                         } ?? [])
-                        )
-                        continuation.resume(returning: (user, tokenData))
+                        guard let userId = data.signIn.userId else {
+                            continuation.resume(throwing: GraphQLError.userIsNil)
+                            return
+                        }
+                        continuation.resume(returning: (200, userId, tokenData))
                     case 401:
-                        continuation.resume(throwing: GraphQLError.customError(data.signIn.message))
+                        continuation.resume(returning: (401, "", ""))
                     default:
                         continuation.resume(throwing: GraphQLError.customError(data.signIn.message))
                     }
@@ -194,7 +111,7 @@ class EntryRepository {
     public class func socialSignIn(
         email: String,
         platform: GraphQLEnum<GraphQLAPI.SocialAccountPlatform>
-    ) async throws -> (User?, String?) {
+    ) async throws -> (String, String) {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: SocialSignInQuery(
@@ -215,101 +132,17 @@ class EntryRepository {
                     }
                     switch data.socialSignIn.statusCode {
                     case 200:
-                        guard let userData = data.socialSignIn.user else {
-                            continuation.resume(throwing: GraphQLError.userIsNil)
-                            return
-                        }
-                        
                         guard let tokenData = data.socialSignIn.token else {
                             continuation.resume(throwing: GraphQLError.tokenIsNil)
                             return
                         }
-                        let user = User(
-                         userId: userData.id,
-                         email: userData.email,
-                         password: userData.password,
-                         username: userData.username,
-                         dateOfBirth: userData.dateOfBirth,
-                         gender: Gender.allCases.first { gender in
-                             gender.getString() == userData.gender.rawValue
-                         } ?? .PREFERNOTTOSAY,
-                         profilePictureUrl: userData.profilePictureURL,
-                         selfIntro: userData.selfIntro ?? "",
-                         longitude: userData.longitude,
-                         latitude: userData.latitude,
-                         country: userData.country ?? "",
-                         administrativeArea: userData.administrativeArea ?? "",
-                         voiceContentURL: userData.voiceContentURL,
-                         googleConnect: userData.googleConnect,
-                         facebookConnect: userData.facebookConnect,
-                         appleConnect: userData.appleConnect,
-                         premium: userData.premium,
-                         goal: [],
-                         citizen: Array(userData.citizen?.map {
-                             Nationality(
-                                name: $0.countryName,
-                                code: $0.code
-                             )
-                         } ?? []),
- //                        lifePhoto: Array(userData.lifePhoto?.map {
- //                            LifePhoto(
- //                                contentUrl: $0.contentURL,
- //                                caption: $0.caption ?? "",
- //                                position: 0,
- //                                scale: 1,
- //                                offset: CGSize.zero
- //                            )
- //                        } ?? []),
-                         lifePhoto: [
-                             LifePhoto(
-                                 contentUrl: userData.lifePhoto?[0].contentURL ?? "",
-                                 caption: "",
-                                 position: 0,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 1,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 2,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 3,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             ),
-                             LifePhoto(
-                                 contentUrl: "",
-                                 caption: "",
-                                 position: 4,
-                                 scale: 1,
-                                 offset: CGSize.zero
-                             )
-                         ],
-                         socialAccount: [],
-                         ethnicity: Array(userData.ethnicity?.map {
-                             let item = $0.ethnicityType.rawValue
-                             return Ethnicity(
-                                 type: EthnicityType.allCases.first { et in
-                                     et.getString() == item
-                                 } ?? .ET0
-                             )
-                         } ?? [])
-                        )
-                        continuation.resume(returning: (user, tokenData))
+                        guard let userId = data.socialSignIn.userId else {
+                            continuation.resume(throwing: GraphQLError.userIsNil)
+                            return
+                        }
+                        continuation.resume(returning: (userId, tokenData))
                     case 401:
-                        continuation.resume(throwing: GraphQLError.customError(data.socialSignIn.message))
+                        continuation.resume(throwing: GraphQLError.unauthorized)
                     default:
                         continuation.resume(throwing: GraphQLError.customError(data.socialSignIn.message))
                     }
@@ -322,7 +155,7 @@ class EntryRepository {
     
     public class func createUser(
         input: CreateUserInput
-    ) async throws -> (User?, String?) {
+    ) async throws -> (String, String) {
        return try await withCheckedThrowingContinuation { continuation in
            Network.shared.apollo.perform(
                mutation: CreateUserMutation(
@@ -341,101 +174,95 @@ class EntryRepository {
                    }
                    switch data.createUser.statusCode {
                    case 200:
-                       guard let userData = data.createUser.user else {
-                           continuation.resume(throwing: GraphQLError.userIsNil)
-                           return
-                       }
-                       
                        guard let tokenData = data.createUser.token else {
                            continuation.resume(throwing: GraphQLError.tokenIsNil)
                            return
                        }
-                       let user = User(
-                        userId: userData.id,
-                        email: userData.email,
-                        password: userData.password,
-                        username: userData.username,
-                        dateOfBirth: userData.dateOfBirth,
-                        gender: Gender.allCases.first { gender in
-                            gender.getString() == userData.gender.rawValue
-                        } ?? .PREFERNOTTOSAY,
-                        profilePictureUrl: userData.profilePictureURL,
-                        selfIntro: userData.selfIntro ?? "",
-                        longitude: userData.longitude,
-                        latitude: userData.latitude,
-                        country: userData.country ?? "",
-                        administrativeArea: userData.administrativeArea ?? "",
-                        voiceContentURL: userData.voiceContentURL,
-                        googleConnect: userData.googleConnect,
-                        facebookConnect: userData.facebookConnect,
-                        appleConnect: userData.appleConnect,
-                        premium: userData.premium,
-                        goal: [],
-                        citizen: Array(userData.citizen?.map {
-                            Nationality(
-                                name: $0.countryName,
-                                code: $0.code
-                            )
-                        } ?? []),
-//                        lifePhoto: Array(userData.lifePhoto?.map {
+//                       let user = User(
+//                        userId: userData.id,
+//                        email: userData.email,
+//                        password: userData.password,
+//                        username: userData.username,
+//                        dateOfBirth: userData.dateOfBirth,
+//                        gender: Gender.allCases.first { gender in
+//                            gender == userData.gender.value
+//                        }!,
+//                        profilePictureUrl: userData.profilePictureURL,
+//                        selfIntro: userData.selfIntro ?? "",
+//                        longitude: userData.longitude,
+//                        latitude: userData.latitude,
+//                        country: userData.country ?? "",
+//                        administrativeArea: userData.administrativeArea ?? "",
+//                        voiceContentURL: userData.voiceContentURL,
+//                        googleConnect: userData.googleConnect,
+//                        facebookConnect: userData.facebookConnect,
+//                        appleConnect: userData.appleConnect,
+//                        premium: userData.premium,
+//                        goal: [],
+//                        citizen: Array(userData.citizen?.map {
+//                            Nationality(
+//                                name: $0.countryName,
+//                                code: $0.code
+//                            )
+//                        } ?? []),
+////                        lifePhoto: Array(userData.lifePhoto?.map {
+////                            LifePhoto(
+////                                contentUrl: $0.contentURL,
+////                                caption: $0.caption ?? "",
+////                                position: 0,
+////                                scale: 1,
+////                                offset: CGSize.zero
+////                            )
+////                        } ?? []),
+//                        lifePhoto: [
 //                            LifePhoto(
-//                                contentUrl: $0.contentURL,
-//                                caption: $0.caption ?? "",
+//                                contentUrl: userData.lifePhoto?[0].contentURL ?? "",
+//                                caption: "",
 //                                position: 0,
 //                                scale: 1,
 //                                offset: CGSize.zero
+//                            ),
+//                            LifePhoto(
+//                                contentUrl: "",
+//                                caption: "",
+//                                position: 1,
+//                                scale: 1,
+//                                offset: CGSize.zero
+//                            ),
+//                            LifePhoto(
+//                                contentUrl: "",
+//                                caption: "",
+//                                position: 2,
+//                                scale: 1,
+//                                offset: CGSize.zero
+//                            ),
+//                            LifePhoto(
+//                                contentUrl: "",
+//                                caption: "",
+//                                position: 3,
+//                                scale: 1,
+//                                offset: CGSize.zero
+//                            ),
+//                            LifePhoto(
+//                                contentUrl: "",
+//                                caption: "",
+//                                position: 4,
+//                                scale: 1,
+//                                offset: CGSize.zero
 //                            )
-//                        } ?? []),
-                        lifePhoto: [
-                            LifePhoto(
-                                contentUrl: userData.lifePhoto?[0].contentURL ?? "",
-                                caption: "",
-                                position: 0,
-                                scale: 1,
-                                offset: CGSize.zero
-                            ),
-                            LifePhoto(
-                                contentUrl: "",
-                                caption: "",
-                                position: 1,
-                                scale: 1,
-                                offset: CGSize.zero
-                            ),
-                            LifePhoto(
-                                contentUrl: "",
-                                caption: "",
-                                position: 2,
-                                scale: 1,
-                                offset: CGSize.zero
-                            ),
-                            LifePhoto(
-                                contentUrl: "",
-                                caption: "",
-                                position: 3,
-                                scale: 1,
-                                offset: CGSize.zero
-                            ),
-                            LifePhoto(
-                                contentUrl: "",
-                                caption: "",
-                                position: 4,
-                                scale: 1,
-                                offset: CGSize.zero
-                            )
-                        ],
-                        socialAccount: [],
-                        ethnicity: Array(userData.ethnicity?.map {
-                            let item = $0.ethnicityType.rawValue
-                            return Ethnicity(
-                                type: EthnicityType.allCases.first { et in
-                                    et.getString() == item
-                                } ?? .ET0
-                            )
-                        } ?? [])
-                       )
-                       continuation.resume(returning: (user, tokenData))
+//                        ],
+//                        socialAccount: [],
+//                        ethnicity: Array(userData.ethnicity?.map {
+//                            Ethnicity(type: $0.ethnicityType.value!)
+//                        } ?? [])
+//                       )
+                       guard let userData = data.createUser.userId else {
+                           continuation.resume(throwing: GraphQLError.userIsNil)
+                           return
+                       }
+                       continuation.resume(returning: (userData, tokenData))
                    case 401:
-                       continuation.resume(throwing: GraphQLError.customError(data.createUser.message))
+                       continuation.resume(throwing: GraphQLError.unauthorized)
                    default:
                        continuation.resume(throwing: GraphQLError.customError(data.createUser.message))
                    }

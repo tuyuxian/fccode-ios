@@ -29,7 +29,7 @@ struct Banner {
         }
     }
     
-    let title: String
+    let title: String?
     let type: BannerType
 }
 
@@ -50,7 +50,7 @@ final class BannerManager: ObservableObject {
     }
     
     public func pop(
-        title: String,
+        title: String?,
         type: Banner.BannerType
     ) {
         self.banner = .init(
@@ -100,7 +100,7 @@ struct BannerContent: View {
         .transition(.opacity)
         .onAppear {
             DispatchQueue.main.asyncAfter(
-                deadline: .now() + 2  // last for 2 seconds
+                deadline: .now() + 3  // last for 3 seconds
             ) {
                 withAnimation {
                     bm.dismiss()

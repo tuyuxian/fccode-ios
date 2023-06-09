@@ -12,61 +12,61 @@ struct PreferenceGoalView: View {
     @Environment(\.presentationMode) var presentationMode
     /// Global banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Flag to show up save button
-    @State private var showSaveButton: Bool = false
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    /// Goal option list
-    let goalOptions: [String] = [
-        "Not sure yet",
-        "Serious relationship",
-        "Casual relationship",
-        "Situation relationship",
-        "Meet new friends"
-    ]
+    /// Observed preference goal view model
+    @StateObject var vm = PreferenceGoalViewModel()
     /// Handler for save button on tap
-    private func saveButtonOnTap() {
-        // TODO(Sam): integrate graphql
-        presentationMode.wrappedValue.dismiss()
+    private func buttonOnTap() {
+        Task {
+            await vm.buttonOnTap()
+            guard vm.state == .complete else { return }
+            presentationMode.wrappedValue.dismiss()
+        }
     }
     
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
             childTitle: "Goal",
-            showSaveButton: $showSaveButton,
-            isLoading: $isLoading,
-            action: saveButtonOnTap
+            showSaveButton: $vm.showSaveButton,
+            isLoading: .constant(vm.state == .loading),
+            action: buttonOnTap
         ) {
             Box {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(
-                        items: goalOptions,
+                        items: vm.goalOptions,
                         selectedIdList: Array(
-                            vm.goal.map { $0.type.getString() }
+                            vm.preference.goals.count == 0
+                            ? ["Not sure yet"]
+                            : vm.preference.goals.map { $0.type.getString() }
                         ),
                         callback: { list in
-                            vm.goal.removeAll()
+                            vm.preference.goals.removeAll()
                             for item in list {
-                                vm.goal.append(
-                                    Goal(
-                                        type: GoalType.allCases.first(where: {
-                                            $0.getString() == item
-                                        }) ?? .GT0
+                                if let gt = vm.getType(item) {
+                                    vm.preference.goals.append(
+                                        Goal(type: gt)
                                     )
-                                )
+                                }
                             }
                         }
                     )
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.goal) { _ in
-                        showSaveButton = true
+                    .onChange(of: vm.preference.goals) { _ in
+                        vm.showSaveButton = true
                     }
                     
                     Spacer()
+                }
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
                 }
             }
         }
@@ -75,6 +75,7 @@ struct PreferenceGoalView: View {
 
 struct PreferenceGoalView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceGoalView(vm: ProfileViewModel())
+        PreferenceGoalView()
+            .environmentObject(BannerManager())
     }
 }

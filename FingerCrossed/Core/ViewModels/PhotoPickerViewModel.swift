@@ -23,7 +23,7 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     
     let notImageAlertTitle: String = "Only image is allowed"
     
-    let notImageAlertMessage: String = "In this situation, only image is allowwed in Finger Crossed. "
+    let notImageAlertMessage: String = "In this situation, only image is allowed in Finger Crossed."
     
     let photoPermissionComfirmationDialogMessage: String = "To access all of your photos in Finger Crossed, allow access to your full library in device setting."
     

@@ -7,91 +7,16 @@
 
 import Foundation
 import PhotosUI
+import SwiftUI
 
 class ProfileViewModel: ObservableObject, InputProtocol {
-    @Published var user: User = User(
-        userId: "123123123",
-        email: "test@gmail.com",
-        password: "123123",
-        username: "Test User",
-        dateOfBirth: "2000-01-10T17:30:15+05:30",
-        gender: .MALE,
-        profilePictureUrl: "https://i.pravatar.cc/150?img=6",
-        // swiftlint: disable line_length
-        selfIntro: "Hello! I'm ChatGPT, a language model designed to understand and generate human-like language.",
-        // swiftlint: enable line_length
-        longitude: 123.0,
-        latitude: 123.0,
-        country: "USA",
-        administrativeArea: "AZ",
-        voiceContentURL: "",
-        googleConnect: false,
-        facebookConnect: false,
-        appleConnect: false,
-        premium: false,
-        goal: [],
-        citizen: [],
-        lifePhoto: [
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=6",
-                caption: "123",
-                position: 0,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=7",
-                caption: "123",
-                position: 1,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=8",
-                caption: "123",
-                position: 2,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=9",
-                caption: "",
-                position: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "",
-                caption: "",
-                position: 4,
-                scale: 1,
-                offset: CGSize.zero
-            )
-        ],
-        socialAccount: [],
-        ethnicity: []
-    )
     
-    @Published var distance: Int = 0
-    @Published var ethnicity: [Ethnicity] = [Ethnicity(type: .ET0)]
-    @Published var goal: [Goal] = [Goal(type: .GT0)]
-    @Published var sexOrientation: [SexOrientation] = [SexOrientation(type: .SO1)]
-    @Published var ageFrom: Int = 18
-    @Published var ageTo: Int = 100
-    @Published var nationality: [Nationality] = []
+    @AppStorage("UserId") var userId: String = ""
     
-    // MARK: State Management
-    @Published var currentPassword: String = ""
-    @Published var newPassword: String = ""
-    @Published var newPasswordConfirmed: String = ""
-    
-    // MARK: Condition Variables for button
-    @Published var isNewPasswordSatisfied: Bool = false
-    @Published var isCurrentPasswordMatched: Bool = false
-    @Published var isNewPasswordLengthSatisfied: Bool = false
-    @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
-    @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
-    @Published var isNewPasswordMatched: Bool = false
+    @Published var state: ViewStatus = .none
+    @Published var errorMessage: String?
+
+    @Published var user: User?
     
     // MARK: Life Photo Sheet
     @Published var currentDragLifePhoto: LifePhoto?
@@ -102,15 +27,46 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var selectedLifePhoto: LifePhoto?
     @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
+    @Published var selectedImageData: Data?
+
+    deinit {
+        print("-> profile view model deinit")
+    }
+}
+
+extension ProfileViewModel {
+    public func fetchUser() {
+        DispatchQueue.main.async {
+            self.state = .loading
+        }
+        Task {
+            do {
+                let user = try await GraphAPI.getUserById(userId: self.userId)
+                guard let user = user else {
+                    DispatchQueue.main.async {
+                        self.state = .error
+                        self.errorMessage = "Something went wrong"
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.user = user
+                    self.state = .complete
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.state = .error
+                    self.errorMessage = "Something went wrong"
+                }
+                print(error.localizedDescription)
+            }
+        }
+    }
     
-    public func getDateString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-        
-        if let date = ISO8601DateFormatter().date(from: self.user.dateOfBirth) {
-            return dateFormatter.string(from: date)
-        } else {
-            return "Invalid timestamp"
+    public func dummyUser() {
+        DispatchQueue.main.async {
+            self.user = User.MockUser
+            self.state = .complete
         }
     }
 }

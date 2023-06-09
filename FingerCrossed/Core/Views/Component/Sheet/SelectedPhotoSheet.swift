@@ -1,5 +1,5 @@
 //
-//  SelectedPhotoListSheet.swift
+//  SelectedPhotoSheet.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 6/2/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Photos
 
-struct SelectedPhotoListSheet: View {
+struct SelectedPhotoSheet: View {
     @Environment(\.presentationMode) private var presentationMode
     
     let columns = [GridItem(.adaptive(minimum: 100))]
@@ -22,9 +22,7 @@ struct SelectedPhotoListSheet: View {
     var body: some View {
         Sheet(
             size: [.fraction(0.6)],
-            showDragIndicator: true,
-            hasHeader: false,
-            content: {
+            header: {
                 VStack(spacing: 0) {
                     Text("Selected Photos")
                         .fontTemplate(.h2Medium)
@@ -35,11 +33,11 @@ struct SelectedPhotoListSheet: View {
                         .foregroundColor(Color.text)
                         .frame(height: 14)
                 }
-                .padding(.top, 15) // 30 - 15
-                .padding(.bottom, 30)
-                
+            },
+            content: {
                 LimitedPhotoPicker(isPresented: $limitedPhotoPicker.showLimitedPicker)
                     .frame(width: 0, height: 0)
+                    .padding(.top, 30)
                 
                 ScrollView {
                     LazyVGrid(columns: columns) {
@@ -136,8 +134,8 @@ private var uiImage: Binding<UIImage?> {
     Binding.constant(UIImage())
 }
 
-struct SelectedPhotoListSheet_Previews: PreviewProvider {
+struct SelectedPhotoSheet_Previews: PreviewProvider {
     static var previews: some View {
-        SelectedPhotoListSheet(selectedImage: uiImage)
+        SelectedPhotoSheet(selectedImage: uiImage)
     }
 }

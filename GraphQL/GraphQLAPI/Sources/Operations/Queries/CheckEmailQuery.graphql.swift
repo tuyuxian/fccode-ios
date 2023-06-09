@@ -17,6 +17,7 @@ public class CheckEmailQuery: GraphQLQuery {
           user {
             __typename
             password
+            username
             profilePictureURL
             appleConnect
             facebookConnect
@@ -83,6 +84,7 @@ public class CheckEmailQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("password", String?.self),
+          .field("username", String.self),
           .field("profilePictureURL", String?.self),
           .field("appleConnect", Bool.self),
           .field("facebookConnect", Bool.self),
@@ -91,6 +93,7 @@ public class CheckEmailQuery: GraphQLQuery {
         ] }
 
         public var password: String? { __data["password"] }
+        public var username: String { __data["username"] }
         public var profilePictureURL: String? { __data["profilePictureURL"] }
         public var appleConnect: Bool { __data["appleConnect"] }
         public var facebookConnect: Bool { __data["facebookConnect"] }

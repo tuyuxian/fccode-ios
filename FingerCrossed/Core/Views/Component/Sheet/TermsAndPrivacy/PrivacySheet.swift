@@ -14,30 +14,29 @@ struct PrivacySheet: View {
     var body: some View {
         Sheet(
             size: [.large],
-            hasHeader: false,
             hasFooter: false,
+            header: {
+                ZStack(alignment: .top) {
+                    Text("Privacy Policy")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 34)
+                    
+                    Button("Close") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(Color.gold)
+                    .frame(height: 34, alignment: .center)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .trailing
+                    )
+                }
+                .padding(.top, 15) // 30 - 15
+            },
             content: {
                 VStack(spacing: 0) {
-                    ZStack(alignment: .top) {
-                        Text("Privacy")
-                            .fontTemplate(.h2Medium)
-                            .foregroundColor(Color.text)
-                            .frame(height: 34)
-                        
-                        Button("Close") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                        .fontTemplate(.pMedium)
-                        .foregroundColor(Color.gold)
-                        .frame(height: 34, alignment: .center)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .trailing
-                        )
-                    }
-                    .padding(.top, 15) // 30 - 15
-                    .padding(.bottom, 30)
-                    
                     ScrollView {
                         VStack(
                             alignment: .leading,
@@ -46,6 +45,7 @@ struct PrivacySheet: View {
                             Privacy()
                         }
                     }
+                    .padding(.top, 30)
                     .scrollIndicators(.hidden)
                 }
             },

@@ -11,7 +11,6 @@ import PhotosUI
 
 struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
-    @Binding var isPresented: Bool // close the modal view
 
     func makeUIViewController(context: Context) -> some UIViewController {
     var configuration = PHPickerConfiguration(photoLibrary: PHPhotoLibrary.shared())

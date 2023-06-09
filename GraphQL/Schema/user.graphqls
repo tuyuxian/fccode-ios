@@ -36,12 +36,11 @@ extend type Query {
   getUserById(userId: ID!): CRUDResponse!
 }
 
-# Need to have a response format
 type SignInResponse implements Response {
   status: String!
   statusCode: Int!
   message: String!
-  user: User
+  userId: ID
   token: String
 }
 

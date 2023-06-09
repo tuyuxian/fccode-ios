@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct BasicInfoView: View {
-    
-    @ObservedObject var vm: ProfileViewModel
-    
-    @State private var selectedTab: BasicInfoTabState = .edit
-    
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    @EnvironmentObject var profileVm: ProfileViewModel
+    /// Observe basic info view model
+    @StateObject var vm = BasicInfoViewModel()
+        
     var body: some View {
-        ZStack {
-            ContainerWithHeaderView(
-                parentTitle: "Profile",
-                childTitle: "Basic Info",
-                showSaveButton: .constant(false),
-                isLoading: .constant(false)
-            ) {
+        ContainerWithHeaderView(
+            parentTitle: "Profile",
+            childTitle: "Basic Info",
+            showSaveButton: .constant(false),
+            isLoading: .constant(false)
+        ) {
+            ZStack {
                 VStack(spacing: 0) {
-                    BoxTab(isSelected: $selectedTab)
+                    BoxTab(isSelected: $vm.selectedTab)
                         .zIndex(1)
                     Box {
-                        switch selectedTab {
+                        switch vm.selectedTab {
                         case .edit:
                             BasicInfoContent(
                                 vm: vm,
@@ -33,28 +34,52 @@ struct BasicInfoView: View {
                                     ChildView(
                                          label: "Voice Message",
                                          icon: "Edit",
-                                         subview: AnyView(
-                                            VoiceMessageActionSheet()
-                                         ),
+                                         subview: {
+                                             vm.user?.voiceContentURL == ""
+                                             ? AnyView(VoiceMessageEditSheet())
+                                             : AnyView(
+                                                VoiceMessageActionSheet(
+                                                    vm: vm
+                                                )
+                                             )
+                                         }(),
                                          preview:
-                                            vm.user.voiceContentURL == ""
-                                            // swiftlint: disable line_length
-                                            ? AnyView(PreviewText(text: "Add a voice message to your profile"))
-                                            // swiftlint: enable line_length
+                                            vm.user?.voiceContentURL == ""
+                                            ? AnyView(
+                                                PreviewText(
+                                                    text: "Add a voice message to your profile"
+                                                )
+                                            )
                                             : AnyView(EmptyView()),
                                          hasSubview: true
                                     ),
                                     ChildView(
                                         label: "Self Introduction",
                                         icon: "Edit",
-                                        subview: AnyView(SelfIntroEditSheet(text: vm.user.selfIntro!)),
-                                        preview: AnyView(PreviewText(text: vm.user.selfIntro!)),
+                                        subview: AnyView(
+                                            SelfIntroEditSheet(
+                                                vm: vm,
+                                                text: vm.user?.selfIntro ?? ""
+                                            )
+                                        ),
+                                        preview: AnyView(
+                                            PreviewText(
+                                                text: {
+                                                    if let selfIntro = vm.user?.selfIntro {
+                                                        if selfIntro != ""{
+                                                            return selfIntro
+                                                        }
+                                                    }
+                                                    return "Tell people more about you!"
+                                                }()
+                                            )
+                                        ),
                                         hasSubview: true
                                     ),
                                     ChildView(
                                         label: "Name",
                                         icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.user.username)),
+                                        preview: AnyView(PreviewText(text: vm.user?.username ?? "")),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -70,7 +95,11 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Gender",
                                         icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.user.gender.getString())),
+                                        preview: AnyView(
+                                            PreviewText(
+                                                text: vm.user?.gender.getString() ?? ""
+                                            )
+                                        ),
                                         hasSubview: false
                                     ),
                                     ChildView(
@@ -78,11 +107,12 @@ struct BasicInfoView: View {
                                         icon: "InfoCircle",
                                         preview: AnyView(
                                             PreviewText(
-                                                text: String(
-                                                    vm.user.citizen.reduce("") { result, nationality in
-                                                        return result + nationality.name + ", "
-                                                    }.dropLast(2)
-                                                )
+                                                text:
+                                                    String(
+                                                        vm.user?.citizen.reduce("") { result, nationality in
+                                                            return result + nationality.name + ", "
+                                                        }.dropLast(2) ?? ""
+                                                    )
                                             )
                                         ),
                                         hasSubview: false
@@ -92,17 +122,19 @@ struct BasicInfoView: View {
                                         icon: "InfoCircle",
                                         preview: AnyView(
                                             PreviewText(
-                                                text: String(
-                                                    vm.user.ethnicity.reduce("") { result, ethnicity in
-                                                        return result + ethnicity.type.getString() + ", "
-                                                    }.dropLast(2)
-                                                )
+                                                text:
+                                                    String(
+                                                        vm.user?.ethnicity.reduce("") { result, ethnicity in
+                                                            return result + ethnicity.type.getString() + ", "
+                                                        }.dropLast(2) ?? ""
+                                                    )
                                             )
                                         ),
                                         hasSubview: false
                                     )
                                  ]
                             )
+                            .environmentObject(bm)
                         case .preview:
                             CandidateDetailView(
                                 candidateModel: CandidateModel(
@@ -136,30 +168,42 @@ struct BasicInfoView: View {
                     .padding(.top, -24) // offset 24px to hidden in tab
                 }
             }
+            .appAlert($vm.appAlert)
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.bannerMessage,
+                        type: vm.bannerType
+                    )
+                    vm.state = .none
+                }
+            }
+            .task {
+                print("basic info appear")
+                self.vm.user = profileVm.user
+            }
         }
     }
 }
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(
-            vm: ProfileViewModel()
-        )
+        BasicInfoView()
+            .environmentObject(BannerManager())
+            .environmentObject(ProfileViewModel())
     }
 }
 
 private struct BasicInfoContent: View {
+    
+    @EnvironmentObject var bm: BannerManager
 
-    @ObservedObject var vm: ProfileViewModel
+    @ObservedObject var vm: BasicInfoViewModel
     
     @State var basicInfoOptions: [ChildView]
-    
-    @State private var selectedSheet: BasicInfoSheetView?
-    
-    @State private var showAlert: Bool = false
         
     var body: some View {
-        GeometryReader { proxy in
+        GeometryReader { _ in
             ScrollView {
                 VStack(spacing: 0) {
                     VStack(
@@ -173,17 +217,11 @@ private struct BasicInfoContent: View {
                                 .frame(height: 24)
                             Spacer()
                         }
-                        LifePhotoStack(vm: vm)
-                            .frame(height: (proxy.size.width - 62)/2)
+//                        LifePhotoStack(vm: ProfileViewModel())
+//                            .frame(height: (proxy.size.width - 62)/2)
                     }
-                    .padding(
-                        EdgeInsets(
-                            top: 16,
-                            leading: 24,
-                            bottom: 16,
-                            trailing: 24
-                        )
-                    )
+                    .padding(.vertical, 16)
+                    .padding(.horizontal, 24)
                     
                     ForEach(
                         Array(basicInfoOptions.enumerated()),
@@ -194,29 +232,16 @@ private struct BasicInfoContent: View {
                                 .padding(.horizontal, 24)
                             
                             HStack(spacing: 0) {
-                                if childView.hasSubview {
-                                    EditableRow(
-                                        row: {
-                                            ListRow(
-                                                label: childView.label,
-                                                icon: childView.icon
-                                            ) {
-                                                childView.preview
-                                            }
-                                        },
-                                        selectedSheet: $selectedSheet,
-                                        sheetContent: childView.subview
-                                    )
-                                } else {
-                                    UneditableRow(
-                                        showAlert: $showAlert
+                                Button {
+                                    childView.hasSubview
+                                    ? vm.editableRowOnTap(view: childView.subview)
+                                    : vm.uneditableRowOnTap()
+                                } label: {
+                                    ListRow(
+                                        label: childView.label,
+                                        icon: childView.icon
                                     ) {
-                                        ListRow(
-                                            label: childView.label,
-                                            icon: childView.icon
-                                        ) {
-                                            childView.preview
-                                        }
+                                        childView.preview
                                     }
                                 }
                             }
@@ -227,76 +252,13 @@ private struct BasicInfoContent: View {
             .scrollIndicators(.hidden)
             .padding(.top, 38) // 54 - 16 (Life Photo Stack)
         }
-        .sheet(item: $selectedSheet) { val in
+        .sheet(item: $vm.selectedSheet) { val in
             val.sheetContent
         }
     }
 }
 
-private struct UneditableRow<Content: View>: View {
-    
-    @EnvironmentObject var bm: BannerManager
-    
-    @Binding var showAlert: Bool
-        
-    @ViewBuilder var row: Content
-    
-    var body: some View {
-        Button {
-            showAlert = true
-        } label: {
-            row
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text(
-                    "Do you really want to change it?"
-                )
-                .font(
-                    Font.system(
-                        size: 18,
-                        weight: .medium
-                    )
-                ),
-                message: Text(
-                    // swiftlint: disable line_length
-                    "To provide a better overall experience, users are only allowed to change this information once."
-                    // swiftlint: enable line_length
-                ),
-                primaryButton: .destructive(
-                    Text("Yes")
-                ) {
-                    bm.banner = .init(
-                        title: "We've sent a reset link to your email!",
-                        type: .info
-                    )
-                },
-                secondaryButton: .cancel(
-                    Text("No")
-                )
-            )
-        }
-    }
-}
-
-private struct EditableRow<Row: View>: View {
-        
-    @ViewBuilder var row: Row
-    
-    @Binding var selectedSheet: BasicInfoSheetView?
-    
-    @State var sheetContent: AnyView
-    
-    var body: some View {
-        Button {
-            selectedSheet = BasicInfoSheetView(sheetContent: sheetContent)
-        } label: {
-            row
-        }
-    }
-}
-
-private struct BasicInfoSheetView: Identifiable {
+struct BasicInfoSheetView: Identifiable {
     let id = UUID()
     let sheetContent: AnyView
 }

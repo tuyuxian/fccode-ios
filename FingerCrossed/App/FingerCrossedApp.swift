@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct FingerCrossedApp: App {
     
-    @StateObject var userState: UserStateViewModel = UserStateViewModel()
+    @StateObject var userManager: UserStateManager = UserStateManager()
     
     @StateObject var bannerManager: BannerManager = BannerManager()
     
@@ -20,26 +20,26 @@ struct FingerCrossedApp: App {
         
         WindowGroup {
             ZStack {
-                switch userState.viewState {
+                switch userManager.viewState {
                 case .landing:
                     LandingView()
                         .transition(.opacity)
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 withAnimation(.easeInOut) {
-                                    userState.viewState = userState.isLogin ? .main : .onboarding
+                                    userManager.viewState = userManager.isLogin ? .main : .onboarding
                                 }
                             }
                         }
                         .preferredColorScheme(.light)
                 case .onboarding:
-                    EntryView(userState: userState)
+                    EntryView(usm: userManager)
                         .preferredColorScheme(.light)
                         .environmentObject(bannerManager)
                         .environmentObject(pageSpinnerManager)
                 case .main:
-                    TabBar(userState: userState)
-                        .environmentObject(userState)
+                    TabBar()
+                        .environmentObject(userManager)
                         .environmentObject(bannerManager)
                 }
 

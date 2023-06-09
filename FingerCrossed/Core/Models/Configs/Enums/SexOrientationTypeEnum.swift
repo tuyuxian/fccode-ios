@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum SexOrientationType: CaseIterable {
+public enum SexOrientationType: CaseIterable, Codable {
     case SO1
     case SO2
     case SO3
@@ -16,13 +16,13 @@ public enum SexOrientationType: CaseIterable {
     public func getString() -> String {
         switch self {
         case .SO1:
-            return "Open to all"
+            return "Everyone"
         case .SO2:
-            return "Heterosexuality"
+            return "Man"
         case .SO3:
-            return "Bisexuality"
+            return "Woman"
         case .SO4:
-            return "Homosexuality"
+            return "Nonbinary people"
         }
     }
 }

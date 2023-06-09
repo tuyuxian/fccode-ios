@@ -12,7 +12,7 @@ struct SignUpLocationView: View {
     /// Global banner
     @EnvironmentObject var bm: BannerManager
     /// Observed user state view model
-    @ObservedObject var userState: UserStateViewModel
+    @ObservedObject var usm: UserStateManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loction permission alert
@@ -41,13 +41,13 @@ struct SignUpLocationView: View {
         let locationDataManager = LocationDataManager()
         Task {
             do {
-                try await Task.sleep(nanoseconds: 300_000_000)
+                try await Task.sleep(nanoseconds: 500_000_000)
                 vm.user.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0
                 vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
                 vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
                 vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
-                let url = try await MediaRepository.getPresignedPutUrl(
-                    GraphQLEnum.case(.image)
+                let url = try await GraphAPI.getPresignedPutUrl(
+                    .case(.image)
                 )
                 let result = try await AWSS3().uploadImage(
                     vm.selectedImage?.jpegData(compressionQuality: 0.1),
@@ -63,14 +63,14 @@ struct SignUpLocationView: View {
                         offset: CGSize.zero
                     )
                 )
-                let (user, token) = try await EntryRepository.createUser(
+                let (userId, token) = try await GraphAPI.createUser(
                     input: vm.user.getGraphQLInput()
                 )
                 isLoading.toggle()
-                userState.user = user
-                userState.token = token
-                userState.isLogin = true
-                userState.viewState = .main
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
             } catch {
                 isLoading.toggle()
                 print(error.localizedDescription)
@@ -139,7 +139,7 @@ struct SignUpLocationView: View {
                 Spacer()
                 
                 PrimaryButton(
-                    label: "Done",
+                    label: "Sure",
                     action: buttonOnTap,
                     isTappable: .constant(true),
                     isLoading: $isLoading
@@ -173,7 +173,7 @@ struct SignUpLocationView: View {
 struct SignUpLocationView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpLocationView(
-            userState: UserStateViewModel(),
+            usm: UserStateManager(),
             vm: EntryViewModel()
         )
     }

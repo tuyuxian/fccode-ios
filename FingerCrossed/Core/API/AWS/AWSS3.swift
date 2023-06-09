@@ -171,3 +171,63 @@ class AWSS3 {
         return URL(string: cdnUrl)
     }
 }
+
+extension AWSS3 {
+    
+    public func deleteObject(
+        presignedURL: String
+    ) async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            deleteObjectImpl(
+                presignedURL: URL(string: presignedURL)!
+            ) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    private func deleteObjectImpl(
+        presignedURL remoteURL: URL,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        var request = URLRequest(url: remoteURL)
+        request.httpMethod = "DELETE"
+        let deleteTask = URLSession.shared.dataTask(with: request) { _, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(
+                    .failure(
+                        NSError(
+                            domain: "Invalid response",
+                            code: 0,
+                            userInfo: nil
+                        )
+                    )
+                )
+                return
+            }
+            
+            if httpResponse.statusCode == 204 { // Successful deletion
+                completion(.success(()))
+            } else {
+                let error = NSError(
+                    domain: "Delete failed with status code \(httpResponse.statusCode)",
+                    code: httpResponse.statusCode,
+                    userInfo: nil
+                )
+                completion(.failure(error))
+            }
+        }
+        deleteTask.resume()
+    }
+
+}

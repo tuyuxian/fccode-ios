@@ -17,7 +17,8 @@ public struct CreateLifePhotoInput: InputObject {
     caption: GraphQLNullable<String> = nil,
     position: Int,
     scale: Double,
-    offset: Double,
+    offsetX: Double,
+    offsetY: Double,
     lifePhotoOwnerID: GraphQLNullable<ID> = nil
   ) {
     __data = InputDict([
@@ -25,7 +26,8 @@ public struct CreateLifePhotoInput: InputObject {
       "caption": caption,
       "position": position,
       "scale": scale,
-      "offset": offset,
+      "offsetX": offsetX,
+      "offsetY": offsetY,
       "lifePhotoOwnerID": lifePhotoOwnerID
     ])
   }
@@ -50,9 +52,14 @@ public struct CreateLifePhotoInput: InputObject {
     set { __data["scale"] = newValue }
   }
 
-  public var offset: Double {
-    get { __data["offset"] }
-    set { __data["offset"] = newValue }
+  public var offsetX: Double {
+    get { __data["offsetX"] }
+    set { __data["offsetX"] = newValue }
+  }
+
+  public var offsetY: Double {
+    get { __data["offsetY"] }
+    set { __data["offsetY"] = newValue }
   }
 
   public var lifePhotoOwnerID: GraphQLNullable<ID> {

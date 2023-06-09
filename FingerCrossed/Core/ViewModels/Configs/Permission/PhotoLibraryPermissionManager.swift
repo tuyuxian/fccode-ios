@@ -16,11 +16,9 @@ final class PhotoLibraryPermissionManager {
     let alertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
     
     typealias PhotoAuthStatus = (isAllowed: Bool, isLimited: Bool)
-
-    public var authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
     
     public var permissionStatus: PermissionStatus {
-        switch PHPhotoLibrary.authorizationStatus() {
+        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
         case .authorized:
             return .authorized
         case .notDetermined:

@@ -39,12 +39,12 @@ class EntryViewModel: ObservableObject, InputProtocol {
     
     // MARK: State Management
     @Published var user: User = User(
-        userId: "0",
+        id: "",
         email: "",
         password: "",
         username: "",
         dateOfBirth: "",
-        gender: .MALE,
+        gender: .male,
         profilePictureUrl: "",
         selfIntro: "",
         longitude: 0,
@@ -111,12 +111,12 @@ class EntryViewModel: ObservableObject, InputProtocol {
     
     public func reinit() {
         self.user = User(
-            userId: "0",
+            id: "",
             email: "",
             password: "",
             username: "",
             dateOfBirth: "",
-            gender: .MALE,
+            gender: .male,
             profilePictureUrl: "",
             selfIntro: "",
             longitude: 0,

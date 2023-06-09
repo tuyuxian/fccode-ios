@@ -9,7 +9,9 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @ObservedObject var vm: ProfileViewModel
+    @EnvironmentObject var vm: ProfileViewModel
+        
+    @EnvironmentObject var bm: BannerManager
     
     var body: some View {
         ContainerWithHeaderView(
@@ -23,11 +25,22 @@ struct SettingsView: View {
                     childViewList: [
                         ChildView(
                             label: "Account",
-                            subview: AnyView(SettingsAccountView(vm: vm))
+                            subview: AnyView(
+                                SettingsAccountView(
+                                    appleConnect: vm.user?.appleConnect ?? false,
+                                    googleConnect: vm.user?.googleConnect ?? false
+                                )
+                                .environmentObject(bm)
+                            )
                         ),
                         ChildView(
                             label: "Password",
-                            subview: AnyView(SettingsResetPasswordView(vm: vm))
+                            subview: AnyView(
+                                SettingsResetPasswordView(
+                                    hasPassword: vm.user?.password != "" && vm.user?.password != nil
+                                )
+                                .environmentObject(bm)
+                            )
                         )
                     ]
                 )
@@ -39,8 +52,8 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(
-            vm: ProfileViewModel()
-        )
+        SettingsView()
+            .environmentObject(ProfileViewModel())
+            .environmentObject(BannerManager())
     }
 }

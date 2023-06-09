@@ -35,7 +35,7 @@ struct ResetPasswordOTPView: View {
         isLoading.toggle()
         Task {
             do {
-                let valid = try await EntryRepository.verifyOTP(
+                let valid = try await GraphAPI.verifyOTP(
                     email: vm.user.email,
                     userOTP: otp
                 )
@@ -61,7 +61,7 @@ struct ResetPasswordOTPView: View {
     private func resendOnTap() {
         Task {
             do {
-                let success = try await EntryRepository.requestOTP(
+                let success = try await GraphAPI.requestOTP(
                     email: vm.user.email
                 )
                 guard success else {

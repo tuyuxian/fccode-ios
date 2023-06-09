@@ -9,41 +9,24 @@ import SwiftUI
 import AVFoundation
 
 struct VoiceMessageActionSheet: View {
-        
-    @State var showEditSheet: Bool = false
     
-    @State var showAlert: Bool = false
+    @ObservedObject var vm: BasicInfoViewModel
     
-    @State var hasVoiceMessage: Bool = false
-        
-    let audioPermissionManager = AudioPermissionManager()
-    
-    private func buttonOnTap() {
-        switch audioPermissionManager.permissionStatus {
-        case .notDetermined:
-            audioPermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showEditSheet = true
-            }
-        case .denied:
-            showAlert.toggle()
-        default:
-            showEditSheet = true
-        }
-    }
-    
+    @State private var showEditSheet: Bool = false
+
     var body: some View {
         Sheet(
             size: [.height(138)],
             hasHeader: false,
             hasFooter: false,
+            header: {},
             content: {
                 VStack(
                     alignment: .leading,
                     spacing: 30
                 ) {
                     Button {
-                        // TODO(Sam): add delete method
+                        vm.voiceDeleteOnTap()
                     } label: {
                         HStack(spacing: 20) {
                             Image("Trash")
@@ -58,7 +41,7 @@ struct VoiceMessageActionSheet: View {
                     }
                     
                     Button {
-                        buttonOnTap()
+                        showEditSheet.toggle()
                     } label: {
                         HStack(spacing: 20) {
                             Image("Edit")
@@ -75,33 +58,17 @@ struct VoiceMessageActionSheet: View {
                     }
                 }
                 .padding(.top, 15) // 30 - 15
+                .appAlert($vm.appAlert)
             },
             footer: {}
         )
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title:
-                    Text(audioPermissionManager.alertTitle)
-                        .font(Font.system(size: 18, weight: .medium)),
-                message:
-                    Text(audioPermissionManager.alertMessage)
-                        .font(Font.system(size: 12, weight: .medium)),
-                primaryButton: .default(Text("Cancel")),
-                secondaryButton: .default(
-                    Text("Settings"),
-                    action: {
-                        UIApplication.shared.open(
-                            URL(string: UIApplication.openSettingsURLString)!
-                        )
-                    }
-                )
-            )
-        }
     }
 }
 
 struct VoiceMessageActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        VoiceMessageActionSheet()
+        VoiceMessageActionSheet(
+            vm: BasicInfoViewModel()
+        )
     }
 }

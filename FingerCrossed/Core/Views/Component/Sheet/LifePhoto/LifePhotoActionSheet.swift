@@ -59,6 +59,7 @@ struct LifePhotoActionSheet: View {
             size: [.height(138)],
             hasHeader: false,
             hasFooter: false,
+            header: {},
             content: {
                 VStack(
                     alignment: .leading,

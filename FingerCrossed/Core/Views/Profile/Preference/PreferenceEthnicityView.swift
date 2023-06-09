@@ -10,68 +10,63 @@ import SwiftUI
 struct PreferenceEthnicityView: View {
     /// View controller
     @Environment(\.presentationMode) var presentationMode
-    /// Global banner
+    /// Bannner
     @EnvironmentObject var bm: BannerManager
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Flag to show up save button
-    @State private var showSaveButton: Bool = false
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    /// Ethnicity option list
-    let ethnicityOptions: [String] = [
-        "Open to all",
-        "American Indian",
-        "Black/African American",
-        "East Asian",
-        "Hipanic/Latino",
-        "Mid Eastern",
-        "Pacific Islander",
-        "South Asian",
-        "Southeast Asian",
-        "White/Caucasian"
-    ]
-    /// Handler for save button on tap
-    private func saveButtonOnTap() {
-        // TODO(Sam): integrate graphql
-        presentationMode.wrappedValue.dismiss()
+    /// Observed preference ethnicity view model
+    @StateObject var vm = PreferenceEthnicityViewModel()
+    /// Handler for  button on tap
+    private func buttonOnTap() {
+        Task {
+            await vm.buttonOnTap()
+            guard vm.state == .complete else { return }
+            presentationMode.wrappedValue.dismiss()
+        }
     }
 
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
             childTitle: "Ethnicity",
-            showSaveButton: $showSaveButton,
-            isLoading: $isLoading,
-            action: saveButtonOnTap
+            showSaveButton: $vm.showSaveButton,
+            isLoading: .constant(vm.state == .loading),
+            action: buttonOnTap
         ) {
             Box {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(
-                        items: ethnicityOptions,
+                        items: vm.ethnicityOptions,
                         selectedIdList: Array(
-                            vm.ethnicity.map { $0.type.getString() }
+                            vm.preference.ethnicities.count == 0
+                            ? ["Everyone"]
+                            : vm.preference.ethnicities.map { $0.type.getString() }
                         ),
                         callback: { list in
-                            vm.ethnicity.removeAll()
+                            vm.preference.ethnicities.removeAll()
                             for item in list {
-                                vm.ethnicity.append(
-                                    Ethnicity(
-                                        type: EthnicityType.allCases.first(where: {
-                                            $0.getString() == item
-                                        }) ?? .ET0
+                                if let et = vm.getType(item) {
+                                    vm.preference.ethnicities.append(
+                                        Ethnicity(type: et)
                                     )
-                                )
+                                }
                             }
                         }
                     )
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.ethnicity) { _ in
-                        showSaveButton = true
+                    .onChange(of: vm.preference.ethnicities) { _ in
+                        vm.showSaveButton = true
                     }
                     
                     Spacer()
+                }
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
                 }
             }
         }
@@ -80,6 +75,7 @@ struct PreferenceEthnicityView: View {
 
 struct PreferenceEthnicityView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceEthnicityView(vm: ProfileViewModel())
+        PreferenceEthnicityView()
+            .environmentObject(BannerManager())
     }
 }

@@ -96,7 +96,7 @@ struct SignUpEthnicityView: View {
                                 Ethnicity(
                                     type: EthnicityType.allCases.first(where: {
                                         $0.getString() == item
-                                    }) ?? .ET1
+                                    })!
                                 )
                             )
                         }

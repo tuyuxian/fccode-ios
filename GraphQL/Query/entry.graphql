@@ -5,6 +5,7 @@ query CheckEmail($email: String!) {
     message
     user {
       password
+      username
       profilePictureURL
       appleConnect
       facebookConnect
@@ -22,48 +23,7 @@ query SignIn($email: String!, $password: String!) {
     status
     statusCode
     message
-    status
-    statusCode
-    message
-    user {
-      id
-      email
-      password
-      username
-      dateOfBirth
-      gender
-      profilePictureURL
-      voiceContentURL
-      selfIntro
-      longitude
-      latitude
-      country
-      administrativeArea
-      googleConnect
-      facebookConnect
-      appleConnect
-      premium
-      lifePhoto {
-        id
-        caption
-        contentURL
-      }
-      citizen {
-        countryName
-        code
-      }
-      ethnicity {
-        ethnicityType
-      }
-      socialAccount {
-        email
-        platform
-      }
-      goal {
-        id
-        goalType
-      }
-    }
+    userId
     token
   }
 }
@@ -73,48 +33,7 @@ query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
     status
     statusCode
     message
-    status
-    statusCode
-    message
-    user {
-      id
-      email
-      password
-      username
-      dateOfBirth
-      gender
-      profilePictureURL
-      voiceContentURL
-      selfIntro
-      longitude
-      latitude
-      country
-      administrativeArea
-      googleConnect
-      facebookConnect
-      appleConnect
-      premium
-      lifePhoto {
-        id
-        caption
-        contentURL
-      }
-      citizen {
-        countryName
-        code
-      }
-      ethnicity {
-        ethnicityType
-      }
-      socialAccount {
-        email
-        platform
-      }
-      goal {
-        id
-        goalType
-      }
-    }
+    userId
     token
   }
 }

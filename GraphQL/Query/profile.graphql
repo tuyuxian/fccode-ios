@@ -1,0 +1,48 @@
+query GetUserById($userId: ID!) {
+  getUserById(userId: $userId) {
+    status
+    statusCode
+    message
+    user {
+      id
+      email
+      password
+      username
+      dateOfBirth
+      gender
+      profilePictureURL
+      voiceContentURL
+      selfIntro
+      longitude
+      latitude
+      country
+      administrativeArea
+      googleConnect
+      facebookConnect
+      appleConnect
+      premium
+      lifePhoto {
+        id
+        caption
+        contentURL
+      }
+      citizen {
+        id
+        countryName
+        code
+      }
+      ethnicity {
+        id
+        ethnicityType
+      }
+      socialAccount {
+        email
+        platform
+      }
+      goal {
+        id
+        goalType
+      }
+    }
+  }
+}

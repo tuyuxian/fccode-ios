@@ -52,7 +52,7 @@ struct CheckBoxGroup: View {
 }
 
 private var selectedValues: Binding<[Ethnicity]> {
-    Binding.constant([Ethnicity(type: .ET1)])
+    Binding.constant([Ethnicity(type: .et1)])
 }
 
 struct CheckBoxGroup_Previews: PreviewProvider {

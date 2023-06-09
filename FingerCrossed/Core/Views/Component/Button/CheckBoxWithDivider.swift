@@ -18,52 +18,53 @@ struct CheckBoxWithDivider: View {
     private func checkBoxGroupCallback(
         id: String
     ) {
-        let isAllSelected = selectedIdList.contains { id in
-            id == "Open to all"
-        }
-        
-        let openToAll = id == "Open to all"
+        let openToAll = id == "Everyone" || id == "Not sure yet"
         
         if openToAll {
             selectedIdList.removeAll()
-            if isAllSelected {
-                callback(selectedIdList)
-            } else {
-                for item in items {
-                    selectedIdList.append(item)
-                }
-                callback(selectedIdList)
-            }
+            selectedIdList.append(id)
         } else {
-            let hasItem: Bool = selectedIdList.contains(where: { selected in
+            let hasClicked: Bool = selectedIdList.contains(where: { selected in
                 selected == id
             })
-            if hasItem {
+            if hasClicked {
                 selectedIdList.removeAll(where: { item in
                     item == id
                 })
-                callback(selectedIdList)
             } else {
                 selectedIdList.append(id)
-                callback(selectedIdList)
             }
             if selectedIdList.count == items.count - 1 {
-                if isAllSelected {
-                    selectedIdList.removeAll(where: { id in
-                        id == "Open to all"
-                    })
-                    callback(selectedIdList)
-                } else {
-                    selectedIdList.append("Open to all")
-                    callback(selectedIdList)
+                if items.contains(where: { id in
+                    id == "Everyone"
+                }) {
+                    selectedIdList.removeAll()
+                    selectedIdList.append("Everyone")
+                }
+//                if items.contains(where: { id in
+//                    id == "Not sure yet"
+//                }) {
+//                    selectedIdList.removeAll()
+//                    selectedIdList.append("Not sure yet")
+//                }
+            } else if selectedIdList.count == 0 {
+                if items.contains(where: { id in
+                    id == "Everyone"
+                }) {
+                    selectedIdList.append("Everyone")
+                }
+                if items.contains(where: { id in
+                    id == "Not sure yet"
+                }) {
+                    selectedIdList.append("Not sure yet")
                 }
             } else {
                 selectedIdList.removeAll(where: { id in
-                    id == "Open to all"
+                    id == "Everyone" || id == "Not sure yet"
                 })
-                callback(selectedIdList)
             }
         }
+        callback(selectedIdList)
     }
     
     var body: some View {
@@ -95,7 +96,7 @@ struct CheckBoxWithDivider_Previews: PreviewProvider {
     static var previews: some View {
         CheckBoxWithDivider(
             items: [
-                "Open to all",
+                "Everyone",
                 "American Indian",
                 "Black/African American",
                 "East Asian",

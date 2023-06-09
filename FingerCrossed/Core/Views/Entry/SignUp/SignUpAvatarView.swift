@@ -48,7 +48,7 @@ struct SignUpAvatarView: View {
     }
     /// Handler for photo library on tap
     private func photoLibraryOnTap() {
-        switch photoLibraryPermissionManager.authorizationStatus {
+        switch photoLibraryPermissionManager.permissionStatus {
         case .notDetermined:
             photoLibraryPermissionManager.requestPermission { photoAuthStatus in
                 if photoAuthStatus.isAllowed {
@@ -62,16 +62,10 @@ struct SignUpAvatarView: View {
                     showPhotoLibraryAlert.toggle()
                 }
             }
-        case .restricted:
-            showPhotoLibraryAlert.toggle()
-        case .denied:
-            showPhotoLibraryAlert.toggle()
         case .authorized:
             showImagePicker = true
-        case .limited:
-            showSelectedPhotoList.toggle()
-        @unknown default:
-            fatalError()
+        default:
+            showPhotoLibraryAlert.toggle()
         }
     }
     /// Handler for button on tap
@@ -237,16 +231,16 @@ struct SignUpAvatarView: View {
                         .sheet(
                             isPresented: $showSelectedPhotoList,
                             content: {
-                                SelectedPhotoListSheet(
+                                SelectedPhotoSheet(
                                     selectedImage: $vm.selectedImage
                                 )
                             }
                         )
-                        .sheet(isPresented: $showImagePicker,
-                               content: {
+                        .sheet(
+                            isPresented: $showImagePicker,
+                            content: {
                                 PhotoPicker(
-                                    selectedImage: $vm.selectedImage, 
-                                    isPresented: $showImagePicker
+                                    selectedImage: $vm.selectedImage
                                 )
                             }
                         )

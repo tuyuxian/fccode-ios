@@ -25,7 +25,12 @@ struct Avatar: View {
             ) { phase in
                 switch phase {
                 case .empty:
-                    EmptyView()
+                    Shimmer(
+                        size: CGSize(
+                            width: size,
+                            height: size
+                        )
+                    )
                 case .success(let image):
                     image
                         .resizable()

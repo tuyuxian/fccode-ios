@@ -19,7 +19,7 @@ struct ResetPasswordEmailCheckView: View {
         isLoading.toggle()
         Task {
             do {
-                let success = try await EntryRepository.requestOTP(
+                let success = try await GraphAPI.requestOTP(
                     email: vm.user.email
                 )
                 guard success else {

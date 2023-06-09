@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct Sheet<Content: View, Footer: View>: View {
+struct Sheet<Header: View, Content: View, Footer: View>: View {
     
-    @State var size: Set<PresentationDetent>?
+    @State var size: Set<PresentationDetent>
     
     @State var showDragIndicator: Bool = true
         
@@ -17,7 +17,7 @@ struct Sheet<Content: View, Footer: View>: View {
     
     @State var hasFooter: Bool = true
     
-    @State var header: String?
+    @ViewBuilder var header: Header
     
     @ViewBuilder var content: Content
     
@@ -26,42 +26,28 @@ struct Sheet<Content: View, Footer: View>: View {
     @State private var sheetContentHeight = CGFloat(0)
     
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
+        ZStack(alignment: .bottomLeading) {
             Color.white.edgesIgnoringSafeArea(.all)
             
-            VStack(spacing: 0) {
-                VStack(spacing: 15) {
-                    showDragIndicator
-                    ? Capsule()
-                        .fill(Color.secondary)
-                        .opacity(0.5)
-                        .frame(width: 35, height: 5)
-                        .padding(.top, 10)
-                    : nil
-                    hasHeader
-                    ? Text(header!)
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 34)
-                        .multilineTextAlignment(.center)
-                    : nil
-                }
-                content
-            }
-            .background {
-                GeometryReader { proxy in
-                    Color.white
-                        .task {
-                            sheetContentHeight = proxy.size.height
-                        }
+            ScrollView([]) {
+                VStack(spacing: 0) {
+                    VStack(spacing: 15) {
+                        showDragIndicator
+                        ? Capsule()
+                            .fill(Color.surface1)
+                            .opacity(0.5)
+                            .frame(width: 35, height: 5)
+                            .padding(.top, 10)
+                        : nil
+                        hasHeader
+                        ? header
+                        : nil
+                    }
+                    content
                 }
             }
-            .presentationDetents(size ?? [.height(sheetContentHeight)])
+            .ignoresSafeArea(.keyboard)
+            .presentationDetents(size)
             .scrollDismissesKeyboard(.immediately)
             .safeAreaInset(
                 edge: .bottom,
@@ -76,7 +62,7 @@ struct Sheet_Previews: PreviewProvider {
     static var previews: some View {
         Sheet(
             size: [.medium],
-            hasHeader: false,
+            header: {},
             content: {},
             footer: {
                 PrimaryButton(

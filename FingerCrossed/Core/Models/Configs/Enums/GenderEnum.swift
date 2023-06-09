@@ -8,40 +8,23 @@
 import Foundation
 import GraphQLAPI
 
-public enum Gender: CaseIterable {
-    case MALE
-    case FEMALE
-    case TRANSGENDER
-    case NONBINARY
-    case PREFERNOTTOSAY
+typealias Gender = GraphQLAPI.UserGender
+
+extension Gender: Codable {
     
     public func getString() -> String {
         switch self {
-        case .MALE:
+        case .male:
             return "Male"
-        case .FEMALE:
+        case .female:
             return "Female"
-        case .TRANSGENDER:
+        case .transgender:
             return "Transgender"
-        case .NONBINARY:
+        case .nonBinary:
             return "Nonbinary"
-        case .PREFERNOTTOSAY:
+        case .preferNotToSay:
             return "Prefer not to say"
         }
     }
     
-    public var graphQLValue: GraphQLAPI.UserGender {
-        switch self {
-        case .MALE:
-            return .male
-        case .FEMALE:
-            return .female
-        case .TRANSGENDER:
-            return .transgender
-        case .NONBINARY:
-            return .nonBinary
-        case .PREFERNOTTOSAY:
-            return .preferNotToSay
-        }
-    }
 }

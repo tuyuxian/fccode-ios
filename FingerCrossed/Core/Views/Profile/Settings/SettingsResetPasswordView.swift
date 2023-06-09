@@ -10,28 +10,27 @@ import SwiftUI
 struct SettingsResetPasswordView: View {
     /// View controller
     @Environment(\.presentationMode) var presentationMode
-    /// Global banner
+    /// Observed reset password view model
+    @StateObject var vm: ResetPasswordViewModel
+    /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Flag for password validation
-    @State private var isNewPasswordValid: Bool = true
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button
     private func buttonOnTap() {
-        guard vm.isPasswordValid(str: vm.newPassword) &&
-                vm.newPassword == vm.newPasswordConfirmed
-        else {
-            isNewPasswordValid = false
-            return
+        Task {
+            await vm.buttonOnTap()
+            guard vm.state == .complete else { return }
+            presentationMode.wrappedValue.dismiss()
         }
-        // TODO(Sam): integrate graphql
-        isNewPasswordValid = true
-        vm.currentPassword = ""
-        vm.newPassword = ""
-        vm.newPasswordConfirmed = ""
-        presentationMode.wrappedValue.dismiss()
+    }
+    
+    init(
+        hasPassword: Bool
+    ) {
+        _vm = StateObject(
+            wrappedValue: ResetPasswordViewModel(
+                hasPassword: hasPassword
+            )
+        )
     }
         
     var body: some View {
@@ -39,7 +38,7 @@ struct SettingsResetPasswordView: View {
             parentTitle: "Settings",
             childTitle: "Password",
             showSaveButton: $vm.isNewPasswordSatisfied,
-            isLoading: $isLoading,
+            isLoading: .constant(vm.state == .loading),
             action: buttonOnTap
         ) {
             Box {
@@ -47,23 +46,29 @@ struct SettingsResetPasswordView: View {
                     alignment: .leading,
                     spacing: 20
                 ) {
-                    vm.user.password != ""
+                    vm.hasPassword
                     ? PrimaryInputBar(
                         input: .password,
                         value: $vm.currentPassword,
                         hint: "Enter current password",
-                        isValid: $isNewPasswordValid
+                        isValid: .constant(
+                            vm.isNewPasswordValid &&
+                            vm.isCurrentPasswordMatched
+                        )
                     )
-                    .onChange(of: vm.currentPassword) { _ in
-                        // TODO(Sam): check current password
-                    }
+                    : nil
+                    
+                    !vm.isCurrentPasswordMatched
+                    ? SettingsResetPasswordErrorHelper()
+                        .padding(.top, -10)
+                        .padding(.leading, 16)
                     : nil
                     
                     PrimaryInputBar(
                         input: .password,
                         value: $vm.newPassword,
                         hint: "Enter new password",
-                        isValid: $isNewPasswordValid
+                        isValid: $vm.isNewPasswordValid
                     )
                     .onChange(of: vm.newPassword) { password in
                         vm.isNewPasswordLengthSatisfied =
@@ -89,7 +94,7 @@ struct SettingsResetPasswordView: View {
                         input: .password,
                         value: $vm.newPasswordConfirmed,
                         hint: "Confirm new password",
-                        isValid: $isNewPasswordValid
+                        isValid: $vm.isNewPasswordValid
                     )
                     .onChange(of: vm.newPasswordConfirmed) { password in
                         vm.isNewPasswordMatched =
@@ -134,25 +139,68 @@ struct SettingsResetPasswordView: View {
                     .padding(.top, -10)
                     .padding(.leading, 16)
                 }
-                .padding(
-                    EdgeInsets(
-                        top: 30,
-                        leading: 24,
-                        bottom: 0,
-                        trailing: 24
-                    )
-                )
+                .padding(.horizontal, 24)
+                .padding(.top, 30)
                 
                 Spacer()
             }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
+                }
+            }
+            .onTapGesture {
+                withAnimation(
+                    .easeInOut(
+                        duration: 0.16
+                    )
+                ) {
+                    UIApplication.shared.closeKeyboard()
+                }
+            }
         }
     }
-    
-    struct SettingsResetPasswordView_Previews: PreviewProvider {
-        static var previews: some View {
-            SettingsResetPasswordView(
-                vm: ProfileViewModel()
-            )
+}
+
+struct SettingsResetPasswordView_Previews: PreviewProvider {
+    static var previews: some View {
+        SettingsResetPasswordView(
+            hasPassword: true
+        )
+        .environmentObject(BannerManager())
+    }
+}
+
+private struct SettingsResetPasswordErrorHelper: View {
+    var body: some View {
+        VStack(
+            alignment: .leading,
+            spacing: 6
+        ) {
+            HStack(
+                alignment: .top,
+                spacing: 6
+            ) {
+                Image("ErrorCircleRed")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(
+                        width: 16,
+                        height: 16
+                    )
+                VStack(
+                    alignment: .leading,
+                    spacing: 0
+                ) {
+                    Text("Hmm, it doesn’t match your current password.\nPlease try again.")
+                        .fontTemplate(.noteMedium)
+                        .foregroundColor(Color.warning)
+                }
+            }
         }
     }
 }

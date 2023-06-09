@@ -15,7 +15,7 @@ struct PasswordView: View {
     /// Global page spinner
     @EnvironmentObject var psm: PageSpinnerManager
     /// Observed user state view model
-    @ObservedObject var userState: UserStateViewModel
+    @ObservedObject var usm: UserStateManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Init account sheet view model
@@ -38,20 +38,20 @@ struct PasswordView: View {
         isPasswordValid = true
         Task {
             do {
-                let (user, token) = try await EntryRepository.signIn(
+                let (statusCode, userId, token) = try await GraphAPI.signIn(
                     email: vm.user.email,
                     password: vm.password
                 )
                 isLoading.toggle()
-                userState.user = user
-                userState.token = token
-                userState.isLogin = true
-                userState.viewState = .main
-            } catch {
-                if error.localizedDescription == "Wrong password" {
+                guard statusCode == 200 else {
                     isPasswordValid = false
                     return
                 }
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+            } catch {
                 isLoading.toggle()
                 print(error.localizedDescription)
                 bm.pop(
@@ -99,18 +99,19 @@ struct PasswordView: View {
                             hasAppleSSO,
                             _,
                             hasGoogleSSO,
+                            username,
                             profilePictureUrl,
                             appleEmail,
                             facebookEmail,
                             googleEmail
-                        ) = try await EntryRepository.checkEmail(
+                        ) = try await GraphAPI.checkEmail(
                             email: email
                         )
                         guard userExist else {
                             vm.user.socialAccount.append(
                                 SocialAccount(
                                     email: email,
-                                    platform: .GOOGLE
+                                    platform: .google
                                 )
                             )
                             vm.user.email = email
@@ -127,24 +128,26 @@ struct PasswordView: View {
                                 accountSheetVM.appleEmail = appleEmail
                                 accountSheetVM.facebookEmail = facebookEmail
                                 accountSheetVM.googleEmail = googleEmail
-                                accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                                accountSheetVM.username = username
+                                accountSheetVM.profilePictureUrl = profilePictureUrl
                                 isAccountPresented.toggle()
                                 return
                             }
                             accountSheetVM.isSSO = false
                             accountSheetVM.email = email
-                            accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                            accountSheetVM.username = username
+                            accountSheetVM.profilePictureUrl = profilePictureUrl
                             isAccountPresented.toggle()
                             return
                         }
-                        let (user, token) = try await EntryRepository.socialSignIn(
+                        let (userId, token) = try await GraphAPI.socialSignIn(
                             email: email,
                             platform: GraphQLEnum.case(.google)
                         )
-                        userState.user = user
-                        userState.token = token
-                        userState.isLogin = true
-                        userState.viewState = .main
+                        usm.userId = userId
+                        usm.token = token
+                        usm.isLogin = true
+                        usm.viewState = .main
                     } catch {
                         psm.dismiss()
                         print(error.localizedDescription)
@@ -183,18 +186,19 @@ struct PasswordView: View {
                     hasAppleSSO,
                     _,
                     hasGoogleSSO,
+                    username,
                     profilePictureUrl,
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await EntryRepository.checkEmail(
+                ) = try await GraphAPI.checkEmail(
                     email: email
                 )
                 guard userExist else {
                     vm.user.socialAccount.append(
                         SocialAccount(
                             email: email,
-                            platform: .APPLE
+                            platform: .apple
                         )
                     )
                     vm.user.email = email
@@ -211,24 +215,26 @@ struct PasswordView: View {
                         accountSheetVM.appleEmail = appleEmail
                         accountSheetVM.facebookEmail = facebookEmail
                         accountSheetVM.googleEmail = googleEmail
-                        accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                        accountSheetVM.username = username
+                        accountSheetVM.profilePictureUrl = profilePictureUrl
                         isAccountPresented.toggle()
                         return
                     }
                     accountSheetVM.isSSO = false
                     accountSheetVM.email = email
-                    accountSheetVM.profilePictureUrl = profilePictureUrl ?? ""
+                    accountSheetVM.username = username
+                    accountSheetVM.profilePictureUrl = profilePictureUrl
                     isAccountPresented.toggle()
                     return
                 }
-                let (user, token) = try await EntryRepository.socialSignIn(
+                let (userId, token) = try await GraphAPI.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.apple)
                 )
-                userState.user = user
-                userState.token = token
-                userState.isLogin = true
-                userState.viewState = .main
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
             } catch {
                 psm.dismiss()
                 print(error.localizedDescription)
@@ -247,23 +253,13 @@ struct PasswordView: View {
             
             ScrollView {
                 LazyVStack(
-                    alignment: .leading,
+                    alignment: .center,
                     spacing: 0
                 ) {
                     LazyHStack(
                         alignment: .center,
-                        spacing: 92
+                        spacing: 0
                     ) {
-                        Button {
-                            vm.transition = .backward
-                            vm.switchView = .email
-                        } label: {
-                            Image("ArrowLeft")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.leading, -8) // 16 - 24
-                        
                         EntryLogo()
                     }
                     .padding(.top, 5)
@@ -294,9 +290,9 @@ struct PasswordView: View {
                             }
                             
                             !isPasswordValid
-                            ? ErrorHelper(action: forgotPasswordOnTap)
+                            ? PasswordErrorHelper(action: forgotPasswordOnTap)
                                 .padding(.leading, 16)
-                                .padding(.vertical, -20)
+                                .padding(.top, -20)
                             : nil
                             
                             PrimaryButton(
@@ -371,10 +367,19 @@ struct PasswordView: View {
                 .padding(.horizontal, 24)
             }
             .scrollDisabled(true)
+            .onTapGesture {
+                withAnimation(
+                    .easeInOut(
+                        duration: 0.16
+                    )
+                ) {
+                    UIApplication.shared.closeKeyboard()
+                }
+            }
             .ignoresSafeArea(.keyboard, edges: .bottom)
             .sheet(isPresented: $isAccountPresented) {
                 AccountSheet(
-                    userState: userState,
+                    usm: usm,
                     entry: vm,
                     vm: accountSheetVM
                 )
@@ -386,13 +391,13 @@ struct PasswordView: View {
 struct PasswordView_Previews: PreviewProvider {
     static var previews: some View {
         PasswordView(
-            userState: UserStateViewModel(),
+            usm: UserStateManager(),
             vm: EntryViewModel()
         )
     }
 }
 
-private struct ErrorHelper: View {
+struct PasswordErrorHelper: View {
     
     @State var action: () -> Void
     

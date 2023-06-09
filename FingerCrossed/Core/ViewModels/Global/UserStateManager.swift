@@ -1,5 +1,5 @@
 //
-//  UserStateViewModel.swift
+//  UserStateManager.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 5/18/23.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class UserStateViewModel: ObservableObject {
+class UserStateManager: ObservableObject {
         
     enum ViewState: Int {
         case landing
@@ -16,11 +16,11 @@ class UserStateViewModel: ObservableObject {
         case main
     }
     
-    @AppStorage("isLogin") var isLogin: Bool = false
+    @AppStorage("IsLogin") var isLogin: Bool = false
     
-    @AppStorage("token") var token: String?
+    @AppStorage("UserToken") var token: String?
     
-    @Published var user: User?
+    @AppStorage("UserId") var userId: String?
     
     @Published var viewState: ViewState = .landing
     

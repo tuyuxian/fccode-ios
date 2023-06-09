@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct ProfileView: View {
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+        
+    @StateObject var vm = ProfileViewModel()
     
-    @StateObject var vm: ProfileViewModel = ProfileViewModel()
-    
-    @EnvironmentObject var userState: UserStateViewModel
-    
+    var preview: Bool = false
+        
     var body: some View {
         ContainerWithLogoHeaderView(
             headerTitle: "Profile"
@@ -27,15 +29,19 @@ struct ProfileView: View {
                             alignment: .center
                         )
                         .overlay(
-                            Avatar(
-                                avatarUrl: vm.user.profilePictureUrl!,
+                            vm.state == .complete
+                            ? Avatar(
+                                avatarUrl: vm.user?.profilePictureUrl ?? "",
                                 size: 121.5,
                                 isActive: false
                             )
+                            : nil
                         )
-                    Text(vm.user.username)
-                        .fontTemplate(.h2Medium)
-                        .foregroundColor(Color.text)
+                    Text(
+                        vm.user?.username ?? ""
+                    )
+                    .fontTemplate(.h2Medium)
+                    .foregroundColor(Color.text)
                 }
                 .zIndex(1)
                 Box {
@@ -43,19 +49,30 @@ struct ProfileView: View {
                         childViewList: [
                             ChildView(
                                 label: "Basic Info",
-                                subview: AnyView(BasicInfoView(vm: vm))
+                                subview: AnyView(
+                                    BasicInfoView()
+                                        .environmentObject(vm)
+                                        .environmentObject(bm)
+                                )
                             ),
                             ChildView(
                                 label: "Preference",
-                                subview: AnyView(PreferenceView(vm: vm))
+                                subview: AnyView(
+                                    PreferenceView()
+                                        .environmentObject(bm)
+                                )
                             ),
                             ChildView(
                                 label: "Settings",
-                                subview: AnyView(SettingsView(vm: vm))
+                                subview: AnyView(
+                                    SettingsView()
+                                        .environmentObject(vm)
+                                        .environmentObject(bm)
+                                )
                             ),
                             ChildView(
                                 label: "Help & Support",
-                                subview: AnyView(HelpSupportView(vm: vm))
+                                subview: AnyView(HelpSupportView())
                             )
                         ]
                     )
@@ -65,16 +82,35 @@ struct ProfileView: View {
                 .padding(.top, -104)
             }
         }
-        .onAppear {
-            guard let user = userState.user else { return }
-            vm.user = user
+        .task {
+            if preview {
+                vm.dummyUser()
+            } else {
+                vm.fetchUser()
+            }
+        }
+        .overlay {
+            vm.state == .loading
+            ? PageSpinner()
+            : nil
+        }
+        .onChange(of: vm.state) { state in
+            if state == .error {
+                bm.pop(
+                    title: vm.errorMessage,
+                    type: .error
+                )
+                vm.state = .none
+            }
         }
     }
 }
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView()
-            .environmentObject(UserStateViewModel())
+        ProfileView(
+            preview: true
+        )
+        .environmentObject(BannerManager())
     }
 }

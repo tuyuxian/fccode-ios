@@ -10,50 +10,40 @@ import SwiftUI
 struct PreferenceSexOrientationView: View {
     /// View controller
     @Environment(\.presentationMode) var presentationMode
-    /// Global banner
+    /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed profile view model
-    @ObservedObject var vm: ProfileViewModel
-    /// Flag to show up save button
-    @State private var showSaveButton: Bool = false
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    /// Sex orientation option list
-    let sexOrientationOptions: [String] = [
-        "Open to all",
-        "Heterosexuality",
-        "Bisexuality",
-        "Homosexuality"
-    ]
-    /// Handler for save button on tap
-    private func saveButtonOnTap() {
-        // TODO(Sam): integrate graphql
-        presentationMode.wrappedValue.dismiss()
+    /// Observed preference sex orientation view model
+    @StateObject var vm = PreferenceSexOrientationViewModel()
+    /// Handler for  button on tap
+    private func buttonOnTap() {
+        Task {
+            await vm.buttonOnTap()
+            guard vm.state == .complete else { return }
+            presentationMode.wrappedValue.dismiss()
+        }
     }
     
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
             childTitle: "Sex Orientation",
-            showSaveButton: $showSaveButton,
-            isLoading: $isLoading,
-            action: saveButtonOnTap
+            showSaveButton: $vm.showSaveButton,
+            isLoading: .constant(vm.state == .loading),
+            action: buttonOnTap
         ) {
             Box {
                 VStack(spacing: 0) {
                     CheckBoxWithDivider(
-                        items: sexOrientationOptions,
+                        items: vm.sexOrientationOptions,
                         selectedIdList: Array(
-                            vm.sexOrientation.map { $0.type.getString() }
+                            vm.preference.sexOrientations.map { $0.type.getString() }
                         ),
                         callback: { list in
-                            vm.sexOrientation.removeAll()
+                            vm.preference.sexOrientations.removeAll()
                             for item in list {
-                                vm.sexOrientation.append(
+                                vm.preference.sexOrientations.append(
                                     SexOrientation(
-                                        type: SexOrientationType.allCases.first(where: {
-                                            $0.getString() == item
-                                        }) ?? .SO1
+                                        type: vm.getType(item)
                                     )
                                 )
                             }
@@ -61,11 +51,20 @@ struct PreferenceSexOrientationView: View {
                     )
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.sexOrientation) { _ in
-                        showSaveButton = true
+                    .onChange(of: vm.preference.sexOrientations) { _ in
+                        vm.showSaveButton = true
                     }
                     
                     Spacer()
+                }
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.errorMessage,
+                        type: .error
+                    )
+                    vm.state = .none
                 }
             }
         }
@@ -74,8 +73,7 @@ struct PreferenceSexOrientationView: View {
 
 struct PreferenceSexOrientationView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceSexOrientationView(
-            vm: ProfileViewModel()
-        )
+        PreferenceSexOrientationView()
+            .environmentObject(BannerManager())
     }
 }

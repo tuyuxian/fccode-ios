@@ -22,9 +22,8 @@ struct NationalityEditSheet: View {
     var body: some View {
         Sheet(
             size: [.large],
-            hasHeader: false,
             hasFooter: false,
-            content: {
+            header: {
                 ZStack(alignment: .top) {
                     VStack(spacing: 0) {
                         Text("Nationality")
@@ -48,14 +47,15 @@ struct NationalityEditSheet: View {
                         alignment: .trailing
                     )
                 }
-                .padding(.top, 15) // 30 - 15
-                
+            },
+            content: {
                 NationalitySearchBar(
                     vm: vm,
                     nationalityList: $nationalityList,
                     countryName: $countryName,
                     isSheet: true
                 )
+                .frame(width: UIScreen.main.bounds.width - 50)
                 .padding(.vertical, 20)
                 
                 countriesListView

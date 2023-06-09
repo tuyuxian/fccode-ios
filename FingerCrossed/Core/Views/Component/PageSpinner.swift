@@ -27,12 +27,14 @@ final class PageSpinnerManager: ObservableObject {
 struct PageSpinner: View {
     var body: some View {
         ZStack {
+            Color.white.edgesIgnoringSafeArea(.all)
+                .opacity(0.6)
             LottieView(
                 lottieFile: "loading.json"
             )
             .frame(
-                width: 150,
-                height: 150
+                width: 110,
+                height: 110
             )
         }
     }

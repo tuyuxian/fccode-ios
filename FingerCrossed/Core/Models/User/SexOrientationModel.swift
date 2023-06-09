@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SexOrientation: Equatable {
+struct SexOrientation: Equatable, Codable {
     public var id: UUID = UUID()
     public var type: SexOrientationType
     

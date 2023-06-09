@@ -38,7 +38,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
     var body: some View {
         Sheet(
             size: [.large],
-            header: "Nice Picture!",
+            header: {},
             content: {
                 ScrollViewReader { scroll in
                     ScrollView {

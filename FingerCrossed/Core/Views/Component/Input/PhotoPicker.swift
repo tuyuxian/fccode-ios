@@ -11,7 +11,6 @@ import PhotosUI
 
 struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
-    @Binding var imageData: Data?
     @Binding var isPresented: Bool // close the modal view
 
     func makeUIViewController(context: Context) -> some UIViewController {
@@ -44,14 +43,17 @@ struct PhotoPicker: UIViewControllerRepresentable {
             // unpack the selected items
             for image in results {
                 if image.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                    image.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] newImage, error in
+                    image.itemProvider.loadObject(ofClass: UIImage.self) { [self] newImage, error in
                         if let error = error {
                             print("Can't load image \(error.localizedDescription)")
                         } else if let image = newImage as? UIImage {
-                            // Add new image and pass it back to the main view
-                            self?.parent.selectedImage = image
-                            self?.parent.imageData = image.jpegData(compressionQuality: 0.9)
-                            //                      self?.parent.pickerResult.append(image)
+                            DispatchQueue.main.async {
+                                // Add new image and pass it back to the main view
+                                print("size: \(image.size)")
+                                self.parent.selectedImage = image
+                                //                      self?.parent.pickerResult.append(image)
+                            }
+                            
                         }
                     }
                 } else {

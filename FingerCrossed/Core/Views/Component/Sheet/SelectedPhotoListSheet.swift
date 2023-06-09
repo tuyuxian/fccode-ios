@@ -16,7 +16,8 @@ struct SelectedPhotoListSheet: View {
     @StateObject var limitedPhotoPicker = PhotoPickerViewModel()
     
     @Binding var selectedImage: UIImage?
-    @Binding var imageData: Data?
+    /// Flag for photo library permission Confirmation Dialog
+    @State private var showPhotoPermissionConfirmationDialog: Bool = false
     
     var body: some View {
         Sheet(
@@ -43,13 +44,13 @@ struct SelectedPhotoListSheet: View {
                 ScrollView {
                     LazyVGrid(columns: columns) {
                         Button {
-                            limitedPhotoPicker.openLimitedPicker()
+                            showPhotoPermissionConfirmationDialog.toggle()
                         } label: {
                             RoundedRectangle(cornerRadius: 16)
                                 .frame(width: 110, height: 110)
                                 .foregroundColor(Color.yellow100)
                                 .overlay(alignment: .center) {
-                                    Image("ManagePicture")
+                                    Image("Picture")
                                         .resizable()
                                         .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)
@@ -64,10 +65,9 @@ struct SelectedPhotoListSheet: View {
                                     .onTapGesture {
                                         limitedPhotoPicker.extractImage(asset: photo.photoAsset)
                                         presentationMode.wrappedValue.dismiss()
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                             if limitedPhotoPicker.extractUIImage != nil {
                                                 selectedImage = limitedPhotoPicker.extractUIImage
-                                                imageData = limitedPhotoPicker.extractUIImage.jpegData(compressionQuality: 0.9)
                                             }
                                         }
                                         
@@ -90,6 +90,30 @@ struct SelectedPhotoListSheet: View {
                                     .cancel(Text("ok"))
                         )
                     }
+                    .confirmationDialog(
+                        "", isPresented: $showPhotoPermissionConfirmationDialog
+                    ) {
+                        Button(
+                            "Cancel",
+                            role: .cancel
+                        ) {
+                            showPhotoPermissionConfirmationDialog.toggle()
+                        }
+                        Button(
+                            "Select more photos"
+                        ) {
+                            limitedPhotoPicker.openLimitedPicker()
+                        }
+                        Button(
+                            "Change settings"
+                        ) {
+                            UIApplication.shared.open(
+                                URL(string: UIApplication.openSettingsURLString)!
+                            )
+                        }
+                    } message: {
+                        Text(limitedPhotoPicker.photoPermissionComfirmationDialogMessage)
+                    }
                 }
             },
             footer: {})
@@ -97,7 +121,7 @@ struct SelectedPhotoListSheet: View {
 }
 
 struct ThumbnailView: View {
-    var photo: Asset
+    var photo: PhotoAsset
     
     var body: some View {
         Image(uiImage: photo.image)
@@ -112,12 +136,8 @@ private var uiImage: Binding<UIImage?> {
     Binding.constant(UIImage())
 }
 
-private var data: Binding<Data?> {
-    Binding.constant(Data())
-}
-
 struct SelectedPhotoListSheet_Previews: PreviewProvider {
     static var previews: some View {
-        SelectedPhotoListSheet(selectedImage: uiImage, imageData: data)
+        SelectedPhotoListSheet(selectedImage: uiImage)
     }
 }

@@ -91,8 +91,7 @@ struct LifePhotoActionSheet: View {
                             content: {
                                 ImagePicker(
                                     sourceType: .camera,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                    selectedImage: $vm.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
                             }
@@ -131,8 +130,7 @@ struct LifePhotoActionSheet: View {
                             content: {
                                 ImagePicker(
                                     sourceType: .photoLibrary,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                    selectedImage: $vm.selectedImage
                                 )
                             }
                         )
@@ -225,7 +223,7 @@ private struct LifePhotoActionRow: View {
                     .foregroundColor(Color.text)
                 Spacer()
             case .photo:
-                Image("Picture")
+                Image("AddPicture")
                     .resizable()
                     .frame(width: 24, height: 24)
 

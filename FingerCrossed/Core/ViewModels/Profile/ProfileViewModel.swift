@@ -102,7 +102,6 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var selectedLifePhoto: LifePhoto?
     @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
-    @Published var selectedImageData: Data?
     
     public func getDateString() -> String {
         let dateFormatter = DateFormatter()

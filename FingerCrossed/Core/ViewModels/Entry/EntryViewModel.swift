@@ -72,7 +72,6 @@ class EntryViewModel: ObservableObject, InputProtocol {
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
     @Published var selectedImage: UIImage?
-    @Published var selectedImageData: Data?
 
     // MARK: Condition Variables for button
     /// - Email view
@@ -145,7 +144,6 @@ class EntryViewModel: ObservableObject, InputProtocol {
         self.monthIndex = Calendar.current.component(.month, from: Date()) - 1
         self.dayIndex = Calendar.current.component(.day, from: Date()) - 1
         self.selectedImage = nil
-        self.selectedImageData = nil
         self.isEmailSatisfied = false
         self.isPasswordSatisfied = false
         self.isAccountPasswordSatisfied = false

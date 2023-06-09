@@ -142,24 +142,29 @@ struct SignUpAvatarView: View {
                     )
                 ) {
                     if vm.selectedImage != nil {
-                        Image(uiImage: vm.selectedImage!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 182, height: 182)
-                            .cornerRadius(100)
-                            .overlay(
-                                Circle()
-                                    .stroke(
-                                        Color.white,
-                                        lineWidth: 12
-                                    )
-                                    .frame(width: 194)
-                            )
-                    } else {
-                        Image("ProfilePicture")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
+                        Circle()
+                            .foregroundColor(Color.yellow100)
                             .frame(width: 194, height: 194)
+                            .overlay {
+                                Image(uiImage: vm.selectedImage!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 170, height: 170)
+                                    .cornerRadius(100)
+                            }
+                    } else {
+                        Circle()
+                            .strokeBorder(
+                                Color.yellow100,
+                                lineWidth: 12
+                            )
+                            .frame(width: 194, height: 194)
+                            .background {
+                                Image("Sam")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 194, height: 194)
+                            }
                     }
                     
                     HStack(spacing: 112) {
@@ -169,8 +174,8 @@ struct SignUpAvatarView: View {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
                                     Image("Camera")
@@ -178,7 +183,7 @@ struct SignUpAvatarView: View {
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
                         }
                         .fullScreenCover(
@@ -186,12 +191,12 @@ struct SignUpAvatarView: View {
                             content: {
                                 ImagePicker(
                                     sourceType: .camera,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                    selectedImage: $vm.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
                             }
-                        ) .alert(isPresented: $showCameraAlert) {
+                        )
+                        .alert(isPresented: $showCameraAlert) {
                             Alert(
                                 title:
                                     Text(cameraPermissionManager.alertTitle)
@@ -217,42 +222,30 @@ struct SignUpAvatarView: View {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
-                                    Image("Picture")
+                                    Image("AddPicture")
                                         .renderingMode(.template)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
                         }
-//                        .sheet(
-//                            isPresented: $showImagePicker,
-//                            content: {
-//                                ImagePicker(
-//                                    sourceType: .photoLibrary,
-//                                    selectedImage: $vm.selectedImage,
-//                                    imageData: $vm.selectedImageData
-//                                )
-//                            }
-//                        )
                         .sheet(
                             isPresented: $showSelectedPhotoList,
                             content: {
                                 SelectedPhotoListSheet(
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                    selectedImage: $vm.selectedImage
                                 )
                             }
                         )
                         .sheet(isPresented: $showImagePicker,
                                content: {
                                 PhotoPicker(
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData,
+                                    selectedImage: $vm.selectedImage, 
                                     isPresented: $showImagePicker
                                 )
                             }
@@ -277,6 +270,7 @@ struct SignUpAvatarView: View {
                             )
                         }
                     }
+                    .padding(.bottom, -14)
                 }
                 .frame(width: UIScreen.main.bounds.size.width - 48)
                 .padding(.top, 20)

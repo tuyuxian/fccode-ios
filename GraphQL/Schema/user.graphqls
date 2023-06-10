@@ -1,44 +1,27 @@
 extend type Mutation {
   createUser(input: CreateUserInput!): SignInResponse!
-  updateUser(id: ID!, input: UpdateUserInput!): User!
+  updateUser(userId: ID!, input: UpdateUserInput!): CRUDResponse!
+  deleteUserById(userId: ID!): CRUDResponse!
 
-  deleteUserById(id: ID!): CRUDResponse!
-
-  ##### Field modification only #####
-  # Entry
   resetPassword(email: String!, password: String!): OTPResponse!
-  # Basic Info
-  updateBasicInfoSelfIntro(id: ID!, selfIntro: String!): CRUDResponse!
-  updateBasicInfoUsername(id: ID!, username: String!): CRUDResponse!
-  updateBasicInfoVoiceMessage(id: ID!, voiceContentUrl: String!): CRUDResponse!
-  resetSettingsPassword(id: ID!, password: String!): CRUDResponse!
-  updateSettingsPassword(
-    id: ID!
-    oldPassword: String!
+  updatePassword(
+    userId: ID!
+    oldPassword: String
     newPassword: String!
   ): CRUDResponse!
 
-  ##### With Ent modification #####
-  # Basic Info
-  createBasicInfoLifePhoto(
-    id: ID!
-    lifePhotos: [CreateLifePhotoInput!]
+  connectSocialAccount(
+    userId: ID!
+    input: CreateSocialAccountInput!
   ): CRUDResponse!
-  deleteBasicInfoLifePhoto(id: ID!, lifePhotoId: ID!): CRUDResponse!
-  # Settings
-  createSettingsSocialAccount(
-    id: ID!
-    socialAccounts: [CreateSocialAccountInput!]
-  ): CRUDResponse!
-  deleteSettingsSocialAccount(id: ID!, socialAccountId: ID!): CRUDResponse!
 }
 
 extend input CreateUserInput {
   createUserCitizen: [CreateCitizenInput!]
   createUserGoal: [CreateGoalInput!]
   createUserEthnicity: [CreateEthnicityInput!]
-  createUserSocialAccount: [CreateSocialAccountInput!]
-  createUserLifePhoto: [CreateLifePhotoInput!]
+  createUserSocialAccount: CreateSocialAccountInput!
+  createUserLifePhoto: CreateLifePhotoInput!
 }
 
 extend type Query {
@@ -47,26 +30,18 @@ extend type Query {
     email: String!
     platform: SocialAccountPlatform!
   ): SignInResponse!
-  checkEmail(email: String!): CheckEmailResponse!
+  checkEmail(email: String!): CRUDResponse!
   requestOTP(email: String!): OTPResponse!
   verifyOTP(email: String!, userOTP: String!): OTPResponse!
-  getUserById(id: ID!): CRUDResponse!
+  getUserById(userId: ID!): CRUDResponse!
 }
 
-# Need to have a response format
 type SignInResponse implements Response {
   status: String!
   statusCode: Int!
   message: String!
-  user: User
+  userId: ID
   token: String
-}
-
-type CheckEmailResponse implements Response {
-  status: String!
-  statusCode: Int!
-  message: String!
-  exist: Boolean!
 }
 
 type CRUDResponse implements Response {

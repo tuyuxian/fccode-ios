@@ -26,7 +26,7 @@ struct InputHelper: View {
         HStack(alignment: .top, spacing: 6.0) {
             switch type {
             case .info:
-                Image("CheckCircleBased")
+                Image("CheckCircle")
                     .renderingMode(.template)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -36,7 +36,7 @@ struct InputHelper: View {
                     .fontTemplate(.noteMedium)
                     .foregroundColor(isSatisfied ? Color.text : Color.surface1)
             case .error:
-                Image("Error")
+                Image("ErrorCircleRed")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 16, height: 16)

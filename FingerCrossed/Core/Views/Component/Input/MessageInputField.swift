@@ -17,11 +17,13 @@ struct MessageInputField: View {
         HStack(alignment: .bottom, spacing: 6) {
             HStack(alignment: .center, spacing: 6) {
                 IconButton(
-                    name: "CameraBased",
+                    name: "Camera",
+                    color: Color.text,
                     action: {}
                 )
                 IconButton(
-                    name: "PictureBased",
+                    name: "Picture",
+                    color: Color.text,
                     action: {}
                 )
             }
@@ -42,6 +44,7 @@ struct MessageInputField: View {
                 ? HStack(alignment: .center) {
                     IconButton(
                         name: "Sent",
+                        color: Color.text,
                         action: {}
                     )
                 }

@@ -174,7 +174,7 @@ private struct ReportingAndBlocking: View {
             Spacer()
                 .frame(height: 16)
             
-            Text("We respect the privacy of our users and collect, store, and use personal data in accordance with our Privacy Policy. By using our app, you agree to the terms of our Privacy Policy.")
+            Text("We respect the privacy of our users and collect, store, and use personal data in accordance with our Privacy Policy. By using our app, you agree to the terms of our Privacy Policy.\n")
                 .foregroundColor(Color.text)
                 .fontTemplate(.pRegular)
             

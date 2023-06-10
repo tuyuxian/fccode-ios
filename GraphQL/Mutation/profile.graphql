@@ -1,0 +1,84 @@
+mutation DeleteUserById($userId: ID!) {
+  deleteUserById(userId: $userId) {
+    status
+    statusCode
+    message
+  }
+}
+
+mutation ConnectSocialAccount($userId: ID!, $input: CreateSocialAccountInput!) {
+  connectSocialAccount(userId: $userId, input: $input) {
+    status
+    statusCode
+    message
+    user {
+      appleConnect
+      facebookConnect
+      googleConnect
+    }
+  }
+}
+
+mutation UpdatePassword(
+  $userId: ID!
+  $oldPassword: String
+  $newPassword: String!
+) {
+  updatePassword(
+    userId: $userId
+    oldPassword: $oldPassword
+    newPassword: $newPassword
+  ) {
+    status
+    statusCode
+    message
+  }
+}
+
+mutation UpdateUser($userId: ID!, $input: UpdateUserInput!) {
+  updateUser(userId: $userId, input: $input) {
+    status
+    statusCode
+    message
+    user {
+      id
+      email
+      password
+      username
+      dateOfBirth
+      gender
+      profilePictureURL
+      voiceContentURL
+      selfIntro
+      longitude
+      latitude
+      country
+      administrativeArea
+      googleConnect
+      facebookConnect
+      appleConnect
+      premium
+      lifePhoto {
+        id
+        caption
+        contentURL
+      }
+      citizen {
+        id
+        countryName
+      }
+      ethnicity {
+        id
+        ethnicityType
+      }
+      socialAccount {
+        email
+        platform
+      }
+      goal {
+        id
+        goalType
+      }
+    }
+  }
+}

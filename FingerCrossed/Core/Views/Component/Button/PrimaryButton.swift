@@ -19,25 +19,25 @@ struct PrimaryButton: View {
     @Binding var isLoading: Bool
     
     var body: some View {
-        Button {
+        HStack {
+            isLoading
+            ? LottieView(lottieFile: "spinner.json")
+                .frame(width: 24, height: 24)
+            : nil
+            
+            isLoading
+            ? nil
+            : Text(label)
+                .fontTemplate(.pMedium)
+                .foregroundColor(isTappable ? Color.text : Color.white)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 52)
+        .background(isTappable ? Color.yellow100 : Color.surface2)
+        .cornerRadius(50)
+        .contentShape(Rectangle())
+        .onTapGesture {
             action()
-        } label: {
-            HStack {
-                isLoading
-                ? LottieView(lottieFile: "spinner.json")
-                    .frame(width: 24, height: 24)
-                : nil
-                
-                isLoading
-                ? nil
-                : Text(label)
-                    .fontTemplate(.pMedium)
-                    .foregroundColor(isTappable ? Color.text : Color.white)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 52)
-            .background(isTappable ? Color.yellow100 : Color.surface2)
-            .cornerRadius(50)
         }
         .disabled(!isTappable || isLoading)
         

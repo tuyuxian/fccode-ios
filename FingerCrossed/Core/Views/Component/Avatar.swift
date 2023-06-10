@@ -25,7 +25,12 @@ struct Avatar: View {
             ) { phase in
                 switch phase {
                 case .empty:
-                    EmptyView()
+                    Shimmer(
+                        size: CGSize(
+                            width: size,
+                            height: size
+                        )
+                    )
                 case .success(let image):
                     image
                         .resizable()
@@ -49,7 +54,9 @@ struct Avatar: View {
                 width: size,
                 height: size
             )
-            .clipShape(Circle())
+            .clipShape(
+                RoundedRectangle(cornerRadius: 100)
+            )
             
             isActive
             ? Circle()

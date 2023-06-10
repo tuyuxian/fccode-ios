@@ -7,12 +7,15 @@
 
 import SwiftUI
 import GraphQLAPI
+import PhotosUI
 
 struct SignUpAvatarView: View {
     /// Global banner
     @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Flag for selected photo list sheet' signal
+    @State var showSelectedPhotoList: Bool = false
     /// Flag for image picker's signal
     @State private var showImagePicker: Bool = false
     /// Flag for camera's signal
@@ -23,6 +26,8 @@ struct SignUpAvatarView: View {
     @State var showCameraAlert: Bool = false
     /// Flag for photo library permission alert
     @State var showPhotoLibraryAlert: Bool = false
+    /// Flag for selected photo not image alert
+    @State var showNotImageAlert: Bool = false
     /// Init photo library permission manager
     let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
     /// Init camera permission manager
@@ -45,50 +50,28 @@ struct SignUpAvatarView: View {
     private func photoLibraryOnTap() {
         switch photoLibraryPermissionManager.permissionStatus {
         case .notDetermined:
-            photoLibraryPermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showImagePicker = true
+            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
+                if photoAuthStatus.isAllowed {
+                    if photoAuthStatus.isLimited {
+                        showSelectedPhotoList.toggle()
+                    } else {
+                        showImagePicker = true
+                    }
+                }
+                else {
+                    showPhotoLibraryAlert.toggle()
+                }
             }
-        case .denied:
-            showPhotoLibraryAlert.toggle()
-        default:
+        case .authorized:
             showImagePicker = true
+        default:
+            showPhotoLibraryAlert.toggle()
         }
     }
     /// Handler for button on tap
     private func buttonOnTap() {
-        isLoading.toggle()
-        Task {
-            do {
-                let url = try await MediaRepository.getPresignedPutUrl(
-                    GraphQLEnum.case(.image)
-                )
-                let result = try await AWSS3().uploadImage(
-                    vm.selectedImageData,
-                    toPresignedURL: URL(string: url!)!
-                )
-                vm.user.profilePictureUrl = result.absoluteString
-                vm.user.lifePhoto.append(
-                    LifePhoto(
-                        contentUrl: result.absoluteString,
-                        caption: "",
-                        position: 0,
-                        scale: 1,
-                        offset: CGSize.zero
-                    )
-                )
-                isLoading.toggle()
-                vm.transition = .forward
-                vm.switchView = .location
-                
-            } catch {
-                print(error.localizedDescription)
-                bm.pop(
-                    title: "Something went wrong.",
-                    type: .error
-                )
-            }
-        }
+        vm.transition = .forward
+        vm.switchView = .location
     }
     
     var body: some View {
@@ -112,7 +95,7 @@ struct SignUpAvatarView: View {
                         vm.transition = .backward
                         vm.switchView = .nationality
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
@@ -153,24 +136,29 @@ struct SignUpAvatarView: View {
                     )
                 ) {
                     if vm.selectedImage != nil {
-                        Image(uiImage: vm.selectedImage!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 182, height: 182)
-                            .cornerRadius(100)
-                            .overlay(
-                                Circle()
-                                    .stroke(
-                                        Color.white,
-                                        lineWidth: 12
-                                    )
-                                    .frame(width: 194)
-                            )
-                    } else {
-                        Image("ProfilePicture")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
+                        Circle()
+                            .foregroundColor(Color.yellow100)
                             .frame(width: 194, height: 194)
+                            .overlay {
+                                Image(uiImage: vm.selectedImage!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 170, height: 170)
+                                    .cornerRadius(100)
+                            }
+                    } else {
+                        Circle()
+                            .strokeBorder(
+                                Color.yellow100,
+                                lineWidth: 12
+                            )
+                            .frame(width: 194, height: 194)
+                            .background {
+                                Image("Sam")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 194, height: 194)
+                            }
                     }
                     
                     HStack(spacing: 112) {
@@ -180,16 +168,16 @@ struct SignUpAvatarView: View {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
-                                    Image("CameraBased")
+                                    Image("Camera")
                                         .renderingMode(.template)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
                         }
                         .fullScreenCover(
@@ -197,12 +185,12 @@ struct SignUpAvatarView: View {
                             content: {
                                 ImagePicker(
                                     sourceType: .camera,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                    selectedImage: $vm.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
                             }
-                        ) .alert(isPresented: $showCameraAlert) {
+                        )
+                        .alert(isPresented: $showCameraAlert) {
                             Alert(
                                 title:
                                     Text(cameraPermissionManager.alertTitle)
@@ -228,25 +216,31 @@ struct SignUpAvatarView: View {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
-                                    Image("PictureBased")
+                                    Image("AddPicture")
                                         .renderingMode(.template)
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
                         }
                         .sheet(
+                            isPresented: $showSelectedPhotoList,
+                            content: {
+                                SelectedPhotoSheet(
+                                    selectedImage: $vm.selectedImage
+                                )
+                            }
+                        )
+                        .sheet(
                             isPresented: $showImagePicker,
                             content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                PhotoPicker(
+                                    selectedImage: $vm.selectedImage
                                 )
                             }
                         )
@@ -270,6 +264,7 @@ struct SignUpAvatarView: View {
                             )
                         }
                     }
+                    .padding(.bottom, -14)
                 }
                 .frame(width: UIScreen.main.bounds.size.width - 48)
                 .padding(.top, 20)

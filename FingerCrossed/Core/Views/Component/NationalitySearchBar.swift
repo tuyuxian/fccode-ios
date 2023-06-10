@@ -19,6 +19,8 @@ struct NationalitySearchBar: View {
         
     @State var isDisplay: Bool = false
     
+    @State var isSheet: Bool
+    
     @State var test: String = ""
     
     var body: some View {
@@ -31,59 +33,75 @@ struct NationalitySearchBar: View {
             if nationalityList.count >= 1 {
                 VStack(
                     alignment: .leading,
-                    spacing: 10
+                    spacing: 0
                 ) {
-                    if nationalityList.contains(where: { $0.name == "Open to all" }) {
-                        HStack(spacing: 8) {
-                            Text("Open to all")
-                                .fontTemplate(.pMedium)
-                                .foregroundColor(Color.text)
-                            
-                            Button {
-                                nationalityList.removeAll()
-                            } label: {
-                                Image("CloseCircle")
-                                    .resizable()
-                                    .frame(
-                                        width: 24,
-                                        height: 24
+                    nationalityList.count >= 3
+                    ? nil
+                    : isDisplay
+                        ? nil
+                        : TextField("",
+                              text: $countryName,
+                              prompt: Text("Search")
+                                        .foregroundColor(.textHelper)
+                                        .font(
+                                            Font.system(
+                                                size: 16,
+                                                weight: .regular
+                                            )
+                                        )
+                        )
+                        .fontTemplate(.pRegular)
+                        .foregroundColor(Color.text)
+                        .frame(height: 36)
+                        .padding(.leading, 6) // 16 - 10
+                        .padding(.trailing, 40) // 16 + 24
+                        .focused($isSearchBarFocused)
+                        .onAppear {
+                            isSearchBarFocused = false
+                        }
+                    
+                    nationalityList.count >= 3
+                    ? nil
+                    : isDisplay
+                        ? nil
+                        : Divider()
+                            .overlay(Color.surface2)
+                            .frame(height: 1)
+                            .padding(.vertical, 9.5)
+                    
+                    if isSheet {
+                        ScrollView(
+                            .horizontal,
+                            showsIndicators: false
+                        ) {
+                            HStack(
+                                alignment: .center,
+                                spacing: 10
+                            ) {
+                                ForEach(nationalityList) { selected in
+                                    NationalityTag(
+                                        nationality: selected,
+                                        action: {
+                                            nationalityList.removeAll(
+                                                where: { $0 == selected }
+                                            )
+                                        }
                                     )
+                                }
                             }
                         }
-                        .padding(.vertical, 6)
-                        .frame(height: 36)
-                        .background(
-                            RoundedRectangle(cornerRadius: 50)
-                                .fill(Color.yellow20)
+                        .mask(
+                            HStack(spacing: 0) {
+                                Rectangle().fill(Color.white)
+                                LinearGradient(gradient:
+                                   Gradient(
+                                       colors: [Color.white, Color.white.opacity(0)]),
+                                       startPoint: .leading, endPoint: .trailing
+                                   )
+                                   .frame(width: 50)
+                            }
                         )
                     } else {
-                        nationalityList.count >= 3
-                        ? nil
-                        : isDisplay
-                            ? nil
-                            : TextField("",
-                                  text: $countryName,
-                                  prompt: Text("Search")
-                                            .foregroundColor(.textHelper)
-                                            .font(
-                                                Font.system(
-                                                    size: 16,
-                                                    weight: .regular
-                                                )
-                                            )
-                            )
-                            .fontTemplate(.pRegular)
-                            .foregroundColor(Color.text)
-                            .frame(height: 36)
-                            .focused($isSearchBarFocused)
-                            .onAppear {
-                                isSearchBarFocused = false
-                            }
-                        
-                        nationalityList.count >= 3
-                        ? nil
-                        : isDisplay ? nil : Divider().overlay(Color.surface2)
-                        
                         VStack(
                             alignment: .leading,
                             spacing: 10
@@ -100,8 +118,10 @@ struct NationalitySearchBar: View {
                             }
                         }
                     }
+                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
             } else {
                 HStack {
                     TextField(
@@ -119,6 +139,8 @@ struct NationalitySearchBar: View {
                     .fontTemplate(.pRegular)
                     .foregroundColor(Color.text)
                     .frame(height: 36)
+                    .padding(.leading, 16)
+                    .padding(.trailing, 40)
                     .focused($isSearchBarFocused)
                     .onAppear {
                         isSearchBarFocused = false
@@ -126,28 +148,30 @@ struct NationalitySearchBar: View {
                 }
             }
             
-            Image("search")
-                .foregroundColor(Color.text)
-                .frame(height: 36)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing
-                )
+            nationalityList.count >= 3 && isSheet
+            ? nil
+            : HStack {
+                Spacer()
+                
+                Image("Search")
+                    .foregroundColor(Color.text)
+                    .frame(width: 24, height: 36)
+                    .padding(.trailing, 16)
+            }
         }
         .frame(
             height:
                 flexibleHeight(
                     count: nationalityList.count,
-                    isDisplay: isDisplay
+                    isSheet: isSheet
                 )
         )
-        .padding(.horizontal, 16)
         .background(
             RoundedRectangle(
                 cornerRadius: nationalityList.count >= 1
                 ? isDisplay && nationalityList.count == 1
                     ? 50
-                    : 16
+                    : 26
                 : 50
             )
             .stroke(Color.surface2, lineWidth: 1)
@@ -156,7 +180,7 @@ struct NationalitySearchBar: View {
                     cornerRadius: nationalityList.count >= 1
                     ? isDisplay && nationalityList.count == 1
                         ? 50
-                        : 16
+                        : 26
                     : 50
                 )
                 .fill(Color.white)
@@ -164,15 +188,24 @@ struct NationalitySearchBar: View {
         )
     }
     
-    private func flexibleHeight (count: Int, isDisplay: Bool) -> CGFloat {
-        if count >= 3 && count < 200 {
-            return 160.0
-        } else if count >= 2 && count < 200 {
-            return isDisplay ? 108.0 : 160.0
-        } else if count >= 1 && count < 200 {
-            return isDisplay ? 56.0 : 108.0
+    private func flexibleHeight (
+        count: Int,
+        isSheet: Bool
+    ) -> CGFloat {
+        if isSheet {
+            if count > 0 && count < 3 {
+                return 112.0
+            } else {
+                return 56.0
+            }
         } else {
-            return 54.0
+            if count == 3 {
+                return 148.0
+            } else if count == 2 {
+                return 102.0
+            } else {
+                return 56.0
+            }
         }
     }
 }
@@ -183,7 +216,8 @@ struct NationalitySearchBar_Previews: PreviewProvider {
             NationalitySearchBar(
                 vm: NationalityViewModel(),
                 nationalityList: .constant([]),
-                countryName: .constant("Taiwan")
+                countryName: .constant("Taiwan"),
+                isSheet: true
             )
             NationalitySearchBar(
                 vm: NationalityViewModel(),
@@ -193,7 +227,8 @@ struct NationalitySearchBar_Previews: PreviewProvider {
                         code: "TW"
                     )
                 ]),
-                countryName: .constant("")
+                countryName: .constant(""),
+                isSheet: true
             )
         }
         .padding(.horizontal, 24)

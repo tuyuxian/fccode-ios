@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-struct Ethnicity: Equatable {
+struct Ethnicity: Equatable, Codable {
     public var id: UUID = UUID()
     public var type: EthnicityType
     
@@ -22,7 +22,7 @@ struct Ethnicity: Equatable {
 extension Ethnicity {
     public func getGraphQLInput() -> GraphQLAPI.CreateEthnicityInput {
         return GraphQLAPI.CreateEthnicityInput(
-            ethnicityType: GraphQLEnum.case(self.type.graphQLValue)
+            ethnicityType: GraphQLEnum.case(self.type)
         )
     }
 }

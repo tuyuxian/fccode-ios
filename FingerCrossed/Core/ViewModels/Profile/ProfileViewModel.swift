@@ -7,92 +7,20 @@
 
 import Foundation
 import PhotosUI
+import SwiftUI
 
 class ProfileViewModel: ObservableObject, InputProtocol {
-    @Published var user: User = User(
-        userId: "123123123",
-        email: "test@gmail.com",
-        password: "123123",
-        username: "Test User",
-        dateOfBirth: "",
-        gender: .MALE,
-        profilePictureUrl: "https://i.pravatar.cc/150?img=6",
-        // swiftlint: disable line_length
-        selfIntro: "Hello! I'm ChatGPT, a language model designed to understand and generate human-like language.",
-        // swiftlint: enable line_length
-        longitude: 123.0,
-        latitude: 123.0,
-        country: "",
-        administrativeArea: "USA",
-        voiceContentURL: "AZ",
-        googleConnect: false,
-        facebookConnect: false,
-        appleConnect: false,
-        premium: false,
-        goal: [],
-        citizen: [],
-        lifePhoto: [
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=6",
-                caption: "123",
-                position: 0,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=7",
-                caption: "123",
-                position: 1,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=8",
-                caption: "123",
-                position: 2,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "https://i.pravatar.cc/150?img=9",
-                caption: "",
-                position: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "",
-                caption: "",
-                position: 4,
-                scale: 1,
-                offset: CGSize.zero
-            )
-        ],
-        socialAccount: [],
-        ethnicity: []
-    )
+    /// User state
+    @AppStorage("UserId") var userId: String = ""
+    @Published var user: User?
     
-    @Published var distance: String = ""
-    @Published var ethnicity: [Ethnicity] = []
-    @Published var goal: [String] = []
-    @Published var sexOrientation: [String] = []
-    @Published var ageFrom: Int = 18
-    @Published var ageTo: Int = 100
-    @Published var nationality = [Nationality]()
-    
-    // MARK: State Management
-    @Published var currentPassword: String = ""
-    @Published var newPassword: String = ""
-    @Published var newPasswordConfirmed: String = ""
-    
-    // MARK: Condition Variables for button
-    @Published var isNewPasswordSatisfied: Bool = false
-    @Published var isCurrentPasswordMatched: Bool = false
-    @Published var isNewPasswordLengthSatisfied: Bool = false
-    @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
-    @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
-    @Published var isNewPasswordMatched: Bool = false
-    
+    /// View state
+    @Published var state: ViewStatus = .none
+
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+        
     // MARK: Life Photo Sheet
     @Published var currentDragLifePhoto: LifePhoto?
     @Published var hasLifePhoto: Bool = false
@@ -103,4 +31,47 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
+    
+    init(preview: Bool = false) {
+        print("-> [Profile] vm init")
+        if !preview {
+            Task { await fetchUser() }
+        } else {
+            dummyUser()
+        }
+    }
+    
+    deinit {
+        print("-> [Profile] vm deinit")
+    }
+}
+
+extension ProfileViewModel {
+    @MainActor
+    public func fetchUser() async {
+        do {
+            self.state = .loading
+            let user = try await UserService.getUserById(userId: self.userId)
+            guard let user = user else {
+                showError()
+                return
+            }
+            self.user = user
+            self.state = .complete
+        } catch {
+            showError()
+            print(error.localizedDescription)
+        }
+    }
+    
+    public func dummyUser() {
+        self.user = User.MockUser
+        self.state = .complete
+    }
+
+    private func showError() {
+        self.state = .error
+        self.toastType = .error
+        self.toastMessage = "Something went wrong"
+    }
 }

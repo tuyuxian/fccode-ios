@@ -23,9 +23,8 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
   public static func objectType(forTypename typename: String) -> Object? {
     switch typename {
     case "Mutation": return GraphQLAPI.Objects.Mutation
-    case "SignInResponse": return GraphQLAPI.Objects.SignInResponse
-    case "CheckEmailResponse": return GraphQLAPI.Objects.CheckEmailResponse
     case "CRUDResponse": return GraphQLAPI.Objects.CRUDResponse
+    case "SignInResponse": return GraphQLAPI.Objects.SignInResponse
     case "OTPResponse": return GraphQLAPI.Objects.OTPResponse
     case "MediaCRUDResponse": return GraphQLAPI.Objects.MediaCRUDResponse
     case "MatchResponse": return GraphQLAPI.Objects.MatchResponse

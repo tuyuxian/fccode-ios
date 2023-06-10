@@ -9,8 +9,6 @@ import SwiftUI
 
 struct HelpSupportView: View {
     
-    @ObservedObject var vm: ProfileViewModel
-    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -27,16 +25,14 @@ struct HelpSupportView: View {
                         Spacer()
                             .frame(height: 30)
                         
-                        // Contact Us
                         ContactUs()
-                        // Terms of Service
+                        
                         TermsOfService()
-                        // Privacy
+
                         Privacy()
                         
                         Spacer()
                             .frame(height: 30)
-
                     }
                 }
                 .scrollIndicators(.hidden)
@@ -48,9 +44,7 @@ struct HelpSupportView: View {
 
 struct HelpSupportView_Previews: PreviewProvider {
     static var previews: some View {
-        HelpSupportView(
-            vm: ProfileViewModel()
-        )
+        HelpSupportView()
     }
 }
 

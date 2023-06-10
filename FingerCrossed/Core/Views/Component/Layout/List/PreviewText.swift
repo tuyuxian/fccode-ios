@@ -21,6 +21,8 @@ struct PreviewText: View {
 
 struct PreviewText_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewText(text: "preview text")
+        PreviewText(
+            text: "preview text"
+        )
     }
 }

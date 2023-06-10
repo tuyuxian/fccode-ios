@@ -31,7 +31,7 @@ struct DatePicker: View {
     @State var year: [String] = []
     
     var body: some View {
-        LazyVStack {
+        VStack {
             ZStack {
                 Rectangle()
                     .fill(Color.yellow20)
@@ -40,27 +40,24 @@ struct DatePicker: View {
                     .cornerRadius(16)
                 
                 HStack {
-                    GeometryReader { geometry in
+//                    GeometryReader { geometry in
                         HStack {
                             CustomPicker(
                                 $monthIndex,
                                 items: $month
                             ) { value in
-                                GeometryReader { reader in
-                                    Text("\(value)")
-                                        .fontTemplate(.pMedium)
-                                        .foregroundColor(Color.text)
-                                        .frame(
-                                            width: reader.size.width,
-                                            height: reader.size.height,
-                                            alignment: .center
-                                        )
-                                }
+                                Text("\(value)")
+                                    .fontTemplate(.pMedium)
+                                    .foregroundColor(Color.text)
+                                    .frame(
+                                        height: 44,
+                                        alignment: .center
+                                    )
                             }
                             .scrollAlpha(0.25)
                             .frame(
                                 width: 120,
-                                height: geometry.size.height,
+                                height: 220,
                                 alignment: .center
                             )
                             .onChange(of: monthIndex) { val in
@@ -76,21 +73,28 @@ struct DatePicker: View {
                                 $dayIndex,
                                 items: $day
                             ) { value in
-                                GeometryReader { reader in
-                                    Text("\(value)")
-                                        .fontTemplate(.pMedium)
-                                        .foregroundColor(Color.text)
-                                        .frame(
-                                            width: reader.size.width,
-                                            height: reader.size.height,
-                                            alignment: .center
-                                        )
-                                }
+//                                GeometryReader { reader in
+//                                    Text("\(value)")
+//                                        .fontTemplate(.pMedium)
+//                                        .foregroundColor(Color.text)
+//                                        .frame(
+//                                            width: 44,
+//                                            height: 44,
+//                                            alignment: .center
+//                                        )
+//                                }
+                                Text("\(value)")
+                                    .fontTemplate(.pMedium)
+                                    .foregroundColor(Color.text)
+                                    .frame(
+                                        height: 44,
+                                        alignment: .center
+                                    )
                             }
                             .scrollAlpha(0.25)
                             .frame(
                                 width: 90,
-                                height: geometry.size.height,
+                                height: 220,
                                 alignment: .center
                             )
                             .onAppear {
@@ -111,21 +115,18 @@ struct DatePicker: View {
                                 $yearIndex,
                                 items: $year
                             ) { value in
-                                GeometryReader { reader in
-                                    Text("\(value)")
-                                        .fontTemplate(.pMedium)
-                                        .foregroundColor(Color.text)
-                                        .frame(
-                                            width: reader.size.width,
-                                            height: reader.size.height,
-                                            alignment: .center
-                                        )
-                                }
+                                Text("\(value)")
+                                    .fontTemplate(.pMedium)
+                                    .foregroundColor(Color.text)
+                                    .frame(
+                                        height: 44,
+                                        alignment: .center
+                                    )
                             }
                             .scrollAlpha(0.25)
                             .frame(
                                 width: 90,
-                                height: geometry.size.height,
+                                height: 220,
                                 alignment: .center
                             )
                             .onChange(of: yearIndex) { val in
@@ -154,7 +155,7 @@ struct DatePicker: View {
                                     )
                                 ).map { String($0) }
                             }
-                        }
+//                        }
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 220)

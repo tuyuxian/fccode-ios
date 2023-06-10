@@ -8,18 +8,12 @@
 import SwiftUI
 
 struct RadioButtonGroup: View {
-    
-    let callback: (String) -> ()
-    
-    @State var items: [String] = [
-        "Male",
-        "Female",
-        "Transgender",
-        "Nonbinary",
-        "Prefer not to say"
-    ]
+        
+    @State var items: [String] = []
     
     @State var selectedId: String = ""
+    
+    let callback: (String) -> ()
     
     private func radioGroupCallback(
         id: String
@@ -45,7 +39,16 @@ struct RadioButtonGroup: View {
 
 struct RadioButtonGroup_Previews: PreviewProvider {
     static var previews: some View {
-        RadioButtonGroup { _ in}
-            .padding(.horizontal, 24)
+        RadioButtonGroup(
+            items: [
+                "Male",
+                "Female",
+                "Transgender",
+                "Nonbinary",
+                "Prefer not to say"
+            ],
+            callback: { _ in }
+        )
+        .padding(.horizontal, 24)
     }
 }

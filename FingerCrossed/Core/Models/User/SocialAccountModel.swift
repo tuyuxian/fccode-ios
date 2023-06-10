@@ -8,14 +8,14 @@
 import Foundation
 import GraphQLAPI
 
-struct SocialAccount {
+struct SocialAccount: Equatable, Codable {
     public var id = UUID()
     public var email: String
-    public var platform: SocialAccountPlatform
+    public var platform: SocialPlatform
     
     init(
         email: String,
-        platform: SocialAccountPlatform
+        platform: SocialPlatform
     ) {
         self.email = email
         self.platform = platform
@@ -26,7 +26,7 @@ extension SocialAccount {
     public func getGraphQLInput() -> GraphQLAPI.CreateSocialAccountInput {
         return GraphQLAPI.CreateSocialAccountInput(
             email: self.email,
-            platform: GraphQLEnum.case(self.platform.graphQLValue)
+            platform: GraphQLEnum.case(self.platform)
         )
     }
 }

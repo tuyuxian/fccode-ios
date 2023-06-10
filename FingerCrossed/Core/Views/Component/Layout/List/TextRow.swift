@@ -26,8 +26,8 @@ struct TextRow: View {
                 } label: {
                     Image(
                         isSelected
-                        ? "CheckBox"
-                        : "UncheckBox")
+                        ? "CheckBoxSelected"
+                        : "CheckBox")
                         .resizable()
                         .frame(
                             width: 24,

@@ -12,7 +12,7 @@ struct SignUpLocationView: View {
     /// Global banner
     @EnvironmentObject var bm: BannerManager
     /// Observed user state view model
-    @ObservedObject var userState: UserStateViewModel
+    @ObservedObject var usm: UserStateManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loction permission alert
@@ -45,19 +45,39 @@ struct SignUpLocationView: View {
                 vm.user.latitude = locationDataManager.lastSeenLocation?.coordinate.latitude ?? 0
                 vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
                 vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
-                // swiftlint: disable line_length
                 vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
-                // swiftlint: enable line_length
-                let (user, token) = try await EntryRepository.createUser(
+                let url = try await GraphAPI.getPresignedPutUrl(
+                    .case(.image)
+                )
+                let result = try await AWSS3().uploadImage(
+                    vm.selectedImage?.jpegData(compressionQuality: 0.1),
+                    toPresignedURL: URL(string: url!)!
+                )
+                vm.user.profilePictureUrl = result.absoluteString
+                vm.user.lifePhoto.append(
+                    LifePhoto(
+                        contentUrl: result.absoluteString,
+                        caption: "",
+                        position: 0,
+                        scale: 1,
+                        offset: CGSize.zero
+                    )
+                )
+                let (userId, token) = try await GraphAPI.createUser(
                     input: vm.user.getGraphQLInput()
                 )
                 isLoading.toggle()
-                userState.user = user
-                userState.token = token
-                userState.isLogin = true
-                userState.viewState = .main
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
             } catch {
+                isLoading.toggle()
                 print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
             }
         }
     }
@@ -83,7 +103,7 @@ struct SignUpLocationView: View {
                         vm.transition = .backward
                         vm.switchView = .avatar
                     } label: {
-                        Image("ArrowLeftBased")
+                        Image("ArrowLeft")
                             .resizable()
                             .frame(width: 24, height: 24)
                     }
@@ -96,7 +116,7 @@ struct SignUpLocationView: View {
                 
                 VStack(
                     alignment: .center,
-                    spacing: 0
+                    spacing: 20
                 ) {
                     Text("Your location matters")
                         .fontTemplate(.bigBoldTitle)
@@ -119,7 +139,7 @@ struct SignUpLocationView: View {
                 Spacer()
                 
                 PrimaryButton(
-                    label: "Continue",
+                    label: "Sure",
                     action: buttonOnTap,
                     isTappable: .constant(true),
                     isLoading: $isLoading
@@ -153,7 +173,7 @@ struct SignUpLocationView: View {
 struct SignUpLocationView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpLocationView(
-            userState: UserStateViewModel(),
+            usm: UserStateManager(),
             vm: EntryViewModel()
         )
     }

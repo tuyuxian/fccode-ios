@@ -55,117 +55,111 @@ struct LifePhotoActionSheet: View {
     }
     
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(
-                alignment: .leading,
-                spacing: 30
-            ) {
-                if vm.hasLifePhoto {
-                    Button {
-                        // TODO(Sam): add delete method
-                    } label: {
-                        LifePhotoActionRow(actionType: .delete)
-                    }
-                    
-                    Button {
-                        showEditSheet = true
-                    } label: {
-                        LifePhotoActionRow(actionType: .edit)
-                    }
-                } else {
-                    Button {
-                        takePhotosOnTap()
-                    } label: {
-                        LifePhotoActionRow(actionType: .camera)
-                    }
-                    .fullScreenCover(
-                        isPresented: $showCamera,
-                        onDismiss: {
-                            guard vm.selectedImage != nil else { return }
-                            showEditSheet = true
-                        },
-                        content: {
-                            ImagePicker(
-                                sourceType: .camera,
-                                selectedImage: $vm.selectedImage,
-                                imageData: $vm.selectedImageData
-                            )
-                            .edgesIgnoringSafeArea(.all)
+        Sheet(
+            size: [.height(138)],
+            hasHeader: false,
+            hasFooter: false,
+            header: {},
+            content: {
+                VStack(
+                    alignment: .leading,
+                    spacing: 30
+                ) {
+                    if vm.hasLifePhoto {
+                        Button {
+                            // TODO(Sam): add delete method
+                        } label: {
+                            LifePhotoActionRow(actionType: .delete)
                         }
-                    )
-                    .alert(isPresented: $showCameraAlert) {
-                        Alert(
-                            title:
-                                Text(cameraPermissionManager.alertTitle)
-                                .font(Font.system(size: 18, weight: .medium)),
-                            message:
-                                Text(cameraPermissionManager.alertMessage)
-                                .font(Font.system(size: 12, weight: .medium)),
-                            primaryButton: .default(Text("Cancel")),
-                            secondaryButton: .default(
-                                Text("Settings"),
-                                action: {
-                                    UIApplication.shared.open(
-                                        URL(string: UIApplication.openSettingsURLString)!
-                                    )
-                                }
-                            )
-                        )
-                    }
-                    
-                    Button {
-                        uploadPhotosOnTap()
-                    } label: {
-                        LifePhotoActionRow(actionType: .photo)
-                    }
-                    .sheet(
-                        isPresented: $showImagePicker,
-                        onDismiss: {
-                            guard vm.selectedImage != nil else { return }
+                        
+                        Button {
                             showEditSheet = true
-                        },
-                        content: {
-                            ImagePicker(
-                                sourceType: .photoLibrary,
-                                selectedImage: $vm.selectedImage,
-                                imageData: $vm.selectedImageData
+                        } label: {
+                            LifePhotoActionRow(actionType: .edit)
+                        }
+                    } else {
+                        Button {
+                            takePhotosOnTap()
+                        } label: {
+                            LifePhotoActionRow(actionType: .camera)
+                        }
+                        .fullScreenCover(
+                            isPresented: $showCamera,
+                            onDismiss: {
+                                guard vm.selectedImage != nil else { return }
+                                showEditSheet = true
+                            },
+                            content: {
+                                ImagePicker(
+                                    sourceType: .camera,
+                                    selectedImage: $vm.selectedImage
+                                )
+                                .edgesIgnoringSafeArea(.all)
+                            }
+                        )
+                        .alert(isPresented: $showCameraAlert) {
+                            Alert(
+                                title:
+                                    Text(cameraPermissionManager.alertTitle)
+                                    .font(Font.system(size: 18, weight: .medium)),
+                                message:
+                                    Text(cameraPermissionManager.alertMessage)
+                                    .font(Font.system(size: 12, weight: .medium)),
+                                primaryButton: .default(Text("Cancel")),
+                                secondaryButton: .default(
+                                    Text("Settings"),
+                                    action: {
+                                        UIApplication.shared.open(
+                                            URL(string: UIApplication.openSettingsURLString)!
+                                        )
+                                    }
+                                )
                             )
                         }
-                    )
-                    .alert(isPresented: $showPhotoLibraryAlert) {
-                        Alert(
-                            title:
-                                Text(photoLibraryPermissionManager.alertTitle)
-                                .font(Font.system(size: 18, weight: .medium)),
-                            message:
-                                Text(photoLibraryPermissionManager.alertMessage)
-                                .font(Font.system(size: 12, weight: .medium)),
-                            primaryButton: .default(Text("Cancel")),
-                            secondaryButton: .default(
-                                Text("Settings"),
-                                action: {
-                                    UIApplication.shared.open(
-                                        URL(string: UIApplication.openSettingsURLString)!
-                                    )
-                                }
-                            )
+                        
+                        Button {
+                            uploadPhotosOnTap()
+                        } label: {
+                            LifePhotoActionRow(actionType: .photo)
+                        }
+                        .sheet(
+                            isPresented: $showImagePicker,
+                            onDismiss: {
+                                guard vm.selectedImage != nil else { return }
+                                showEditSheet = true
+                            },
+                            content: {
+                                ImagePicker(
+                                    sourceType: .photoLibrary,
+                                    selectedImage: $vm.selectedImage
+                                )
+                            }
                         )
+                        .alert(isPresented: $showPhotoLibraryAlert) {
+                            Alert(
+                                title:
+                                    Text(photoLibraryPermissionManager.alertTitle)
+                                    .font(Font.system(size: 18, weight: .medium)),
+                                message:
+                                    Text(photoLibraryPermissionManager.alertMessage)
+                                    .font(Font.system(size: 12, weight: .medium)),
+                                primaryButton: .default(Text("Cancel")),
+                                secondaryButton: .default(
+                                    Text("Settings"),
+                                    action: {
+                                        UIApplication.shared.open(
+                                            URL(string: UIApplication.openSettingsURLString)!
+                                        )
+                                    }
+                                )
+                            )
+                        }
                     }
                 }
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 30)
-            .background(Color.white)
-            .presentationDetents([.height(138)])
-            .presentationDragIndicator(.visible)
-        }
+                .padding(.top, 15) // 30 - 15
+            },
+            footer: {}
+        )
         .sheet(
             isPresented: $showEditSheet,
             onDismiss: {
@@ -204,7 +198,7 @@ private struct LifePhotoActionRow: View {
         HStack(spacing: 20) {
             switch actionType {
             case .camera:
-                Image("CameraBased")
+                Image("Camera")
                     .resizable()
                     .frame(width: 24, height: 24)
                 Text("Take Photos")
@@ -230,7 +224,7 @@ private struct LifePhotoActionRow: View {
                     .foregroundColor(Color.text)
                 Spacer()
             case .photo:
-                Image("PictureBased")
+                Image("AddPicture")
                     .resizable()
                     .frame(width: 24, height: 24)
 

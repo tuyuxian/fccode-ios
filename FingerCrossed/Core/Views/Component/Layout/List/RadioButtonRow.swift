@@ -23,7 +23,7 @@ struct RadioButtonRow: View {
                 
                 Spacer()
                 
-                Image(isSelected ? "RadioSelected" : "RadioDefault")
+                Image(isSelected ? "RadioSelected" : "Radio")
             }
         }
         .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))

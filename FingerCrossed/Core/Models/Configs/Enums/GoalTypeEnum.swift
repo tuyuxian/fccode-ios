@@ -8,35 +8,21 @@
 import Foundation
 import GraphQLAPI
 
-public enum GoalType: CaseIterable {
-    case GT1
-    case GT2
-    case GT3
-    case GT4
+typealias GoalType = GraphQLAPI.GoalGoalType
+
+extension GoalType: Codable {
     
     public func getString() -> String {
         switch self {
-        case .GT1:
+        case .gt1:
             return "Serious relationship"
-        case .GT2:
+        case .gt2:
             return "Casual relationship"
-        case .GT3:
+        case .gt3:
             return "Situation relationship"
-        case .GT4:
+        case .gt4:
             return "Meet new friends"
         }
     }
     
-    public var graphQLValue: GraphQLAPI.GoalGoalType {
-        switch self {
-        case .GT1:
-            return .gt1
-        case .GT2:
-            return .gt2
-        case .GT3:
-            return .gt3
-        case .GT4:
-            return .gt4
-        }
-    }
 }

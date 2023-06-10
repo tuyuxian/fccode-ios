@@ -201,6 +201,10 @@ struct InstructionSwipLeftRight: View {
             Text("Swipe Left/Right to See Photos")
                 .fontTemplate(.h3Bold)
                 .foregroundColor(Color.white)
+            
+            Text("(Tap to continue)")
+                .fontTemplate(.h4Medium)
+                .foregroundColor(Color.white)
         }
     }
 }
@@ -215,6 +219,10 @@ struct InstructionSwipUp: View {
             Text("Swipe Up to Dislike")
                 .fontTemplate(.h3Bold)
                 .foregroundColor(Color.white)
+            
+            Text("(Tap to continue)")
+                .fontTemplate(.h4Medium)
+                .foregroundColor(Color.white)
         }
     }
 }
@@ -228,6 +236,10 @@ struct InstructionDoubleTap: View {
             
             Text("Double Tap to Like a Person")
                 .fontTemplate(.h3Bold)
+                .foregroundColor(Color.white)
+            
+            Text("(Tap to continue)")
+                .fontTemplate(.h4Medium)
                 .foregroundColor(Color.white)
         }
     }

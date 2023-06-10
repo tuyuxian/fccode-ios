@@ -39,9 +39,7 @@ struct SelectionButton: View {
     }
     
     var body: some View {
-        Button {
-            callback(id)
-        } label: {
+        HStack {
             Text(label)
                 .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
@@ -52,9 +50,9 @@ struct SelectionButton: View {
             case .checkbox:
                 // swiftlint:disable void_function_in_ternary
                 isSelected
-                ? Image("CheckBox")
+                ? Image("CheckBoxSelected")
                     .foregroundColor(Color.gold)
-                : Image("UncheckBox")
+                : Image("CheckBox")
                     .renderingMode(.template)
                     .foregroundColor(
                         isWhiteBackground
@@ -67,7 +65,7 @@ struct SelectionButton: View {
                 isSelected
                 ? Image("RadioSelected")
                     .foregroundColor(Color.gold)
-                : Image("RadioDefault")
+                : Image("Radio")
                     .renderingMode(.template)
                     .foregroundColor(
                         isWhiteBackground
@@ -76,6 +74,10 @@ struct SelectionButton: View {
                     )
                 // swiftlint:enable void_function_in_ternary
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            callback(id)
         }
     }
 }

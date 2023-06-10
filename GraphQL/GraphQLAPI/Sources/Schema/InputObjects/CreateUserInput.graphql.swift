@@ -44,8 +44,8 @@ public struct CreateUserInput: InputObject {
     createUserCitizen: GraphQLNullable<[CreateCitizenInput]> = nil,
     createUserGoal: GraphQLNullable<[CreateGoalInput]> = nil,
     createUserEthnicity: GraphQLNullable<[CreateEthnicityInput]> = nil,
-    createUserSocialAccount: GraphQLNullable<[CreateSocialAccountInput]> = nil,
-    createUserLifePhoto: GraphQLNullable<[CreateLifePhotoInput]> = nil
+    createUserSocialAccount: CreateSocialAccountInput,
+    createUserLifePhoto: CreateLifePhotoInput
   ) {
     __data = InputDict([
       "createdAt": createdAt,
@@ -239,12 +239,12 @@ public struct CreateUserInput: InputObject {
     set { __data["createUserEthnicity"] = newValue }
   }
 
-  public var createUserSocialAccount: GraphQLNullable<[CreateSocialAccountInput]> {
+  public var createUserSocialAccount: CreateSocialAccountInput {
     get { __data["createUserSocialAccount"] }
     set { __data["createUserSocialAccount"] = newValue }
   }
 
-  public var createUserLifePhoto: GraphQLNullable<[CreateLifePhotoInput]> {
+  public var createUserLifePhoto: CreateLifePhotoInput {
     get { __data["createUserLifePhoto"] }
     set { __data["createUserLifePhoto"] = newValue }
   }

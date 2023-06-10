@@ -3,7 +3,18 @@ query CheckEmail($email: String!) {
     status
     statusCode
     message
-    exist
+    user {
+      password
+      username
+      profilePictureURL
+      appleConnect
+      facebookConnect
+      googleConnect
+      socialAccount {
+        email
+        platform
+      }
+    }
   }
 }
 
@@ -12,49 +23,7 @@ query SignIn($email: String!, $password: String!) {
     status
     statusCode
     message
-    status
-    statusCode
-    message
-    user {
-      id
-      email
-      password
-      username
-      dateOfBirth
-      gender
-      profilePictureURL
-      voiceContentURL
-      selfIntro
-      longitude
-      latitude
-      country
-      administrativeArea
-      googleConnect
-      facebookConnect
-      appleConnect
-      premium
-      lifePhoto {
-        id
-        caption
-        contentURL
-      }
-      citizen {
-        id
-        countryName
-      }
-      ethnicity {
-        id
-        ethnicityType
-      }
-      socialAccount {
-        email
-        platform
-      }
-      goal {
-        id
-        goalType
-      }
-    }
+    userId
     token
   }
 }
@@ -64,49 +33,7 @@ query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
     status
     statusCode
     message
-    status
-    statusCode
-    message
-    user {
-      id
-      email
-      password
-      username
-      dateOfBirth
-      gender
-      profilePictureURL
-      voiceContentURL
-      selfIntro
-      longitude
-      latitude
-      country
-      administrativeArea
-      googleConnect
-      facebookConnect
-      appleConnect
-      premium
-      lifePhoto {
-        id
-        caption
-        contentURL
-      }
-      citizen {
-        id
-        countryName
-      }
-      ethnicity {
-        id
-        ethnicityType
-      }
-      socialAccount {
-        email
-        platform
-      }
-      goal {
-        id
-        goalType
-      }
-    }
+    userId
     token
   }
 }

@@ -22,7 +22,7 @@ struct CheckboxButtonRow: View {
                 
                 Spacer()
                 
-                Image(isSelected ? "CheckBox" : "UncheckBox")
+                Image(isSelected ? "CheckBoxSelected" : "CheckBox")
             }
         }
         .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
@@ -31,6 +31,6 @@ struct CheckboxButtonRow: View {
 
 struct CheckboxButtonRow_Previews: PreviewProvider {
     static var previews: some View {
-        CheckboxButtonRow(label: "Checkbox")
+        CheckboxButtonRow(label: "CheckBoxSelected")
     }
 }

@@ -22,7 +22,7 @@ struct NationalityTag: View {
             Button {
                 action()
             } label: {
-                Image("CloseCircle")
+                Image("CloseCircleYellow")
                     .resizable()
                     .frame(
                         width: 24,

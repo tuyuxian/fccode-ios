@@ -8,8 +8,8 @@
 import Foundation
 import GraphQLAPI
 
-struct LifePhoto: Identifiable, Equatable {
-    let id: UUID = UUID()
+struct LifePhoto: Identifiable, Equatable, Codable {
+    var id: UUID = UUID()
     var contentUrl: String
     var caption: String
     var position: Int
@@ -36,7 +36,10 @@ extension LifePhoto {
         return GraphQLAPI.CreateLifePhotoInput(
             contentURL: self.contentUrl,
             caption: .some(self.caption),
-            position: self.position
+            position: self.position,
+            scale: self.scale,
+            offsetX: self.offset.width,
+            offsetY: self.offset.height
         )
     }
 }

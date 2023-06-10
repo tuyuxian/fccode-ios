@@ -8,42 +8,69 @@
 import SwiftUI
 
 struct PreferenceEthnicityView: View {
-    /// Observed Profile view model
-    @ObservedObject var vm: ProfileViewModel
+    /// View controller
+    @Environment(\.dismiss) var dismiss
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    /// Init preference ethnicity view model
+    @StateObject var vm = PreferenceEthnicityViewModel()
+
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
     
-    let ethnicityOptions: [String] = [
-        "Open to all",
-        "American Indian",
-        "Black/African American",
-        "East Asian",
-        "Hipanic/Latino",
-        "Mid Eastern",
-        "Pacific Islander",
-        "South Asian",
-        "Southeast Asian",
-        "White/Caucasian"
-    ]
+    init() {
+        print("[Preference Ethnicity] view init")
+    }
 
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
             childTitle: "Ethnicity",
-            showSaveButton: .constant(false),
-            isLoading: .constant(false)
+            showSaveButton: $vm.showSaveButton,
+            isLoading: .constant(vm.state == .loading),
+            action: save
         ) {
             Box {
                 VStack(spacing: 0) {
-                    CheckBoxWithDivider(items: ethnicityOptions) { list in
-                        vm.ethnicity.removeAll()
-//                        for item in list {
-//                            let ethnicity = Ethnicity(id: UUID(), type: item)
-//                            vm.ethnicity.append(ethnicity)
-//                        }
-                    }
+                    CheckBoxWithDivider(
+                        items: vm.ethnicityOptions,
+                        selectedIdList: Array(
+                            vm.preference.ethnicities.count == 0
+                            ? ["Everyone"]
+                            : vm.preference.ethnicities.map { $0.type.getString() }
+                        ),
+                        callback: { list in
+                            vm.preference.ethnicities.removeAll()
+                            for item in list {
+                                if let et = vm.getType(item) {
+                                    vm.preference.ethnicities.append(
+                                        Ethnicity(type: et)
+                                    )
+                                }
+                            }
+                        }
+                    )
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
+                    .onChange(of: vm.preference.ethnicities) { _ in
+                        vm.showSaveButton = true
+                    }
                     
                     Spacer()
+                }
+            }
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.toastMessage,
+                        type: vm.toastType
+                    )
+                    vm.state = .none
                 }
             }
         }
@@ -52,6 +79,7 @@ struct PreferenceEthnicityView: View {
 
 struct PreferenceEthnicityView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceEthnicityView(vm: ProfileViewModel())
+        PreferenceEthnicityView()
+            .environmentObject(BannerManager())
     }
 }

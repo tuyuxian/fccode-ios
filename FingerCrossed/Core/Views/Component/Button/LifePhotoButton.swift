@@ -10,7 +10,7 @@ import SwiftUI
 struct LifePhotoButton: View {
     
     @ObservedObject var vm: ProfileViewModel
-        
+            
     @State var position: Int
     
     @State var halfSize: CGFloat
@@ -19,19 +19,19 @@ struct LifePhotoButton: View {
             
     var body: some View {
         Button {
-            if position <= vm.currentLifePhotoCount {
-                vm.showEditSheet = true
-                vm.selectedLifePhoto = vm.user.lifePhoto[position]
-                vm.hasLifePhoto = vm.user.lifePhoto[position].contentUrl != ""
-            }
+//            if position <= vm.currentLifePhotoCount {
+//                vm.showEditSheet = true
+//                vm.selectedLifePhoto = vm.user?.lifePhoto[position]
+//                vm.hasLifePhoto = vm.user?.lifePhoto[position].contentUrl != ""
+//            }
         } label: {
             AsyncImage(
-                url: URL(string: vm.user.lifePhoto[position].contentUrl),
+                url: URL(string: ""),
                 transaction: Transaction(animation: .easeInOut)
             ) { phase in
                 switch phase {
                 case .empty:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)
@@ -41,13 +41,13 @@ struct LifePhotoButton: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 case .failure:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)
                         .foregroundColor(Color.white)
                 @unknown default:
-                    Image("PictureBased")
+                    Image("Picture")
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 46.15, height: 46.15)
@@ -60,9 +60,10 @@ struct LifePhotoButton: View {
             height: position == 0 ? fullSize : halfSize
         )
         .background(
-            position <= vm.currentLifePhotoCount
-            ? Color.yellow100
-            : Color.yellow20
+            Color.yellow20
+//            position <= vm.currentLifePhotoCount
+//            ? Color.yellow100
+//            : Color.yellow20
         )
         .cornerRadius(16)
         .contentShape(

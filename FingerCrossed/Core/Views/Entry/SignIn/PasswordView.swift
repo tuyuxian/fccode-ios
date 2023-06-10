@@ -80,90 +80,77 @@ struct PasswordView: View {
     private func googleOnTap() {
         self.endTextEditing()
         psm.show()
-        GoogleSSOManager().signIn(
-            successAction: { email in
+        Task {
+            do {
+                let email = try await GoogleSSOManager().signIn()
+                psm.dismiss()
                 guard let email else {
-                    psm.dismiss()
                     bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                psm.dismiss()
-                Task {
-                    do {
-                        let (
-                            userExist,
-                            hasPassword,
-                            hasAppleSSO,
-                            _,
-                            hasGoogleSSO,
-                            username,
-                            profilePictureUrl,
-                            appleEmail,
-                            facebookEmail,
-                            googleEmail
-                        ) = try await GraphAPI.checkEmail(
-                            email: email
-                        )
-                        guard userExist else {
-                            vm.user.socialAccount.append(
-                                SocialAccount(
-                                    email: email,
-                                    platform: .google
-                                )
-                            )
-                            vm.user.email = email
-                            vm.user.googleConnect = true
-                            vm.transition = .forward
-                            vm.switchView = .name
-                            return
-                        }
-                        guard hasGoogleSSO ?? false else {
-                            guard hasPassword ?? true else {
-                                accountSheetVM.isSSO = true
-                                accountSheetVM.showAppleSSO = hasAppleSSO ?? false
-                                accountSheetVM.email = email
-                                accountSheetVM.appleEmail = appleEmail
-                                accountSheetVM.facebookEmail = facebookEmail
-                                accountSheetVM.googleEmail = googleEmail
-                                accountSheetVM.username = username
-                                accountSheetVM.profilePictureUrl = profilePictureUrl
-                                isAccountPresented.toggle()
-                                return
-                            }
-                            accountSheetVM.isSSO = false
-                            accountSheetVM.email = email
-                            accountSheetVM.username = username
-                            accountSheetVM.profilePictureUrl = profilePictureUrl
-                            isAccountPresented.toggle()
-                            return
-                        }
-                        let (userId, token) = try await GraphAPI.socialSignIn(
+                let (
+                    userExist,
+                    hasPassword,
+                    hasAppleSSO,
+                    _,
+                    hasGoogleSSO,
+                    username,
+                    profilePictureUrl,
+                    appleEmail,
+                    facebookEmail,
+                    googleEmail
+                ) = try await GraphAPI.checkEmail(
+                    email: email
+                )
+                guard userExist else {
+                    vm.user.socialAccount.append(
+                        SocialAccount(
                             email: email,
-                            platform: GraphQLEnum.case(.google)
+                            platform: .google
                         )
-                        usm.userId = userId
-                        usm.token = token
-                        usm.isLogin = true
-                        usm.viewState = .main
-                    } catch {
-                        psm.dismiss()
-                        print(error.localizedDescription)
-                        bm.pop(
-                            title: "Something went wrong.",
-                            type: .error
-                        )
-                    }
+                    )
+                    vm.user.email = email
+                    vm.user.googleConnect = true
+                    vm.transition = .forward
+                    vm.switchView = .name
+                    return
                 }
-            },
-            errorAction: { error in
+                guard hasGoogleSSO ?? false else {
+                    guard hasPassword ?? true else {
+                        accountSheetVM.isSSO = true
+                        accountSheetVM.showAppleSSO = hasAppleSSO ?? false
+                        accountSheetVM.email = email
+                        accountSheetVM.appleEmail = appleEmail
+                        accountSheetVM.facebookEmail = facebookEmail
+                        accountSheetVM.googleEmail = googleEmail
+                        accountSheetVM.username = username
+                        accountSheetVM.profilePictureUrl = profilePictureUrl
+                        isAccountPresented.toggle()
+                        return
+                    }
+                    accountSheetVM.isSSO = false
+                    accountSheetVM.email = email
+                    accountSheetVM.username = username
+                    accountSheetVM.profilePictureUrl = profilePictureUrl
+                    isAccountPresented.toggle()
+                    return
+                }
+                let (userId, token) = try await GraphAPI.socialSignIn(
+                    email: email,
+                    platform: GraphQLEnum.case(.google)
+                )
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+            } catch {
                 psm.dismiss()
-                guard let error else { return }
                 print(error.localizedDescription)
             }
-        )
+        }
     }
     /// Handler for apple sso
     private func appleOnTap() {

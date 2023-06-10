@@ -14,7 +14,7 @@ class BasicInfoViewModel: ObservableObject {
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoTabState = .edit
-    @Published var selectedSheet: BasicInfoSheetView?
+    @Published var selectedSheet: SheetView?
 
     @Published var user: User
     
@@ -31,11 +31,6 @@ class BasicInfoViewModel: ObservableObject {
     deinit {
         print("-> [Basic Info] vm deinit")
     }
-}
-
-struct BasicInfoSheetView: Identifiable {
-    let id = UUID()
-    let sheetContent: AnyView
 }
 
 extension BasicInfoViewModel {
@@ -130,7 +125,7 @@ extension BasicInfoViewModel {
     }
     
     public func editableRowOnTap(view: AnyView) {
-        self.selectedSheet = BasicInfoSheetView(
+        self.selectedSheet = SheetView(
             sheetContent: view
         )
     }

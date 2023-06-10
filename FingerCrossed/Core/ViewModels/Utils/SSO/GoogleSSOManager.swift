@@ -8,33 +8,22 @@
 import Foundation
 import GoogleSignIn
 
-class GoogleSSOManager: SSOProtocol {
-    
-    public func signIn(
-        successAction: @escaping SSOSuccess,
-        errorAction: @escaping SSOFailure
-    ) {
-        GIDSignIn.sharedInstance.signIn(
-           withPresenting: getRootViewController()
-        ) { signInResult, error in
-            guard error == nil else {
-                errorAction(error)
-                return
-            }
-            
-            guard let signInResult = signInResult else { return }
-            
-            let user = signInResult.user
-            
-            successAction(user.profile?.email)
-        }
-        
+class GoogleSSOManager {
+
+    @MainActor
+    public func signIn() async throws -> String? {
+        let googleSignInResult = try await GIDSignIn.sharedInstance.signIn(
+            withPresenting: getRootViewController()
+        )
+        return googleSignInResult.user.profile?.email
     }
     
+    @MainActor
     public func signOut() {
         GIDSignIn.sharedInstance.signOut()
     }
     
+    @MainActor
     public func disconnect() {
         GIDSignIn.sharedInstance.disconnect { error in
             guard error == nil else { return }
@@ -46,15 +35,15 @@ class GoogleSSOManager: SSOProtocol {
 }
 
 extension GoogleSSOManager {
+    
     func getRootViewController() -> UIViewController {
         guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
             return .init()
         }
-
         guard let root = screen.windows.first?.rootViewController else {
             return .init()
         }
-
         return root
     }
+    
 }

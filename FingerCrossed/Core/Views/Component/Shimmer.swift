@@ -66,11 +66,11 @@ struct Shimmer: View {
             )
             .overlay(shimmerLayer())
             .cornerRadius(cornerRadius)
-            .onAppear {
-                withAnimation(animation) {
-                    isAnimating.toggle()
-                }
-            }
+//            .onAppear {
+//                withAnimation(animation) {
+//                    isAnimating.toggle()
+//                }
+//            }
     }
     
     private func shimmerLayer() -> some View {

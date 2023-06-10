@@ -226,3 +226,8 @@ private struct BasicInfoContent: View {
         }
     }
 }
+
+struct SheetView: Identifiable {
+    let id = UUID()
+    let sheetContent: AnyView
+}

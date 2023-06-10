@@ -10,13 +10,15 @@ import SwiftUI
 struct ProfileView: View {
     /// Banner
     @EnvironmentObject var bm: BannerManager
+    /// User state
+    @EnvironmentObject var usm: UserStateManager
     /// Reference profile view model
     @StateObject var vm: ProfileViewModel
     
     init(preview: Bool = false) {
         _vm = StateObject(wrappedValue: ProfileViewModel(preview: preview))
     }
-        
+    
     var body: some View {
         ContainerWithLogoHeaderView(headerTitle: "Profile") {
             VStack(spacing: 0) {
@@ -62,9 +64,9 @@ struct ProfileView: View {
                             ChildView(
                                 label: "Settings",
                                 subview: AnyView(
-                                    SettingsView()
-                                        .environmentObject(vm)
+                                    SettingsView(vm: vm)
                                         .environmentObject(bm)
+                                        .environmentObject(usm)
                                 )
                             ),
                             ChildView(

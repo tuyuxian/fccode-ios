@@ -33,7 +33,6 @@ struct HelpSupportView: View {
                         
                         Spacer()
                             .frame(height: 30)
-
                     }
                 }
                 .scrollIndicators(.hidden)

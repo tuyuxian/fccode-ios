@@ -10,14 +10,17 @@ import PhotosUI
 import SwiftUI
 
 class ProfileViewModel: ObservableObject, InputProtocol {
-    
+    /// User state
     @AppStorage("UserId") var userId: String = ""
-    
-    @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
-
     @Published var user: User?
     
+    /// View state
+    @Published var state: ViewStatus = .none
+
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+        
     // MARK: Life Photo Sheet
     @Published var currentDragLifePhoto: LifePhoto?
     @Published var hasLifePhoto: Bool = false
@@ -28,45 +31,47 @@ class ProfileViewModel: ObservableObject, InputProtocol {
     @Published var imageOffset = CGSize.zero
     @Published var selectedImage: UIImage?
     @Published var selectedImageData: Data?
-
+    
+    init(preview: Bool = false) {
+        print("-> [Profile] vm init")
+        if !preview {
+            Task { await fetchUser() }
+        } else {
+            dummyUser()
+        }
+    }
+    
     deinit {
-        print("-> profile view model deinit")
+        print("-> [Profile] vm deinit")
     }
 }
 
 extension ProfileViewModel {
-    public func fetchUser() {
-        DispatchQueue.main.async {
+    @MainActor
+    public func fetchUser() async {
+        do {
             self.state = .loading
-        }
-        Task {
-            do {
-                let user = try await GraphAPI.getUserById(userId: self.userId)
-                guard let user = user else {
-                    DispatchQueue.main.async {
-                        self.state = .error
-                        self.errorMessage = "Something went wrong"
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.user = user
-                    self.state = .complete
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.state = .error
-                    self.errorMessage = "Something went wrong"
-                }
-                print(error.localizedDescription)
+            let user = try await UserService.getUserById(userId: self.userId)
+            guard let user = user else {
+                showError()
+                return
             }
+            self.user = user
+            self.state = .complete
+        } catch {
+            showError()
+            print(error.localizedDescription)
         }
     }
     
     public func dummyUser() {
-        DispatchQueue.main.async {
-            self.user = User.MockUser
-            self.state = .complete
-        }
+        self.user = User.MockUser
+        self.state = .complete
+    }
+
+    private func showError() {
+        self.state = .error
+        self.toastType = .error
+        self.toastMessage = "Something went wrong"
     }
 }

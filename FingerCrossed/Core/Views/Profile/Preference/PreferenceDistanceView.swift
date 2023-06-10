@@ -9,18 +9,22 @@ import SwiftUI
 
 struct PreferenceDistanceView: View {
     /// View controller
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed preference distance view model
+    /// Init preference distance view model
     @StateObject var vm = PreferenceDistanceViewModel()
-    /// Handler for save button on tap
-    private func buttonOnTap() {
+
+    private func save() {
         Task {
-            await vm.buttonOnTap()
+            await vm.save()
             guard vm.state == .complete else { return }
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }
+    }
+    
+    init() {
+        print("[Preference Distance] view init")
     }
     
     var body: some View {
@@ -29,7 +33,7 @@ struct PreferenceDistanceView: View {
             childTitle: "Distance",
             showSaveButton: $vm.showSaveButton,
             isLoading: .constant(vm.state == .loading),
-            action: buttonOnTap
+            action: save
         ) {
             Box {
                 RadioButtonWithDivider(
@@ -50,8 +54,8 @@ struct PreferenceDistanceView: View {
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(
-                        title: vm.errorMessage,
-                        type: .error
+                        title: vm.toastMessage,
+                        type: vm.toastType
                     )
                     vm.state = .none
                 }

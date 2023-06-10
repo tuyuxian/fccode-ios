@@ -44,7 +44,7 @@ struct SelfIntroEditSheet: View {
                     )
                     return
                 }
-                vm.user?.selfIntro = text
+                vm.user.selfIntro = text
                 presentationMode.wrappedValue.dismiss()
             } catch {
                 isLoading.toggle()
@@ -110,7 +110,7 @@ struct SelfIntroEditSheet: View {
 struct SelfIntroEditSheet_Previews: PreviewProvider {
     static var previews: some View {
         SelfIntroEditSheet(
-            vm: BasicInfoViewModel()
+            vm: BasicInfoViewModel(user: User.MockUser)
         )
         .environmentObject(BannerManager())
     }

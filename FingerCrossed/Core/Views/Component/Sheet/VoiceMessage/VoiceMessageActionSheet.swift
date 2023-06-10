@@ -68,7 +68,7 @@ struct VoiceMessageActionSheet: View {
 struct VoiceMessageActionSheet_Previews: PreviewProvider {
     static var previews: some View {
         VoiceMessageActionSheet(
-            vm: BasicInfoViewModel()
+            vm: BasicInfoViewModel(user: User.MockUser)
         )
     }
 }

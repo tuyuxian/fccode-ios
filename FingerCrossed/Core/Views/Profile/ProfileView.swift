@@ -10,24 +10,20 @@ import SwiftUI
 struct ProfileView: View {
     /// Banner
     @EnvironmentObject var bm: BannerManager
-        
-    @StateObject var vm = ProfileViewModel()
+    /// Reference profile view model
+    @StateObject var vm: ProfileViewModel
     
-    var preview: Bool = false
+    init(preview: Bool = false) {
+        _vm = StateObject(wrappedValue: ProfileViewModel(preview: preview))
+    }
         
     var body: some View {
-        ContainerWithLogoHeaderView(
-            headerTitle: "Profile"
-        ) {
+        ContainerWithLogoHeaderView(headerTitle: "Profile") {
             VStack(spacing: 0) {
                 VStack(spacing: 18.75) {
                     Circle()
                         .fill(Color.surface2)
-                        .frame(
-                            width: 122.5,
-                            height: 122.5,
-                            alignment: .center
-                        )
+                        .frame(width: 122.5, height: 122.5, alignment: .center)
                         .overlay(
                             vm.state == .complete
                             ? Avatar(
@@ -37,23 +33,24 @@ struct ProfileView: View {
                             )
                             : nil
                         )
-                    Text(
-                        vm.user?.username ?? ""
-                    )
-                    .fontTemplate(.h2Medium)
-                    .foregroundColor(Color.text)
+                    Text(vm.user?.username ?? "")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
                 }
                 .zIndex(1)
+                
                 Box {
                     MenuList(
                         childViewList: [
                             ChildView(
                                 label: "Basic Info",
-                                subview: AnyView(
-                                    BasicInfoView()
-                                        .environmentObject(vm)
+                                subview:
+                                    AnyView(
+                                        BasicInfoView(
+                                            vm: BasicInfoViewModel(user: vm.user ?? User.MockUser)
+                                        )
                                         .environmentObject(bm)
-                                )
+                                    )
                             ),
                             ChildView(
                                 label: "Preference",
@@ -82,13 +79,6 @@ struct ProfileView: View {
                 .padding(.top, -104)
             }
         }
-        .task {
-            if preview {
-                vm.dummyUser()
-            } else {
-                vm.fetchUser()
-            }
-        }
         .overlay {
             vm.state == .loading
             ? PageSpinner()
@@ -97,7 +87,7 @@ struct ProfileView: View {
         .onChange(of: vm.state) { state in
             if state == .error {
                 bm.pop(
-                    title: vm.errorMessage,
+                    title: vm.toastMessage,
                     type: .error
                 )
                 vm.state = .none

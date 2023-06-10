@@ -26,8 +26,8 @@ struct TabBar: View {
             TabView(selection: $vm.currentTab) {
                 TextingView()
                     .tag(TabState.texting)
-                PairingView()
-                    .tag(TabState.pairing)
+//                PairingView()
+//                    .tag(TabState.pairing)
                 ProfileView()
                     .tag(TabState.profile)
                     .environmentObject(bm)
@@ -112,7 +112,7 @@ class TabViewModel: ObservableObject {
         }
     }
     
-    @Published var currentTab: TabState = .pairing
+    @Published var currentTab: TabState = .profile
     @Published var showTab: Bool = true
 }
 

@@ -23,6 +23,7 @@ class PreferenceEthnicityViewModel: ObservableObject {
         "White/Caucasian"
     ]
     
+    /// Preference state
     @Published var preference: Preference = {
         if let data = UserDefaults.standard.data(forKey: "UserMatchPreference") {
             do {
@@ -33,19 +34,31 @@ class PreferenceEthnicityViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
         }
-        return Preference.MockPreference
+        return Preference.MockPreference // for preview purpose
     }()
+    
+    /// View state
     @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
     @Published var showSaveButton: Bool = false
     
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+
+    init() {
+        print("-> [Preference Ethnicity] vm init")
+    }
+    
     deinit {
-        print("-> deinit preference ethnicity view model")
+        print("-> [Preference Ethnicity] vm deinit")
     }
 }
 
 extension PreferenceEthnicityViewModel {
-    public func getType(_ from: String) -> EthnicityType? {
+    
+    public func getType(
+        _ from: String
+    ) -> EthnicityType? {
         switch from {
         case "American Indian":
             return .et1
@@ -70,22 +83,18 @@ extension PreferenceEthnicityViewModel {
         }
     }
     
-    public func buttonOnTap() async {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
+    @MainActor
+    public func save() async {
         do {
+            self.state = .loading
             let encoder = JSONEncoder()
             let data = try encoder.encode(self.preference)
-            DispatchQueue.main.async {
-                UserDefaults.standard.set(data, forKey: "UserMatchPreference")
-                self.state = .complete
-            }
+            UserDefaults.standard.set(data, forKey: "UserMatchPreference")
+            self.state = .complete
         } catch {
-            DispatchQueue.main.async {
-                self.state = .error
-                self.errorMessage = "Something went wrong"
-            }
+            self.state = .error
+            self.toastMessage = "Something went wrong"
+            self.toastType = .error
             print(error.localizedDescription)
         }
     }

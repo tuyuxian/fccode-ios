@@ -11,20 +11,31 @@ import GraphQLAPI
 
 class BasicInfoViewModel: ObservableObject {
     
-    @Published var user: User?
-    
+    /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoTabState = .edit
     @Published var selectedSheet: BasicInfoSheetView?
+
+    @Published var user: User
     
     @Published var bannerMessage: String?
-    @Published var bannerType: Banner.BannerType = .error
+    @Published var bannerType: Banner.BannerType?
     
     @Published var appAlert: AppAlert?
+    
+    init(user: User) {
+        print("-> [Basic Info] vm init")
+        self.user = user
+    }
 
     deinit {
-        print("-> deinit basic info view model")
+        print("-> [Basic Info] vm deinit")
     }
+}
+
+struct BasicInfoSheetView: Identifiable {
+    let id = UUID()
+    let sheetContent: AnyView
 }
 
 extension BasicInfoViewModel {
@@ -34,7 +45,7 @@ extension BasicInfoViewModel {
         dateFormatter.dateFormat = "yyyy/MM/dd"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         
-        if let date = ISO8601DateFormatter().date(from: self.user?.dateOfBirth ?? "") {
+        if let date = ISO8601DateFormatter().date(from: self.user.dateOfBirth) {
             return dateFormatter.string(from: date)
         } else {
             return "Unknown"
@@ -66,7 +77,7 @@ extension BasicInfoViewModel {
     public func deleteVoiceMessage() {
         self.state = .loading
         guard let fileName = self.extractFileName(
-            url: self.user?.voiceContentURL ?? ""
+            url: self.user.voiceContentURL ?? ""
         ) else {
             showError()
             return
@@ -84,7 +95,7 @@ extension BasicInfoViewModel {
                     return
                 }
                 let statusCode = try await GraphAPI.updateUser(
-                    userId: self.user?.id ?? "",
+                    userId: self.user.id,
                     input: GraphQLAPI.UpdateUserInput(
                         voiceContentURL: nil
                     )

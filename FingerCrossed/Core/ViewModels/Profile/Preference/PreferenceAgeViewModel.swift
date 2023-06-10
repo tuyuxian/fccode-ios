@@ -9,6 +9,7 @@ import Foundation
 
 class PreferenceAgeViewModel: ObservableObject {
     
+    /// Preference state
     @Published var preference: Preference = {
         if let data = UserDefaults.standard.data(forKey: "UserMatchPreference") {
             do {
@@ -19,35 +20,42 @@ class PreferenceAgeViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
         }
-        return Preference.MockPreference
+        return Preference.MockPreference // for preview purpose
     }()
+    
+    /// View state
     @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
     @Published var showSaveButton: Bool = false
     
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+
+    init() {
+        print("-> [Preference Age] vm init")
+    }
+    
     deinit {
-        print("-> deinit preference age view model")
+        print("-> [Preference Age] vm deinit")
     }
 }
 
 extension PreferenceAgeViewModel {
-    public func buttonOnTap() async {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
+    
+    @MainActor
+    public func save() async {
         do {
+            self.state = .loading
             let encoder = JSONEncoder()
             let data = try encoder.encode(self.preference)
-            DispatchQueue.main.async {
-                UserDefaults.standard.set(data, forKey: "UserMatchPreference")
-                self.state = .complete
-            }
+            UserDefaults.standard.set(data, forKey: "UserMatchPreference")
+            self.state = .complete
         } catch {
-            DispatchQueue.main.async {
-                self.state = .error
-                self.errorMessage = "Something went wrong"
-            }
+            self.state = .error
+            self.toastMessage = "Something went wrong"
+            self.toastType = .error
             print(error.localizedDescription)
         }
     }
+    
 }

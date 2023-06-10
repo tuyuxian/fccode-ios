@@ -42,6 +42,10 @@ struct FingerCrossedApp: App {
                         .environmentObject(userManager)
                         .environmentObject(bannerManager)
                 }
+//                ProfileView(
+//                    preview: true
+//                )
+//                .environmentObject(BannerManager())
 
                 if bannerManager.isPresented {
                     BannerContent(bm: bannerManager)

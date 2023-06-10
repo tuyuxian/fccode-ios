@@ -30,7 +30,7 @@ struct Banner {
     }
     
     let title: String?
-    let type: BannerType
+    let type: BannerType?
 }
 
 final class BannerManager: ObservableObject {
@@ -51,7 +51,7 @@ final class BannerManager: ObservableObject {
     
     public func pop(
         title: String?,
-        type: Banner.BannerType
+        type: Banner.BannerType?
     ) {
         self.banner = .init(
             title: title,
@@ -72,7 +72,7 @@ struct BannerContent: View {
                 alignment: .center,
                 spacing: 8
             ) {
-                Image(bm.banner?.type.leadingIcon ?? "")
+                Image(bm.banner?.type?.leadingIcon ?? "")
                     .resizable()
                     .frame(width: 16, height: 16)
 
@@ -81,14 +81,7 @@ struct BannerContent: View {
                     .foregroundColor(Color.text)
                     .lineLimit(1)
             }
-            .padding(
-                EdgeInsets(
-                    top: 16,
-                    leading: 16,
-                    bottom: 16,
-                    trailing: 16
-                )
-            )
+            .padding(16)
             .background(Color.yellow20)
             .cornerRadius(16)
             .frame(

@@ -18,6 +18,7 @@ class PreferenceDistanceViewModel: ObservableObject {
         "100 miles"
     ]
     
+    /// Preference state
     @Published var preference: Preference = {
         if let data = UserDefaults.standard.data(forKey: "UserMatchPreference") {
             do {
@@ -28,37 +29,27 @@ class PreferenceDistanceViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
         }
-        return Preference.MockPreference
+        return Preference.MockPreference // for preview purpose
     }()
+    
+    /// View state
     @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
     @Published var showSaveButton: Bool = false
     
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+
+    init() {
+        print("-> [Preference Distance] vm init")
+    }
+    
     deinit {
-        print("-> deinit preference distance view model")
+        print("-> [Preference Distance] vm deinit")
     }
 }
 
 extension PreferenceDistanceViewModel {
-    public func buttonOnTap() async {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(self.preference)
-            DispatchQueue.main.async {
-                UserDefaults.standard.set(data, forKey: "UserMatchPreference")
-                self.state = .complete
-            }
-        } catch {
-            DispatchQueue.main.async {
-                self.state = .error
-                self.errorMessage = "Something went wrong"
-            }
-            print(error.localizedDescription)
-        }
-    }
     
     public func getStringFromDistance(
         _ distance: Int
@@ -91,6 +82,22 @@ extension PreferenceDistanceViewModel {
             return 100
         default:
             return 0
+        }
+    }
+    
+    @MainActor
+    public func save() async {
+        do {
+            self.state = .loading
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(self.preference)
+            UserDefaults.standard.set(data, forKey: "UserMatchPreference")
+            self.state = .complete
+        } catch {
+            self.state = .error
+            self.toastMessage = "Something went wrong"
+            self.toastType = .error
+            print(error.localizedDescription)
         }
     }
 }

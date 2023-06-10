@@ -9,18 +9,22 @@ import SwiftUI
 
 struct PreferenceSexOrientationView: View {
     /// View controller
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed preference sex orientation view model
+    /// Init preference sex orientation view model
     @StateObject var vm = PreferenceSexOrientationViewModel()
-    /// Handler for  button on tap
-    private func buttonOnTap() {
+
+    private func save() {
         Task {
-            await vm.buttonOnTap()
+            await vm.save()
             guard vm.state == .complete else { return }
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }
+    }
+    
+    init() {
+        print("[Preference Sex Orientation] view init")
     }
     
     var body: some View {
@@ -29,7 +33,7 @@ struct PreferenceSexOrientationView: View {
             childTitle: "Sex Orientation",
             showSaveButton: $vm.showSaveButton,
             isLoading: .constant(vm.state == .loading),
-            action: buttonOnTap
+            action: save
         ) {
             Box {
                 VStack(spacing: 0) {
@@ -61,8 +65,8 @@ struct PreferenceSexOrientationView: View {
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(
-                        title: vm.errorMessage,
-                        type: .error
+                        title: vm.toastMessage,
+                        type: vm.toastType
                     )
                     vm.state = .none
                 }

@@ -9,18 +9,22 @@ import SwiftUI
 
 struct PreferenceGoalView: View {
     /// View controller
-    @Environment(\.presentationMode) var presentationMode
-    /// Global banner
+    @Environment(\.dismiss) var dismiss
+    /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Observed preference goal view model
+    /// Init preference goal view model
     @StateObject var vm = PreferenceGoalViewModel()
-    /// Handler for save button on tap
-    private func buttonOnTap() {
+
+    private func save() {
         Task {
-            await vm.buttonOnTap()
+            await vm.save()
             guard vm.state == .complete else { return }
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }
+    }
+    
+    init() {
+        print("[Preference Goal] view init")
     }
     
     var body: some View {
@@ -29,7 +33,7 @@ struct PreferenceGoalView: View {
             childTitle: "Goal",
             showSaveButton: $vm.showSaveButton,
             isLoading: .constant(vm.state == .loading),
-            action: buttonOnTap
+            action: save
         ) {
             Box {
                 VStack(spacing: 0) {
@@ -63,8 +67,8 @@ struct PreferenceGoalView: View {
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(
-                        title: vm.errorMessage,
-                        type: .error
+                        title: vm.toastMessage,
+                        type: vm.toastType
                     )
                     vm.state = .none
                 }

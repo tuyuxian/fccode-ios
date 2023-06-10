@@ -18,6 +18,7 @@ class PreferenceSexOrientationViewModel: ObservableObject {
         "Nonbinary people"
     ]
     
+    /// Preference state
     @Published var preference: Preference = {
         if let data = UserDefaults.standard.data(forKey: "UserMatchPreference") {
             do {
@@ -28,20 +29,31 @@ class PreferenceSexOrientationViewModel: ObservableObject {
                 print(error.localizedDescription)
             }
         }
-        return Preference.MockPreference
+        return Preference.MockPreference // for preview purpose
     }()
     
+    /// View state
     @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
     @Published var showSaveButton: Bool = false
     
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+
+    init() {
+        print("-> [Preference Sex Orientation] vm init")
+    }
+    
     deinit {
-        print("-> deinit preference sex orientation view model")
+        print("-> [Preference Sex Orientation] vm deinit")
     }
 }
 
 extension PreferenceSexOrientationViewModel {
-    public func getType(_ from: String) -> SexOrientationType {
+    
+    public func getType(
+        _ from: String
+    ) -> SexOrientationType {
         switch from {
         case "Man":
             return .SO2
@@ -54,23 +66,20 @@ extension PreferenceSexOrientationViewModel {
         }
     }
     
-    public func buttonOnTap() async {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
+    @MainActor
+    public func save() async {
         do {
+            self.state = .loading
             let encoder = JSONEncoder()
             let data = try encoder.encode(self.preference)
-            DispatchQueue.main.async {
-                UserDefaults.standard.set(data, forKey: "UserMatchPreference")
-                self.state = .complete
-            }
+            UserDefaults.standard.set(data, forKey: "UserMatchPreference")
+            self.state = .complete
         } catch {
-            DispatchQueue.main.async {
-                self.state = .error
-                self.errorMessage = "Something went wrong"
-            }
+            self.state = .error
+            self.toastMessage = "Something went wrong"
+            self.toastType = .error
             print(error.localizedDescription)
         }
     }
+    
 }

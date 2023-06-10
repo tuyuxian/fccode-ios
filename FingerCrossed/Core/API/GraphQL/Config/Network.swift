@@ -20,8 +20,8 @@ struct Network {
             client: client,
             store: store
         )
-//        let url = URL(string: "http://localhost:8080/api/graphql")!
-        let url = URL(string: "http://204.236.147.60:8080/api/graphql")!
+        let url = URL(string: "http://localhost:8080/api/graphql")!
+//        let url = URL(string: "http://204.236.147.60:8080/api/graphql")!
         let transport = RequestChainNetworkTransport(
             interceptorProvider: provider,
             endpointURL: url

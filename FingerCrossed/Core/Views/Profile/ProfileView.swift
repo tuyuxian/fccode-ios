@@ -103,6 +103,7 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileView(
             preview: true
         )
+        .environmentObject(UserStateManager())
         .environmentObject(BannerManager())
     }
 }

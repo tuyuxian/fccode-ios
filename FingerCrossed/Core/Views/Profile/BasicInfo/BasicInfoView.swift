@@ -13,14 +13,6 @@ struct BasicInfoView: View {
     /// Reference basic info view model
     @StateObject var vm: BasicInfoViewModel
     
-    private func showBanner() {
-        bm.pop(
-            title: vm.bannerMessage,
-            type: vm.bannerType
-        )
-        vm.state = .none
-    }
-    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -44,20 +36,19 @@ struct BasicInfoView: View {
                                          icon: "Edit",
                                          subview: {
                                              vm.user.voiceContentURL == ""
-                                             ? AnyView(VoiceMessageEditSheet())
-                                             : AnyView(
-                                                VoiceMessageActionSheet(
-                                                    vm: vm
-                                                )
-                                             )
+                                             ? AnyView(VoiceMessageEditSheet(
+                                                hasVoiceMessage:
+                                                    vm.user.voiceContentURL != nil &&
+                                                    vm.user.voiceContentURL != "",
+                                                sourceUrl: vm.user.voiceContentURL
+                                             ))
+                                             : AnyView(VoiceMessageActionSheet(vm: vm))
                                          }(),
                                          preview:
                                             vm.user.voiceContentURL == ""
-                                            ? AnyView(
-                                                PreviewText(
-                                                    text: "Add a voice message to your profile"
-                                                )
-                                            )
+                                            ? AnyView(PreviewText(
+                                                text: "Add a voice message to your profile"
+                                            ))
                                             : AnyView(EmptyView()),
                                          hasSubview: true
                                     ),
@@ -74,7 +65,7 @@ struct BasicInfoView: View {
                                             PreviewText(
                                                 text: {
                                                     if let selfIntro = vm.user.selfIntro {
-                                                        if selfIntro != ""{
+                                                        if selfIntro != "" {
                                                             return selfIntro
                                                         }
                                                     }
@@ -93,51 +84,25 @@ struct BasicInfoView: View {
                                     ChildView(
                                         label: "Birthday",
                                         icon: "InfoCircle",
-                                        preview: AnyView(
-                                            PreviewText(
-                                                text: vm.getDateString()
-                                            )
-                                        ),
+                                        preview: AnyView(PreviewText(text: vm.getDateString())),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Gender",
                                         icon: "InfoCircle",
-                                        preview: AnyView(
-                                            PreviewText(
-                                                text: vm.user.gender.getString()
-                                            )
-                                        ),
+                                        preview: AnyView(PreviewText(text: vm.user.gender.getString())),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Nationality",
                                         icon: "InfoCircle",
-                                        preview: AnyView(
-                                            PreviewText(
-                                                text:
-                                                    String(
-                                                        vm.user.citizen.reduce("") { result, nationality in
-                                                            return result + nationality.name + ", "
-                                                        }.dropLast(2)
-                                                    )
-                                            )
-                                        ),
+                                        preview: AnyView(PreviewText(text: vm.getNationalitiesString())),
                                         hasSubview: false
                                     ),
                                     ChildView(
                                         label: "Ethnicity",
                                         icon: "InfoCircle",
-                                        preview: AnyView(
-                                            PreviewText(
-                                                text:
-                                                    String(
-                                                        vm.user.ethnicity.reduce("") { result, ethnicity in
-                                                            return result + ethnicity.type.getString() + ", "
-                                                        }.dropLast(2)
-                                                    )
-                                            )
-                                        ),
+                                        preview: AnyView(PreviewText(text: vm.getEthnicitiesString())),
                                         hasSubview: false
                                     )
                                  ]
@@ -151,7 +116,13 @@ struct BasicInfoView: View {
             }
             .appAlert($vm.appAlert)
             .onChange(of: vm.state) { state in
-                if state == .error { showBanner() }
+                if state == .error {
+                    bm.pop(
+                        title: vm.bannerMessage,
+                        type: vm.bannerType
+                    )
+                    vm.state = .none
+                }
             }
         }
     }
@@ -200,7 +171,7 @@ private struct BasicInfoContent: View {
                         Divider()
                             .overlay(Color.surface3)
                             .padding(.horizontal, 24)
-                        
+
                         HStack(spacing: 0) {
                             Button {
                                 childView.hasSubview

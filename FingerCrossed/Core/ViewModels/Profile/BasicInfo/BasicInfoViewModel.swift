@@ -18,9 +18,11 @@ class BasicInfoViewModel: ObservableObject {
 
     @Published var user: User
     
+    /// Toast message
     @Published var bannerMessage: String?
     @Published var bannerType: Banner.BannerType?
     
+    /// Alert
     @Published var appAlert: AppAlert?
     
     init(user: User) {
@@ -45,6 +47,22 @@ extension BasicInfoViewModel {
         } else {
             return "Unknown"
         }
+    }
+    
+    public func getNationalitiesString() -> String {
+        return String(
+            self.user.citizen.reduce("") { result, nationality in
+                return result + nationality.name + ", "
+            }.dropLast(2)
+        )
+    }
+    
+    public func getEthnicitiesString() -> String {
+        return String(
+            self.user.ethnicity.reduce("") { result, ethnicity in
+                return result + ethnicity.type.getString() + ", "
+            }.dropLast(2)
+        )
     }
     
     public func extractFileName(

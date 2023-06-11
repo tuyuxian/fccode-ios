@@ -151,11 +151,7 @@ struct SettingsResetPasswordView: View {
                 }
             }
             .onTapGesture {
-                withAnimation(
-                    .easeInOut(
-                        duration: 0.16
-                    )
-                ) {
+                withAnimation(.easeInOut(duration: 0.16)) {
                     UIApplication.shared.closeKeyboard()
                 }
             }

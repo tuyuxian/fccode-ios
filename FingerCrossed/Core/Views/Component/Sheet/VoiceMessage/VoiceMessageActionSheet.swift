@@ -54,7 +54,12 @@ struct VoiceMessageActionSheet: View {
                         }
                     }
                     .sheet(isPresented: $showEditSheet) {
-                        VoiceMessageEditSheet()
+                        VoiceMessageEditSheet(
+                            hasVoiceMessage:
+                                vm.user.voiceContentURL != nil &&
+                                vm.user.voiceContentURL != "",
+                            sourceUrl: vm.user.voiceContentURL
+                        )
                     }
                 }
                 .padding(.top, 15) // 30 - 15

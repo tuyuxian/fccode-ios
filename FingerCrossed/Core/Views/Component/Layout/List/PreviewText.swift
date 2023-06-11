@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PreviewText: View {
     @State var text: String
+    
     var body: some View {
         Text(text)
             .fontTemplate(.pRegular)

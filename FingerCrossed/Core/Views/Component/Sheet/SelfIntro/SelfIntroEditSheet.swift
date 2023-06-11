@@ -9,10 +9,8 @@ import SwiftUI
 import GraphQLAPI
 
 struct SelfIntroEditSheet: View {
-    
-    @Environment(\.presentationMode) private var presentationMode
-    
-    @EnvironmentObject var bm: BannerManager
+
+    @Environment(\.dismiss) private var dismiss
     
     @ObservedObject var vm: BasicInfoViewModel
     
@@ -26,10 +24,10 @@ struct SelfIntroEditSheet: View {
             
     let textLengthLimit: Int = 200
     
-    private func buttonOnTap() {
-        isLoading.toggle()
+    private func save() {
         Task {
             do {
+                isLoading.toggle()
                 let statusCode = try await GraphAPI.updateUser(
                     userId: userId,
                     input: GraphQLAPI.UpdateUserInput(
@@ -38,20 +36,18 @@ struct SelfIntroEditSheet: View {
                 )
                 isLoading.toggle()
                 guard statusCode == 200 else {
-                    bm.pop(
-                        title: "Something went wrong",
-                        type: .error
-                    )
+                    vm.state = .error
+                    vm.bannerMessage = "Something went wrong"
+                    vm.bannerType = .error
                     return
                 }
                 vm.user.selfIntro = text
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             } catch {
                 isLoading.toggle()
-                bm.pop(
-                    title: "Something went wrong",
-                    type: .error
-                )
+                vm.state = .error
+                vm.bannerMessage = "Something went wrong"
+                vm.bannerType = .error
                 print(error.localizedDescription)
             }
         }
@@ -85,7 +81,7 @@ struct SelfIntroEditSheet: View {
                     
                     PrimaryButton(
                         label: "Save",
-                        action: buttonOnTap,
+                        action: save,
                         isTappable: $isSatisfied,
                         isLoading: $isLoading
                     )
@@ -95,11 +91,7 @@ struct SelfIntroEditSheet: View {
             footer: {}
         )
         .onTapGesture {
-            withAnimation(
-                .easeInOut(
-                    duration: 0.16
-                )
-            ) {
+            withAnimation(.easeInOut(duration: 0.16)) {
                 UIApplication.shared.closeKeyboard()
             }
         }
@@ -112,6 +104,5 @@ struct SelfIntroEditSheet_Previews: PreviewProvider {
         SelfIntroEditSheet(
             vm: BasicInfoViewModel(user: User.MockUser)
         )
-        .environmentObject(BannerManager())
     }
 }

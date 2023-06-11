@@ -10,72 +10,68 @@ import SwiftUI
 
 class ResetPasswordViewModel: ObservableObject, InputProtocol {
     
-    let hasPassword: Bool
-
+    /// User state
     @AppStorage("UserId") private var userId: String = ""
     
-    // MARK: State Management
+    /// View state
+    let hasPassword: Bool
     @Published var state: ViewStatus = .none
-    @Published var errorMessage: String?
     @Published var currentPassword: String = ""
     @Published var newPassword: String = ""
     @Published var newPasswordConfirmed: String = ""
-    @Published var isNewPasswordValid: Bool = true
     
-    // MARK: Condition Variables for button
-    @Published var isNewPasswordSatisfied: Bool = false
+    /// Input bar conditions
     @Published var isCurrentPasswordMatched: Bool = true
+    @Published var isNewPasswordValid: Bool = true
+    @Published var isNewPasswordSatisfied: Bool = false
     @Published var isNewPasswordLengthSatisfied: Bool = false
     @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
     @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
     @Published var isNewPasswordMatched: Bool = false
     
-    init(
-        hasPassword: Bool
-    ) {
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
+    
+    init(hasPassword: Bool) {
+        print("-> [Settings Reset Password] vm init")
         self.hasPassword = hasPassword
     }
     
     deinit {
-        print("-> reset password view model deinit")
+        print("-> [Settings Reset Password] vm deinit")
     }
 }
 
 extension ResetPasswordViewModel {
-    public func buttonOnTap() async {
-        DispatchQueue.main.async {
+    
+    @MainActor
+    public func save() async {
+        do {
             self.state = .loading
-        }
-        guard self.isPasswordValid(str: self.newPassword) &&
+            guard
+                self.isPasswordValid(str: self.newPassword) &&
                 self.newPassword == self.newPasswordConfirmed
-        else {
-            DispatchQueue.main.async {
+            else {
                 self.isNewPasswordValid = false
                 self.state = .none
+                return
             }
-            return
-        }
-        do {
             let statusCode = try await GraphAPI.updatePassword(
                 userId: self.userId,
                 oldPassword: self.currentPassword != "" ? .some(self.currentPassword) : nil,
                 newPassword: self.newPassword
             )
             guard statusCode == 200 else {
-                DispatchQueue.main.async {
-                    self.state = .none
-                    self.isCurrentPasswordMatched = false
-                }
+                self.state = .none
+                self.isCurrentPasswordMatched = false
                 return
             }
-            DispatchQueue.main.async {
-                self.state = .complete
-            }
+            self.state = .complete
         } catch {
-            DispatchQueue.main.async {
-                self.state = .error
-                self.errorMessage = "Something went wrong"
-            }
+            self.state = .error
+            self.toastMessage = "Something went wrong"
+            self.toastType = .error
             print(error.localizedDescription)
         }
     }

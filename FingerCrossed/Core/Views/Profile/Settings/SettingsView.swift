@@ -9,9 +9,11 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @EnvironmentObject var vm: ProfileViewModel
+    @ObservedObject var vm: ProfileViewModel
         
     @EnvironmentObject var bm: BannerManager
+    
+    @EnvironmentObject var usm: UserStateManager
     
     var body: some View {
         ContainerWithHeaderView(
@@ -31,6 +33,7 @@ struct SettingsView: View {
                                     googleConnect: vm.user?.googleConnect ?? false
                                 )
                                 .environmentObject(bm)
+                                .environmentObject(usm)
                             )
                         ),
                         ChildView(
@@ -52,8 +55,10 @@ struct SettingsView: View {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
-            .environmentObject(ProfileViewModel())
-            .environmentObject(BannerManager())
+        SettingsView(
+            vm: ProfileViewModel()
+        )
+        .environmentObject(BannerManager())
+        .environmentObject(UserStateManager())
     }
 }

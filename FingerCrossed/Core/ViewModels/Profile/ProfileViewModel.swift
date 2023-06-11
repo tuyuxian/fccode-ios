@@ -47,6 +47,7 @@ class ProfileViewModel: ObservableObject, InputProtocol {
 }
 
 extension ProfileViewModel {
+    
     @MainActor
     public func fetchUser() async {
         do {
@@ -68,7 +69,7 @@ extension ProfileViewModel {
         self.user = User.MockUser
         self.state = .complete
     }
-
+    
     private func showError() {
         self.state = .error
         self.toastType = .error

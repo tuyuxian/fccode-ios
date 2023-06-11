@@ -50,25 +50,11 @@ struct MenuList: View {
                     }
             }
             .listRowSeparator(.hidden)
-            .listRowInsets(
-                EdgeInsets(
-                    top: 0,
-                    leading: 0,
-                    bottom: 0,
-                    trailing: 0
-                )
-            )
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             .background(Color.white)
         }
         .scrollIndicators(.hidden)
-        .padding(
-            EdgeInsets(
-                top: 0,
-                leading: 0,
-                bottom: 0,
-                trailing: 0
-            )
-        )
+        .padding(0)
         .listStyle(PlainListStyle())
     }
 }
@@ -79,7 +65,9 @@ struct MenuList_Previews: PreviewProvider {
             childViewList: [
                 ChildView(
                     label: "Demo",
-                    subview: AnyView(EmptyView()))
+                    subview: AnyView(EmptyView()),
+                    preview: AnyView(EmptyView())
+                )
             ]
         )
     }
@@ -89,7 +77,7 @@ struct ChildView: Identifiable {
     var id = UUID()
     var label: String
     var icon: String = ""
-    var subview: AnyView = AnyView(EmptyView())
+    var subview: AnyView = AnyView(EmptyView()) // FIXME: anyview will erase type
     var preview: AnyView = AnyView(EmptyView())
     var hasSubview: Bool = true
 }

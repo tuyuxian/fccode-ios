@@ -14,13 +14,15 @@ class BasicInfoViewModel: ObservableObject {
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoTabState = .edit
-    @Published var selectedSheet: BasicInfoSheetView?
+    @Published var selectedSheet: SheetView?
 
     @Published var user: User
     
+    /// Toast message
     @Published var bannerMessage: String?
     @Published var bannerType: Banner.BannerType?
     
+    /// Alert
     @Published var appAlert: AppAlert?
     
     init(user: User) {
@@ -31,11 +33,6 @@ class BasicInfoViewModel: ObservableObject {
     deinit {
         print("-> [Basic Info] vm deinit")
     }
-}
-
-struct BasicInfoSheetView: Identifiable {
-    let id = UUID()
-    let sheetContent: AnyView
 }
 
 extension BasicInfoViewModel {
@@ -50,6 +47,22 @@ extension BasicInfoViewModel {
         } else {
             return "Unknown"
         }
+    }
+    
+    public func getNationalitiesString() -> String {
+        return String(
+            self.user.citizen.reduce("") { result, nationality in
+                return result + nationality.name + ", "
+            }.dropLast(2)
+        )
+    }
+    
+    public func getEthnicitiesString() -> String {
+        return String(
+            self.user.ethnicity.reduce("") { result, ethnicity in
+                return result + ethnicity.type.getString() + ", "
+            }.dropLast(2)
+        )
     }
     
     public func extractFileName(
@@ -130,7 +143,7 @@ extension BasicInfoViewModel {
     }
     
     public func editableRowOnTap(view: AnyView) {
-        self.selectedSheet = BasicInfoSheetView(
+        self.selectedSheet = SheetView(
             sheetContent: view
         )
     }

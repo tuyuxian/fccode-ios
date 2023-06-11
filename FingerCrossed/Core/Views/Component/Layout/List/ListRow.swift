@@ -11,7 +11,7 @@ struct ListRow<Content: View>: View {
     
     @State var label: String
     
-    // Replace the icon in different use cases
+    /// Replace the icon in different use cases
     @State var icon: String = "ArrowRight"
     
     @State var showIndicator: Bool = true
@@ -39,14 +39,8 @@ struct ListRow<Content: View>: View {
             }
             preview
         }
-        .padding(
-            EdgeInsets(
-                top: 16,
-                leading: 24,
-                bottom: 16,
-                trailing: 24
-            )
-        )
+        .padding(.vertical, 16)
+        .padding(.horizontal, 24)
     }
 }
 

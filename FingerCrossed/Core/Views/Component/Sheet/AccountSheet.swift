@@ -78,8 +78,9 @@ struct AccountSheet: View {
     /// Handler for google sso
     private func googleOnTap() {
         psm.show()
-        GoogleSSOManager().signIn(
-            successAction: { email in
+        Task {
+            do {
+                let email = try await GoogleSSOManager().signIn()
                 guard let email else {
                     bm.pop(
                         title: "Something went wrong.",
@@ -92,32 +93,20 @@ struct AccountSheet: View {
                     showAlert.toggle()
                     return
                 }
-                Task {
-                    do {
-                        let (userId, token) = try await GraphAPI.socialSignIn(
-                            email: email,
-                            platform: GraphQLEnum.case(.google)
-                        )
-                        usm.userId = userId
-                        usm.token = token
-                        usm.isLogin = true
-                        usm.viewState = .main
-                        presentationMode.wrappedValue.dismiss()
-                    } catch {
-                        print(error.localizedDescription)
-                        bm.pop(
-                            title: "Something went wrong.",
-                            type: .error
-                        )
-                    }
-                }
-            },
-            errorAction: { error in
+                let (userId, token) = try await GraphAPI.socialSignIn(
+                    email: email,
+                    platform: GraphQLEnum.case(.google)
+                )
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+                presentationMode.wrappedValue.dismiss()
+            } catch {
                 psm.dismiss()
-                guard let error else { return }
                 print(error.localizedDescription)
             }
-        )
+        }
     }
     /// Handler for apple sso
     private func appleOnTap() {

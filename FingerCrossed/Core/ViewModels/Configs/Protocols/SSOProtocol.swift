@@ -16,3 +16,8 @@ public protocol SSOProtocol {
     func signIn(successAction: @escaping SSOSuccess, errorAction: @escaping SSOFailure)
     func signOut()
 }
+
+public enum SSOError: Error {
+    case unknown
+    case customError(String)
+}

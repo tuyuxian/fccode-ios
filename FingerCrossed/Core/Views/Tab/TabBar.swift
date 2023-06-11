@@ -31,6 +31,7 @@ struct TabBar: View {
                 ProfileView()
                     .tag(TabState.profile)
                     .environmentObject(bm)
+                    .environmentObject(usm)
             }
             .preferredColorScheme(vm.currentTab == .pairing ? .dark : .light)
             

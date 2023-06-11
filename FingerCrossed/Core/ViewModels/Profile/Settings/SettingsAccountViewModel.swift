@@ -11,53 +11,55 @@ import SwiftUI
 
 class SettingsAccountViewModel: ObservableObject {
     
+    /// User state
+    @AppStorage("UserId") private var userId: String = ""
+
+    /// View state
     let appleConnect: Bool
     let facebookConenct: Bool = false
     let googleConnect: Bool
-    
-    /// User State
-    @AppStorage("UserId") private var userId: String = ""
-    @AppStorage("Token") private var token: String = ""
-    @AppStorage("IsLogin") private var isLogin: Bool = false
-    private var appViewState: UserStateManager.ViewState = .onboarding
-    
     @Published var state: ViewStatus = .none
+    
+    /// Alert
     @Published var appAlert: AppAlert?
-    @Published var errorMessage: String?
+    
+    /// Toast message
+    @Published var toastMessage: String?
+    @Published var toastType: Banner.BannerType?
     
     init(
         appleConnect: Bool,
         googleConnect: Bool
     ) {
+        print("-> [Settings Account] vm init")
         self.appleConnect = appleConnect
         self.googleConnect = googleConnect
     }
     
     deinit {
-        print("-> settings account view model deinit")
+        print("-> [Settings Account] vm deinit")
     }
 }
 
 extension SettingsAccountViewModel {
-    public func signOutOnTap() {
+    
+    @MainActor
+    public func signOutOnTap(
+        action: @escaping () -> Void
+    ) {
         self.appAlert = .basic(
             title: "Are you sure you want to sign out?",
             message: "",
             actionLabel: "Yes",
             cancelLabel: "No",
-            action: {
-                DispatchQueue.main.async {
-                    self.token = ""
-                    self.userId = ""
-                    self.isLogin = false
-                    self.appViewState = .onboarding
-                    UserDefaults.standard.removeObject(forKey: "UserMatchPreference")
-                }
-            }
+            action: action
         )
     }
     
-    public func deleteAccountOnTap() {
+    @MainActor
+    public func deleteAccountOnTap(
+        action: @escaping () -> Void
+    ) {
         self.appAlert = .basic(
             title: "Do you really want to delete account?",
             // swiftlint: disable line_length
@@ -67,25 +69,15 @@ extension SettingsAccountViewModel {
             cancelLabel: "No",
             action: {
                 Task {
-                    DispatchQueue.main.async {
-                        self.state = .loading
-                    }
                     do {
-                        let statusCode = try await GraphAPI.deleteAccount(
-                            userId: self.userId
-                        )
+                        self.state = .loading
+                        let statusCode = try await GraphAPI.deleteAccount(userId: self.userId)
                         guard statusCode == 200 else {
                             self.showErrorBanner()
                             return
                         }
-                        DispatchQueue.main.async {
-                            self.state = .complete
-                            self.token = ""
-                            self.userId = ""
-                            self.isLogin = false
-                            self.appViewState = .onboarding
-                            UserDefaults.standard.removeObject(forKey: "UserMatchPreference")
-                        }
+                        self.state = .complete
+                        action()
                         return
                     } catch {
                         self.showErrorBanner()
@@ -96,11 +88,10 @@ extension SettingsAccountViewModel {
         )
     }
     
+    @MainActor
     public func connectApple() async {
-        DispatchQueue.main.async {
-            self.state = .loading
-        }
         do {
+            self.state = .loading
             let email = try await AppleSSOManager().signIn()
             guard let email else {
                 self.showErrorBanner()
@@ -117,79 +108,57 @@ extension SettingsAccountViewModel {
                 self.showInfoAlert()
                 return
             }
-            DispatchQueue.main.async {
-                self.state = .complete
-            }
+            self.state = .complete
         } catch {
-            DispatchQueue.main.async {
-                self.state = .none
-            }
+            self.state = .none
             print(error.localizedDescription)
         }
     }
     
-    public func connectFacebook() {}
+    @MainActor
+    public func connectFacebook() async {}
     
+    @MainActor
     public func connectGoogle() async {
-        DispatchQueue.main.async {
+        do {
             self.state = .loading
-            GoogleSSOManager().signIn(
-                successAction: { email in
-                    guard let email else {
-                        self.showErrorBanner()
-                        return
-                    }
-                    Task {
-                        do {
-                            let statusCode = try await GraphAPI.connectSocialAccount(
-                                userId: self.userId,
-                                input: GraphQLAPI.CreateSocialAccountInput(
-                                    email: email,
-                                    platform: .case(.google)
-                                )
-                            )
-                            print(statusCode)
-                            guard statusCode == 200 else {
-                                self.showInfoAlert()
-                                return
-                            }
-                            DispatchQueue.main.async {
-                                self.state = .complete
-                            }
-                        } catch {
-                            self.showErrorBanner()
-                            print(error.localizedDescription)
-                        }
-                    }
-                },
-                errorAction: { error in
-                    guard let error else { return }
-                    DispatchQueue.main.async {
-                        self.state = .none
-                    }
-                    print(error.localizedDescription)
-                }
+            let email = try await GoogleSSOManager().signIn()
+            guard let email else {
+                self.showErrorBanner()
+                return
+            }
+            let statusCode = try await GraphAPI.connectSocialAccount(
+                userId: self.userId,
+                input: GraphQLAPI.CreateSocialAccountInput(
+                    email: email,
+                    platform: .case(.google)
+                )
             )
+            guard statusCode == 200 else {
+                self.showInfoAlert()
+                return
+            }
+            self.state = .complete
+        } catch {
+            self.state = .none
+            print(error.localizedDescription)
         }
     }
     
     private func showInfoAlert() {
-        DispatchQueue.main.async {
-            self.state = .none
-            self.appAlert = .basic(
-                title: "Oopsie!",
-                message: "The email is connected to another user.",
-                actionLabel: "",
-                cancelLabel: "Cancel",
-                action: {}
-            )
-        }
+        self.state = .none
+        self.appAlert = .basic(
+            title: "Oopsie!",
+            message: "The email is connected to another user.",
+            actionLabel: "",
+            cancelLabel: "Cancel",
+            action: {}
+        )
     }
     
     private func showErrorBanner() {
-        DispatchQueue.main.async {
-            self.state = .error
-            self.errorMessage = "Something went wrong"
-        }
+        self.state = .error
+        self.toastMessage = "Something went wrong"
+        self.toastType = .error
     }
 }

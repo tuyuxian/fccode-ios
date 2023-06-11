@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct SettingsAccountView: View {
-    /// Observed settings account view model
-    @StateObject var vm: SettingsAccountViewModel
     /// Banner
     @EnvironmentObject var bm: BannerManager
+    /// User state
+    @EnvironmentObject var usm: UserStateManager
+    /// Init settings account view model
+    @StateObject var vm: SettingsAccountViewModel
     
     init(
         appleConnect: Bool,
         googleConnect: Bool
     ) {
+        print("[Settings Account] view init")
         _vm = StateObject(
             wrappedValue: SettingsAccountViewModel(
                 appleConnect: appleConnect,
@@ -66,7 +69,12 @@ struct SettingsAccountView: View {
                     spacing: 16
                 ) {
                     Button {
-                        vm.signOutOnTap()
+                        vm.signOutOnTap(action: {
+                            usm.token = nil
+                            usm.userId = nil
+                            usm.isLogin = false
+                            usm.viewState = .onboarding
+                        })
                     } label: {
                         Text("Sign out")
                             .foregroundColor(Color.text)
@@ -74,7 +82,12 @@ struct SettingsAccountView: View {
                     }
                     
                     Button {
-                        vm.deleteAccountOnTap()
+                        vm.deleteAccountOnTap(action: {
+                            usm.token = nil
+                            usm.userId = nil
+                            usm.isLogin = false
+                            usm.viewState = .onboarding
+                        })
                     } label: {
                         Text("Delete account")
                             .foregroundColor(Color.warning)
@@ -83,10 +96,7 @@ struct SettingsAccountView: View {
                 }
                 .padding(.vertical, 30)
                 .padding(.horizontal, 24)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .leading
-                )
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Spacer()
             }
@@ -99,8 +109,8 @@ struct SettingsAccountView: View {
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(
-                        title: vm.errorMessage,
-                        type: .error
+                        title: vm.toastMessage,
+                        type: vm.toastType
                     )
                     vm.state = .none
                 }
@@ -116,6 +126,7 @@ struct SettingsAccountView_Previews: PreviewProvider {
             googleConnect: false
         )
         .environmentObject(BannerManager())
+        .environmentObject(UserStateManager())
     }
 }
 
@@ -148,10 +159,8 @@ struct SocialAccountRow: View {
                 .onTapGesture {
                     Task {
                         await action()
-                        print(state)
-                        if state == .complete {
-                            isConnected.toggle()
-                        }
+                        guard state == .complete else { return }
+                        isConnected.toggle()
                     }
                 }
                 .disabled(isConnected)

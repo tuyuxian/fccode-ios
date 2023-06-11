@@ -9,28 +9,25 @@ import SwiftUI
 
 struct SettingsResetPasswordView: View {
     /// View controller
-    @Environment(\.presentationMode) var presentationMode
-    /// Observed reset password view model
-    @StateObject var vm: ResetPasswordViewModel
+    @Environment(\.dismiss) var dismiss
     /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Handler for button
-    private func buttonOnTap() {
+    /// Init reset password view model
+    @StateObject var vm: ResetPasswordViewModel
+    
+    private func save() {
         Task {
-            await vm.buttonOnTap()
+            await vm.save()
             guard vm.state == .complete else { return }
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         }
     }
     
     init(
         hasPassword: Bool
     ) {
-        _vm = StateObject(
-            wrappedValue: ResetPasswordViewModel(
-                hasPassword: hasPassword
-            )
-        )
+        print("[Settings Reset Password] view init")
+        _vm = StateObject(wrappedValue: ResetPasswordViewModel(hasPassword: hasPassword))
     }
         
     var body: some View {
@@ -39,7 +36,7 @@ struct SettingsResetPasswordView: View {
             childTitle: "Password",
             showSaveButton: $vm.isNewPasswordSatisfied,
             isLoading: .constant(vm.state == .loading),
-            action: buttonOnTap
+            action: save
         ) {
             Box {
                 VStack(
@@ -147,18 +144,14 @@ struct SettingsResetPasswordView: View {
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(
-                        title: vm.errorMessage,
-                        type: .error
+                        title: vm.toastMessage,
+                        type: vm.toastType
                     )
                     vm.state = .none
                 }
             }
             .onTapGesture {
-                withAnimation(
-                    .easeInOut(
-                        duration: 0.16
-                    )
-                ) {
+                withAnimation(.easeInOut(duration: 0.16)) {
                     UIApplication.shared.closeKeyboard()
                 }
             }
@@ -188,10 +181,7 @@ private struct SettingsResetPasswordErrorHelper: View {
                 Image("ErrorCircleRed")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(
-                        width: 16,
-                        height: 16
-                    )
+                    .frame(width: 16, height: 16)
                 VStack(
                     alignment: .leading,
                     spacing: 0

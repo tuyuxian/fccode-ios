@@ -179,11 +179,7 @@ struct SignUpAccountView: View, KeyboardReadable {
             .padding(.horizontal, 24)
         }
         .onTapGesture {
-            withAnimation(
-                .easeInOut(
-                    duration: 0.16
-                )
-            ) {
+            withAnimation(.easeInOut(duration: 0.16)) {
                 UIApplication.shared.closeKeyboard()
             }
         }

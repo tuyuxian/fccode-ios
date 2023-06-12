@@ -29,10 +29,7 @@ struct VoiceMessageActionSheet: View {
                         vm.voiceDeleteOnTap()
                     } label: {
                         HStack(spacing: 20) {
-                            Image("Trash")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-
+                            FCIcon.trash
                             Text("Delete")
                                 .fontTemplate(.h3Medium)
                                 .foregroundColor(Color.text)
@@ -44,9 +41,7 @@ struct VoiceMessageActionSheet: View {
                         showEditSheet.toggle()
                     } label: {
                         HStack(spacing: 20) {
-                            Image("Edit")
-                                .resizable()
-                                .frame(width: 24, height: 24)
+                            FCIcon.edit
                             Text("Edit Voice Message")
                                 .fontTemplate(.h3Medium)
                                 .foregroundColor(Color.text)

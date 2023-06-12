@@ -15,14 +15,6 @@ struct PreferenceNationalityView: View {
     /// Init preference nationality view model
     @StateObject var vm = PreferenceNationalityViewModel()
 
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
-    
     init() {
         print("[Preference Nationality] view init")
     }
@@ -67,6 +59,15 @@ struct PreferenceNationalityView: View {
             }
         }
     }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
+    
 }
 
 struct PreferenceNationalityView_Previews: PreviewProvider {

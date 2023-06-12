@@ -163,6 +163,7 @@ struct ChatRoomView_Previews: PreviewProvider {
             avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
             isActive: .constant(true)
         )
+        .environmentObject(TabViewModel())
     }
 }
 

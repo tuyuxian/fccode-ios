@@ -124,9 +124,12 @@ struct PrimaryInputBar: View {
             case .email:
                 EmptyView()
             case .password:
-                Image(isSecureMode ? "EyeClose" : "EyeShow")
-                    .resizable()
-                    .frame(width: 24, height: 24)
+                isSecureMode
+                ? FCIcon.eyeClose
+                    .onTapGesture {
+                        isSecureMode.toggle()
+                    }
+                : FCIcon.eyeOpen
                     .onTapGesture {
                         isSecureMode.toggle()
                     }

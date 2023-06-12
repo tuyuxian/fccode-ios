@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct PreferenceView: View {
-    /// Banner
-    @EnvironmentObject var bm: BannerManager
-
+    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -19,55 +17,56 @@ struct PreferenceView: View {
             isLoading: .constant(false)
         ) {
             Box {
-                MenuList(
-                    childViewList: [
-                        ChildView(
+                FCList<PreferenceDestination>(
+                    destinationViewList: [
+                        DestinationView(
                             label: "Sex Orientation",
-                            subview: AnyView(
-                                PreferenceSexOrientationView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceSexOrientation
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Goal",
-                            subview: AnyView(
-                                PreferenceGoalView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceGoal
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Nationality",
-                            subview: AnyView(
-                                PreferenceNationalityView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceNationality
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Ethnicity",
-                            subview: AnyView(
-                                PreferenceEthnicityView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceEthnicity
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Age",
-                            subview: AnyView(
-                                PreferenceAgeView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceAge
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Distance",
-                            subview: AnyView(
-                                PreferenceDistanceView()
-                                    .environmentObject(bm)
-                            )
+                            subview: .preferenceDistance
                         )
                     ]
                 )
                 .scrollDisabled(true)
                 
                 Spacer()
+            }
+            .navigationDestination(for: PreferenceDestination.self) { destination in
+                Group {
+                    switch destination {
+                    case .preferenceAge:
+                        PreferenceAgeView()
+                    case .preferenceGoal:
+                        PreferenceGoalView()
+                    case .preferenceDistance:
+                        PreferenceDistanceView()
+                    case .preferenceEthnicity:
+                        PreferenceEthnicityView()
+                    case .preferenceNationality:
+                        PreferenceNationalityView()
+                    case .preferenceSexOrientation:
+                        PreferenceSexOrientationView()
+                    }
+                }
+                .navigationBarBackButtonHidden(true)
             }
         }
     }
@@ -76,6 +75,5 @@ struct PreferenceView: View {
 struct PreferenceView_Previews: PreviewProvider {
     static var previews: some View {
         PreferenceView()
-            .environmentObject(BannerManager())
     }
 }

@@ -15,14 +15,6 @@ struct SettingsResetPasswordView: View {
     /// Init reset password view model
     @StateObject var vm: ResetPasswordViewModel
     
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
-    
     init(
         hasPassword: Bool
     ) {
@@ -157,6 +149,15 @@ struct SettingsResetPasswordView: View {
             }
         }
     }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
+    
 }
 
 struct SettingsResetPasswordView_Previews: PreviewProvider {
@@ -178,7 +179,7 @@ private struct SettingsResetPasswordErrorHelper: View {
                 alignment: .top,
                 spacing: 6
             ) {
-                Image("ErrorCircleRed")
+                FCIcon.errorCircleRed
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 16, height: 16)

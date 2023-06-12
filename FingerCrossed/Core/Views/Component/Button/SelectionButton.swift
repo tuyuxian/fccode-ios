@@ -50,10 +50,14 @@ struct SelectionButton: View {
             case .checkbox:
                 // swiftlint:disable void_function_in_ternary
                 isSelected
-                ? Image("CheckBoxSelected")
+                ? FCIcon.checkboxSelected
+                    .resizable()
+                    .frame(width: 24, height: 24)
                     .foregroundColor(Color.gold)
-                : Image("CheckBox")
+                : FCIcon.checkbox
+                    .resizable()
                     .renderingMode(.template)
+                    .frame(width: 24, height: 24)
                     .foregroundColor(
                         isWhiteBackground
                         ? Color.white
@@ -63,10 +67,14 @@ struct SelectionButton: View {
             case .radio:
                 // swiftlint:disable void_function_in_ternary
                 isSelected
-                ? Image("RadioSelected")
+                ? FCIcon.radioSelected
+                    .resizable()
+                    .frame(width: 24, height: 24)
                     .foregroundColor(Color.gold)
-                : Image("Radio")
+                : FCIcon.radio
+                    .resizable()
                     .renderingMode(.template)
+                    .frame(width: 24, height: 24)
                     .foregroundColor(
                         isWhiteBackground
                         ? Color.white
@@ -89,6 +97,23 @@ struct SelectionButton_Previews: PreviewProvider {
                 id: "1",
                 type: .radio,
                 label: "radio"
+            ) {_ in}
+            SelectionButton(
+                id: "1",
+                type: .radio,
+                label: "radio",
+                isSelected: true
+            ) {_ in}
+            SelectionButton(
+                id: "1",
+                type: .radio,
+                label: "radio"
+            ) {_ in}
+            SelectionButton(
+                id: "2",
+                type: .checkbox,
+                label: "checkbox",
+                isSelected: true
             ) {_ in}
         }
         .padding(.horizontal, 24)

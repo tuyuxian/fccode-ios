@@ -28,51 +28,33 @@ struct SSOButton: View {
             case .apple:
                 Circle()
                     .fill(Color.text)
-                    .frame(
-                        width: 52,
-                        height: 52
-                    )
+                    .frame(width: 52, height: 52)
                     .overlay(
-                        Image("Apple")
+                        FCIcon.apple
                             .resizable()
-                            .frame(
-                                width: 30,
-                                height: 30
-                            )
+                            .frame(width: 30, height: 30)
                     )
             case .facebook:
                 Circle()
                     .fill(Color.facebook)
-                    .frame(
-                        width: 52,
-                        height: 52
-                    )
+                    .frame(width: 52, height: 52)
                     .overlay(
-                        Image("Fb")
+                        FCIcon.facebook
                             .resizable()
-                            .frame(
-                                width: 30,
-                                height: 30
-                            )
+                            .frame(width: 30, height: 30)
                     )
             case .google:
                 Circle()
                     .fill(Color.white)
-                    .frame(
-                        width: 50,
-                        height: 50
-                    )
+                    .frame(width: 52, height: 52)
                     .overlay(
                         Circle()
                             .stroke(Color.textHelper, lineWidth: 1)
                     )
                     .overlay(
-                        Image("Google")
+                        FCIcon.google
                             .resizable()
-                            .frame(
-                                width: 30,
-                                height: 30
-                            )
+                            .frame(width: 30, height: 30)
                     )
             }
         }

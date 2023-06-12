@@ -25,12 +25,7 @@ struct Avatar: View {
             ) { phase in
                 switch phase {
                 case .empty:
-                    Shimmer(
-                        size: CGSize(
-                            width: size,
-                            height: size
-                        )
-                    )
+                    Shimmer(size: CGSize(width: size, height: size))
                 case .success(let image):
                     image
                         .resizable()
@@ -40,41 +35,22 @@ struct Avatar: View {
                             height: size
                         )
                 case .failure:
-                    Shimmer(
-                        size: CGSize(
-                            width: size,
-                            height: size
-                        )
-                    )
+                    Shimmer(size: CGSize(width: size, height: size))
                 @unknown default:
                     EmptyView()
                 }
             }
-            .frame(
-                width: size,
-                height: size
-            )
-            .clipShape(
-                RoundedRectangle(cornerRadius: 100)
-            )
+            .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: 100))
             
             isActive
             ? Circle()
                 .fill(Color.yellow100)
-                .frame(
-                    width: 8,
-                    height: 8
-                )
+                .frame(width: 8, height: 8)
                 .overlay(
                     Circle()
-                        .stroke(
-                            dotBackground,
-                            lineWidth: 3
-                        )
-                        .frame(
-                            width: 11,
-                            height: 11
-                        )
+                        .stroke(dotBackground, lineWidth: 3)
+                        .frame(width: 11, height: 11)
                 )
             : nil
         }

@@ -153,7 +153,7 @@ struct NationalitySearchBar: View {
             : HStack {
                 Spacer()
                 
-                Image("Search")
+                FCIcon.search
                     .foregroundColor(Color.text)
                     .frame(width: 24, height: 36)
                     .padding(.trailing, 16)

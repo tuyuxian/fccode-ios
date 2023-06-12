@@ -15,14 +15,6 @@ struct PreferenceSexOrientationView: View {
     /// Init preference sex orientation view model
     @StateObject var vm = PreferenceSexOrientationViewModel()
 
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
-    
     init() {
         print("[Preference Sex Orientation] view init")
     }
@@ -73,6 +65,15 @@ struct PreferenceSexOrientationView: View {
             }
         }
     }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
+    
 }
 
 struct PreferenceSexOrientationView_Previews: PreviewProvider {

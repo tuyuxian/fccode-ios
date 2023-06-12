@@ -15,14 +15,6 @@ struct PreferenceDistanceView: View {
     /// Init preference distance view model
     @StateObject var vm = PreferenceDistanceViewModel()
 
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
-    
     init() {
         print("[Preference Distance] view init")
     }
@@ -62,6 +54,15 @@ struct PreferenceDistanceView: View {
             }
         }
     }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
+    
 }
 
 struct PreferenceDistanceView_Previews: PreviewProvider {

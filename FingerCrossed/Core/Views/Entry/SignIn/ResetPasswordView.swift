@@ -31,7 +31,7 @@ struct ResetPasswordView: View, KeyboardReadable {
         isLoading.toggle()
         Task {
             do {
-                let success = try await GraphAPI.resetPassword(
+                let success = try await UserService.resetPassword(
                     email: vm.user.email,
                     password: vm.newPassword
                 )

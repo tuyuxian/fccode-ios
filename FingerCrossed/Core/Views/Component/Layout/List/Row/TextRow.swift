@@ -24,15 +24,7 @@ struct TextRow: View {
                 Button {
                     isSelected.toggle()
                 } label: {
-                    Image(
-                        isSelected
-                        ? "CheckBoxSelected"
-                        : "CheckBox")
-                        .resizable()
-                        .frame(
-                            width: 24,
-                            height: 24
-                        )
+                    isSelected ? FCIcon.checkboxSelected : FCIcon.checkbox
                 }
             }
             .frame(

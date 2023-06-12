@@ -95,9 +95,7 @@ struct SignUpAvatarView: View {
                         vm.transition = .backward
                         vm.switchView = .nationality
                     } label: {
-                        Image("ArrowLeft")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -172,9 +170,9 @@ struct SignUpAvatarView: View {
                                     height: 60
                                 )
                                 .overlay(
-                                    Image("Camera")
-                                        .renderingMode(.template)
+                                    FCIcon.camera
                                         .resizable()
+                                        .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
                                         .frame(width: 42, height: 42)
@@ -220,9 +218,9 @@ struct SignUpAvatarView: View {
                                     height: 60
                                 )
                                 .overlay(
-                                    Image("AddPicture")
-                                        .renderingMode(.template)
+                                    FCIcon.addPicture
                                         .resizable()
+                                        .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
                                         .frame(width: 42, height: 42)

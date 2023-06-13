@@ -67,6 +67,25 @@ struct NationalityEditSheet: View {
     var countriesListView: some View {
         ScrollView {
             LazyVStack(spacing: 20) {
+                isPreference
+                ?
+                VStack(spacing: 20) {
+                    ForEach(vm.topNationalities) { nationality in
+                        NationalityItem(
+                            nationality: nationality,
+                            isSelected: isSelected(selected: nationality)
+                        )
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectCountryCode(selectedCountry: nationality)
+                        }
+                    }
+                    Divider()
+                        .overlay(Color.surface2)
+                }
+                
+                : nil
+                
                 ForEach(
                     vm.nationalities.filter { nationality -> Bool in
                         self.searchForCountry(nationality.name)

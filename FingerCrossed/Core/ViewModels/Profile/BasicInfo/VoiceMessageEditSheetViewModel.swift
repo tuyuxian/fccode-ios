@@ -9,6 +9,7 @@ import Foundation
 import AVFoundation
 import GraphQLAPI
 import SwiftUI
+import DSWaveformImage
 
 class VoiceMessageEditSheetViewModel: ObservableObject {
     
@@ -33,11 +34,28 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
     @Published var timeRemaining: Int = 60
     @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    /// DSWaveformImage
+    @Published var waveformImageDrawer = WaveformImageDrawer()
+    @Published var samples: [Float] = []
+    @Published var updateTimer: Timer?
+    @Published var progress: Double = 0.0
+    @Published var waveformConfiguration: Waveform.Configuration = .init(
+        style: .striped(.init(
+            color: UIColor(Color.blue),
+            width: 3,
+            spacing: 3)
+        ),
+        damping: .init(percentage: 0.125, sides: .both)
+    )
+    
     /// Clean up
     var shouldCleanUp: Bool = false
 
     /// Alert
     @Published var appAlert: AppAlert?
+    let alertTitle: String = "Oopsie!"
+    let alertMessage: String = "Something went wrong. "
+    let alertButtonLabel: String = "Try again"
     
     init(
         hasVoiceMessage: Bool,
@@ -66,6 +84,18 @@ extension VoiceMessageEditSheetViewModel {
 }
 
 extension VoiceMessageEditSheetViewModel {
+    @objc private func updateAmplitude() {
+        audioRecorder.updateMeters()
+        
+        let currentAmplitude = 1 - pow(10, (audioRecorder.averagePower(forChannel: 0) / 20))
+        samples += [currentAmplitude, currentAmplitude, currentAmplitude]
+    }
+    
+    @objc private func updateProgress() {
+        let currentTime = self.audioPlayer.currentTime
+        let duration = self.audioPlayer.duration
+        progress = currentTime / duration
+    }
     
     @MainActor
     public func loadVoiceMessage(
@@ -84,6 +114,11 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel
+                        )
             print(error.localizedDescription)
         }
     }
@@ -110,6 +145,11 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel
+                        )
             print(error.localizedDescription)
         }
     }
@@ -134,13 +174,21 @@ extension VoiceMessageEditSheetViewModel {
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
             self.audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
+            self.audioRecorder.isMeteringEnabled = true
+            self.samples = []
             self.audioRecorder.record()
+            self.updateTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.updateAmplitude), userInfo: nil, repeats: true)
             self.startTimer()
             self.isRecording = true
             self.shouldCleanUp = true
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel
+                        )
             print(error.localizedDescription)
         }
     }
@@ -148,6 +196,8 @@ extension VoiceMessageEditSheetViewModel {
     @MainActor
     public func stopRecording() async {
         do {
+            self.updateTimer?.invalidate()
+            self.updateTimer = nil
             self.audioRecorder.stop()
             self.stopTimer()
             self.isRecording = false
@@ -159,6 +209,11 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel
+                        )
             print(error.localizedDescription)
         }
     }
@@ -169,6 +224,7 @@ extension VoiceMessageEditSheetViewModel {
         self.isPlaying = true
         self.startTimer()
         self.audioPlayer.play()
+        self.updateTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.updateProgress), userInfo: nil, repeats: true)
     }
     
     @MainActor
@@ -177,6 +233,8 @@ extension VoiceMessageEditSheetViewModel {
         self.timeRemaining = self.voiceMessageDuration
         self.stopTimer()
         self.isPlaying = false
+        self.updateTimer?.invalidate()
+        self.updateTimer = nil
     }
     
     @MainActor
@@ -186,9 +244,15 @@ extension VoiceMessageEditSheetViewModel {
             try await self.delete()
             self.hasVoiceMessage = false
             self.showSaveButton = false
+            self.samples = []
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel
+                        )
             print(error.localizedDescription)
         }
     }

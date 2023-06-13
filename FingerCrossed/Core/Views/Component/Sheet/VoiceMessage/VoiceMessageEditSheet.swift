@@ -8,6 +8,7 @@
 import SwiftUI
 import AVFoundation
 import GraphQLAPI
+import DSWaveformImageViews
 
 struct VoiceMessageEditSheet: View {
     /// View controller
@@ -73,16 +74,33 @@ struct VoiceMessageEditSheet: View {
                         vm.stopPlaying()
                     }
                 }
+                Spacer()
                 
                 VStack {
-                    vm.hasVoiceMessage || vm.isRecording
-                    ? LottieView(lottieFile: "soundWave")
-                        .frame(height: 133)
-                    : nil
+                    if vm.hasVoiceMessage {
+                        if let audioURL = vm.audioRecorder.url {
+                            ProgressWaveformView(
+                                audioURL: audioURL,
+                                progress: vm.progress
+                            )
+                            .frame(height: 50)
+                        }
+                    } else {
+                        WaveformLiveCanvas(
+                            samples: vm.samples,
+                            configuration: vm.waveformConfiguration,
+                            shouldDrawSilencePadding: true
+                        )
+                        .frame(height: 50)
+                    }
+//                    vm.hasVoiceMessage || vm.isRecording
+//                    ? LottieView(lottieFile: "soundWave")
+//                        .frame(height: 133)
+//                    : nil
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.bottom, vm.hasVoiceMessage || vm.isRecording ? 0 : 173)
-                
+//                .padding(.bottom, vm.hasVoiceMessage || vm.isRecording ? 0 : 173)
+                Spacer()
                 Button {
                     Task {
                         vm.hasVoiceMessage
@@ -122,10 +140,12 @@ struct VoiceMessageEditSheet: View {
                         .padding(.bottom, 9)
                 }
                 : nil
+
             },
             footer: {}
         )
         .appAlert($vm.appAlert)
+        .singleButtonAlert($vm.appAlert)
         .task {
             if vm.hasVoiceMessage {
                 await vm.loadVoiceMessage(sourceUrl: vm.sourceUrl ?? "")

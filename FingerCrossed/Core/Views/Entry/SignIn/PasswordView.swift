@@ -38,7 +38,7 @@ struct PasswordView: View {
         isPasswordValid = true
         Task {
             do {
-                let (statusCode, userId, token) = try await GraphAPI.signIn(
+                let (statusCode, userId, token) = try await UserService.signIn(
                     email: vm.user.email,
                     password: vm.password
                 )
@@ -102,7 +102,7 @@ struct PasswordView: View {
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await GraphAPI.checkEmail(
+                ) = try await UserService.checkEmail(
                     email: email
                 )
                 guard userExist else {
@@ -138,7 +138,7 @@ struct PasswordView: View {
                     isAccountPresented.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.google)
                 )
@@ -178,7 +178,7 @@ struct PasswordView: View {
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await GraphAPI.checkEmail(
+                ) = try await UserService.checkEmail(
                     email: email
                 )
                 guard userExist else {
@@ -214,7 +214,7 @@ struct PasswordView: View {
                     isAccountPresented.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.apple)
                 )
@@ -393,7 +393,7 @@ struct PasswordErrorHelper: View {
                 alignment: .top,
                 spacing: 6
             ) {
-                Image("ErrorCircleRed")
+                FCIcon.errorCircleRed
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(

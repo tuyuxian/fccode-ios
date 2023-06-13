@@ -106,6 +106,18 @@ extension User {
             createUserLifePhoto: (self.lifePhoto.first?.getGraphQLInput())!
         )
     }
+    
+    public func getBirthdayString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        if let date = ISO8601DateFormatter().date(from: self.dateOfBirth) {
+            return dateFormatter.string(from: date)
+        } else {
+            return "Unknown"
+        }
+    }
 }
 
 extension User {

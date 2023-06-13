@@ -14,14 +14,6 @@ struct PreferenceEthnicityView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference ethnicity view model
     @StateObject var vm = PreferenceEthnicityViewModel()
-
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
     
     init() {
         print("[Preference Ethnicity] view init")
@@ -73,6 +65,14 @@ struct PreferenceEthnicityView: View {
                     vm.state = .none
                 }
             }
+        }
+    }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
         }
     }
 }

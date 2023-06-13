@@ -51,7 +51,7 @@ struct AccountSheet: View {
         }
         Task {
             do {
-                let (statusCode, userId, token) = try await GraphAPI.signIn(
+                let (statusCode, userId, token) = try await UserService.signIn(
                     email: email,
                     password: vm.password
                 )
@@ -93,7 +93,7 @@ struct AccountSheet: View {
                     showAlert.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.google)
                 )
@@ -126,7 +126,7 @@ struct AccountSheet: View {
                     showAlert.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.apple)
                 )

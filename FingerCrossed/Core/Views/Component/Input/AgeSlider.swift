@@ -21,9 +21,9 @@ struct AgeSlider: View {
             VStack(spacing: 4) {
                 HStack(spacing: 0) {
                     isFromDragging
-                    ? Image("DragIndicator")
-                        .renderingMode(.template)
+                    ? FCIcon.dragIndicator
                         .resizable()
+                        .renderingMode(.template)
                         .foregroundColor(Color.peach100)
                         .frame(width: 28, height: 34.85)
                         .overlay(
@@ -39,9 +39,9 @@ struct AgeSlider: View {
                         }
                     : nil
                     isToDragging
-                    ? Image("DragIndicator")
-                        .renderingMode(.template)
+                    ? FCIcon.dragIndicator
                         .resizable()
+                        .renderingMode(.template)
                         .foregroundColor(Color.peach100)
                         .frame(width: 28, height: 34.85)
                         .overlay(

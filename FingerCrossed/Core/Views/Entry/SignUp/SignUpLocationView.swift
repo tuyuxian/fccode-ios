@@ -46,10 +46,10 @@ struct SignUpLocationView: View {
                 vm.user.longitude = locationDataManager.lastSeenLocation?.coordinate.longitude ?? 0
                 vm.user.country = locationDataManager.currentPlacemark?.country ?? ""
                 vm.user.administrativeArea = locationDataManager.currentPlacemark?.administrativeArea ?? ""
-                let url = try await GraphAPI.getPresignedPutUrl(
+                let url = try await MediaService.getPresignedPutUrl(
                     .case(.image)
                 )
-                let result = try await AWSS3().uploadImage(
+                let result = try await AWSS3.uploadImage(
                     vm.selectedImage?.jpegData(compressionQuality: 0.1),
                     toPresignedURL: URL(string: url!)!
                 )
@@ -63,7 +63,7 @@ struct SignUpLocationView: View {
                         offset: CGSize.zero
                     )
                 )
-                let (userId, token) = try await GraphAPI.createUser(
+                let (userId, token) = try await UserService.createUser(
                     input: vm.user.getGraphQLInput()
                 )
                 isLoading.toggle()
@@ -103,9 +103,7 @@ struct SignUpLocationView: View {
                         vm.transition = .backward
                         vm.switchView = .avatar
                     } label: {
-                        Image("ArrowLeft")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         

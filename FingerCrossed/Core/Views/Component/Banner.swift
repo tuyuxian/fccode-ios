@@ -15,16 +15,16 @@ struct Banner {
         case success
         case error
         
-        var leadingIcon: String {
+        var leadingIcon: FCIcon {
             switch self {
             case .info:
-                return "InfoCircle"
+                return .infoCircle
             case .success:
-                return "Heart"
+                return .heart
             case .warning:
-                return "Warning"
+                return .warning
             case .error:
-                return "ErrorCircle"
+                return .errorCircle
             }
         }
     }
@@ -72,7 +72,7 @@ struct BannerContent: View {
                 alignment: .center,
                 spacing: 8
             ) {
-                Image(bm.banner?.type?.leadingIcon ?? "")
+                bm.banner?.type?.leadingIcon
                     .resizable()
                     .frame(width: 16, height: 16)
 
@@ -92,9 +92,8 @@ struct BannerContent: View {
         .padding(.bottom, UIScreen.main.bounds.height * 0.07)
         .transition(.opacity)
         .onAppear {
-            DispatchQueue.main.asyncAfter(
-                deadline: .now() + 3  // last for 3 seconds
-            ) {
+            // last for 3 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation {
                     bm.dismiss()
                 }

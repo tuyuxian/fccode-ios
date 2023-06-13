@@ -20,9 +20,20 @@ struct Ethnicity: Equatable, Codable {
 }
 
 extension Ethnicity {
+    
     public func getGraphQLInput() -> GraphQLAPI.CreateEthnicityInput {
         return GraphQLAPI.CreateEthnicityInput(
             ethnicityType: GraphQLEnum.case(self.type)
+        )
+    }
+    
+    static public func getEthnicitiesString(
+        from ethnicities: [Ethnicity]
+    ) -> String {
+        return String(
+            ethnicities.reduce("") { result, ethnicity in
+                return result + ethnicity.type.getString() + ", "
+            }.dropLast(2)
         )
     }
 }

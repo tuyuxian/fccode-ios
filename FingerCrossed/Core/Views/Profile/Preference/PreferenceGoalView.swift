@@ -14,14 +14,6 @@ struct PreferenceGoalView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference goal view model
     @StateObject var vm = PreferenceGoalViewModel()
-
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
     
     init() {
         print("[Preference Goal] view init")
@@ -73,6 +65,14 @@ struct PreferenceGoalView: View {
                     vm.state = .none
                 }
             }
+        }
+    }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
         }
     }
 }

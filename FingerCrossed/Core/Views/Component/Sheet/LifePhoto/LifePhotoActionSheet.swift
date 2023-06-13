@@ -198,36 +198,25 @@ private struct LifePhotoActionRow: View {
         HStack(spacing: 20) {
             switch actionType {
             case .camera:
-                Image("Camera")
-                    .resizable()
-                    .frame(width: 24, height: 24)
+                FCIcon.camera
                 Text("Take Photos")
                     .fontTemplate(.h3Medium)
                     .foregroundColor(Color.text)
                 Spacer()
             case .delete:
-                Image("Trash")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-
+                FCIcon.trash
                 Text("Delete")
                     .fontTemplate(.h3Medium)
                     .foregroundColor(Color.text)
                 Spacer()
             case .edit:
-                Image("Edit")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-
+                FCIcon.edit
                 Text("Edit Photo")
                     .fontTemplate(.h3Medium)
                     .foregroundColor(Color.text)
                 Spacer()
             case .photo:
-                Image("AddPicture")
-                    .resizable()
-                    .frame(width: 24, height: 24)
-
+                FCIcon.addPicture
                 Text("Upload Photos")
                     .fontTemplate(.h3Medium)
                     .foregroundColor(Color.text)

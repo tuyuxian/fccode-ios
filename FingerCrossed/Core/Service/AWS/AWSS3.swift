@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AWSS3 {
+struct AWSS3 {
     
     private enum AWSError: Error {
         case networkError
@@ -16,7 +16,7 @@ class AWSS3 {
         case dataMissingError
     }
         
-    public func uploadImage(
+    static public func uploadImage(
         _ data: Data?,
         toPresignedURL remoteURL: URL
     ) async throws -> URL {
@@ -52,7 +52,7 @@ class AWSS3 {
         }
     }
     
-    public func uploadAudio(
+    static public func uploadAudio(
         _ path: URL,
         toPresignedURL remoteURL: URL
     ) async throws -> URL {
@@ -90,7 +90,7 @@ class AWSS3 {
     ///     - data: The data file to upload.
     ///     - remoteURL: The presigned URL.
     ///     - completion: The completion handler to call when the upload request is complete.
-    private func uploadImageImpl(
+    static private func uploadImageImpl(
         _ data: Data?,
         toPresignedURL remoteURL: URL,
         completion: @escaping (Result<URL?, Error>) -> Void
@@ -118,7 +118,7 @@ class AWSS3 {
     ///     - path: The file path to upload.
     ///     - remoteURL: The presigned URL.
     ///     - completion: The completion handler to call when the upload request is complete.
-    private func uploadAudioImpl(
+    static private func uploadAudioImpl(
         _ path: URL,
         toPresignedURL remoteURL: URL,
         completion: @escaping (Result<URL?, Error>) -> Void
@@ -140,7 +140,7 @@ class AWSS3 {
         uploadTask.resume()
     }
     
-    private func extractFilename(
+    static private func extractFilename(
         from url: URL
     ) -> String? {
         let pattern = "(?<=\\/)[^\\/]+(\\.jpg|\\.m4a)"
@@ -160,7 +160,7 @@ class AWSS3 {
         return nil
     }
     
-    private func parseCDNUrl(
+    static private func parseCDNUrl(
         from fileName: String?
     ) -> URL? {
         guard let fileName else {
@@ -174,7 +174,7 @@ class AWSS3 {
 
 extension AWSS3 {
     
-    public func deleteObject(
+    static public func deleteObject(
         presignedURL: String
     ) async throws -> Bool {
         return try await withCheckedThrowingContinuation { continuation in
@@ -191,7 +191,7 @@ extension AWSS3 {
         }
     }
     
-    private func deleteObjectImpl(
+    static private func deleteObjectImpl(
         presignedURL remoteURL: URL,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {

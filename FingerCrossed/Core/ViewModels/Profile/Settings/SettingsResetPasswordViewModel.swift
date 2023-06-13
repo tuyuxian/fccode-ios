@@ -57,7 +57,7 @@ extension ResetPasswordViewModel {
                 self.state = .none
                 return
             }
-            let statusCode = try await GraphAPI.updatePassword(
+            let statusCode = try await UserService.updatePassword(
                 userId: self.userId,
                 oldPassword: self.currentPassword != "" ? .some(self.currentPassword) : nil,
                 newPassword: self.newPassword

@@ -28,7 +28,7 @@ struct SelfIntroEditSheet: View {
         Task {
             do {
                 isLoading.toggle()
-                let statusCode = try await GraphAPI.updateUser(
+                let statusCode = try await UserService.updateUser(
                     userId: userId,
                     input: GraphQLAPI.UpdateUserInput(
                         selfIntro: .some(text)

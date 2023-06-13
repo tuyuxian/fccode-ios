@@ -14,7 +14,7 @@ class BasicInfoViewModel: ObservableObject {
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoTabState = .edit
-    @Published var selectedSheet: SheetView?
+    @Published var selectedSheet: SheetView<BasicInfoDestination>?
 
     @Published var user: User
     
@@ -25,9 +25,66 @@ class BasicInfoViewModel: ObservableObject {
     /// Alert
     @Published var appAlert: AppAlert?
     
+    ///
+    @Published var basicInfoOptions: [DestinationView<BasicInfoDestination>]
+    
     init(user: User) {
         print("-> [Basic Info] vm init")
         self.user = user
+        self.basicInfoOptions = [
+            DestinationView(
+                label: "Voice Message",
+                icon: .edit,
+                previewText:
+                    user.voiceContentURL == ""
+                    ? "Add a voice message to your profile"
+                    : "",
+                subview: .basicInfoVoiceMessage
+            ),
+            DestinationView(
+                label: "Self Introduction",
+                icon: .edit,
+                previewText: {
+                    if let selfIntro = user.selfIntro {
+                        if selfIntro != "" {
+                            return selfIntro
+                        }
+                    }
+                    return "Tell people more about you!"
+                }(),
+                subview: .basicInfoSelfIntro
+            ),
+            DestinationView(
+                label: "Name",
+                icon: .infoCircle,
+                previewText: user.username,
+                hasSubview: false
+            ),
+            DestinationView(
+                label: "Birthday",
+                icon: .infoCircle,
+                previewText: user.getBirthdayString(),
+                hasSubview: false
+            ),
+            DestinationView(
+                label: "Gender",
+                icon: .infoCircle,
+                previewText: user.gender.getString(),
+                hasSubview: false
+            ),
+            DestinationView(
+                label: "Nationality",
+                icon: .infoCircle,
+                previewText: Nationality.getNationalitiesString(from: user.citizen),
+                hasSubview: false
+            ),
+            DestinationView(
+                label: "Ethnicity",
+                icon: .infoCircle,
+                previewText: Ethnicity.getEthnicitiesString(from: user.ethnicity),
+                hasSubview: false
+            )
+        ]
     }
 
     deinit {
@@ -35,37 +92,10 @@ class BasicInfoViewModel: ObservableObject {
     }
 }
 
+// MARK: helper functions
 extension BasicInfoViewModel {
-    // MARK: helper functions
-    public func getDateString() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        
-        if let date = ISO8601DateFormatter().date(from: self.user.dateOfBirth) {
-            return dateFormatter.string(from: date)
-        } else {
-            return "Unknown"
-        }
-    }
     
-    public func getNationalitiesString() -> String {
-        return String(
-            self.user.citizen.reduce("") { result, nationality in
-                return result + nationality.name + ", "
-            }.dropLast(2)
-        )
-    }
-    
-    public func getEthnicitiesString() -> String {
-        return String(
-            self.user.ethnicity.reduce("") { result, ethnicity in
-                return result + ethnicity.type.getString() + ", "
-            }.dropLast(2)
-        )
-    }
-    
-    public func extractFileName(
+    private func extractFileName(
         url: String
     ) -> String? {
         if let url = URL(string: url) {
@@ -76,7 +106,7 @@ extension BasicInfoViewModel {
 }
 
 extension BasicInfoViewModel {
-    
+    @MainActor
     public func voiceDeleteOnTap() {
         self.appAlert = .basic(
             title: "Do you really want to delete it?",
@@ -86,45 +116,35 @@ extension BasicInfoViewModel {
             action: self.deleteVoiceMessage
         )
     }
-
-    public func deleteVoiceMessage() {
-        self.state = .loading
-        guard let fileName = self.extractFileName(
-            url: self.user.voiceContentURL ?? ""
-        ) else {
-            showError()
-            return
-        }
+    
+    @MainActor
+    private func deleteVoiceMessage() {
         Task {
             do {
-                let url = try await GraphAPI.getPresignedDeleteUrl(fileName: fileName)
-                guard let url = url else {
-                    showError()
-                    return
+                self.state = .loading
+                guard let fileName = self.extractFileName(url: self.user.voiceContentURL ?? "") else {
+                    throw FCError.VoiceMessage.unknown
                 }
-                let success = try await AWSS3().deleteObject(presignedURL: url)
-                guard success else {
-                    showError()
-                    return
-                }
-                let statusCode = try await GraphAPI.updateUser(
+                let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+                guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
+                let success = try await AWSS3.deleteObject(presignedURL: url)
+                guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }
+                let statusCode = try await UserService.updateUser(
                     userId: self.user.id,
                     input: GraphQLAPI.UpdateUserInput(
-                        voiceContentURL: nil
+                        voiceContentURL: ""
                     )
                 )
-                guard statusCode == 200 else {
-                    showError()
-                    return
-                }
+                guard statusCode == 200 else { throw FCError.VoiceMessage.updateUserFailed }
                 self.state = .complete
             } catch {
-                showError()
+                self.showError()
                 print(error.localizedDescription)
             }
         }
     }
     
+    @MainActor
     public func uneditableRowOnTap() {
         self.appAlert = .basic(
             title: "Do you really want to change it?",
@@ -142,17 +162,16 @@ extension BasicInfoViewModel {
         )
     }
     
-    public func editableRowOnTap(view: AnyView) {
+    @MainActor
+    public func editableRowOnTap(_ sheetContent: BasicInfoDestination) {
         self.selectedSheet = SheetView(
-            sheetContent: view
+            sheetContent: sheetContent
         )
     }
-        
+    
     private func showError() {
-        DispatchQueue.main.async {
-            self.state = .error
-            self.bannerMessage = "Something went wrong"
-            self.bannerType = .error
-        }
+        self.state = .error
+        self.bannerMessage = "Something went wrong"
+        self.bannerType = .error
     }
 }

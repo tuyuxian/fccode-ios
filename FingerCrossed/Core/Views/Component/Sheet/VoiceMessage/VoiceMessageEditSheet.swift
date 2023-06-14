@@ -44,6 +44,7 @@ struct VoiceMessageEditSheet: View {
                     ? Button {
                         Task {
                             await vm.save()
+                            guard vm.state == .complete else { return }
                             dismiss()
                         }
                     } label: {
@@ -58,9 +59,11 @@ struct VoiceMessageEditSheet: View {
             },
             content: {
                 Text(
-                    vm.hasVoiceMessage || vm.isRecording
-                    ? vm.parseTime(seconds: vm.timeRemaining)
-                    : "Tap to record"
+                    vm.state == .loading
+                    ? "--:--"
+                    : vm.hasVoiceMessage || vm.isRecording
+                        ? vm.parseTime(seconds: vm.timeRemaining)
+                        : "Tap to record"
                 )
                 .fontTemplate(.h3Bold)
                 .foregroundColor(Color.surface1)
@@ -78,12 +81,14 @@ struct VoiceMessageEditSheet: View {
                 
                 VStack {
                     if vm.hasVoiceMessage {
-                        if let audioURL = vm.audioRecorder.url {
+                        if let audioUrl = vm.audioUrl {
                             ProgressWaveformView(
-                                audioURL: audioURL,
+                                audioURL: audioUrl,
                                 progress: vm.progress
                             )
                             .frame(height: 50)
+                        } else {
+                            Text("123")
                         }
                     } else {
                         WaveformLiveCanvas(
@@ -93,14 +98,12 @@ struct VoiceMessageEditSheet: View {
                         )
                         .frame(height: 50)
                     }
-//                    vm.hasVoiceMessage || vm.isRecording
-//                    ? LottieView(lottieFile: "soundWave")
-//                        .frame(height: 133)
-//                    : nil
+
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-//                .padding(.bottom, vm.hasVoiceMessage || vm.isRecording ? 0 : 173)
+                
                 Spacer()
+                
                 Button {
                     Task {
                         vm.hasVoiceMessage
@@ -112,21 +115,32 @@ struct VoiceMessageEditSheet: View {
                             : vm.checkMicrophonePermissionAndRecord()
                     }
                 } label: {
-                    Circle()
-                        .fill(Color.yellow100)
-                        .frame(width: 70, height: 70)
-                        .overlay(
-                            Image(
-                                vm.hasVoiceMessage
-                                ? vm.isPlaying ? "Pause" : "Play"
-                                : vm.isRecording ? "Stop" : "Mic"
+                    if vm.state == .loading {
+                        Circle()
+                            .fill(Color.yellow100)
+                            .frame(width: 70, height: 70)
+                            .overlay(
+                                LottieView(lottieFile: "spinner.json")
+                                    .frame(width: 33.6, height: 33.6)
                             )
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 33.6, height: 33.6)
-                            .foregroundColor(Color.white)
-                        )
-                        .padding(.bottom, vm.hasVoiceMessage ? 24 : 51)
+                            .padding(.bottom, 51)
+                    } else {
+                        Circle()
+                            .fill(Color.yellow100)
+                            .frame(width: 70, height: 70)
+                                                        .overlay(
+                                Image(
+                                    vm.hasVoiceMessage
+                                    ? vm.isPlaying ? "Pause" : "Play"
+                                    : vm.isRecording ? "Stop" : "Mic"
+                                )
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 33.6, height: 33.6)
+                                .foregroundColor(Color.white)
+                            )
+                            .padding(.bottom, vm.hasVoiceMessage ? 24 : 51)
+                    }
                 }
                 
                 vm.hasVoiceMessage

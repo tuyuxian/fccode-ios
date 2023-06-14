@@ -13,7 +13,7 @@ struct ProgressWaveformView: View {
     let progress: Double
 
     private let configuration = Waveform.Configuration(
-        style: .striped(.init(color: UIColor(Color.blue), width: 3, spacing: 3)),
+        style: .striped(.init(color: UIColor(Color.yellow100), width: 3, spacing: 3)),
         damping: .init(percentage: 0.125, sides: .both)
     )
 
@@ -26,7 +26,7 @@ struct ProgressWaveformView: View {
                 Image(uiImage: waveformImage)
                     .resizable()
                     .renderingMode(.template)
-                    .foregroundColor(Color.textHelper)
+                    .foregroundColor(Color.yellow20)
 
                 Image(uiImage: waveformImage)
                     .resizable()
@@ -46,8 +46,12 @@ struct ProgressWaveformView: View {
     
     private func update(size: CGSize, url: URL, configuration: Waveform.Configuration) {
         Task(priority: .userInitiated) {
-            let image = try! await waveformDrawer.waveformImage(fromAudioAt: url, with: configuration.with(size: size))
-            await MainActor.run { waveformImage = image }
+            do {
+                let image = try await waveformDrawer.waveformImage(fromAudioAt: url, with: configuration.with(size: size))
+                await MainActor.run { waveformImage = image }
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }

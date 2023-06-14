@@ -20,14 +20,15 @@ enum AppAlert {
     case singleButton(
         title: String,
         message: String,
-        cancelLabel: String
+        cancelLabel: String,
+        action: () -> Void
     )
     
     var title: String {
         switch self {
         case .basic(let title, _, _, _, _, _): return title
         case .errors: return "Oopsie!"
-        case .singleButton(let title, _, _): return title
+        case .singleButton(let title, _, _, _): return title
         }
     }
     
@@ -35,7 +36,7 @@ enum AppAlert {
         switch self {
         case .basic(_, let message, _, _, _, _): return message
         case .errors(let message): return message
-        case .singleButton(_, let message, _): return message
+        case .singleButton(_, let message, _, _): return message
         }
     }
     
@@ -51,7 +52,7 @@ enum AppAlert {
         switch self {
         case .basic(_, _, _, let cancelLabel, _, _): return cancelLabel
         case .errors: return "Cancel"
-        case .singleButton(_, _, let cancelLabel): return cancelLabel
+        case .singleButton(_, _, let cancelLabel, _): return cancelLabel
         }
     }
     
@@ -59,7 +60,7 @@ enum AppAlert {
         switch self {
         case .basic(_, _, _, _, let action, _): return action
         case .errors: return {}
-        case .singleButton: return {}
+        case .singleButton(_, _, _, let action): return action
         }
     }
     
@@ -105,6 +106,7 @@ extension View {
                         ),
                     action: {
                         appAlert.wrappedValue = nil
+                        alertType?.action() ?? {}()
                     }
                 )
             )

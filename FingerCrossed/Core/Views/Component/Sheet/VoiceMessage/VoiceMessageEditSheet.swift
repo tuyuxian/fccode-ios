@@ -8,6 +8,7 @@
 import SwiftUI
 import AVFoundation
 import GraphQLAPI
+import DSWaveformImageViews
 
 struct VoiceMessageEditSheet: View {
     /// View controller
@@ -43,6 +44,7 @@ struct VoiceMessageEditSheet: View {
                     ? Button {
                         Task {
                             await vm.save()
+                            guard vm.state == .complete else { return }
                             dismiss()
                         }
                     } label: {
@@ -57,9 +59,11 @@ struct VoiceMessageEditSheet: View {
             },
             content: {
                 Text(
-                    vm.hasVoiceMessage || vm.isRecording
-                    ? vm.parseTime(seconds: vm.timeRemaining)
-                    : "Tap to record"
+                    vm.state == .loading
+                    ? "--:--"
+                    : vm.hasVoiceMessage || vm.isRecording
+                        ? vm.parseTime(seconds: vm.timeRemaining)
+                        : "Tap to record"
                 )
                 .fontTemplate(.h3Bold)
                 .foregroundColor(Color.surface1)
@@ -73,15 +77,32 @@ struct VoiceMessageEditSheet: View {
                         vm.stopPlaying()
                     }
                 }
+                Spacer()
                 
                 VStack {
-                    vm.hasVoiceMessage || vm.isRecording
-                    ? LottieView(lottieFile: "soundWave")
-                        .frame(height: 133)
-                    : nil
+                    if vm.hasVoiceMessage {
+                        if let audioUrl = vm.audioUrl {
+                            ProgressWaveformView(
+                                audioURL: audioUrl,
+                                progress: vm.progress
+                            )
+                            .frame(height: 50)
+                        } else {
+                            Text("123")
+                        }
+                    } else {
+                        WaveformLiveCanvas(
+                            samples: vm.samples,
+                            configuration: vm.waveformConfiguration,
+                            shouldDrawSilencePadding: true
+                        )
+                        .frame(height: 50)
+                    }
+
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.bottom, vm.hasVoiceMessage || vm.isRecording ? 0 : 173)
+                
+                Spacer()
                 
                 Button {
                     Task {
@@ -94,21 +115,32 @@ struct VoiceMessageEditSheet: View {
                             : vm.checkMicrophonePermissionAndRecord()
                     }
                 } label: {
-                    Circle()
-                        .fill(Color.yellow100)
-                        .frame(width: 70, height: 70)
-                        .overlay(
-                            Image(
-                                vm.hasVoiceMessage
-                                ? vm.isPlaying ? "Pause" : "Play"
-                                : vm.isRecording ? "Stop" : "Mic"
+                    if vm.state == .loading {
+                        Circle()
+                            .fill(Color.yellow100)
+                            .frame(width: 70, height: 70)
+                            .overlay(
+                                LottieView(lottieFile: "spinner.json")
+                                    .frame(width: 33.6, height: 33.6)
                             )
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 33.6, height: 33.6)
-                            .foregroundColor(Color.white)
-                        )
-                        .padding(.bottom, vm.hasVoiceMessage ? 24 : 51)
+                            .padding(.bottom, 51)
+                    } else {
+                        Circle()
+                            .fill(Color.yellow100)
+                            .frame(width: 70, height: 70)
+                                                        .overlay(
+                                Image(
+                                    vm.hasVoiceMessage
+                                    ? vm.isPlaying ? "Pause" : "Play"
+                                    : vm.isRecording ? "Stop" : "Mic"
+                                )
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 33.6, height: 33.6)
+                                .foregroundColor(Color.white)
+                            )
+                            .padding(.bottom, vm.hasVoiceMessage ? 24 : 51)
+                    }
                 }
                 
                 vm.hasVoiceMessage
@@ -122,10 +154,12 @@ struct VoiceMessageEditSheet: View {
                         .padding(.bottom, 9)
                 }
                 : nil
+
             },
             footer: {}
         )
         .appAlert($vm.appAlert)
+        .singleButtonAlert($vm.appAlert)
         .task {
             if vm.hasVoiceMessage {
                 await vm.loadVoiceMessage(sourceUrl: vm.sourceUrl ?? "")

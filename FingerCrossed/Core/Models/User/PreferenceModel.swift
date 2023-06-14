@@ -35,7 +35,7 @@ struct AgeRange: Codable {
 
 extension Preference {
     static var MockPreference: Preference = .init(
-        ageRange: AgeRange(from: 18, to: 100),
+        ageRange: AgeRange(from: 18, to: 65),
         distance: 0,
         ethnicities: [],
         goals: [],

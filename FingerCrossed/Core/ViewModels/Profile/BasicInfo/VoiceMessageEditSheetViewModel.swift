@@ -9,6 +9,7 @@ import Foundation
 import AVFoundation
 import GraphQLAPI
 import SwiftUI
+import DSWaveformImage
 
 class VoiceMessageEditSheetViewModel: ObservableObject {
     
@@ -23,6 +24,7 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
     /// Audio component
     @Published var audioRecorder: AVAudioRecorder!
     @Published var audioPlayer: AVAudioPlayer!
+    @Published var audioUrl: URL?
     
     /// View state
     @Published var state: ViewStatus = .none
@@ -33,11 +35,28 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
     @Published var timeRemaining: Int = 60
     @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
+    /// DSWaveformImage
+    @Published var waveformImageDrawer = WaveformImageDrawer()
+    @Published var samples: [Float] = []
+    @Published var updateTimer: Timer?
+    @Published var progress: Double = 0.0
+    @Published var waveformConfiguration: Waveform.Configuration = .init(
+        style: .striped(.init(
+            color: UIColor(Color.yellow20),
+            width: 3,
+            spacing: 3)
+        ),
+        damping: .init(percentage: 0.125, sides: .both)
+    )
+    
     /// Clean up
     var shouldCleanUp: Bool = false
 
     /// Alert
     @Published var appAlert: AppAlert?
+    let alertTitle: String = "Oopsie!"
+    let alertMessage: String = "Something went wrong. "
+    let alertButtonLabel: String = "Try again"
     
     init(
         hasVoiceMessage: Bool,
@@ -54,7 +73,18 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
 }
 
 extension VoiceMessageEditSheetViewModel {
-    
+    enum VoiceMessageError: Error {
+        case unknown
+        case downloadFailed
+        case getPresignedUrlFailed
+        case uploadS3ObjectFailed
+        case deleteS3ObjectFailed
+        case uploadFailed
+        case updateUserFailed
+    }
+}
+
+extension VoiceMessageEditSheetViewModel {
     @MainActor
     public func loadVoiceMessage(
         sourceUrl: String
@@ -62,16 +92,29 @@ extension VoiceMessageEditSheetViewModel {
         do {
             self.state = .loading
             let url = URL(string: sourceUrl)!
-            let (data, response) = try await URLSession.shared.data(from: url)
+            let (localUrl, response) = try await URLSession.shared.download(for: URLRequest(url: url))
             guard let response = response as? HTTPURLResponse,
                   200...299 ~= response.statusCode else { throw FCError.VoiceMessage.downloadFailed }
-            self.audioPlayer = try AVAudioPlayer(data: data)
+            let cachesFolderURL = try? FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            let audioFileURL = cachesFolderURL!.appendingPathComponent("\(UUID()).m4a")
+            try? FileManager.default.copyItem(at: localUrl, to: audioFileURL)
+
+            self.audioUrl = audioFileURL
+            self.audioPlayer = try AVAudioPlayer(contentsOf: localUrl)
             self.voiceMessageDuration = Int(self.audioPlayer.duration.rounded())
             self.timeRemaining = self.voiceMessageDuration
             self.state = .complete
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel,
+                        action: {
+                                self.errorReset()
+                            }
+                        )
             print(error.localizedDescription)
         }
     }
@@ -98,6 +141,14 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel,
+                        action: {
+                                self.errorReset()
+                            }
+                        )
             print(error.localizedDescription)
         }
     }
@@ -122,13 +173,24 @@ extension VoiceMessageEditSheetViewModel {
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
             self.audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
+            self.audioRecorder.isMeteringEnabled = true
+            self.samples = []
             self.audioRecorder.record()
+            self.updateTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.updateAmplitude), userInfo: nil, repeats: true)
             self.startTimer()
             self.isRecording = true
             self.shouldCleanUp = true
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel,
+                        action: {
+                                self.errorReset()
+                            }
+                        )
             print(error.localizedDescription)
         }
     }
@@ -136,17 +198,28 @@ extension VoiceMessageEditSheetViewModel {
     @MainActor
     public func stopRecording() async {
         do {
+            self.updateTimer?.invalidate()
+            self.updateTimer = nil
             self.audioRecorder.stop()
             self.stopTimer()
             self.isRecording = false
             self.hasVoiceMessage = true
             self.showSaveButton = true
             self.audioPlayer = try AVAudioPlayer(contentsOf: self.audioRecorder.url)
+            self.audioUrl = self.audioRecorder.url
             self.voiceMessageDuration = Int(self.audioPlayer.duration.rounded())
             self.timeRemaining = self.voiceMessageDuration
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel,
+                        action: {
+                                self.errorReset()
+                            }
+                        )
             print(error.localizedDescription)
         }
     }
@@ -157,6 +230,7 @@ extension VoiceMessageEditSheetViewModel {
         self.isPlaying = true
         self.startTimer()
         self.audioPlayer.play()
+        self.updateTimer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.updateProgress), userInfo: nil, repeats: true)
     }
     
     @MainActor
@@ -165,18 +239,31 @@ extension VoiceMessageEditSheetViewModel {
         self.timeRemaining = self.voiceMessageDuration
         self.stopTimer()
         self.isPlaying = false
+        self.updateTimer?.invalidate()
+        self.updateTimer = nil
     }
     
     @MainActor
     public func redo() async {
         do {
+            self.state = .loading
             self.stopPlaying()
             try await self.delete()
             self.hasVoiceMessage = false
             self.showSaveButton = false
+            self.samples = []
+            self.state = .complete
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
+            self.appAlert = .singleButton(
+                        title: alertTitle,
+                        message: alertMessage,
+                        cancelLabel: alertButtonLabel,
+                        action: {
+                                self.errorReset()
+                            }
+                        )
             print(error.localizedDescription)
         }
     }
@@ -250,6 +337,29 @@ extension VoiceMessageEditSheetViewModel {
             self.state = .error
             print(error.localizedDescription)
         }
+    }
+    
+    @objc private func updateAmplitude() {
+        audioRecorder.updateMeters()
+        
+        let currentAmplitude = 1 - pow(10, (audioRecorder.averagePower(forChannel: 0) / 20))
+        samples += [currentAmplitude, currentAmplitude, currentAmplitude]
+    }
+    
+    @objc private func updateProgress() {
+        let currentTime = self.audioPlayer.currentTime
+        let duration = self.audioPlayer.duration
+        progress = currentTime / duration
+    }
+    
+    @MainActor
+    private func errorReset() {
+        self.state = .loading
+        self.stopPlaying()
+        self.hasVoiceMessage = false
+        self.showSaveButton = false
+        self.samples = []
+        self.state = .none
     }
     
     // - MARK: helper functions

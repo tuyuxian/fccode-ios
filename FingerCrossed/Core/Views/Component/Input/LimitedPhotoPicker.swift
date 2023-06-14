@@ -10,7 +10,6 @@ import Photos
 
 struct LimitedPhotoPicker: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
-    @EnvironmentObject var limitedPhotoPicker: PhotoPickerViewModel
     
     func makeUIViewController(context: Context) -> some UIViewController {
         UIViewController()
@@ -20,7 +19,6 @@ struct LimitedPhotoPicker: UIViewControllerRepresentable {
         if isPresented {
             PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: uiViewController)
             DispatchQueue.main.async {
-//                limitedPhotoPicker.fetchPhotos()
                 isPresented = false
             }
         }

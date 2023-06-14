@@ -25,11 +25,12 @@ packages:
   JWTDecode:
     url: https://github.com/auth0/JWTDecode.swift
     from: 3.0.0
-  keychain-swift:
-    url: https://github.com/evgenyneu/keychain-swift.git
-    from: 20.0.0
   GraphQLAPI:
     path: ./GraphQL/GraphQLAPI
+  DSWaveformImage:
+    url: https://github.com/dmrschmidt/DSWaveformImage
+    from: 13.0.0
+
 
 targets:
   FingerCrossed:
@@ -92,7 +93,6 @@ targets:
       # specify the pacakge used in target
       - package: GoogleSignIn
         product: GoogleSignIn
-      - package: GoogleSignIn
         product: GoogleSignInSwift
       - package: facebook-ios-sdk
         product: FacebookCore
@@ -104,8 +104,9 @@ targets:
       - package: GraphQLAPI
       - package: JWTDecode
         product: JWTDecode
-      - package: keychain-swift
-        product: KeychainSwift
+      - package: DSWaveformImage
+        product: DSWaveformImage
+        product: DSWaveformImageViews
       
     postCompileScripts:
       - script: |

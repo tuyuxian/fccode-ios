@@ -13,17 +13,11 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     
     @Published var showLimitedPicker = false
     
-    @Published var showNotImageAlert = false
-    
     @Published var fetchedPhotos: [PhotoAsset] = []
     
     @Published var allPhotos: PHFetchResult<PHAsset>!
     
     @Published var extractUIImage: UIImage!
-    
-    let notImageAlertTitle: String = "Only image is allowed"
-    
-    let notImageAlertMessage: String = "In this situation, only image is allowed in Finger Crossed."
     
     let photoPermissionComfirmationDialogMessage: String = "To access all of your photos in Finger Crossed, allow access to your full library in device setting."
     
@@ -47,13 +41,11 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
             updatedPhotos.enumerateObjects { [self] asset, index, _ in
                 if !allPhotos.contains(asset) {
                     if asset.mediaType == .image {
-                        getImageFromAsset(asset: asset, size: CGSize(width: 180, height: 180)) { image in
+                        getImageFromAsset(asset: asset, size: CGSize(width: 110, height: 110)) { image in
                             DispatchQueue.main.async {
                                 self.fetchedPhotos.append(PhotoAsset(photoAsset: asset, image: image))
                             }
                         }
-                    } else {
-                        showNotImageAlert.toggle()
                     }
                 }
             }
@@ -82,16 +74,16 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
         
         options.includeHiddenAssets = false
         
-        let fetchResults = PHAsset.fetchAssets(with: options)
+        let fetchResults = PHAsset.fetchAssets(with: .image, options: options)
         
         allPhotos = fetchResults
         
         fetchResults.enumerateObjects { [self] asset, index, _ in
-            
-            getImageFromAsset(asset: asset, size: CGSize(width: 180, height: 180)) { [self] image in
-                fetchedPhotos.append(PhotoAsset(photoAsset: asset, image: image))
+            if asset.mediaType == .image {
+                getImageFromAsset(asset: asset, size: CGSize(width: 110, height: 110)) { [self] image in
+                    fetchedPhotos.append(PhotoAsset(photoAsset: asset, image: image))
+                }
             }
-            
         }
     }
     
@@ -103,10 +95,6 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
         imageOptions.deliveryMode = .highQualityFormat
         imageOptions.isSynchronous = false
         
-        let sizeFactor = UIScreen.main.scale
-        let deviceSize = UIScreen.main.nativeBounds.size
-        let size = CGSize(width: deviceSize.width * sizeFactor, height: deviceSize.height * sizeFactor)
-        
         imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: imageOptions) { image, _ in
             guard let resizeImage = image else { return }
             
@@ -117,7 +105,7 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     func extractImage(asset: PHAsset) {
         getImageFromAsset(asset: asset, size: PHImageManagerMaximumSize) { image in
             DispatchQueue.main.async {
-                 self.extractUIImage = image
+                self.extractUIImage = image
             }
         }
     }

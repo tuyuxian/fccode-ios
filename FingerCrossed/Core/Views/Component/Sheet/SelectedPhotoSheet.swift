@@ -63,7 +63,7 @@ struct SelectedPhotoSheet: View {
                                     .onTapGesture {
                                         limitedPhotoPicker.extractImage(asset: photo.photoAsset)
                                         presentationMode.wrappedValue.dismiss()
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             if limitedPhotoPicker.extractUIImage != nil {
                                                 selectedImage = limitedPhotoPicker.extractUIImage
                                             }
@@ -75,18 +75,6 @@ struct SelectedPhotoSheet: View {
                     }
                     .onAppear {
                         limitedPhotoPicker.fetchPhotos()
-                    }
-                    .alert(isPresented: $limitedPhotoPicker.showNotImageAlert) {
-                        Alert(
-                            title:
-                                Text(limitedPhotoPicker.notImageAlertTitle)
-                                .font(Font.system(size: 18, weight: .medium)),
-                            message:
-                                Text(limitedPhotoPicker.notImageAlertMessage)
-                                .font(Font.system(size: 12, weight: .medium)),
-                            dismissButton:
-                                    .cancel(Text("ok"))
-                        )
                     }
                     .confirmationDialog(
                         "", isPresented: $showPhotoPermissionConfirmationDialog

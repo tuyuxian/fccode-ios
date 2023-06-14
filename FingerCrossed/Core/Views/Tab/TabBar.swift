@@ -25,20 +25,18 @@ struct TabBar: View {
         VStack(spacing: 0) {
             TabView(selection: $vm.currentTab) {
                 TextingView()
-                    .tag(TabState.texting)
+                    .tag(TabViewModel.ViewState.chat)
 //                PairingView()
-//                    .tag(TabState.pairing)
+//                    .tag(TabViewModel.ViewState.pairing)
                 ProfileView()
-                    .tag(TabState.profile)
-                    .environmentObject(bm)
-                    .environmentObject(usm)
+                    .tag(TabViewModel.ViewState.profile)
             }
             .preferredColorScheme(vm.currentTab == .pairing ? .dark : .light)
             
             vm.showTab
             ? HStack(spacing: 0) {
                 ForEach(
-                    ["Chat", "Pairing", "Profile"],
+                    [FCIcon.chat, FCIcon.pairing, FCIcon.profile],
                     id: \.self
                 ) { icon in
                     TabBarButton(
@@ -55,7 +53,6 @@ struct TabBar: View {
             
         }
         .ignoresSafeArea(.keyboard)
-        .environmentObject(vm)
         .onAppear {
             notificationPermissionManager.requestPermission { _, _ in }
         }
@@ -71,21 +68,23 @@ struct TabBar_Previews: PreviewProvider {
 }
 
 struct TabBarButton: View {
-    var icon: String
-    @Binding var currentTab: TabState
+    
+    let icon: FCIcon
+    
+    @Binding var currentTab: TabViewModel.ViewState
+    
     var body: some View {
         Button {
-            currentTab = TabViewModel.getTabState(icon)
+            currentTab = TabViewModel.getTab(icon)
         } label: {
             ZStack {
-                Image(icon)
-                    .resizable()
+                icon.resizable()
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 35, height: 35)
             }
             .foregroundColor(
-                currentTab == TabViewModel.getTabState(icon)
+                currentTab == TabViewModel.getTab(icon)
                 ? Color.yellow100
                 : Color.surface2
             )
@@ -94,26 +93,28 @@ struct TabBarButton: View {
     }
 }
 
-enum TabState: String {
-    case texting = "Chat"
-    case pairing = "Pairing"
-    case profile = "Profile"
-}
-
 class TabViewModel: ObservableObject {
     
-    public class func getTabState(_ from: String) -> TabState {
+    public enum ViewState {
+        case chat
+        case pairing
+        case profile
+    }
+    
+    public class func getTab(_ from: FCIcon) -> ViewState {
         switch from {
-        case "Chat":
-            return .texting
-        case "Profile":
+        case .chat:
+            return .chat
+        case .pairing:
+            return .pairing
+        case .profile:
             return .profile
         default:
             return .pairing
         }
     }
     
-    @Published var currentTab: TabState = .profile
+    @Published var currentTab: ViewState = .profile
     @Published var showTab: Bool = true
 }
 

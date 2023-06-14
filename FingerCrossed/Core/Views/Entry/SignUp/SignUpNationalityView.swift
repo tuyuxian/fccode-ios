@@ -37,9 +37,7 @@ struct SignUpNationalityView: View {
                         vm.transition = .backward
                         vm.switchView = .ethnicity
                     } label: {
-                        Image("ArrowLeft")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         

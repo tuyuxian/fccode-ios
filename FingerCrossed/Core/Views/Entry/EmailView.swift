@@ -54,7 +54,7 @@ struct EmailView: View {
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await GraphAPI.checkEmail(
+                ) = try await UserService.checkEmail(
                     email: vm.user.email
                 )
                 guard userExist else {
@@ -122,7 +122,7 @@ struct EmailView: View {
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await GraphAPI.checkEmail(
+                ) = try await UserService.checkEmail(
                     email: email
                 )
                 guard userExist else {
@@ -158,7 +158,7 @@ struct EmailView: View {
                     isAccountPresented.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.google)
                 )
@@ -198,7 +198,7 @@ struct EmailView: View {
                     appleEmail,
                     facebookEmail,
                     googleEmail
-                ) = try await GraphAPI.checkEmail(
+                ) = try await UserService.checkEmail(
                     email: email
                 )
                 guard userExist else {
@@ -234,7 +234,7 @@ struct EmailView: View {
                     isAccountPresented.toggle()
                     return
                 }
-                let (userId, token) = try await GraphAPI.socialSignIn(
+                let (userId, token) = try await UserService.socialSignIn(
                     email: email,
                     platform: GraphQLEnum.case(.apple)
                 )

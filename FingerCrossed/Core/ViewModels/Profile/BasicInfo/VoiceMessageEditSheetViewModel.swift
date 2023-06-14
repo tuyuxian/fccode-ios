@@ -106,7 +106,7 @@ extension VoiceMessageEditSheetViewModel {
             let url = URL(string: sourceUrl)!
             let (data, response) = try await URLSession.shared.data(from: url)
             guard let response = response as? HTTPURLResponse,
-                  200...299 ~= response.statusCode else { throw VoiceMessageError.downloadFailed }
+                  200...299 ~= response.statusCode else { throw FCError.VoiceMessage.downloadFailed }
             self.audioPlayer = try AVAudioPlayer(data: data)
             self.voiceMessageDuration = Int(self.audioPlayer.duration.rounded())
             self.timeRemaining = self.voiceMessageDuration
@@ -128,19 +128,19 @@ extension VoiceMessageEditSheetViewModel {
         do {
             self.stopPlaying()
             self.state = .loading
-            let url = try await GraphAPI.getPresignedPutUrl(.case(.audio))
-            guard let url = url else { throw VoiceMessageError.getPresignedUrlFailed }
-            let result = try await AWSS3().uploadAudio(
+            let url = try await MediaService.getPresignedPutUrl(.case(.audio))
+            guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
+            let result = try await AWSS3.uploadAudio(
                 self.audioRecorder.url,
                 toPresignedURL: URL(string: url)!
             )
-            let statusCode = try await GraphAPI.updateUser(
+            let statusCode = try await UserService.updateUser(
                 userId: self.userId,
                 input: GraphQLAPI.UpdateUserInput(
                     voiceContentURL: .some(result.absoluteString)
                 )
             )
-            guard statusCode == 200 else { throw VoiceMessageError.updateUserFailed }
+            guard statusCode == 200 else { throw FCError.VoiceMessage.updateUserFailed }
             self.state = .complete
         } catch {
             self.state = .error
@@ -275,19 +275,19 @@ extension VoiceMessageEditSheetViewModel {
     @MainActor
     private func deleteRemote() async throws {
         guard let fileName = self.extractFileName(url: sourceUrl ?? "") else {
-            throw VoiceMessageError.unknown
+            throw FCError.VoiceMessage.unknown
         }
-        let url = try await GraphAPI.getPresignedDeleteUrl(fileName: fileName)
-        guard let url = url else { throw VoiceMessageError.getPresignedUrlFailed }
-        let success = try await AWSS3().deleteObject(presignedURL: url)
-        guard success else { throw VoiceMessageError.deleteS3ObjectFailed }
-        let statusCode = try await GraphAPI.updateUser(
+        let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+        guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
+        let success = try await AWSS3.deleteObject(presignedURL: url)
+        guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }
+        let statusCode = try await UserService.updateUser(
             userId: self.userId,
             input: GraphQLAPI.UpdateUserInput(
                 voiceContentURL: ""
             )
         )
-        guard statusCode == 200 else { throw VoiceMessageError.updateUserFailed }
+        guard statusCode == 200 else { throw FCError.VoiceMessage.updateUserFailed }
     }
 
     @MainActor

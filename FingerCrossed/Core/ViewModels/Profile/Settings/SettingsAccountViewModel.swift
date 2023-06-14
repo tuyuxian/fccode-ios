@@ -71,7 +71,7 @@ extension SettingsAccountViewModel {
                 Task {
                     do {
                         self.state = .loading
-                        let statusCode = try await GraphAPI.deleteAccount(userId: self.userId)
+                        let statusCode = try await UserService.deleteAccount(userId: self.userId)
                         guard statusCode == 200 else {
                             self.showErrorBanner()
                             return
@@ -97,7 +97,7 @@ extension SettingsAccountViewModel {
                 self.showErrorBanner()
                 return
             }
-            let statusCode = try await GraphAPI.connectSocialAccount(
+            let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
                 input: GraphQLAPI.CreateSocialAccountInput(
                     email: email,
@@ -127,7 +127,7 @@ extension SettingsAccountViewModel {
                 self.showErrorBanner()
                 return
             }
-            let statusCode = try await GraphAPI.connectSocialAccount(
+            let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
                 input: GraphQLAPI.CreateSocialAccountInput(
                     email: email,

@@ -1,5 +1,5 @@
 //
-//  ListRow.swift
+//  FCRow.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 4/9/23.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ListRow<Content: View>: View {
+struct FCRow<Content: View>: View {
     
     @State var label: String
     
     /// Replace the icon in different use cases
-    @State var icon: String = "ArrowRight"
+    @State var icon: FCIcon = .arrowRight
     
     @State var showIndicator: Bool = true
         
@@ -32,9 +32,7 @@ struct ListRow<Content: View>: View {
                 Spacer()
                 
                 showIndicator
-                ? Image(icon)
-                    .resizable()
-                    .frame(width: 24, height: 24)
+                ? icon
                 : nil
             }
             preview
@@ -44,8 +42,8 @@ struct ListRow<Content: View>: View {
     }
 }
 
-struct ListRow_Previews: PreviewProvider {
+struct FCRow_Previews: PreviewProvider {
     static var previews: some View {
-        ListRow(label: "Demo list row") {}
+        FCRow(label: "Demo list row") {}
     }
 }

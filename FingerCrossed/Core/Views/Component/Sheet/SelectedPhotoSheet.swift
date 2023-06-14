@@ -48,7 +48,7 @@ struct SelectedPhotoSheet: View {
                                 .frame(width: 110, height: 110)
                                 .foregroundColor(Color.yellow100)
                                 .overlay(alignment: .center) {
-                                    Image("Picture")
+                                    FCIcon.picture
                                         .resizable()
                                         .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)

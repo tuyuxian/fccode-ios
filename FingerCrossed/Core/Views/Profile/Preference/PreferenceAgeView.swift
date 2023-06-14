@@ -14,14 +14,6 @@ struct PreferenceAgeView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference age view model
     @StateObject var vm = PreferenceAgeViewModel()
-
-    private func save() {
-        Task {
-            await vm.save()
-            guard vm.state == .complete else { return }
-            dismiss()
-        }
-    }
     
     init() {
         print("[Preference Age] view init")
@@ -63,6 +55,15 @@ struct PreferenceAgeView: View {
             }
         }
     }
+    
+    private func save() {
+        Task {
+            await vm.save()
+            guard vm.state == .complete else { return }
+            dismiss()
+        }
+    }
+    
 }
 
 struct PreferenceAgeView_Previews: PreviewProvider {

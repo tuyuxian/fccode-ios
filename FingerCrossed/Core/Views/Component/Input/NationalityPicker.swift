@@ -25,7 +25,7 @@ struct NationalityPicker: View {
                 .frame(height: 56)
                 .cornerRadius(50)
             
-            Image("Search")
+            FCIcon.search
                 .foregroundColor(Color.text)
                 .frame(
                     maxWidth: .infinity,

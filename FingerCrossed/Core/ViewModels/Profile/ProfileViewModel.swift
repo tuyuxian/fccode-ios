@@ -9,7 +9,7 @@ import Foundation
 import PhotosUI
 import SwiftUI
 
-class ProfileViewModel: ObservableObject, InputProtocol {
+open class ProfileViewModel: ObservableObject {
     /// User state
     @AppStorage("UserId") var userId: String = ""
     @Published var user: User?

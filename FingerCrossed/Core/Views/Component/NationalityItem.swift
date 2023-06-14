@@ -36,7 +36,7 @@ struct NationalityItem: View {
                     )
                     .frame(height: 24)
                 isSelected
-                ? Image("CheckCircle")
+                ? FCIcon.checkCirle
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color.gold)

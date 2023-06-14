@@ -35,7 +35,7 @@ struct ResetPasswordOTPView: View {
         isLoading.toggle()
         Task {
             do {
-                let valid = try await GraphAPI.verifyOTP(
+                let valid = try await UserService.verifyOTP(
                     email: vm.user.email,
                     userOTP: otp
                 )
@@ -61,7 +61,7 @@ struct ResetPasswordOTPView: View {
     private func resendOnTap() {
         Task {
             do {
-                let success = try await GraphAPI.requestOTP(
+                let success = try await UserService.requestOTP(
                     email: vm.user.email
                 )
                 guard success else {
@@ -140,9 +140,7 @@ struct ResetPasswordOTPView: View {
                         vm.transition = .backward
                         vm.switchView = .resetPasswordEmailCheck
                     } label: {
-                        Image("ArrowLeft")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -188,7 +186,7 @@ struct ResetPasswordOTPView: View {
                     alignment: .top,
                     spacing: 6.0
                 ) {
-                    Image("ErrorCircleRed")
+                    FCIcon.errorCircleRed
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(

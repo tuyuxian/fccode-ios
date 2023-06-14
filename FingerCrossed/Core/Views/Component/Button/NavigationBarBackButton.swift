@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct NavigationBarBackButton: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         Button {
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } label: {
-            Image("ArrowLeft")
+            FCIcon.arrowLeft
                 .resizable()
                 .frame(width: 24, height: 24)
         }
         .simultaneousGesture(
             TapGesture().onEnded {
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }
         )
     }

@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct BasicInfoView: View {
-    /// Banner
-    @EnvironmentObject var bm: BannerManager
     /// Reference basic info view model
     @StateObject var vm: BasicInfoViewModel
+    
+    init(user: User) {
+        _vm = StateObject(wrappedValue: BasicInfoViewModel(user: user))
+    }
     
     var body: some View {
         ContainerWithHeaderView(
@@ -22,106 +24,16 @@ struct BasicInfoView: View {
         ) {
             ZStack {
                 VStack(spacing: 0) {
-                    BoxTab(isSelected: $vm.selectedTab)
-                        .zIndex(1)
+                    BoxTab(isSelected: $vm.selectedTab).zIndex(1)
                     
                     Box {
-                        switch vm.selectedTab {
-                        case .edit:
-                            BasicInfoContent(
-                                vm: vm,
-                                basicInfoOptions: [
-                                    ChildView(
-                                         label: "Voice Message",
-                                         icon: "Edit",
-                                         subview: {
-                                             vm.user.voiceContentURL == ""
-                                             ? AnyView(VoiceMessageEditSheet(
-                                                hasVoiceMessage:
-                                                    vm.user.voiceContentURL != nil &&
-                                                    vm.user.voiceContentURL != "",
-                                                sourceUrl: vm.user.voiceContentURL
-                                             ))
-                                             : AnyView(VoiceMessageActionSheet(vm: vm))
-                                         }(),
-                                         preview:
-                                            vm.user.voiceContentURL == ""
-                                            ? AnyView(PreviewText(
-                                                text: "Add a voice message to your profile"
-                                            ))
-                                            : AnyView(EmptyView()),
-                                         hasSubview: true
-                                    ),
-                                    ChildView(
-                                        label: "Self Introduction",
-                                        icon: "Edit",
-                                        subview: AnyView(
-                                            SelfIntroEditSheet(
-                                                vm: vm,
-                                                text: vm.user.selfIntro ?? ""
-                                            )
-                                        ),
-                                        preview: AnyView(
-                                            PreviewText(
-                                                text: {
-                                                    if let selfIntro = vm.user.selfIntro {
-                                                        if selfIntro != "" {
-                                                            return selfIntro
-                                                        }
-                                                    }
-                                                    return "Tell people more about you!"
-                                                }()
-                                            )
-                                        ),
-                                        hasSubview: true
-                                    ),
-                                    ChildView(
-                                        label: "Name",
-                                        icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.user.username)),
-                                        hasSubview: false
-                                    ),
-                                    ChildView(
-                                        label: "Birthday",
-                                        icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.getDateString())),
-                                        hasSubview: false
-                                    ),
-                                    ChildView(
-                                        label: "Gender",
-                                        icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.user.gender.getString())),
-                                        hasSubview: false
-                                    ),
-                                    ChildView(
-                                        label: "Nationality",
-                                        icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.getNationalitiesString())),
-                                        hasSubview: false
-                                    ),
-                                    ChildView(
-                                        label: "Ethnicity",
-                                        icon: "InfoCircle",
-                                        preview: AnyView(PreviewText(text: vm.getEthnicitiesString())),
-                                        hasSubview: false
-                                    )
-                                 ]
-                            )
-                        case .preview:
-                            EmptyView()
-                        }
+                        // FIXME: add tab back
+                        BasicInfoContent(
+                            vm: vm,
+                            basicInfoOptions: vm.basicInfoOptions
+                        )
                     }
                     .padding(.top, -24) // offset 24px to hidden in tab
-                }
-            }
-            .appAlert($vm.appAlert)
-            .onChange(of: vm.state) { state in
-                if state == .error {
-                    bm.pop(
-                        title: vm.bannerMessage,
-                        type: vm.bannerType
-                    )
-                    vm.state = .none
                 }
             }
         }
@@ -130,75 +42,112 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(
-            vm: BasicInfoViewModel(user: User.MockUser)
-        )
-        .environmentObject(BannerManager())
+        BasicInfoView(user: User.MockUser)
+            .environmentObject(BannerManager())
     }
 }
 
 private struct BasicInfoContent: View {
-    
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    /// Observed basic info view model
     @ObservedObject var vm: BasicInfoViewModel
-    
-    @State var basicInfoOptions: [ChildView]
+    ///
+    var basicInfoOptions: [DestinationView<BasicInfoDestination>]
         
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                VStack(
-                    alignment: .leading,
-                    spacing: 12
-                ) {
-                    HStack(spacing: 0) {
-                        Text("Life Photos")
-                            .fontTemplate(.pMedium)
-                            .foregroundColor(Color.text)
-                            .frame(height: 24)
-                        Spacer()
-                    }
-//                        LifePhotoStack(vm: ProfileViewModel())
-//                            .frame(height: (proxy.size.width - 62)/2)
+        List {
+            VStack(
+                alignment: .leading,
+                spacing: 12
+            ) {
+                HStack(spacing: 0) {
+                    Text("Life Photos")
+                        .fontTemplate(.pMedium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 24)
+                    Spacer()
                 }
-                .padding(.vertical, 16)
-                .padding(.horizontal, 24)
+                Button("test1") {
+                    print("test1")
+                }
+                Button("test2") {
+                    print("test2")
+                }
+                Button("test3") {
+                    print("test3")
+                }
+                Button("test4") {
+                    print("test4")
+                }
+                //                    LifePhotoStack(vm: ProfileViewModel())
+            }
+            .buttonStyle(.plain)
+            //            .padding(.vertical, 16)
                 
-                ForEach(
-                    Array(basicInfoOptions.enumerated()),
-                    id: \.element.id
-                ) { _, childView in
-                    VStack(spacing: 0) {
-                        Divider()
-                            .overlay(Color.surface3)
-                            .padding(.horizontal, 24)
-
-                        HStack(spacing: 0) {
-                            Button {
-                                childView.hasSubview
-                                ? vm.editableRowOnTap(view: childView.subview)
-                                : vm.uneditableRowOnTap()
-                            } label: {
-                                ListRow(
-                                    label: childView.label,
-                                    icon: childView.icon
-                                ) {
-                                    childView.preview
-                                }
+            ForEach(
+                Array(basicInfoOptions.enumerated()),
+                id: \.element.id
+            ) { _, destinationView in
+                VStack(spacing: 0) {
+                    Divider()
+                        .overlay(Color.surface3)
+                        .padding(.horizontal, 24)
+                    
+                    HStack(spacing: 0) {
+                        Button {
+                            destinationView.hasSubview
+                            ? vm.editableRowOnTap(destinationView.subview!)
+                            : vm.uneditableRowOnTap()
+                        } label: {
+                            FCRow(
+                                label: destinationView.label,
+                                icon: destinationView.icon
+                            ) {
+                                PreviewText(text: destinationView.previewText)
                             }
                         }
                     }
                 }
             }
+            .listRowBackground(Color.white)
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .background(Color.white)
         }
         .scrollIndicators(.hidden)
+        .padding(0)
+        .listStyle(.plain)
         .padding(.top, 38) // 54 - 16 (Life Photo Stack)
         .sheet(item: $vm.selectedSheet) { val in
-            val.sheetContent
+            switch val.sheetContent {
+            case .basicInfoVoiceMessage:
+                if vm.user.voiceContentURL != nil && vm.user.voiceContentURL != "" {
+                    VoiceMessageActionSheet(vm: vm)
+                } else {
+                    VoiceMessageEditSheet(
+                        hasVoiceMessage: false,
+                        sourceUrl: vm.user.voiceContentURL
+                    )
+                }
+            case .basicInfoSelfIntro:
+                SelfIntroEditSheet(vm: vm, text: vm.user.selfIntro ?? "")
+            }
+        }
+        .appAlert($vm.appAlert)
+        .onChange(of: vm.state) { state in
+            if state == .error {
+                bm.pop(
+                    title: vm.bannerMessage,
+                    type: vm.bannerType
+                )
+                vm.state = .none
+            }
         }
     }
 }
 
-struct SheetView: Identifiable {
+struct SheetView<T>: Identifiable {
     let id = UUID()
-    let sheetContent: AnyView
+    let sheetContent: T
 }

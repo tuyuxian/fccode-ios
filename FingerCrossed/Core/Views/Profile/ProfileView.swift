@@ -10,8 +10,6 @@ import SwiftUI
 struct ProfileView: View {
     /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// User state
-    @EnvironmentObject var usm: UserStateManager
     /// Reference profile view model
     @StateObject var vm: ProfileViewModel
     
@@ -42,36 +40,23 @@ struct ProfileView: View {
                 .zIndex(1)
                 
                 Box {
-                    MenuList(
-                        childViewList: [
-                            ChildView(
+                    FCList<ProfileDestination>(
+                        destinationViewList: [
+                            DestinationView(
                                 label: "Basic Info",
-                                subview:
-                                    AnyView(
-                                        BasicInfoView(
-                                            vm: BasicInfoViewModel(user: vm.user ?? User.MockUser)
-                                        )
-                                        .environmentObject(bm)
-                                    )
+                                subview: .basicInfo
                             ),
-                            ChildView(
+                            DestinationView(
                                 label: "Preference",
-                                subview: AnyView(
-                                    PreferenceView()
-                                        .environmentObject(bm)
-                                )
+                                subview: .preference
                             ),
-                            ChildView(
+                            DestinationView(
                                 label: "Settings",
-                                subview: AnyView(
-                                    SettingsView(vm: vm)
-                                        .environmentObject(bm)
-                                        .environmentObject(usm)
-                                )
+                                subview: .settings
                             ),
-                            ChildView(
+                            DestinationView(
                                 label: "Help & Support",
-                                subview: AnyView(HelpSupportView())
+                                subview: .helpSupport
                             )
                         ]
                     )
@@ -79,6 +64,21 @@ struct ProfileView: View {
                     .scrollDisabled(true)
                 }
                 .padding(.top, -104)
+                .navigationDestination(for: ProfileDestination.self) { destination in
+                    Group {
+                        switch destination {
+                        case .basicInfo:
+                            BasicInfoView(user: vm.user ?? User.MockUser)
+                        case .helpSupport:
+                            HelpSupportView()
+                        case .preference:
+                            PreferenceView()
+                        case .settings:
+                            SettingsView(vm: vm)
+                        }
+                    }
+                    .navigationBarBackButtonHidden(true)
+                }
             }
         }
         .overlay {
@@ -103,7 +103,6 @@ struct ProfileView_Previews: PreviewProvider {
         ProfileView(
             preview: true
         )
-        .environmentObject(UserStateManager())
         .environmentObject(BannerManager())
     }
 }

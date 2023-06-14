@@ -1,13 +1,14 @@
 //
-//  CheckboxButtonRow.swift
+//  RadioButtonRow.swift
 //  FingerCrossed
 //
-//  Created by Yu-Hsien Tu on 4/9/23.
+//  Created by Lawrence on 4/3/23.
+//  Modified by Sam on 4/8/23.
 //
 
 import SwiftUI
 
-struct CheckboxButtonRow: View {
+struct RadioButtonRow: View {
     @State var label: String
     @State var isSelected: Bool = false
     
@@ -22,15 +23,15 @@ struct CheckboxButtonRow: View {
                 
                 Spacer()
                 
-                Image(isSelected ? "CheckBoxSelected" : "CheckBox")
+                isSelected ? FCIcon.radioSelected : FCIcon.radio
             }
         }
         .padding(EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24))
     }
 }
 
-struct CheckboxButtonRow_Previews: PreviewProvider {
+struct RadioButtonRow_Previews: PreviewProvider {
     static var previews: some View {
-        CheckboxButtonRow(label: "CheckBoxSelected")
+        RadioButtonRow(label: "Radio")
     }
 }

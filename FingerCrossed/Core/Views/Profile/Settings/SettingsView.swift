@@ -10,11 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     
     @ObservedObject var vm: ProfileViewModel
-        
-    @EnvironmentObject var bm: BannerManager
-    
-    @EnvironmentObject var usm: UserStateManager
-    
+                
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -23,31 +19,35 @@ struct SettingsView: View {
             isLoading: .constant(false)
         ) {
             Box {
-                MenuList(
-                    childViewList: [
-                        ChildView(
+                FCList<SettingsDestination>(
+                    destinationViewList: [
+                        DestinationView(
                             label: "Account",
-                            subview: AnyView(
-                                SettingsAccountView(
-                                    appleConnect: vm.user?.appleConnect ?? false,
-                                    googleConnect: vm.user?.googleConnect ?? false
-                                )
-                                .environmentObject(bm)
-                                .environmentObject(usm)
-                            )
+                            subview: .settingsAccount
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Password",
-                            subview: AnyView(
-                                SettingsResetPasswordView(
-                                    hasPassword: vm.user?.password != "" && vm.user?.password != nil
-                                )
-                                .environmentObject(bm)
-                            )
+                            subview: .settingsResetPassword
                         )
                     ]
                 )
                 .scrollDisabled(true)
+                .navigationDestination(for: SettingsDestination.self) { destination in
+                    Group {
+                        switch destination {
+                        case .settingsAccount:
+                            SettingsAccountView(
+                                appleConnect: vm.user?.appleConnect ?? false,
+                                googleConnect: vm.user?.googleConnect ?? false
+                            )
+                        case .settingsResetPassword:
+                            SettingsResetPasswordView(
+                                hasPassword: vm.user?.password != "" && vm.user?.password != nil
+                            )
+                        }
+                    }
+                    .navigationBarBackButtonHidden(true)
+                }
             }
         }
     }
@@ -58,7 +58,5 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView(
             vm: ProfileViewModel()
         )
-        .environmentObject(BannerManager())
-        .environmentObject(UserStateManager())
     }
 }

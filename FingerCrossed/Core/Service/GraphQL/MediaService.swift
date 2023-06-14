@@ -1,16 +1,16 @@
 //
-//  MediaRepository.swift
+//  MediaService.swift
 //  FingerCrossed
 //
-//  Created by Yu-Hsien Tu on 5/24/23.
+//  Created by Yu-Hsien Tu on 6/11/23.
 //
 
 import Foundation
 import GraphQLAPI
 
-extension GraphAPI {
+struct MediaService {
     
-    public class func getPresignedPutUrl(
+    static public func getPresignedPutUrl(
         _ sourceType: GraphQLEnum<GraphQLAPI.MediaSourceType>
     ) async throws -> String? {
         return try await withCheckedThrowingContinuation { continuation in
@@ -43,7 +43,7 @@ extension GraphAPI {
         }
     }
     
-    public class func getPresignedDeleteUrl(
+    static public func getPresignedDeleteUrl(
         fileName: String
     ) async throws -> String? {
         return try await withCheckedThrowingContinuation { continuation in
@@ -77,4 +77,5 @@ extension GraphAPI {
             }
         }
     }
+
 }

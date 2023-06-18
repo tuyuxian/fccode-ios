@@ -115,7 +115,7 @@ struct ChatRoomView: View {
                     alignment: .center,
                     spacing: 8
                 ) {
-                    NavigationBarBackButton()
+                    NavigationBackButton()
                         .frame(width: 24, height: 24)
                         // leading padding for navigation bar is 16px
                         // offset 3px already

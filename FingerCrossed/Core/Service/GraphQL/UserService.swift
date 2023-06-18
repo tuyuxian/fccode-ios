@@ -170,7 +170,7 @@ struct UserService {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: GetUserByIdQuery(userId: userId),
-                cachePolicy: .fetchIgnoringCacheData
+                cachePolicy: .fetchIgnoringCacheCompletely
             ) { result in
                 switch result {
                 case .success:
@@ -215,52 +215,15 @@ struct UserService {
                                     code: $0.code
                                 )
                             } ?? []),
-                            //                        lifePhoto: Array(userData.lifePhoto?.map {
-                            //                            LifePhoto(
-                            //                                contentUrl: $0.contentURL,
-                            //                                caption: $0.caption ?? "",
-                            //                                position: 0,
-                            //                                scale: 1,
-                            //                                offset: CGSize.zero
-                            //                            )
-                            //                        } ?? []),
-                            lifePhoto: [
+                            lifePhoto: Array(userData.lifePhoto?.map {
                                 LifePhoto(
-                                    contentUrl: userData.lifePhoto?[0].contentURL ?? "",
-                                    caption: "",
-                                    position: 0,
-                                    scale: 1,
-                                    offset: CGSize.zero
-                                ),
-                                LifePhoto(
-                                    contentUrl: "",
-                                    caption: "",
-                                    position: 1,
-                                    scale: 1,
-                                    offset: CGSize.zero
-                                ),
-                                LifePhoto(
-                                    contentUrl: "",
-                                    caption: "",
-                                    position: 2,
-                                    scale: 1,
-                                    offset: CGSize.zero
-                                ),
-                                LifePhoto(
-                                    contentUrl: "",
-                                    caption: "",
-                                    position: 3,
-                                    scale: 1,
-                                    offset: CGSize.zero
-                                ),
-                                LifePhoto(
-                                    contentUrl: "",
-                                    caption: "",
-                                    position: 4,
-                                    scale: 1,
-                                    offset: CGSize.zero
+                                    contentUrl: $0.contentURL,
+                                    caption: $0.caption ?? "",
+                                    position: $0.position,
+                                    scale: $0.scale,
+                                    offset: CGSize(width: $0.offsetX, height: $0.offsetY)
                                 )
-                            ],
+                            } ?? []),
                             socialAccount: [],
                             ethnicity: Array(userData.ethnicity?.map {
                                 Ethnicity(type: $0.ethnicityType.value!)
@@ -449,84 +412,6 @@ struct UserService {
                            continuation.resume(throwing: GraphQLError.tokenIsNil)
                            return
                        }
-//                       let user = User(
-//                        userId: userData.id,
-//                        email: userData.email,
-//                        password: userData.password,
-//                        username: userData.username,
-//                        dateOfBirth: userData.dateOfBirth,
-//                        gender: Gender.allCases.first { gender in
-//                            gender == userData.gender.value
-//                        }!,
-//                        profilePictureUrl: userData.profilePictureURL,
-//                        selfIntro: userData.selfIntro ?? "",
-//                        longitude: userData.longitude,
-//                        latitude: userData.latitude,
-//                        country: userData.country ?? "",
-//                        administrativeArea: userData.administrativeArea ?? "",
-//                        voiceContentURL: userData.voiceContentURL,
-//                        googleConnect: userData.googleConnect,
-//                        facebookConnect: userData.facebookConnect,
-//                        appleConnect: userData.appleConnect,
-//                        premium: userData.premium,
-//                        goal: [],
-//                        citizen: Array(userData.citizen?.map {
-//                            Nationality(
-//                                name: $0.countryName,
-//                                code: $0.code
-//                            )
-//                        } ?? []),
-////                        lifePhoto: Array(userData.lifePhoto?.map {
-////                            LifePhoto(
-////                                contentUrl: $0.contentURL,
-////                                caption: $0.caption ?? "",
-////                                position: 0,
-////                                scale: 1,
-////                                offset: CGSize.zero
-////                            )
-////                        } ?? []),
-//                        lifePhoto: [
-//                            LifePhoto(
-//                                contentUrl: userData.lifePhoto?[0].contentURL ?? "",
-//                                caption: "",
-//                                position: 0,
-//                                scale: 1,
-//                                offset: CGSize.zero
-//                            ),
-//                            LifePhoto(
-//                                contentUrl: "",
-//                                caption: "",
-//                                position: 1,
-//                                scale: 1,
-//                                offset: CGSize.zero
-//                            ),
-//                            LifePhoto(
-//                                contentUrl: "",
-//                                caption: "",
-//                                position: 2,
-//                                scale: 1,
-//                                offset: CGSize.zero
-//                            ),
-//                            LifePhoto(
-//                                contentUrl: "",
-//                                caption: "",
-//                                position: 3,
-//                                scale: 1,
-//                                offset: CGSize.zero
-//                            ),
-//                            LifePhoto(
-//                                contentUrl: "",
-//                                caption: "",
-//                                position: 4,
-//                                scale: 1,
-//                                offset: CGSize.zero
-//                            )
-//                        ],
-//                        socialAccount: [],
-//                        ethnicity: Array(userData.ethnicity?.map {
-//                            Ethnicity(type: $0.ethnicityType.value!)
-//                        } ?? [])
-//                       )
                        guard let userData = data.createUser.userId else {
                            continuation.resume(throwing: GraphQLError.userIsNil)
                            return

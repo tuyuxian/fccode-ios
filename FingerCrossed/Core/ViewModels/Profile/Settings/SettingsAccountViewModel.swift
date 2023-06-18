@@ -15,9 +15,9 @@ class SettingsAccountViewModel: ObservableObject {
     @AppStorage("UserId") private var userId: String = ""
 
     /// View state
-    let appleConnect: Bool
-    let facebookConenct: Bool = false
-    let googleConnect: Bool
+    @Published var appleConnect: Bool
+    @Published var facebookConnect: Bool = false
+    @Published var googleConnect: Bool
     @Published var state: ViewStatus = .none
     
     /// Alert
@@ -31,13 +31,19 @@ class SettingsAccountViewModel: ObservableObject {
         appleConnect: Bool,
         googleConnect: Bool
     ) {
-        print("-> [Settings Account] vm init")
         self.appleConnect = appleConnect
         self.googleConnect = googleConnect
     }
     
-    deinit {
-        print("-> [Settings Account] vm deinit")
+}
+
+extension SettingsAccountViewModel {
+    enum SettingsAccountError: Error {
+        case unknown
+        case deleteUserFailed
+        case signOutUserFailed
+        case appleSSOGetEmailFailed
+        case googleSSOGetEmailFailed
     }
 }
 
@@ -73,14 +79,12 @@ extension SettingsAccountViewModel {
                         self.state = .loading
                         let statusCode = try await UserService.deleteAccount(userId: self.userId)
                         guard statusCode == 200 else {
-                            self.showErrorBanner()
-                            return
+                            throw SettingsAccountError.deleteUserFailed
                         }
                         self.state = .complete
                         action()
-                        return
                     } catch {
-                        self.showErrorBanner()
+                        self.showError()
                         print(error.localizedDescription)
                     }
                 }
@@ -94,8 +98,7 @@ extension SettingsAccountViewModel {
             self.state = .loading
             let email = try await AppleSSOManager().signIn()
             guard let email else {
-                self.showErrorBanner()
-                return
+                throw SettingsAccountError.appleSSOGetEmailFailed
             }
             let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
@@ -108,6 +111,7 @@ extension SettingsAccountViewModel {
                 self.showInfoAlert()
                 return
             }
+            self.appleConnect = true
             self.state = .complete
         } catch {
             self.state = .none
@@ -124,8 +128,7 @@ extension SettingsAccountViewModel {
             self.state = .loading
             let email = try await GoogleSSOManager().signIn()
             guard let email else {
-                self.showErrorBanner()
-                return
+                throw SettingsAccountError.googleSSOGetEmailFailed
             }
             let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
@@ -138,6 +141,7 @@ extension SettingsAccountViewModel {
                 self.showInfoAlert()
                 return
             }
+            self.googleConnect = true
             self.state = .complete
         } catch {
             self.state = .none
@@ -145,6 +149,7 @@ extension SettingsAccountViewModel {
         }
     }
     
+    @MainActor
     private func showInfoAlert() {
         self.state = .none
         self.appAlert = .basic(
@@ -156,7 +161,8 @@ extension SettingsAccountViewModel {
         )
     }
     
-    private func showErrorBanner() {
+    @MainActor
+    public func showError() {
         self.state = .error
         self.toastMessage = "Something went wrong"
         self.toastType = .error

@@ -109,13 +109,13 @@ extension User {
     
     public func getBirthdayString() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
+        dateFormatter.dateFormat = "MM/dd/yyyy"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         
         if let date = ISO8601DateFormatter().date(from: self.dateOfBirth) {
             return dateFormatter.string(from: date)
         } else {
-            return "Unknown"
+            return "--/--/----"
         }
     }
 }
@@ -176,13 +176,6 @@ extension User {
                 contentUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
                 position: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                contentUrl: "",
-                caption: "",
-                position: 4,
                 scale: 1,
                 offset: CGSize.zero
             )

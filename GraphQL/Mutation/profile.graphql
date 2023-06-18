@@ -62,6 +62,10 @@ mutation UpdateUser($userId: ID!, $input: UpdateUserInput!) {
         id
         caption
         contentURL
+        position
+        scale
+        offsetX
+        offsetY
       }
       citizen {
         id

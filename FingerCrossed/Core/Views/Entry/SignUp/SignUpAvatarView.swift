@@ -64,6 +64,8 @@ struct SignUpAvatarView: View {
             }
         case .authorized:
             showImagePicker = true
+        case .limited:
+            showSelectedPhotoList.toggle()
         default:
             showPhotoLibraryAlert.toggle()
         }

@@ -12,46 +12,15 @@ struct SelfIntroEditSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var vm: BasicInfoViewModel
+    @EnvironmentObject var bm: BannerManager
+                
+    @ObservedObject var user: UserViewModel
     
-    @AppStorage("UserId") private var userId: String = ""
+    @StateObject private var vm = ViewModel()
+
+    @State var text: String
     
-    @State var text: String = ""
-    
-    @State private var isSatisfied: Bool = false
-    
-    @State private var isLoading: Bool = false
-            
-    let textLengthLimit: Int = 200
-    
-    private func save() {
-        Task {
-            do {
-                isLoading.toggle()
-                let statusCode = try await UserService.updateUser(
-                    userId: userId,
-                    input: GraphQLAPI.UpdateUserInput(
-                        selfIntro: .some(text)
-                    )
-                )
-                isLoading.toggle()
-                guard statusCode == 200 else {
-                    vm.state = .error
-                    vm.bannerMessage = "Something went wrong"
-                    vm.bannerType = .error
-                    return
-                }
-                vm.user.selfIntro = text
-                dismiss()
-            } catch {
-                isLoading.toggle()
-                vm.state = .error
-                vm.bannerMessage = "Something went wrong"
-                vm.bannerType = .error
-                print(error.localizedDescription)
-            }
-        }
-    }
+    @FocusState private var focus: Bool
     
     var body: some View {
         Sheet(
@@ -70,20 +39,21 @@ struct SelfIntroEditSheet: View {
                         hint: "Type your self introduction",
                         defaultPresentLine: 10,
                         lineLimit: 10,
-                        textLengthLimit: textLengthLimit
+                        textLengthLimit: vm.textLengthLimit
                     )
                     .frame(height: 244)
                     .padding(.top, 16)
                     .padding(.bottom, 10)
                     .onChange(of: text) { _ in
-                        isSatisfied = true
+                        vm.isSatisfied = true
                     }
+                    .focused($focus)
                     
                     PrimaryButton(
                         label: "Save",
-                        action: save,
-                        isTappable: $isSatisfied,
-                        isLoading: $isLoading
+                        action: { save(selfIntro: text) },
+                        isTappable: $vm.isSatisfied,
+                        isLoading: .constant(vm.state == .loading)
                     )
                     .padding(.bottom, 16)
                 }
@@ -91,18 +61,82 @@ struct SelfIntroEditSheet: View {
             footer: {}
         )
         .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.16)) {
-                UIApplication.shared.closeKeyboard()
+            focus = false
+        }
+        .interactiveDismissDisabled(vm.state == .loading)
+        .onChange(of: vm.state) { val in
+            if val == .error {
+                bm.pop(
+                    title: vm.bannerMessage,
+                    type: vm.bannerType
+                )
+                vm.state = .none
             }
         }
-        .interactiveDismissDisabled(isLoading)
+    }
+    
+    private func save(
+        selfIntro: String
+    ) {
+        Task {
+            await vm.save(text: selfIntro)
+            guard vm.state == .complete else { return }
+            user.data?.selfIntro = selfIntro
+            dismiss()
+        }
     }
 }
 
 struct SelfIntroEditSheet_Previews: PreviewProvider {
     static var previews: some View {
         SelfIntroEditSheet(
-            vm: BasicInfoViewModel(user: User.MockUser)
+            user: UserViewModel(preview: true),
+            text: ""
         )
+        .environmentObject(BannerManager())
     }
+}
+
+extension SelfIntroEditSheet {
+    
+    class ViewModel: ObservableObject {
+        
+        @AppStorage("UserId") private var userId: String = ""
+                
+        /// View state
+        @Published var state: ViewStatus = .none
+        @Published var isSatisfied: Bool = false
+        
+        /// Toast message
+        @Published var bannerMessage: String?
+        @Published var bannerType: Banner.BannerType?
+        
+        let textLengthLimit: Int = 200
+        
+        @MainActor
+        public func save(
+            text: String
+        ) async {
+            do {
+                self.state = .loading
+                let statusCode = try await UserService.updateUser(
+                    userId: self.userId,
+                    input: GraphQLAPI.UpdateUserInput(
+                        selfIntro: .some(text)
+                    )
+                )
+                guard statusCode == 200 else {
+                    throw FCError.SelfIntro.updateUserFailed
+                }
+                self.state = .complete
+            } catch {
+                self.state = .error
+                self.bannerMessage = "Something went wrong"
+                self.bannerType = .error
+                print(error.localizedDescription)
+            }
+        }
+        
+    }
+    
 }

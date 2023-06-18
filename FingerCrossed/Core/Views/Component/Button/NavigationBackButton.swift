@@ -1,5 +1,5 @@
 //
-//  NavigationBarBackButton.swift
+//  NavigationBackButton.swift
 //  FingerCrossed
 //
 //  Created by Yu-Hsien Tu on 4/2/23.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NavigationBarBackButton: View {
+struct NavigationBackButton: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -26,8 +26,8 @@ struct NavigationBarBackButton: View {
     }
 }
 
-struct NavigationBarBackButton_Previews: PreviewProvider {
+struct NavigationBackButton_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationBarBackButton()
+        NavigationBackButton()
     }
 }

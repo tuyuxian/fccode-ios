@@ -20,11 +20,19 @@ struct Network {
             client: client,
             store: store
         )
-//        let url = URL(string: "http://localhost:8080/api/graphql")!
-        let url = URL(string: "http://204.236.147.60:8080/api/graphql")!
+        
+        let endpointURL: URL
+        #if targetEnvironment(simulator)
+            // Simulator
+            endpointURL = URL(string: "http://localhost:8080/api/graphql")!
+        #else
+            // Real device
+            endpointURL = URL(string: "http://204.236.147.60:8080/api/graphql")!
+        #endif
+        
         let transport = RequestChainNetworkTransport(
             interceptorProvider: provider,
-            endpointURL: url
+            endpointURL: endpointURL
         )
         
         return ApolloClient(

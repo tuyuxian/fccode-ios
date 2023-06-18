@@ -124,6 +124,7 @@ struct PrimaryInputBar: View {
             case .email:
                 EmptyView()
             case .password:
+                // swiftlint: disable void_function_in_ternary
                 isSecureMode
                 ? FCIcon.eyeClose
                     .onTapGesture {
@@ -133,6 +134,7 @@ struct PrimaryInputBar: View {
                     .onTapGesture {
                         isSecureMode.toggle()
                     }
+                // swiftlint: enable void_function_in_ternary
             case .text:
                 EmptyView()
             }

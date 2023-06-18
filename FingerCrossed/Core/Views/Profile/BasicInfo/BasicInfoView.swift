@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct BasicInfoView: View {
-    /// Reference basic info view model
-    @StateObject var vm: BasicInfoViewModel
-    
-    init(user: User) {
-        _vm = StateObject(wrappedValue: BasicInfoViewModel(user: user))
+    /// Observed user view model
+    @ObservedObject private var user: UserViewModel
+    /// Init basic info view model
+    @StateObject var vm = BasicInfoViewModel()
+        
+    init(
+        user: UserViewModel
+    ) {
+        self.user = user
     }
     
     var body: some View {
@@ -25,15 +29,75 @@ struct BasicInfoView: View {
             ZStack {
                 VStack(spacing: 0) {
                     BoxTab(isSelected: $vm.selectedTab).zIndex(1)
-                    
-                    Box {
-                        // FIXME: add tab back
-                        BasicInfoContent(
-                            vm: vm,
-                            basicInfoOptions: vm.basicInfoOptions
-                        )
+                    if let userData = user.data {
+                        Box {
+                            // FIXME: add tab back
+                            BasicInfoContent(
+                                user: user,
+                                vm: vm,
+                                basicInfoOptions: [
+                                    DestinationView(
+                                        label: "Voice Message",
+                                        icon: .edit,
+                                        previewText:
+                                            userData.voiceContentURL == ""
+                                            ? "Add a voice message to your profile"
+                                            : "Tap to edit your voice message",
+                                        subview: .basicInfoVoiceMessage
+                                    ),
+                                    DestinationView(
+                                        label: "Self Introduction",
+                                        icon: .edit,
+                                        previewText: {
+                                            if let selfIntro = userData.selfIntro {
+                                                if selfIntro != "" {
+                                                    return selfIntro
+                                                }
+                                            }
+                                            return "Tell people more about you!"
+                                        }(),
+                                        subview: .basicInfoSelfIntro
+                                    ),
+                                    DestinationView(
+                                        label: "Name",
+                                        icon: .infoCircle,
+                                        previewText: userData.username,
+                                        hasSubview: false
+                                    ),
+                                    DestinationView(
+                                        label: "Birthday",
+                                        icon: .infoCircle,
+                                        previewText: userData.getBirthdayString(),
+                                        hasSubview: false
+                                    ),
+                                    DestinationView(
+                                        label: "Gender",
+                                        icon: .infoCircle,
+                                        previewText: userData.gender.getString(),
+                                        hasSubview: false
+                                    ),
+                                    DestinationView(
+                                        label: "Nationality",
+                                        icon: .infoCircle,
+                                        previewText: Nationality.getNationalitiesString(
+                                            from: userData.citizen
+                                        ),
+                                        hasSubview: false
+                                    ),
+                                    DestinationView(
+                                        label: "Ethnicity",
+                                        icon: .infoCircle,
+                                        previewText: Ethnicity.getEthnicitiesString(
+                                            from: userData.ethnicity
+                                        ),
+                                        hasSubview: false
+                                    )
+                                ]
+                            )
+                        }
+                        .padding(.top, -24) // offset 24px to hidden in tab
+                        
                     }
-                    .padding(.top, -24) // offset 24px to hidden in tab
                 }
             }
         }
@@ -42,112 +106,108 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(user: User.MockUser)
-            .environmentObject(BannerManager())
+        BasicInfoView(
+            user: UserViewModel(preview: true)
+        )
+        .environmentObject(BannerManager())
     }
 }
 
-private struct BasicInfoContent: View {
-    /// Banner
-    @EnvironmentObject var bm: BannerManager
-    /// Observed basic info view model
-    @ObservedObject var vm: BasicInfoViewModel
-    ///
-    var basicInfoOptions: [DestinationView<BasicInfoDestination>]
+extension BasicInfoView {
+    
+    struct BasicInfoContent: View {
+        /// Banner
+        @EnvironmentObject var bm: BannerManager
+        /// Observed user view model
+        @ObservedObject var user: UserViewModel
+        /// Observed basic info view model
+        @ObservedObject var vm: BasicInfoViewModel
         
-    var body: some View {
-        List {
-            VStack(
-                alignment: .leading,
-                spacing: 12
-            ) {
-                HStack(spacing: 0) {
-                    Text("Life Photos")
-                        .fontTemplate(.pMedium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 24)
-                    Spacer()
-                }
-                Button("test1") {
-                    print("test1")
-                }
-                Button("test2") {
-                    print("test2")
-                }
-                Button("test3") {
-                    print("test3")
-                }
-                Button("test4") {
-                    print("test4")
-                }
-                //                    LifePhotoStack(vm: ProfileViewModel())
-            }
-            .buttonStyle(.plain)
-            //            .padding(.vertical, 16)
-                
-            ForEach(
-                Array(basicInfoOptions.enumerated()),
-                id: \.element.id
-            ) { _, destinationView in
-                VStack(spacing: 0) {
-                    Divider()
-                        .overlay(Color.surface3)
-                        .padding(.horizontal, 24)
+        var basicInfoOptions: [DestinationView<BasicInfoDestination>]
                     
-                    HStack(spacing: 0) {
-                        Button {
-                            destinationView.hasSubview
-                            ? vm.editableRowOnTap(destinationView.subview!)
-                            : vm.uneditableRowOnTap()
-                        } label: {
-                            FCRow(
-                                label: destinationView.label,
-                                icon: destinationView.icon
-                            ) {
-                                PreviewText(text: destinationView.previewText)
+        var body: some View {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 12
+                    ) {
+                        HStack(spacing: 0) {
+                            Text("Life Photos")
+                                .fontTemplate(.pMedium)
+                                .foregroundColor(Color.text)
+                                .frame(height: 24)
+                            Spacer()
+                        }
+    //                    LifePhotoStack(vm: vm)
+    //                        .onChange(of: vm.user.lifePhoto, perform: {val in
+    //                            vm.lifePhotoMap = Dictionary(uniqueKeysWithValues: val.map { ($0.position, $0) })
+    //                        })
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 16)
+                    
+                    ForEach(
+                        Array(basicInfoOptions.enumerated()),
+                        id: \.element.id
+                    ) { _, destinationView in
+                        VStack(spacing: 0) {
+                            Divider()
+                                .overlay(Color.surface3)
+                                .padding(.horizontal, 24)
+                            
+                            HStack(spacing: 0) {
+                                Button {
+                                    destinationView.hasSubview
+                                    ? vm.editableRowOnTap(destinationView.subview!)
+                                    : vm.uneditableRowOnTap()
+                                } label: {
+                                    FCRow(
+                                        label: destinationView.label,
+                                        icon: destinationView.icon
+                                    ) {
+                                        PreviewText(text: destinationView.previewText)
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-            .listRowBackground(Color.white)
-            .listRowSeparator(.hidden)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .background(Color.white)
-        }
-        .scrollIndicators(.hidden)
-        .padding(0)
-        .listStyle(.plain)
-        .padding(.top, 38) // 54 - 16 (Life Photo Stack)
-        .sheet(item: $vm.selectedSheet) { val in
-            switch val.sheetContent {
-            case .basicInfoVoiceMessage:
-                if vm.user.voiceContentURL != nil && vm.user.voiceContentURL != "" {
-                    VoiceMessageActionSheet(vm: vm)
-                } else {
-                    VoiceMessageEditSheet(
-                        hasVoiceMessage: false,
-                        sourceUrl: vm.user.voiceContentURL
+            .padding(.top, 38) // 54 - 16 (Life Photo Stack)
+            .sheet(item: $vm.selectedSheet) { val in
+                switch val.sheetContent {
+                case .basicInfoVoiceMessage:
+                    if let url = user.data?.voiceContentURL {
+                        if url != "" {
+                            VoiceMessageActionSheet(
+                                user: user,
+                                selectedSheet: $vm.selectedSheet
+                            )
+                        } else {
+                            VoiceMessageEditSheet(
+                                user: user,
+                                selectedSheet: $vm.selectedSheet
+                            )
+                        }
+                    }
+                case .basicInfoSelfIntro:
+                    SelfIntroEditSheet(
+                        user: user,
+                        text: user.data?.selfIntro ?? ""
                     )
                 }
-            case .basicInfoSelfIntro:
-                SelfIntroEditSheet(vm: vm, text: vm.user.selfIntro ?? "")
             }
-        }
-        .appAlert($vm.appAlert)
-        .onChange(of: vm.state) { state in
-            if state == .error {
-                bm.pop(
-                    title: vm.bannerMessage,
-                    type: vm.bannerType
-                )
-                vm.state = .none
+            .appAlert($vm.appAlert)
+            .onChange(of: vm.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: vm.bannerMessage,
+                        type: vm.bannerType
+                    )
+                    vm.state = .none
+                }
             }
         }
     }
-}
-
-struct SheetView<T>: Identifiable {
-    let id = UUID()
-    let sheetContent: T
 }

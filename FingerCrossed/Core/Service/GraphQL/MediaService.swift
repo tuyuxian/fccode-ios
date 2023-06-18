@@ -79,3 +79,14 @@ struct MediaService {
     }
 
 }
+
+extension MediaService {
+    static public func extractFileName(
+        url: String
+    ) -> String? {
+        if let url = URL(string: url) {
+            return url.lastPathComponent
+        }
+        return nil
+    }
+}

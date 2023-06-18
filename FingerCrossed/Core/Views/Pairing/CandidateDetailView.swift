@@ -94,11 +94,11 @@ struct CandidateDetailView: View {
                             case .success(let image):
                                 image
                                     .resizable()
-                                    .scaleEffect(config.imageScale)
-                                    .offset(config.imageOffset)
-                                    .aspectRatio(contentMode: .fit)
-                                    .cornerRadius(16)
-                                    .padding(.horizontal, 24)
+//                                    .scaleEffect(config.imageScale)
+//                                    .offset(config.imageOffset)
+//                                    .aspectRatio(contentMode: .fit)
+//                                    .cornerRadius(16)
+//                                    .padding(.horizontal, 24)
 
                             case .failure:
                                 Shimmer()

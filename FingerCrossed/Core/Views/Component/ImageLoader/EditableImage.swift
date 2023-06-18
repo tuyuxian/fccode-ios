@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EditableImage: View {
-    @StateObject var hapticHelper: HapticsHelper = HapticsHelper()
+    @StateObject var hm = HapticsManager()
 
 //    @State var image: UIImage
 //
@@ -100,14 +100,14 @@ struct EditableImage: View {
         
     func getMinimumScaleAllowed() -> CGFloat {
         if scale < minScale {
-            hapticHelper.impactFeedback.impactOccurred(intensity: 0.5)
+            hm.impactFeedback.impactOccurred(intensity: 0.5)
         }
         return max(scale, minScale)
     }
     
     func getMaximumScaleAllowed() -> CGFloat {
         if scale > maxScale {
-            hapticHelper.impactFeedback.impactOccurred(intensity: 0.5)
+            hm.impactFeedback.impactOccurred(intensity: 0.5)
         }
         return min(scale, maxScale)
     }

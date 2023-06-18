@@ -6,28 +6,15 @@
 //
 
 import SwiftUI
-import AVFoundation
-import GraphQLAPI
 import DSWaveformImageViews
 
 struct VoiceMessageEditSheet: View {
-    /// View controller
-    @Environment(\.dismiss) private var dismiss
+    /// Observed user view model
+    @ObservedObject var user: UserViewModel
+    /// Selected sheet from basic info
+    @Binding var selectedSheet: BasicInfoViewModel.SheetView<BasicInfoDestination>?
     /// Init voice message edit sheet view model
-    @StateObject private var vm: VoiceMessageEditSheetViewModel
-    
-    init(
-        hasVoiceMessage: Bool,
-        sourceUrl: String?
-    ) {
-        print("[Voice Message Edit Sheet] view init")
-        _vm = StateObject(
-            wrappedValue: VoiceMessageEditSheetViewModel(
-                hasVoiceMessage: hasVoiceMessage,
-                sourceUrl: sourceUrl
-            )
-        )
-    }
+    @StateObject private var vm = VoiceMessageEditSheetViewModel()
     
     var body: some View {
         Sheet(
@@ -45,7 +32,8 @@ struct VoiceMessageEditSheet: View {
                         Task {
                             await vm.save()
                             guard vm.state == .complete else { return }
-                            dismiss()
+                            user.data?.voiceContentURL = vm.sourceUrl
+                            selectedSheet = nil
                         }
                     } label: {
                         Text("Save")
@@ -74,11 +62,16 @@ struct VoiceMessageEditSheet: View {
                         vm.timeRemaining -= 1
                     } else {
                         vm.stopTimer()
-                        vm.stopPlaying()
+                        Task {
+                            if vm.isPlaying {
+                                vm.stopPlaying()
+                            } else {
+                                await vm.stopRecording()
+                            }
+                        }
                     }
                 }
-                Spacer()
-                
+                                
                 VStack {
                     if vm.hasVoiceMessage {
                         if let audioUrl = vm.audioUrl {
@@ -88,7 +81,12 @@ struct VoiceMessageEditSheet: View {
                             )
                             .frame(height: 50)
                         } else {
-                            Text("123")
+                            WaveformLiveCanvas(
+                                samples: [],
+                                configuration: vm.waveformConfiguration,
+                                shouldDrawSilencePadding: true
+                            )
+                            .frame(height: 50)
                         }
                     } else {
                         WaveformLiveCanvas(
@@ -101,9 +99,9 @@ struct VoiceMessageEditSheet: View {
 
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
-                
-                Spacer()
-                
+                .frame(height: 102)
+                .padding(.vertical, 30)
+                                
                 Button {
                     Task {
                         vm.hasVoiceMessage
@@ -123,12 +121,12 @@ struct VoiceMessageEditSheet: View {
                                 LottieView(lottieFile: "spinner.json")
                                     .frame(width: 33.6, height: 33.6)
                             )
-                            .padding(.bottom, 51)
+                            .padding(.bottom, vm.hasVoiceMessage ? 20 : 52)
                     } else {
                         Circle()
                             .fill(Color.yellow100)
                             .frame(width: 70, height: 70)
-                                                        .overlay(
+                            .overlay(
                                 Image(
                                     vm.hasVoiceMessage
                                     ? vm.isPlaying ? "Pause" : "Play"
@@ -139,7 +137,7 @@ struct VoiceMessageEditSheet: View {
                                 .frame(width: 33.6, height: 33.6)
                                 .foregroundColor(Color.white)
                             )
-                            .padding(.bottom, vm.hasVoiceMessage ? 24 : 51)
+                            .padding(.bottom, vm.hasVoiceMessage ? 20 : 52)
                     }
                 }
                 
@@ -151,18 +149,21 @@ struct VoiceMessageEditSheet: View {
                         .foregroundColor(Color.text)
                         .fontTemplate(.noteMedium)
                         .underline()
-                        .padding(.bottom, 9)
+                        .padding(.bottom, 16)
                 }
                 : nil
-
             },
             footer: {}
         )
         .appAlert($vm.appAlert)
         .singleButtonAlert($vm.appAlert)
         .task {
-            if vm.hasVoiceMessage {
-                await vm.loadVoiceMessage(sourceUrl: vm.sourceUrl ?? "")
+            if let url = user.data?.voiceContentURL {
+                if url != "" {
+                    vm.hasVoiceMessage = true
+                    vm.sourceUrl = url
+                    await vm.loadVoiceMessage()
+                }
             }
         }
         .onDisappear {
@@ -174,8 +175,10 @@ struct VoiceMessageEditSheet: View {
 struct VoiceMessageEditSheet_Previews: PreviewProvider {
     static var previews: some View {
         VoiceMessageEditSheet(
-            hasVoiceMessage: false,
-            sourceUrl: ""
+            user: UserViewModel(preview: true),
+            selectedSheet: .constant(
+                BasicInfoViewModel.SheetView(sheetContent: .basicInfoVoiceMessage)
+            )
         )
     }
 }

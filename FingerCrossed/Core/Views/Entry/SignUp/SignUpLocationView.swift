@@ -31,6 +31,7 @@ struct SignUpLocationView: View {
                 createUser()
             }
         case .denied:
+            isLoading.toggle()
             showLocationAlert.toggle()
         default:
             createUser()

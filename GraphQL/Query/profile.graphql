@@ -25,6 +25,10 @@ query GetUserById($userId: ID!) {
         id
         caption
         contentURL
+        position
+        scale
+        offsetX
+        offsetY
       }
       citizen {
         id

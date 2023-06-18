@@ -9,9 +9,9 @@ import SwiftUI
 
 struct LifePhotoEditSheet: View, KeyboardReadable {
     
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
-    @ObservedObject var vm: ProfileViewModel
+    @ObservedObject var vm: BasicInfoViewModel
 
     @State private var selectedTag: Int = 2
     
@@ -63,7 +63,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                                                             width: imageWidth(tag: selectedTag),
                                                             height: imageHeight(tag: selectedTag)
                                                         )
-                                                        .scaleEffect(vm.imageScale)
+                                                        .scaleEffect(vm.selectedLifePhoto?.scale ?? 1)
                                                         .cornerRadius(6)
                                                         .gesture(
                                                             DragGesture()
@@ -71,19 +71,19 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                                                                     currentOffset = gesture.translation
                                                                 }
                                                                 .onEnded { _ in
-                                                                    if vm.imageOffset.width < geometry.size.width {
-                                                                        vm.imageOffset = CGSize(width: vm.imageOffset.width + self.currentOffset.width, height: vm.imageOffset.height + self.currentOffset.height)
-                                                                        currentOffset = .zero
-                                                                    } else {
-                                                                        vm.imageOffset = .zero
-                                                                    }
+//                                                                    if vm.offset.width < geometry.size.width {
+//                                                                        vm.imageOffset = CGSize(width: vm.imageOffset.width + self.currentOffset.width, height: vm.imageOffset.height + self.currentOffset.height)
+//                                                                        currentOffset = .zero
+//                                                                    } else {
+//                                                                        vm.imageOffset = .zero
+//                                                                    }
                                                                 }
                                                         )
                                                         .gesture(
                                                             MagnificationGesture().onChanged({ val in
-                                                                vm.imageScale = val
+                                                                vm.selectedLifePhoto?.scale = val
                                                             }).onEnded({ val in
-                                                                vm.imageScale = val < 1 ? 1 : val
+                                                                vm.selectedLifePhoto?.scale = val < 1 ? 1 : val
                                                             })
                                                         )
                                                         .overlay(
@@ -166,7 +166,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                                                     width: imageWidth(tag: selectedTag),
                                                     height: imageHeight(tag: selectedTag)
                                                 )
-                                                .scaleEffect(vm.imageScale)
+                                                .scaleEffect(vm.selectedLifePhoto?.scale ?? 1)
                                                 .cornerRadius(6)
                                                 .background(
                                                     RoundedRectangle(cornerRadius: 6)
@@ -178,9 +178,9 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                                                 })
                                                 .gesture(
                                                     MagnificationGesture().onChanged({(value) in
-                                                        vm.imageScale = value
+                                                        vm.selectedLifePhoto?.scale = value
                                                     }).onEnded({(value) in
-                                                        vm.imageScale = value < 1 ? 1 : value
+                                                        vm.selectedLifePhoto?.scale = value < 1 ? 1 : value
                                                     })
                                                 )
                                         case .failure:
@@ -280,7 +280,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
 struct LifePhotoEditSheet_Previews: PreviewProvider {
     static var previews: some View {
         LifePhotoEditSheet(
-            vm: ProfileViewModel()
+            vm: BasicInfoViewModel()
         )
     }
 }

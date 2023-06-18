@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @ObservedObject var vm: ProfileViewModel
-                
+    @ObservedObject var user: UserViewModel
+                    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -36,14 +36,16 @@ struct SettingsView: View {
                     Group {
                         switch destination {
                         case .settingsAccount:
-                            SettingsAccountView(
-                                appleConnect: vm.user?.appleConnect ?? false,
-                                googleConnect: vm.user?.googleConnect ?? false
-                            )
+                            if let userData = user.data {
+                                SettingsAccountView(
+                                    appleConnect: userData.appleConnect,
+                                    googleConnect: userData.googleConnect
+                                )
+                                .environmentObject(user)
+                            }
                         case .settingsResetPassword:
-                            SettingsResetPasswordView(
-                                hasPassword: vm.user?.password != "" && vm.user?.password != nil
-                            )
+                            SettingsResetPasswordView()
+                                .environmentObject(user)
                         }
                     }
                     .navigationBarBackButtonHidden(true)
@@ -56,7 +58,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(
-            vm: ProfileViewModel()
+            user: UserViewModel(preview: true)
         )
     }
 }

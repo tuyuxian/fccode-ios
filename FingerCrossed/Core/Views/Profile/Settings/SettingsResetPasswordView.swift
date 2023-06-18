@@ -9,19 +9,14 @@ import SwiftUI
 
 struct SettingsResetPasswordView: View {
     /// View controller
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
     /// Banner
-    @EnvironmentObject var bm: BannerManager
+    @EnvironmentObject private var bm: BannerManager
+    /// User
+    @EnvironmentObject private var user: UserViewModel
     /// Init reset password view model
-    @StateObject var vm: ResetPasswordViewModel
-    
-    init(
-        hasPassword: Bool
-    ) {
-        print("[Settings Reset Password] view init")
-        _vm = StateObject(wrappedValue: ResetPasswordViewModel(hasPassword: hasPassword))
-    }
-        
+    @StateObject private var vm = ResetPasswordViewModel()
+            
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Settings",
@@ -35,20 +30,22 @@ struct SettingsResetPasswordView: View {
                     alignment: .leading,
                     spacing: 20
                 ) {
-                    vm.hasPassword
-                    ? PrimaryInputBar(
-                        input: .password,
-                        value: $vm.currentPassword,
-                        hint: "Enter current password",
-                        isValid: .constant(
-                            vm.isNewPasswordValid &&
-                            vm.isCurrentPasswordMatched
+                    if let password = user.data?.password {
+                        password != ""
+                        ? PrimaryInputBar(
+                            input: .password,
+                            value: $vm.currentPassword,
+                            hint: "Enter current password",
+                            isValid: .constant(
+                                vm.isNewPasswordValid &&
+                                vm.isCurrentPasswordMatched
+                            )
                         )
-                    )
-                    : nil
+                        : nil
+                    }
                     
                     !vm.isCurrentPasswordMatched
-                    ? SettingsResetPasswordErrorHelper()
+                    ? PasswordErrorHelper()
                         .padding(.top, -10)
                         .padding(.leading, 16)
                     : nil
@@ -142,11 +139,6 @@ struct SettingsResetPasswordView: View {
                     vm.state = .none
                 }
             }
-            .onTapGesture {
-                withAnimation(.easeInOut(duration: 0.16)) {
-                    UIApplication.shared.closeKeyboard()
-                }
-            }
         }
     }
     
@@ -154,6 +146,7 @@ struct SettingsResetPasswordView: View {
         Task {
             await vm.save()
             guard vm.state == .complete else { return }
+            user.data?.password = vm.newPassword
             dismiss()
         }
     }
@@ -162,34 +155,35 @@ struct SettingsResetPasswordView: View {
 
 struct SettingsResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsResetPasswordView(
-            hasPassword: true
-        )
-        .environmentObject(BannerManager())
+        SettingsResetPasswordView()
+            .environmentObject(BannerManager())
+            .environmentObject(UserViewModel(preview: true))
     }
 }
 
-private struct SettingsResetPasswordErrorHelper: View {
-    var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: 6
-        ) {
-            HStack(
-                alignment: .top,
+extension SettingsResetPasswordView {
+    private struct PasswordErrorHelper: View {
+        var body: some View {
+            VStack(
+                alignment: .leading,
                 spacing: 6
             ) {
-                FCIcon.errorCircleRed
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 16, height: 16)
-                VStack(
-                    alignment: .leading,
-                    spacing: 0
+                HStack(
+                    alignment: .top,
+                    spacing: 6
                 ) {
-                    Text("Hmm, it doesn’t match your current password.\nPlease try again.")
-                        .fontTemplate(.noteMedium)
-                        .foregroundColor(Color.warning)
+                    FCIcon.errorCircleRed
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                    VStack(
+                        alignment: .leading,
+                        spacing: 0
+                    ) {
+                        Text("Hmm, it doesn’t match your current password.\nPlease try again.")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                    }
                 }
             }
         }

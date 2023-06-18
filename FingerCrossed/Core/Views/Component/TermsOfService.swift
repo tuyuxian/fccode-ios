@@ -14,7 +14,7 @@ struct TermsOfService: View {
                 .foregroundColor(Color.text)
                 .fontTemplate(.h3Bold)
             
-            Text("Welcome to Fingercrossed Dating App! The app is provided and operated by Fingercrossed Team. By clicking yes to the checkbox, you are agreeing to comply with and be bound by the following terms and conditions of use agreement, including our Privacy Policy.")
+            Text("Welcome to Finger Crossed Dating App! The app is provided and operated by Finger Crossed Team. By clicking yes to the checkbox, you are agreeing to comply with and be bound by the following terms and conditions of use agreement, including our Privacy Policy.")
                 .foregroundColor(Color.text)
                 .fontTemplate(.pRegular)
             

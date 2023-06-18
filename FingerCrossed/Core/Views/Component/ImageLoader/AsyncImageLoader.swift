@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(*, deprecated)
 struct AsyncImageLoader<Placeholder: View>: View {
     @StateObject private var loader: ImageLoader
     private let placeholder: Placeholder
@@ -41,8 +42,8 @@ struct AsyncImageLoader<Placeholder: View>: View {
                     image(loader.image!)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .scaleEffect(config.imageScale)
-                        .offset(config.imageOffset)
+//                        .scaleEffect(config.imageScale)
+//                        .offset(config.imageOffset)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .ignoresSafeArea()
                         .background(
@@ -60,8 +61,8 @@ struct AsyncImageLoader<Placeholder: View>: View {
                     image(loader.image!)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .scaleEffect(config.imageScale)
-                        .offset(config.imageOffset)
+//                        .scaleEffect(config.imageScale)
+//                        .offset(config.imageOffset)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .clipped()
                         .ignoresSafeArea(.all)

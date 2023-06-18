@@ -94,7 +94,7 @@ struct VoiceMessageEditSheet: View {
                             configuration: vm.waveformConfiguration,
                             shouldDrawSilencePadding: true
                         )
-                        .frame(height: 50)
+                        .frame(height: 100)
                     }
 
                 }

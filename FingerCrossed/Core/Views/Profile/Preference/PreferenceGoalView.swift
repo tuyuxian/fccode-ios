@@ -47,10 +47,13 @@ struct PreferenceGoalView: View {
                             }
                         }
                     )
+                    .onAppear {
+                        vm.originalValue = vm.preference.goals
+                    }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.preference.goals) { _ in
-                        vm.showSaveButton = true
+                    .onChange(of: vm.preference.goals) { goals in
+                        vm.showSaveButton = !(goals == vm.originalValue)
                     }
                     
                     Spacer()

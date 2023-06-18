@@ -31,6 +31,7 @@ class PreferenceGoalViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var originalValue: [Goal] = []
     
     /// View state
     @Published var state: ViewStatus = .none

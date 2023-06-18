@@ -36,6 +36,7 @@ class PreferenceEthnicityViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var oringinalValue: [Ethnicity] = []
     
     /// View state
     @Published var state: ViewStatus = .none

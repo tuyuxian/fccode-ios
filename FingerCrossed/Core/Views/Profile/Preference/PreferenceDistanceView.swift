@@ -35,10 +35,13 @@ struct PreferenceDistanceView: View {
                         vm.preference.distance = vm.getIntFromDistanceOption(selected)
                     }
                 )
+                .onAppear {
+                    vm.originalValue = vm.getStringFromDistance(vm.preference.distance)
+                }
                 .padding(.vertical, 30)
                 .padding(.horizontal, 24)
-                .onChange(of: vm.preference.distance) { _ in
-                    vm.showSaveButton = true
+                .onChange(of: vm.preference.distance) { distance in
+                    vm.showSaveButton = !(vm.getStringFromDistance(distance) == vm.originalValue)
                 }
                 
                 Spacer()

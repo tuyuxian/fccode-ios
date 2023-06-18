@@ -35,11 +35,15 @@ struct PreferenceAgeView: View {
                     )
                 }
                 .padding(.horizontal, 24)
-                .onChange(of: vm.preference.ageRange.from) { _ in
-                    vm.showSaveButton = true
+                .onAppear {
+                    vm.originalAgeFrom = vm.preference.ageRange.from
+                    vm.originalAgeTo = vm.preference.ageRange.to
                 }
-                .onChange(of: vm.preference.ageRange.to) { _ in
-                    vm.showSaveButton = true
+                .onChange(of: vm.preference.ageRange.from) { ageFrom in
+                    vm.showSaveButton = !(ageFrom == vm.originalAgeFrom && vm.originalAgeTo == vm.preference.ageRange.to)
+                }
+                .onChange(of: vm.preference.ageRange.to) { ageTo in
+                    vm.showSaveButton = !(ageTo == vm.originalAgeTo && vm.originalAgeFrom == vm.preference.ageRange.from)
                 }
                 
                 Spacer()

@@ -31,6 +31,7 @@ class PreferenceDistanceViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var originalValue = ""
     
     /// View state
     @Published var state: ViewStatus = .none

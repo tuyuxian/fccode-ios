@@ -39,8 +39,11 @@ struct PreferenceNationalityView: View {
                         nationalityList: $vm.preference.nationalities,
                         isPreference: true
                     )
-                    .onChange(of: vm.preference.nationalities) { _ in
-                        vm.showSaveButton = true
+                    .onAppear {
+                        vm.originalValue = vm.preference.nationalities
+                    }
+                    .onChange(of: vm.preference.nationalities) { nationalities in
+                        vm.showSaveButton = !(nationalities == vm.originalValue)
                     }
                 }
                 .padding(.top, 30)

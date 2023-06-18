@@ -32,7 +32,7 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
     @Published var isRecording: Bool = false
     @Published var isPlaying: Bool = false
     @Published var voiceMessageDuration: Int = 0
-    @Published var timeRemaining: Int = 60
+    @Published var timeRemaining: Int = 59
     @Published var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     /// DSWaveformImage
@@ -244,6 +244,7 @@ extension VoiceMessageEditSheetViewModel {
             self.hasVoiceMessage = false
             self.showSaveButton = false
             self.samples = []
+            self.progress = 0.0
             self.state = .complete
         } catch {
             self.state = .error
@@ -267,8 +268,10 @@ extension VoiceMessageEditSheetViewModel {
         } else {
             try await deleteLocal()
         }
-        self.timeRemaining = 60
+
+        self.timeRemaining = 59
         self.sourceUrl = ""
+
     }
 
     @MainActor

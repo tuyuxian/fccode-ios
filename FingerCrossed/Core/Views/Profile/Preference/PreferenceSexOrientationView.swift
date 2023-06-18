@@ -45,10 +45,13 @@ struct PreferenceSexOrientationView: View {
                             }
                         }
                     )
+                    .onAppear {
+                        vm.originalValue = vm.preference.sexOrientations
+                    }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.preference.sexOrientations) { _ in
-                        vm.showSaveButton = true
+                    .onChange(of: vm.preference.sexOrientations) { sexOrientations in
+                        vm.showSaveButton = !(sexOrientations == vm.originalValue)
                     }
                     
                     Spacer()

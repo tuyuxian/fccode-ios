@@ -30,6 +30,7 @@ class PreferenceSexOrientationViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var originalValue: [SexOrientation] = []
     
     /// View state
     @Published var state: ViewStatus = .none

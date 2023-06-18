@@ -47,10 +47,13 @@ struct PreferenceEthnicityView: View {
                             }
                         }
                     )
+                    .onAppear {
+                        vm.oringinalValue = vm.preference.ethnicities
+                    }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.preference.ethnicities) { _ in
-                        vm.showSaveButton = true
+                    .onChange(of: vm.preference.ethnicities) { ethnicities in
+                        vm.showSaveButton = !(ethnicities == vm.oringinalValue)
                     }
                     
                     Spacer()

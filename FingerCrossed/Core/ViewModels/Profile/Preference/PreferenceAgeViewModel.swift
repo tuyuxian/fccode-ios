@@ -22,6 +22,8 @@ class PreferenceAgeViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var originalAgeFrom = 0
+    @Published var originalAgeTo = 0
     
     /// View state
     @Published var state: ViewStatus = .none

@@ -23,6 +23,7 @@ struct PreferenceView: View {
                             label: "Sex Orientation",
                             subview: .preferenceSexOrientation
                         ),
+                        // TODO(Sam): integrate goal graphql endpoint
                         DestinationView(
                             label: "Goal",
                             subview: .preferenceGoal

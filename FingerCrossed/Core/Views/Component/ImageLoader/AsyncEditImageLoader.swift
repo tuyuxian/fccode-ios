@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(*, deprecated)
 struct AsyncEditImageLoader<Placeholder: View>: View {
     
     @StateObject private var loader: ImageLoader
@@ -48,8 +49,8 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .scaleEffect(vm.imageScale + currentScale)
-                    .offset(vm.imageOffset + currentOffset)
+//                    .scaleEffect(vm.imageScale + currentScale)
+//                    .offset(vm.imageOffset + currentOffset)
                     .cornerRadius(6)
                     .gesture(
                         DragGesture()
@@ -57,23 +58,23 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                                 currentOffset = gesture.translation
                             }
                             .onEnded { _ in
-                                if vm.imageOffset.width < geometry.size.width {
-                                    vm.imageOffset = CGSize(width: vm.imageOffset.width + self.currentOffset.width, height: vm.imageOffset.height + self.currentOffset.height)
-                                    currentOffset = .zero
-                                } else {
-                                    vm.imageOffset = .zero
-                                }
+//                                if vm.imageOffset.width < geometry.size.width {
+//                                    vm.imageOffset = CGSize(width: vm.imageOffset.width + self.currentOffset.width, height: vm.imageOffset.height + self.currentOffset.height)
+//                                    currentOffset = .zero
+//                                } else {
+//                                    vm.imageOffset = .zero
+//                                }
                             }
                     )
-                    .gesture(
-                        MagnificationGesture()
-                            .onChanged {(value) in
-                            vm.imageScale = value
-                            }
-                            .onEnded {(value) in
-                            vm.imageScale = value < 1 ? 1 : value
-                            }
-                    )
+//                    .gesture(
+//                        MagnificationGesture()
+//                            .onChanged {(value) in
+//                            vm.imageScale = value
+//                            }
+//                            .onEnded {(value) in
+//                            vm.imageScale = value < 1 ? 1 : value
+//                            }
+//                    )
                     .overlay(
                         ZStack {
                             RoundedRectangle(cornerRadius: 6)

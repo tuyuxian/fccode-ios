@@ -43,3 +43,37 @@ extension LifePhoto {
         )
     }
 }
+
+extension LifePhoto {
+    static var MockLifePhoto: LifePhoto = .init(
+        contentUrl: "https://i.pravatar.cc/150?img=9",
+        caption: "0",
+        position: 0,
+        scale: 1,
+        offset: CGSize.zero
+    )
+    
+    static var MockLifePhotoList: [LifePhoto] = [
+        .init(
+            contentUrl: "https://i.pravatar.cc/150?img=9",
+            caption: "0",
+            position: 0,
+            scale: 1,
+            offset: CGSize.zero
+        ),
+        .init(
+            contentUrl: "https://i.pravatar.cc/150?img=10",
+            caption: "1",
+            position: 1,
+            scale: 1,
+            offset: CGSize.zero
+        ),
+        .init(
+            contentUrl: "https://i.pravatar.cc/150?img=11",
+            caption: "2",
+            position: 2,
+            scale: 1,
+            offset: CGSize.zero
+        )
+    ]
+}

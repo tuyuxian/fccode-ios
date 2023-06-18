@@ -6,14 +6,18 @@
 //
 
 import SwiftUI
-import AVFoundation
+import GraphQLAPI
 
 struct VoiceMessageActionSheet: View {
+    /// Banner
+    @EnvironmentObject private var bm: BannerManager
+    /// Observed user view model
+    @ObservedObject var user: UserViewModel
+    /// Selected sheet from basic info
+    @Binding var selectedSheet: BasicInfoViewModel.SheetView<BasicInfoDestination>?
+    /// Init view model
+    @StateObject private var vm = ViewModel()
     
-    @ObservedObject var vm: BasicInfoViewModel
-    
-    @State private var showEditSheet: Bool = false
-
     var body: some View {
         Sheet(
             size: [.height(138)],
@@ -26,7 +30,9 @@ struct VoiceMessageActionSheet: View {
                     spacing: 30
                 ) {
                     Button {
-                        vm.voiceDeleteOnTap()
+                        vm.voiceDeleteOnTap(
+                            action: delete
+                        )
                     } label: {
                         HStack(spacing: 20) {
                             FCIcon.trash
@@ -38,7 +44,7 @@ struct VoiceMessageActionSheet: View {
                     }
                     
                     Button {
-                        showEditSheet.toggle()
+                        vm.showEditSheet = true
                     } label: {
                         HStack(spacing: 20) {
                             FCIcon.edit
@@ -48,27 +54,113 @@ struct VoiceMessageActionSheet: View {
                             Spacer()
                         }
                     }
-                    .sheet(isPresented: $showEditSheet) {
+                    .sheet(isPresented: $vm.showEditSheet) {
                         VoiceMessageEditSheet(
-                            hasVoiceMessage:
-                                vm.user.voiceContentURL != nil &&
-                                vm.user.voiceContentURL != "",
-                            sourceUrl: vm.user.voiceContentURL
+                            user: user,
+                            selectedSheet: $selectedSheet
                         )
                     }
+                    .padding(.bottom, 16)
                 }
                 .padding(.top, 15) // 30 - 15
                 .appAlert($vm.appAlert)
+                .onChange(of: vm.state) { state in
+                    if state == .error {
+                        bm.pop(
+                            title: vm.bannerMessage,
+                            type: vm.bannerType
+                        )
+                        vm.state = .none
+                    }
+                }
             },
             footer: {}
         )
+    }
+    
+    private func delete() {
+        Task {
+            if let url = user.data?.voiceContentURL {
+                do {
+                    try await vm.deleteVoiceMessage(url: url)
+                    guard vm.state == .complete else { return }
+                    user.data?.voiceContentURL = ""
+                    selectedSheet = nil
+                } catch {
+                    vm.state = .error
+                    vm.bannerMessage = "Something went wrong"
+                    vm.bannerType = .error
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 
 struct VoiceMessageActionSheet_Previews: PreviewProvider {
     static var previews: some View {
         VoiceMessageActionSheet(
-            vm: BasicInfoViewModel(user: User.MockUser)
+            user: UserViewModel(preview: true),
+            selectedSheet: .constant(
+                BasicInfoViewModel.SheetView(sheetContent: .basicInfoVoiceMessage)
+            )
         )
+        .environmentObject(BannerManager())
     }
+}
+
+extension VoiceMessageActionSheet {
+    
+    class ViewModel: ObservableObject {
+        
+        @Environment(\.dismiss) private var dismiss
+        
+        @AppStorage("UserId") var userId: String = ""
+
+        /// View state
+        @Published var state: ViewStatus = .none
+        @Published var showEditSheet: Bool = false
+        
+        /// Toast message
+        @Published var bannerMessage: String?
+        @Published var bannerType: Banner.BannerType?
+        
+        /// Alert
+        @Published var appAlert: AppAlert?
+        
+        @MainActor
+        public func voiceDeleteOnTap(
+            action: @escaping () -> Void
+        ) {
+            self.appAlert = .basic(
+                title: "Do you really want to delete it?",
+                message: "",
+                actionLabel: "Yes",
+                cancelLabel: "No",
+                action: action
+            )
+        }
+        
+        @MainActor
+        public func deleteVoiceMessage(url: String) async throws {
+            self.state = .loading
+            guard let fileName = MediaService.extractFileName(url: url) else {
+                throw FCError.VoiceMessage.extractFilenameFailed
+            }
+            let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+            guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
+            let success = try await AWSS3.deleteObject(presignedURL: url)
+            guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }
+            let statusCode = try await UserService.updateUser(
+                userId: self.userId,
+                input: GraphQLAPI.UpdateUserInput(
+                    voiceContentURL: ""
+                )
+            )
+            guard statusCode == 200 else { throw FCError.VoiceMessage.updateUserFailed }
+            self.state = .complete
+        }
+        
+    }
+    
 }

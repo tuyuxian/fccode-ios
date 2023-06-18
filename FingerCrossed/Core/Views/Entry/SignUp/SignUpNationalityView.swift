@@ -88,7 +88,7 @@ struct SignUpNationalityView: View {
                         label: "Up to 3 Nationalities",
                         type: .info
                     )
-                    .padding(.leading, 16)
+                    .padding(.leading, 9)
                 }
                 .padding(.top, 20)
                 

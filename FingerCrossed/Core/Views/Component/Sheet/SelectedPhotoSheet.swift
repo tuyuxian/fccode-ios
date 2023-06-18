@@ -28,7 +28,7 @@ struct SelectedPhotoSheet: View {
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                         .frame(height: 34)
-                    Text("Fingercrossed has access to the following photos")
+                    Text("Finger Crossed has access to the following photos")
                         .fontTemplate(.captionMedium)
                         .foregroundColor(Color.text)
                         .frame(height: 14)

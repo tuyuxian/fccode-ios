@@ -30,7 +30,7 @@ struct ContainerWithHeaderView<Content: View>: View {
         .navigationBarItems(
             leading:
                 HStack(spacing: 0) {
-                    NavigationBarBackButton()
+                    NavigationBackButton()
                         .padding(.top, 12)
                     NavigationHeader(
                         parentTitle: parentTitle,

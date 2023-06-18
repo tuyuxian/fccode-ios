@@ -38,6 +38,10 @@ public class UpdateUserMutation: GraphQLMutation {
               id
               caption
               contentURL
+              position
+              scale
+              offsetX
+              offsetY
             }
             citizen {
               __typename
@@ -186,11 +190,19 @@ public class UpdateUserMutation: GraphQLMutation {
             .field("id", GraphQLAPI.ID.self),
             .field("caption", String?.self),
             .field("contentURL", String.self),
+            .field("position", Int.self),
+            .field("scale", Double.self),
+            .field("offsetX", Double.self),
+            .field("offsetY", Double.self),
           ] }
 
           public var id: GraphQLAPI.ID { __data["id"] }
           public var caption: String? { __data["caption"] }
           public var contentURL: String { __data["contentURL"] }
+          public var position: Int { __data["position"] }
+          public var scale: Double { __data["scale"] }
+          public var offsetX: Double { __data["offsetX"] }
+          public var offsetY: Double { __data["offsetY"] }
         }
 
         /// UpdateUser.User.Citizen

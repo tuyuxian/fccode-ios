@@ -14,7 +14,6 @@ class ResetPasswordViewModel: ObservableObject, InputProtocol {
     @AppStorage("UserId") private var userId: String = ""
     
     /// View state
-    let hasPassword: Bool
     @Published var state: ViewStatus = .none
     @Published var currentPassword: String = ""
     @Published var newPassword: String = ""
@@ -33,14 +32,6 @@ class ResetPasswordViewModel: ObservableObject, InputProtocol {
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
     
-    init(hasPassword: Bool) {
-        print("-> [Settings Reset Password] vm init")
-        self.hasPassword = hasPassword
-    }
-    
-    deinit {
-        print("-> [Settings Reset Password] vm deinit")
-    }
 }
 
 extension ResetPasswordViewModel {

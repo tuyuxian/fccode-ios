@@ -346,7 +346,7 @@ struct EmailView: View {
                                 alignment: .top,
                                 spacing: 0
                             ) {
-                                Text("By continuing, I agree to Fingercrossed's ")
+                                Text("By continuing, I agree to Finger Crossed's ")
                                     .foregroundColor(Color.surface1)
                                     .fontTemplate(.noteMedium)
                                 

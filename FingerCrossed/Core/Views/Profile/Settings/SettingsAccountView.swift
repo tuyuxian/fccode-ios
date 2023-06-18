@@ -12,6 +12,8 @@ struct SettingsAccountView: View {
     @EnvironmentObject var bm: BannerManager
     /// User state
     @EnvironmentObject var usm: UserStateManager
+    /// User
+    @EnvironmentObject var user: UserViewModel
     /// Init settings account view model
     @StateObject var vm: SettingsAccountViewModel
     
@@ -19,7 +21,6 @@ struct SettingsAccountView: View {
         appleConnect: Bool,
         googleConnect: Bool
     ) {
-        print("[Settings Account] view init")
         _vm = StateObject(
             wrappedValue: SettingsAccountViewModel(
                 appleConnect: appleConnect,
@@ -41,21 +42,25 @@ struct SettingsAccountView: View {
                     spacing: 16
                 ) {
                     SocialAccountRow(
-                        label: "Google",
-                        isConnected: vm.googleConnect,
-                        action: vm.connectGoogle,
-                        state: $vm.state
+                        platform: .google,
+                        isConnected: $vm.googleConnect,
+                        action: vm.connectGoogle
                     )
+                    .onChange(of: vm.googleConnect) { val in
+                        user.data?.googleConnect = val
+                    }
                     
                     Divider()
                         .overlay(Color.surface3)
                    
                     SocialAccountRow(
-                        label: "Apple",
-                        isConnected: vm.appleConnect,
-                        action: vm.connectApple,
-                        state: $vm.state
+                        platform: .apple,
+                        isConnected: $vm.appleConnect,
+                        action: vm.connectApple
                     )
+                    .onChange(of: vm.appleConnect) { val in
+                        user.data?.appleConnect = val
+                    }
                 }
                 .padding(.vertical, 30)
                 .padding(.horizontal, 24)
@@ -127,43 +132,50 @@ struct SettingsAccountView_Previews: PreviewProvider {
         )
         .environmentObject(BannerManager())
         .environmentObject(UserStateManager())
+        .environmentObject(UserViewModel(preview: true))
     }
 }
 
-struct SocialAccountRow: View {
+extension SettingsAccountView {
     
-    @State var label: String
+    enum PlatformType: String {
+        case apple = "Apple"
+        case facebook = "Facebook"
+        case google = "Google"
+    }
     
-    @State var isConnected: Bool
-    
-    @State var action: () async -> Void
-    
-    @Binding var state: ViewStatus
-    
-    var body: some View {
-        HStack {
-            Text(label)
-                .fontTemplate(.pMedium)
-                .foregroundColor(.text)
-            
-            Spacer()
-            
-            Text(isConnected ? "Connected" : "Connect")
-                .fontTemplate(.pMedium)
-                .foregroundColor(isConnected ? Color.yellow100 : Color.text)
-                .frame(width: 108, height: 38)
-                .background(isConnected ? Color.white : Color.yellow100)
-                .cornerRadius(50)
-                .contentShape(Rectangle())
-                .clipShape(Capsule())
-                .onTapGesture {
-                    Task {
-                        await action()
-                        guard state == .complete else { return }
-                        isConnected.toggle()
+    private struct SocialAccountRow: View {
+        
+        @State var platform: PlatformType
+                
+        @Binding var isConnected: Bool
+        
+        @State var action: () async -> Void
+                    
+        var body: some View {
+            HStack {
+                Text(platform.rawValue)
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(.text)
+                
+                Spacer()
+                
+                Text(isConnected ? "Connected" : "Connect")
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(isConnected ? Color.yellow100 : Color.text)
+                    .frame(width: 108, height: 38)
+                    .background(isConnected ? Color.white : Color.yellow100)
+                    .cornerRadius(50)
+                    .contentShape(Rectangle())
+                    .clipShape(Capsule())
+                    .onTapGesture {
+                        Task {
+                            await action()
+                        }
                     }
-                }
-                .disabled(isConnected)
+                    .disabled(isConnected)
+            }
         }
     }
+
 }

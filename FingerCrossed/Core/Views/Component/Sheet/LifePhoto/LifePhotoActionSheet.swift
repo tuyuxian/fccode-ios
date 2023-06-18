@@ -10,8 +10,8 @@ import PhotosUI
 
 struct LifePhotoActionSheet: View {
     
-    @ObservedObject var vm: ProfileViewModel
-    
+    @ObservedObject var vm: BasicInfoViewModel
+        
     @State var showEditSheet: Bool = false
         
     @State var showCamera: Bool = false
@@ -177,9 +177,14 @@ struct LifePhotoActionSheet: View {
 
 struct LifePhotoActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        LifePhotoActionSheet(
-            vm: ProfileViewModel()
-        )
+        Group {
+            LifePhotoActionSheet(
+                vm: BasicInfoViewModel()
+            )
+            LifePhotoActionSheet(
+                vm: BasicInfoViewModel()
+            )
+        }
     }
 }
 

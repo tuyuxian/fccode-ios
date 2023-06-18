@@ -10,11 +10,11 @@ import SwiftUI
 struct ProfileView: View {
     /// Banner
     @EnvironmentObject var bm: BannerManager
-    /// Reference profile view model
-    @StateObject var vm: ProfileViewModel
+    /// Init user view model
+    @StateObject var user: UserViewModel
     
     init(preview: Bool = false) {
-        _vm = StateObject(wrappedValue: ProfileViewModel(preview: preview))
+        _user = StateObject(wrappedValue: UserViewModel(preview: preview))
     }
     
     var body: some View {
@@ -25,15 +25,15 @@ struct ProfileView: View {
                         .fill(Color.surface2)
                         .frame(width: 122.5, height: 122.5, alignment: .center)
                         .overlay(
-                            vm.state == .complete
+                            user.state == .complete
                             ? Avatar(
-                                avatarUrl: vm.user?.profilePictureUrl ?? "",
+                                avatarUrl: user.data?.profilePictureUrl ?? "",
                                 size: 121.5,
                                 isActive: false
                             )
                             : nil
                         )
-                    Text(vm.user?.username ?? "")
+                    Text(user.data?.username ?? "")
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                 }
@@ -68,31 +68,31 @@ struct ProfileView: View {
                     Group {
                         switch destination {
                         case .basicInfo:
-                            BasicInfoView(user: vm.user ?? User.MockUser)
+                            BasicInfoView(user: user)
                         case .helpSupport:
                             HelpSupportView()
                         case .preference:
                             PreferenceView()
                         case .settings:
-                            SettingsView(vm: vm)
+                            SettingsView(user: user)
                         }
                     }
                     .navigationBarBackButtonHidden(true)
                 }
             }
-        }
-        .overlay {
-            vm.state == .loading
-            ? PageSpinner()
-            : nil
-        }
-        .onChange(of: vm.state) { state in
-            if state == .error {
-                bm.pop(
-                    title: vm.toastMessage,
-                    type: .error
-                )
-                vm.state = .none
+            .overlay {
+                user.state == .loading
+                ? PageSpinner()
+                : nil
+            }
+            .onChange(of: user.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: user.toastMessage,
+                        type: .error
+                    )
+                    user.state = .none
+                }
             }
         }
     }

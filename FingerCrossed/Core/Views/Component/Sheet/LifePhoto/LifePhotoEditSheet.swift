@@ -131,7 +131,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                 guard vm.state == .complete else {
                     throw FCError.LifePhoto.createLifePhotoFailed
                 }
-                basicInfoVM.lifePhotoMap =  Dictionary(
+                basicInfoVM.lifePhotoMap = Dictionary(
                     uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
                 )
                 dismiss()
@@ -142,7 +142,29 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
     }
     
     private func update() {
-        
+        if let lifePhoto = basicInfoVM.selectedLifePhoto {
+            Task {
+                do {
+                    let lifePhotos = try await vm.update(
+                        lifePhotoId: lifePhoto.id,
+                        caption: text,
+                        position: lifePhoto.position,
+                        scale: lifePhoto.scale,
+                        offsetX: lifePhoto.offset.width,
+                        offsetY: lifePhoto.offset.height
+                    )
+                    guard vm.state == .complete else {
+                        throw FCError.LifePhoto.updateLifePhotoFailed
+                    }
+                    basicInfoVM.lifePhotoMap = Dictionary(
+                        uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
+                    )
+                    dismiss()
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 

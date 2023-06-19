@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-struct Ethnicity: Equatable {
+struct Ethnicity: Equatable, Codable {
     public var id: UUID = UUID()
     public var type: EthnicityType
     
@@ -20,9 +20,20 @@ struct Ethnicity: Equatable {
 }
 
 extension Ethnicity {
-    public func getGraphQLInput() -> GraphQLAPI.CreateEthnicityInput {
-        return GraphQLAPI.CreateEthnicityInput(
-            ethnicityType: GraphQLEnum.case(self.type.graphQLValue)
+    
+    public func getGraphQLInput() -> CreateEthnicityInput {
+        return CreateEthnicityInput(
+            ethnicityType: GraphQLEnum.case(self.type)
+        )
+    }
+    
+    static public func getEthnicitiesString(
+        from ethnicities: [Ethnicity]
+    ) -> String {
+        return String(
+            ethnicities.reduce("") { result, ethnicity in
+                return result + ethnicity.type.getString() + ", "
+            }.dropLast(2)
         )
     }
 }

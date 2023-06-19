@@ -12,46 +12,45 @@ struct TermsOfServiceSheet: View {
     @Environment(\.presentationMode) private var presentationMode
         
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 0) {
-                HStack {
-                    Button {
+        Sheet(
+            size: [.large],
+            hasFooter: false,
+            header: {
+                ZStack(alignment: .top) {
+                    Text("Terms of Service")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
+                        .frame(height: 34)
+                    
+                    Button("Close") {
                         presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Text("Done")
-                            .foregroundColor(Color.gold)
-                            .fontTemplate(.pMedium)
                     }
+                    .fontTemplate(.pMedium)
+                    .foregroundColor(Color.gold)
+                    .frame(height: 34, alignment: .center)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .trailing
+                    )
                 }
-                .padding(.top, 35)
-                .padding(.bottom, 16)
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .trailing
-                )
-                
-                ScrollView {
-                    VStack(
-                        alignment: .leading,
-                        spacing: 0
-                    ) {
-                        TermsOfService()
+                .padding(.top, 15) // 30 - 15
+            },
+            content: {
+                VStack(spacing: 0) {
+                    ScrollView {
+                        VStack(
+                            alignment: .leading,
+                            spacing: 0
+                        ) {
+                            TermsOfService()
+                        }
                     }
+                    .padding(.top, 30)
+                    .scrollIndicators(.hidden)
                 }
-                .scrollIndicators(.hidden)
-            }
-            .padding(.horizontal, 24)
-            .background(Color.white)
-            .presentationDetents([.large])
-            .presentationDragIndicator(.visible)
-        }
+            },
+            footer: {}
+        )
     }
 }
 

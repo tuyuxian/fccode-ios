@@ -8,9 +8,8 @@
 import Foundation
 import GraphQLAPI
 
-struct User {
-    public var id: UUID = UUID()
-    public var userId: String
+struct User: Codable {
+    public var id: String
     public var email: String
     public var password: String?
     public var username: String
@@ -34,18 +33,18 @@ struct User {
     public var ethnicity: [Ethnicity]
     
     init(
-        userId: String,
+        id: String,
         email: String,
         password: String?,
         username: String,
         dateOfBirth: String,
         gender: Gender,
         profilePictureUrl: String?,
-        selfIntro: String,
+        selfIntro: String?,
         longitude: Double,
         latitude: Double,
-        country: String,
-        administrativeArea: String,
+        country: String?,
+        administrativeArea: String?,
         voiceContentURL: String?,
         googleConnect: Bool,
         facebookConnect: Bool,
@@ -57,7 +56,7 @@ struct User {
         socialAccount: [SocialAccount],
         ethnicity: [Ethnicity]
     ) {
-        self.userId = userId
+        self.id = id
         self.email = email
         self.password = password
         self.username = username
@@ -83,13 +82,13 @@ struct User {
 }
 
 extension User {
-    public func getGraphQLInput() -> GraphQLAPI.CreateUserInput {
-        return GraphQLAPI.CreateUserInput(
+    public func getGraphQLInput() -> CreateUserInput {
+        return CreateUserInput(
             email: self.email,
-            password: self.password != nil ? .some(self.password!) : nil,
+            password: self.password != nil && self.password != "" ? .some(self.password!) : nil,
             username: self.username,
             dateOfBirth: self.dateOfBirth,
-            gender: GraphQLEnum.case(self.gender.graphQLValue),
+            gender: GraphQLEnum.case(self.gender),
             profilePictureURL: self.profilePictureUrl != nil ? .some(self.profilePictureUrl!) : nil,
             longitude: self.longitude,
             latitude: self.latitude,
@@ -103,12 +102,95 @@ extension User {
             createUserEthnicity: .some(
                 self.ethnicity.map { $0.getGraphQLInput() }
             ),
-            createUserSocialAccount: .some(
-                self.socialAccount.map { $0.getGraphQLInput() }
-            ),
-            createUserLifePhoto: .some(
-                self.lifePhoto.map { $0.getGraphQLInput() }
-            )
+            createUserSocialAccount: (self.socialAccount.first?.getGraphQLInput())!,
+            createUserLifePhoto: (self.lifePhoto.first?.getGraphQLInput())!
         )
     }
+    
+    public func getBirthdayString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM/dd/yyyy"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        
+        if let date = ISO8601DateFormatter().date(from: self.dateOfBirth) {
+            return dateFormatter.string(from: date)
+        } else {
+            return "--/--/----"
+        }
+    }
+}
+
+extension User {
+    static var MockUser: User = .init(
+        id: "00000000001",
+        email: "mock_user1@gmail.com",
+        password: "$2a$14$aR/BWx54TyKXWX5/exO05eU6vb.l.EsohuPJGr2N.GrRC6u5BF0ze",
+        username: "Mock User1",
+        dateOfBirth: "2000-01-01T00:00:00Z",
+        gender: .male,
+        profilePictureUrl: "",
+        // swiftlint: disable line_length
+        selfIntro: "Hello! I'm ChatGPT, a language model designed to understand and generate human-like language.",
+        // swiftlint: enable line_length
+        longitude: -122.406417,
+        latitude: 37.785834,
+        country: "United States",
+        administrativeArea: "CA",
+        voiceContentURL: "",
+        googleConnect: false,
+        facebookConnect: false,
+        appleConnect: false,
+        premium: false,
+        goal: [
+            Goal(type: .gt1)
+        ],
+        citizen: [
+            Nationality(
+                name: "United States",
+                code: "US"
+            )
+        ],
+        lifePhoto: [
+            LifePhoto(
+                id: "0",
+                contentUrl: "https://i.pravatar.cc/150?img=6",
+                caption: "123",
+                position: 0,
+                ratio: 3,
+                scale: 1,
+                offset: CGSize.zero
+            ),
+            LifePhoto(
+                id: "1",
+                contentUrl: "https://i.pravatar.cc/150?img=7",
+                caption: "123",
+                position: 1,
+                ratio: 3,
+                scale: 1,
+                offset: CGSize.zero
+            ),
+            LifePhoto(
+                id: "2",
+                contentUrl: "https://i.pravatar.cc/150?img=8",
+                caption: "123",
+                position: 2,
+                ratio: 3,
+                scale: 1,
+                offset: CGSize.zero
+            ),
+            LifePhoto(
+                id: "3",
+                contentUrl: "https://i.pravatar.cc/150?img=9",
+                caption: "",
+                position: 3,
+                ratio: 3,
+                scale: 1,
+                offset: CGSize.zero
+            )
+        ],
+        socialAccount: [],
+        ethnicity: [
+            Ethnicity(type: .et1)
+        ]
+    )
 }

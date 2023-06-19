@@ -35,7 +35,7 @@ struct ResetPasswordOTPView: View {
         isLoading.toggle()
         Task {
             do {
-                let valid = try await EntryRepository.verifyOTP(
+                let valid = try await UserService.verifyOTP(
                     email: vm.user.email,
                     userOTP: otp
                 )
@@ -59,21 +59,18 @@ struct ResetPasswordOTPView: View {
     }
     /// Handler for resend
     private func resendOnTap() {
-        isLoading.toggle()
         Task {
             do {
-                let success = try await EntryRepository.requestOTP(
+                let success = try await UserService.requestOTP(
                     email: vm.user.email
                 )
                 guard success else {
-                    isLoading.toggle()
                     bm.pop(
                         title: "Something went wrong.",
                         type: .error
                     )
                     return
                 }
-                isLoading.toggle()
                 vm.transition = .forward
                 vm.switchView = .resetPasswordOTP
             } catch {
@@ -143,9 +140,7 @@ struct ResetPasswordOTPView: View {
                         vm.transition = .backward
                         vm.switchView = .resetPasswordEmailCheck
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -191,14 +186,14 @@ struct ResetPasswordOTPView: View {
                     alignment: .top,
                     spacing: 6.0
                 ) {
-                    Image("Error")
+                    FCIcon.errorCircleRed
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(
                             width: 16,
                             height: 16
                         )
-                    Text("Hmm, that's not the right verification code.")
+                    Text("Invalid code")
                         .fontTemplate(.noteMedium)
                         .foregroundColor(Color.warning)
                 }

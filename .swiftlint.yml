@@ -20,8 +20,8 @@ function_body_length:
   warning: 120
   error: 400
 type_body_length:
-  warning: 500
-  error: 1200
+  warning: 1200
+  error: 2400
 file_length:
   warning: 900
   error: 1600

@@ -25,7 +25,7 @@ struct CandidateDetailView: View {
                         .padding(.bottom, 2)
                     
                     HStack {
-                        CandidateDetailItem(iconName: "GenderNeutralWhite", label: candidateModel.gender)
+                        CandidateDetailItem(iconName: "GenderWhite", label: candidateModel.gender)
                             
                         CandidateDetailItem(iconName: "AgeWhite", label: String(candidateModel.age))
                     }
@@ -60,7 +60,7 @@ struct CandidateDetailView: View {
                                 isPlay.toggle()
                             }
                         } label: {
-                            Image(isPlay ? "pause" : "play")
+                            Image(isPlay ? "Pause" : "Play")
                                 .renderingMode(.template)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -94,11 +94,11 @@ struct CandidateDetailView: View {
                             case .success(let image):
                                 image
                                     .resizable()
-                                    .scaleEffect(config.imageScale)
-                                    .offset(config.imageOffset)
-                                    .aspectRatio(contentMode: .fit)
-                                    .cornerRadius(16)
-                                    .padding(.horizontal, 24)
+//                                    .scaleEffect(config.imageScale)
+//                                    .offset(config.imageOffset)
+//                                    .aspectRatio(contentMode: .fit)
+//                                    .cornerRadius(16)
+//                                    .padding(.horizontal, 24)
 
                             case .failure:
                                 Shimmer()
@@ -138,20 +138,24 @@ struct CandidateDetailView_Previews: PreviewProvider {
                 ),
             lifePhotoList: [
                 LifePhoto(
+                    id: "0",
                     // swiftlint: disable line_length
                     contentUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
                     caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
                     // swiftlint: enable line_length
                     position: 0,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 ),
                 LifePhoto(
+                    id: "1",
                     // swiftlint: disable line_length
                     contentUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
                     caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
                     // swiftlint: enable line_length
                     position: 1,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 )

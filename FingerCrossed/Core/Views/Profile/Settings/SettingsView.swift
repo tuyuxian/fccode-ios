@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  SettingsView.swift
 //  FingerCrossed
 //
 //  Created by Kevin Tsai on 4/10/23.
@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     
-    @ObservedObject var vm: ProfileViewModel
-    
+    @ObservedObject var user: UserViewModel
+                    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -19,28 +19,46 @@ struct SettingsView: View {
             isLoading: .constant(false)
         ) {
             Box {
-                MenuList(
-                    childViewList: [
-                        ChildView(
-                            label: "Password",
-                            subview: AnyView(SettingsResetPasswordView(vm: vm))
+                FCList<SettingsDestination>(
+                    destinationViewList: [
+                        DestinationView(
+                            label: "Account",
+                            subview: .settingsAccount
                         ),
-                        ChildView(
-                            label: "Social Account",
-                            subview: AnyView(SettingsSocialAccountView(vm: vm))
+                        DestinationView(
+                            label: "Password",
+                            subview: .settingsResetPassword
                         )
                     ]
                 )
                 .scrollDisabled(true)
+                .navigationDestination(for: SettingsDestination.self) { destination in
+                    Group {
+                        switch destination {
+                        case .settingsAccount:
+                            if let userData = user.data {
+                                SettingsAccountView(
+                                    appleConnect: userData.appleConnect,
+                                    googleConnect: userData.googleConnect
+                                )
+                                .environmentObject(user)
+                            }
+                        case .settingsResetPassword:
+                            SettingsResetPasswordView()
+                                .environmentObject(user)
+                        }
+                    }
+                    .navigationBarBackButtonHidden(true)
+                }
             }
         }
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView(
-            vm: ProfileViewModel()
+            user: UserViewModel(preview: true)
         )
     }
 }

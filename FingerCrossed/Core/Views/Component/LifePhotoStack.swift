@@ -9,180 +9,95 @@ import SwiftUI
 
 struct LifePhotoStack: View {
     
-    @ObservedObject var vm: ProfileViewModel
+    @ObservedObject var basicInfoVM: BasicInfoViewModel
     
-    @StateObject var hapticHelper: HapticsHelper = HapticsHelper()
-
-    var body: some View {
-        GeometryReader { proxy in
-            LazyHStack(spacing: 14) {
-                ForEach(
-                    Array(vm.user.lifePhoto[0...0].enumerated()),
-                    id: \.element.id
-                ) { index, lifePhoto in
-                    LifePhotoButton(
-                        vm: vm,
-                        position: index,
-                        halfSize: (proxy.size.width - 42)/4,
-                        fullSize: (proxy.size.width - 14)/2
-                     )
-                    .onDrag({
-                        hapticHelper.impactFeedback.impactOccurred()
-                        vm.currentDragLifePhoto = lifePhoto
-                        return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
-                    })
-                    .onDrop(
-                        of: [.url],
-                        delegate:
-                            DropViewDelegate(
-                                lifePhoto: lifePhoto,
-                                vm: vm
-                            )
-                    )
-                }
+    @ObservedObject var user: UserViewModel
                 
-                LazyVStack(spacing: 14) {
-                    LazyHStack(spacing: 14) {
-                        ForEach(
-                            Array(vm.user.lifePhoto[1...2].enumerated()),
-                            id: \.element.id
-                        ) { index, lifePhoto in
-                            if lifePhoto.contentUrl != "" {
-                                LifePhotoButton(
-                                    vm: vm,
-                                    position: index + 1,
-                                    halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2
-                                )
-                                .onDrag({
-                                    hapticHelper.impactFeedback.impactOccurred()
-                                    vm.currentDragLifePhoto = lifePhoto
-                                    return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
-                                })
-                                .onDrop(
-                                    of: [.url],
-                                    delegate:
-                                        DropViewDelegate(
-                                            lifePhoto: lifePhoto,
-                                            vm: vm
-                                        )
-                                )
-                            } else {
-                                LifePhotoButton(
-                                    vm: vm,
-                                    position: index + 1,
-                                    halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2
-                                )
-                            }
-                        }
+    var body: some View {
+        Grid(horizontalSpacing: 14) {
+            GridRow {
+                LifePhotoButton(
+                    lifePhoto: $basicInfoVM.lifePhotoMap[0],
+                    isEditable: .constant(basicInfoVM.lifePhotoMap.count >= 0),
+                    action: { loadLifePhoto(fromIndex: 0) }
+                )
+                .disabled(!(basicInfoVM.lifePhotoMap.count >= 0))
+                
+                Grid(horizontalSpacing: 14, verticalSpacing: 14) {
+                    GridRow {
+                        LifePhotoButton(
+                            lifePhoto: $basicInfoVM.lifePhotoMap[1],
+                            isEditable: .constant(basicInfoVM.lifePhotoMap.count >= 1),
+                            action: { loadLifePhoto(fromIndex: 1) }
+                        )
+                        .disabled(!(basicInfoVM.lifePhotoMap.count >= 1))
+                        
+                        LifePhotoButton(
+                            lifePhoto: $basicInfoVM.lifePhotoMap[2],
+                            isEditable: .constant(basicInfoVM.lifePhotoMap.count >= 2),
+                            action: { loadLifePhoto(fromIndex: 2) }
+                        )
+                        .disabled(!(basicInfoVM.lifePhotoMap.count >= 2))
                     }
                     
-                    LazyHStack(spacing: 14) {
-                        ForEach(
-                            Array(vm.user.lifePhoto[3...4].enumerated()),
-                            id: \.element.id
-                        ) { index, lifePhoto in
-                            if lifePhoto.contentUrl != "" {
-                                LifePhotoButton(
-                                    vm: vm,
-                                    position: index + 3,
-                                    halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2
-                                )
-                                .onDrag({
-                                    hapticHelper.impactFeedback.impactOccurred()
-                                    vm.currentDragLifePhoto = lifePhoto
-                                    return NSItemProvider(contentsOf: URL(string: "\(lifePhoto.id)")!)!
-                                })
-                                .onDrop(
-                                    of: [.url],
-                                    delegate:
-                                        DropViewDelegate(
-                                            lifePhoto: lifePhoto,
-                                            vm: vm
-                                        )
-                                )
-                            } else {
-                                LifePhotoButton(
-                                    vm: vm,
-                                    position: index + 3,
-                                    halfSize: (proxy.size.width - 42)/4,
-                                    fullSize: (proxy.size.width - 14)/2
-                                )
-                            }
-                        }
+                    GridRow {
+                        LifePhotoButton(
+                            lifePhoto: $basicInfoVM.lifePhotoMap[3],
+                            isEditable: .constant(basicInfoVM.lifePhotoMap.count >= 3),
+                            action: { loadLifePhoto(fromIndex: 3) }
+                        )
+                        .disabled(!(basicInfoVM.lifePhotoMap.count >= 3))
+                        
+                        LifePhotoButton(
+                            lifePhoto: $basicInfoVM.lifePhotoMap[4],
+                            isEditable: .constant(basicInfoVM.lifePhotoMap.count >= 4),
+                            action: { loadLifePhoto(fromIndex: 4) }
+                        )
+                        .disabled(!(basicInfoVM.lifePhotoMap.count >= 4))
                     }
                 }
-                .frame(
-                    width: abs(proxy.size.width - 14)/2,
-                    height: abs(proxy.size.width - 14)/2
+            }
+            .frame(height: 164)
+        }
+        .onAppear {
+            if let lifePhotos = user.data?.lifePhoto {
+                basicInfoVM.lifePhotoMap = Dictionary(
+                    uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
                 )
             }
-            .frame(
-                width: abs(proxy.size.width),
-                height: abs(proxy.size.width - 14)/2
-            )
-            .sheet(isPresented: $vm.showEditSheet) {
-                LifePhotoActionSheet(vm: vm)
+        }
+        .onChange(of: basicInfoVM.lifePhotoMap) { val in
+            user.data?.lifePhoto = Array(val.values)
+        }
+        .sheet(isPresented: $basicInfoVM.showEditSheet) {
+            if basicInfoVM.hasLifePhoto && basicInfoVM.lifePhotoMap.count == 1 {
+                LifePhotoEditSheet(
+                    basicInfoVM: basicInfoVM,
+                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
+                )
+            } else {
+                LifePhotoActionSheet(
+                    basicInfoVM: basicInfoVM
+                )
             }
         }
+    }
+    
+    private func loadLifePhoto(
+        fromIndex: Int
+    ) {
+        basicInfoVM.showEditSheet = true
+        basicInfoVM.selectedLifePhoto = basicInfoVM.lifePhotoMap[fromIndex]
+        basicInfoVM.hasLifePhoto = basicInfoVM.lifePhotoMap[fromIndex] != nil
     }
 }
 
 struct LifePhotoStack_Previews: PreviewProvider {
     static var previews: some View {
         LifePhotoStack(
-            vm: ProfileViewModel()
+            basicInfoVM: BasicInfoViewModel(),
+            user: UserViewModel(preview: true)
         )
         .padding(.horizontal, 24)
-    }
-}
-
-struct DropViewDelegate: DropDelegate {
-
-    var lifePhoto: LifePhoto
-    
-    var vm: ProfileViewModel
-    
-    func performDrop(
-        info: DropInfo
-    ) -> Bool {
-        return true
-    }
-    
-    func dropEntered(
-        info: DropInfo
-    ) {
-        let fromIndex = vm.user.lifePhoto.firstIndex { (lifePhoto) -> Bool in
-            return lifePhoto.id == vm.currentDragLifePhoto?.id
-        } ?? 0
-        
-        let toIndex = vm.user.lifePhoto.firstIndex { (lifePhoto) -> Bool in
-            return lifePhoto.id == self.lifePhoto.id
-        } ?? 0
-        
-        if fromIndex != toIndex {
-            let fromLifePhoto = vm.user.lifePhoto[fromIndex]
-            vm.user.lifePhoto[fromIndex] = vm.user.lifePhoto[toIndex]
-            vm.user.lifePhoto[fromIndex].position = fromIndex
-            vm.user.lifePhoto[toIndex] = fromLifePhoto
-            vm.user.lifePhoto[toIndex].position = toIndex
-        }
-    }
-    
-    func dropUpdated(
-        info: DropInfo
-    ) -> DropProposal? {
-        return DropProposal(operation: .move)
-    }
-    
-}
-
-class HapticsHelper: ObservableObject {
-    @Published var impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-        
-    init() {
-        impactFeedback.prepare()
     }
 }

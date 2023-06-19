@@ -31,7 +31,7 @@ struct ResetPasswordView: View, KeyboardReadable {
         isLoading.toggle()
         Task {
             do {
-                let success = try await EntryRepository.resetPassword(
+                let success = try await UserService.resetPassword(
                     email: vm.user.email,
                     password: vm.newPassword
                 )
@@ -44,10 +44,12 @@ struct ResetPasswordView: View, KeyboardReadable {
                     return
                 }
                 isLoading.toggle()
+                bm.pop(
+                    title: "All Set! You’ve successfully reset password",
+                    type: .info
+                )
                 vm.transition = .forward
-                vm.switchView = .email
-                vm.user.email = ""
-                vm.isEmailSatisfied = false
+                vm.switchView = .password
                 vm.newPassword = ""
                 vm.newPasswordConfirmed = ""
             } catch {
@@ -184,6 +186,11 @@ struct ResetPasswordView: View, KeyboardReadable {
                 .padding(.bottom, 16)
             }
             .padding(.horizontal, 24)
+        }
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.16)) {
+                UIApplication.shared.closeKeyboard()
+            }
         }
     }
 }

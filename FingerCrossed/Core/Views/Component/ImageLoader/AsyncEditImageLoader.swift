@@ -7,32 +7,35 @@
 
 import SwiftUI
 
+@available(*, deprecated)
 struct AsyncEditImageLoader<Placeholder: View>: View {
+    
     @StateObject private var loader: ImageLoader
-    @ObservedObject var config: ProfileViewModel
+    @ObservedObject var vm: ProfileViewModel
     private let placeholder: Placeholder
     private let url: URL
     private let image: (UIImage) -> Image
     @State private var currentOffset: CGSize = .zero
     @State private var currentScale: CGFloat = 0.0
+    @State private var photo: UIImage?
         
-        init(
-            url: URL,
-            config: ProfileViewModel,
-            @ViewBuilder placeholder: () -> Placeholder,
-            @ViewBuilder image: @escaping (UIImage) -> Image = Image.init(uiImage:)
-        ) {
-            self.url = url
-            self.config = config
-            self.placeholder = placeholder()
-            self.image = image
-            _loader = StateObject(
-                wrappedValue: ImageLoader(
-                    url: url,
-                    cache: Environment(\.imageCache).wrappedValue
-                )
+    init(
+        url: URL,
+        vm: ProfileViewModel,
+        @ViewBuilder placeholder: () -> Placeholder,
+        @ViewBuilder image: @escaping (UIImage) -> Image = Image.init(uiImage:)
+    ) {
+        self.url = url
+        self.vm = vm
+        self.placeholder = placeholder()
+        self.image = image
+        _loader = StateObject(
+            wrappedValue: ImageLoader(
+                url: url,
+                cache: Environment(\.imageCache).wrappedValue
             )
-        }
+        )
+    }
 
     var body: some View {
         content
@@ -46,44 +49,32 @@ struct AsyncEditImageLoader<Placeholder: View>: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .scaleEffect(config.imageScale + currentScale)
-                    .offset(config.imageOffset + currentOffset)
+//                    .scaleEffect(vm.imageScale + currentScale)
+//                    .offset(vm.imageOffset + currentOffset)
                     .cornerRadius(6)
-//                    .modifier(ImageModifier(contentSize: CGSize(width: geometry.size.width, height: geometry.size.height)))
                     .gesture(
                         DragGesture()
                             .onChanged { gesture in
                                 currentOffset = gesture.translation
                             }
                             .onEnded { _ in
-                                if config.imageOffset.width < geometry.size.width {
-                                    config.imageOffset = CGSize(width: config.imageOffset.width + self.currentOffset.width, height: config.imageOffset.height + self.currentOffset.height)
-                                    currentOffset = .zero
-                                } else {
-                                    config.imageOffset = .zero
-                                }
+//                                if vm.imageOffset.width < geometry.size.width {
+//                                    vm.imageOffset = CGSize(width: vm.imageOffset.width + self.currentOffset.width, height: vm.imageOffset.height + self.currentOffset.height)
+//                                    currentOffset = .zero
+//                                } else {
+//                                    vm.imageOffset = .zero
+//                                }
                             }
                     )
-                    .gesture(
-                        MagnificationGesture()
-                            .onChanged {(value) in
-                            config.imageScale = value
-                            }
-                            .onEnded {(value) in
-                            config.imageScale = value < 1 ? 1 : value
-                            }
-                    )
-//                    .onChange(of: config.imageScale, perform: { newScale in
-//                        let data = loader.image!.jpegData(compressionQuality: 0.95)!
-//                        config.newUIImage = UIImage(data: data, scale: newScale)!
-//                        
-//                        config.cropCGRect = CGRect(x: config.imageOffset.width, y: config.imageOffset.height, width: geometry.size.width, height: geometry.size.height)
-//                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
-//                    })
-//                    .onChange(of: config.imageOffset, perform: { newOffset in
-//                        config.cropCGRect = CGRect(x: newOffset.width, y: newOffset.height, width: geometry.size.width, height: geometry.size.height)
-//                        config.cropCGImage = (config.newUIImage.cgImage?.cropping(to: config.cropCGRect))!
-//                    })
+//                    .gesture(
+//                        MagnificationGesture()
+//                            .onChanged {(value) in
+//                            vm.imageScale = value
+//                            }
+//                            .onEnded {(value) in
+//                            vm.imageScale = value < 1 ? 1 : value
+//                            }
+//                    )
                     .overlay(
                         ZStack {
                             RoundedRectangle(cornerRadius: 6)

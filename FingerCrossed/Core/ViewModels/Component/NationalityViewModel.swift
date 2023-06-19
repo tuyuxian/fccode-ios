@@ -9,6 +9,12 @@ import Foundation
 
 class NationalityViewModel: ObservableObject {
     var nationalities: [Nationality] = []
+    
+    var topNationalities: [Nationality] = [
+        Nationality(name: "Canada", code: "CA"),
+        Nationality(name: "Taiwan", code: "TW"),
+        Nationality(name: "United States", code: "US")
+    ]
 
     @Published var country = ""
     

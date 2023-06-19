@@ -39,9 +39,7 @@ struct SelectionButton: View {
     }
     
     var body: some View {
-        Button {
-            callback(id)
-        } label: {
+        HStack {
             Text(label)
                 .fontTemplate(.pMedium)
                 .foregroundColor(Color.text)
@@ -52,10 +50,14 @@ struct SelectionButton: View {
             case .checkbox:
                 // swiftlint:disable void_function_in_ternary
                 isSelected
-                ? Image("CheckBox")
+                ? FCIcon.checkboxSelected
+                    .resizable()
+                    .frame(width: 24, height: 24)
                     .foregroundColor(Color.gold)
-                : Image("UncheckBox")
+                : FCIcon.checkbox
+                    .resizable()
                     .renderingMode(.template)
+                    .frame(width: 24, height: 24)
                     .foregroundColor(
                         isWhiteBackground
                         ? Color.white
@@ -65,10 +67,14 @@ struct SelectionButton: View {
             case .radio:
                 // swiftlint:disable void_function_in_ternary
                 isSelected
-                ? Image("RadioSelected")
+                ? FCIcon.radioSelected
+                    .resizable()
+                    .frame(width: 24, height: 24)
                     .foregroundColor(Color.gold)
-                : Image("RadioDefault")
+                : FCIcon.radio
+                    .resizable()
                     .renderingMode(.template)
+                    .frame(width: 24, height: 24)
                     .foregroundColor(
                         isWhiteBackground
                         ? Color.white
@@ -76,6 +82,10 @@ struct SelectionButton: View {
                     )
                 // swiftlint:enable void_function_in_ternary
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            callback(id)
         }
     }
 }
@@ -87,6 +97,23 @@ struct SelectionButton_Previews: PreviewProvider {
                 id: "1",
                 type: .radio,
                 label: "radio"
+            ) {_ in}
+            SelectionButton(
+                id: "1",
+                type: .radio,
+                label: "radio",
+                isSelected: true
+            ) {_ in}
+            SelectionButton(
+                id: "1",
+                type: .radio,
+                label: "radio"
+            ) {_ in}
+            SelectionButton(
+                id: "2",
+                type: .checkbox,
+                label: "checkbox",
+                isSelected: true
             ) {_ in}
         }
         .padding(.horizontal, 24)

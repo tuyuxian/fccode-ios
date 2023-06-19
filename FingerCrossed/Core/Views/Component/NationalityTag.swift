@@ -22,7 +22,7 @@ struct NationalityTag: View {
             Button {
                 action()
             } label: {
-                Image("CloseCircle")
+                FCIcon.closeCircleYellow
                     .resizable()
                     .frame(
                         width: 24,

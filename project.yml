@@ -27,6 +27,9 @@ packages:
     from: 3.0.0
   GraphQLAPI:
     path: ./GraphQL/GraphQLAPI
+  DSWaveformImage:
+    url: https://github.com/dmrschmidt/DSWaveformImage
+    from: 13.0.0
 
 targets:
   FingerCrossed:
@@ -52,6 +55,7 @@ targets:
         UIRequiresFullScreen: true
         NSCameraUsageDescription: "Finger Crossed needs access to your camera so you can take photos."
         NSPhotoLibraryUsageDescription: "Finger Crossed needs access to your photo library so you can share photos."
+        PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
         NSMicrophoneUsageDescription: "Finger Crossed needs access to your microphone so you can record voice messages."
         NSLocationWhenInUseUsageDescription: "Finger Crossed needs access to your location to show you who's around."
         GIDClientID: "796251774309-qoqun0ovm6ttv6adjs9jdjll0ug9qsi8.apps.googleusercontent.com"
@@ -88,7 +92,6 @@ targets:
       # specify the pacakge used in target
       - package: GoogleSignIn
         product: GoogleSignIn
-      - package: GoogleSignIn
         product: GoogleSignInSwift
       - package: facebook-ios-sdk
         product: FacebookCore
@@ -100,6 +103,9 @@ targets:
       - package: GraphQLAPI
       - package: JWTDecode
         product: JWTDecode
+      - package: DSWaveformImage
+        product: DSWaveformImage
+        product: DSWaveformImageViews
       
     postCompileScripts:
       - script: |

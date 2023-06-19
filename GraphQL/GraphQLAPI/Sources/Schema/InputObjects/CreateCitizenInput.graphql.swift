@@ -14,10 +14,12 @@ public struct CreateCitizenInput: InputObject {
 
   public init(
     countryName: String,
+    code: String,
     citizenOwnerID: GraphQLNullable<ID> = nil
   ) {
     __data = InputDict([
       "countryName": countryName,
+      "code": code,
       "citizenOwnerID": citizenOwnerID
     ])
   }
@@ -25,6 +27,11 @@ public struct CreateCitizenInput: InputObject {
   public var countryName: String {
     get { __data["countryName"] }
     set { __data["countryName"] = newValue }
+  }
+
+  public var code: String {
+    get { __data["code"] }
+    set { __data["code"] = newValue }
   }
 
   public var citizenOwnerID: GraphQLNullable<ID> {

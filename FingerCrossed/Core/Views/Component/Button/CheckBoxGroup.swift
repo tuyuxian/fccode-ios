@@ -9,22 +9,11 @@ import SwiftUI
 
 struct CheckBoxGroup: View {
     
-    @State var items: [String] = [
-        "American Indian",
-        "Black/African American",
-        "East Asian",
-        "Hipanic/Latino",
-        "Mid Eastern",
-        "Pacific Islander",
-        "South Asian",
-        "Southeast Asian",
-        "White/Caucasian"
-    ]
-    @State var selectedIdList: [String] = []
-    @State var hasDivider: Bool = false
-    @Binding var ethnicityList: [Ethnicity]
+    @State var items: [String] = []
     
-    let callback: (String) -> ()
+    @State var selectedIdList: [String] = []
+                
+    let callback: ([String]) -> ()
     
     private func checkBoxGroupCallback(
         id: String
@@ -32,28 +21,17 @@ struct CheckBoxGroup: View {
         let hasItem: Bool = selectedIdList.contains(where: { selected in
             selected == id
         })
-        
-        let et = EthnicityType.allCases.first(where: {
-            $0.getString() == id
-        })
-        
-        if hasItem {
-            selectedIdList.removeAll(where: { item in
-                item == id
-            })
-            ethnicityList.removeAll { item in
-                item.type == et
-            }
-        } else {
+            
+        guard hasItem else {
             selectedIdList.append(id)
-            let ethnicity = Ethnicity(
-                type: EthnicityType.allCases.first(where: {
-                    $0.getString() == id
-                }) ?? .ET1
-            )
-            ethnicityList.append(ethnicity)
-            callback(id)
+            callback(selectedIdList)
+            return
         }
+        
+        selectedIdList.removeAll(where: { item in
+            item == id
+        })
+        callback(selectedIdList)
     }
     
     var body: some View {
@@ -74,13 +52,26 @@ struct CheckBoxGroup: View {
 }
 
 private var selectedValues: Binding<[Ethnicity]> {
-    Binding.constant([Ethnicity(type: .ET1)])
+    Binding.constant([Ethnicity(type: .et1)])
 }
 
 struct CheckBoxGroup_Previews: PreviewProvider {
     static var previews: some View {
-        CheckBoxGroup(ethnicityList: selectedValues) {_ in}
-            .padding(.horizontal, 24)
+        CheckBoxGroup(
+            items: [
+                "American Indian",
+                "Black/African American",
+                "East Asian",
+                "Hipanic/Latino",
+                "Mid Eastern",
+                "Pacific Islander",
+                "South Asian",
+                "Southeast Asian",
+                "White/Caucasian"
+            ],
+            callback: { _ in }
+        )
+        .padding(.horizontal, 24)
         
     }
 }

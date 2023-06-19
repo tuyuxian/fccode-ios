@@ -45,10 +45,12 @@ class PinchZoomView: UIView {
     var scale: CGFloat = 1.0
     let scaleChange: (CGFloat) -> Void
     
-    init(minScale: CGFloat,
-           maxScale: CGFloat,
-         currentScale: CGFloat,
-         scaleChange: @escaping (CGFloat) -> Void) {
+    init(
+        minScale: CGFloat,
+        maxScale: CGFloat,
+        currentScale: CGFloat,
+        scaleChange: @escaping (CGFloat) -> Void
+    ) {
         self.minScale = minScale
         self.maxScale = maxScale
         self.scale = currentScale

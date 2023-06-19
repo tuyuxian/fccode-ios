@@ -70,7 +70,7 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
-                        .keyboardType(.alphabet)
+                        .textContentType(.password)
                         .disableAutocorrection(true)
                         .autocapitalization(.none)
                     } else {
@@ -89,7 +89,7 @@ struct PrimaryInputBar: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 54)
-                        .keyboardType(.alphabet)
+                        .textContentType(.password)
                         .disableAutocorrection(true)
                         .autocorrectionDisabled(true)
                         .autocapitalization(.none)
@@ -124,12 +124,17 @@ struct PrimaryInputBar: View {
             case .email:
                 EmptyView()
             case .password:
-                Image(isSecureMode ? "EyeClose" : "EyeShow")
-                    .resizable()
-                    .frame(width: 24, height: 24)
+                // swiftlint: disable void_function_in_ternary
+                isSecureMode
+                ? FCIcon.eyeClose
                     .onTapGesture {
                         isSecureMode.toggle()
                     }
+                : FCIcon.eyeOpen
+                    .onTapGesture {
+                        isSecureMode.toggle()
+                    }
+                // swiftlint: enable void_function_in_ternary
             case .text:
                 EmptyView()
             }

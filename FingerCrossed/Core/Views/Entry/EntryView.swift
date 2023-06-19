@@ -11,7 +11,7 @@ import FacebookCore
 
 struct EntryView: View {
     /// Observed global user state
-    @ObservedObject var userState: UserStateViewModel
+    @ObservedObject var usm: UserStateManager
     /// Init new entry view model
     @StateObject var vm: EntryViewModel = EntryViewModel()
         
@@ -30,26 +30,26 @@ struct EntryView: View {
             switch vm.switchView {
             case .email:
                 EmailView(
-                    userState: userState,
+                    usm: usm,
                     vm: vm
                 )
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
+                }
                 .transition(
                     vm.transition == .forward
                     ? transitionForward
                     : transitionBackward
                 )
-                .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
-                }
-                .onAppear {
-                    ApplicationDelegate.shared.application(
-                        UIApplication.shared,
-                        didFinishLaunchingWithOptions: nil
-                    )
-                }
+//                .onAppear {
+//                    ApplicationDelegate.shared.application(
+//                        UIApplication.shared,
+//                        didFinishLaunchingWithOptions: nil
+//                    )
+//                }
             case .password:
                 PasswordView(
-                    userState: userState,
+                    usm: usm,
                     vm: vm
                 )
                 .transition(
@@ -139,7 +139,7 @@ struct EntryView: View {
                     )
             case .location:
                 SignUpLocationView(
-                    userState: userState,
+                    usm: usm,
                     vm: vm
                 )
                 .transition(
@@ -157,7 +157,7 @@ struct EntryView: View {
 struct EntryView_Previews: PreviewProvider {
     static var previews: some View {
         EntryView(
-            userState: UserStateViewModel()
+            usm: UserStateManager()
         )
     }
 }

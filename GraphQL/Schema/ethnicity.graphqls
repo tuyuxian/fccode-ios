@@ -1,0 +1,4 @@
+extend type Mutation {
+  createEthnicity(input: CreateEthnicityInput!): Ethnicity
+  updateEthnicity(id: ID!, input: UpdateEthnicityInput!): Ethnicity!
+}

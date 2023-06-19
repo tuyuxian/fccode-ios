@@ -26,6 +26,7 @@ query GetUserById($userId: ID!) {
         caption
         contentURL
         position
+        ratio
         scale
         offsetX
         offsetY

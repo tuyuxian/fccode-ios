@@ -9,6 +9,7 @@ mutation CreateLifePhoto($userId: ID!, $input: CreateLifePhotoInput!) {
         caption
         contentURL
         position
+        ratio
         scale
         offsetX
         offsetY
@@ -32,6 +33,7 @@ mutation UpdateLifePhoto(
         caption
         contentURL
         position
+        ratio
         scale
         offsetX
         offsetY

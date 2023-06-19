@@ -39,6 +39,7 @@ input CreateLifePhotoInput {
   contentURL: String!
   caption: String
   position: Int!
+  ratio: Int!
   scale: Float!
   offsetX: Float!
   offsetY: Float!
@@ -126,6 +127,7 @@ type LifePhoto implements Node {
   contentURL: String!
   caption: String
   position: Int!
+  ratio: Int!
   scale: Float!
   offsetX: Float!
   offsetY: Float!
@@ -256,6 +258,7 @@ input UpdateLifePhotoInput {
   caption: String
   clearCaption: Boolean
   position: Int
+  ratio: Int
   scale: Float
   offsetX: Float
   offsetY: Float

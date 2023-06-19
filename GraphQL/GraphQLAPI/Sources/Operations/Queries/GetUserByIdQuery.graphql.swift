@@ -39,6 +39,7 @@ public class GetUserByIdQuery: GraphQLQuery {
               caption
               contentURL
               position
+              ratio
               scale
               offsetX
               offsetY
@@ -181,6 +182,7 @@ public class GetUserByIdQuery: GraphQLQuery {
             .field("caption", String?.self),
             .field("contentURL", String.self),
             .field("position", Int.self),
+            .field("ratio", Int.self),
             .field("scale", Double.self),
             .field("offsetX", Double.self),
             .field("offsetY", Double.self),
@@ -190,6 +192,7 @@ public class GetUserByIdQuery: GraphQLQuery {
           public var caption: String? { __data["caption"] }
           public var contentURL: String { __data["contentURL"] }
           public var position: Int { __data["position"] }
+          public var ratio: Int { __data["ratio"] }
           public var scale: Double { __data["scale"] }
           public var offsetX: Double { __data["offsetX"] }
           public var offsetY: Double { __data["offsetY"] }

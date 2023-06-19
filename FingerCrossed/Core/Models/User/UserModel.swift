@@ -156,6 +156,7 @@ extension User {
                 contentUrl: "https://i.pravatar.cc/150?img=6",
                 caption: "123",
                 position: 0,
+                ratio: 3,
                 scale: 1,
                 offset: CGSize.zero
             ),
@@ -164,6 +165,7 @@ extension User {
                 contentUrl: "https://i.pravatar.cc/150?img=7",
                 caption: "123",
                 position: 1,
+                ratio: 3,
                 scale: 1,
                 offset: CGSize.zero
             ),
@@ -172,6 +174,7 @@ extension User {
                 contentUrl: "https://i.pravatar.cc/150?img=8",
                 caption: "123",
                 position: 2,
+                ratio: 3,
                 scale: 1,
                 offset: CGSize.zero
             ),
@@ -180,6 +183,7 @@ extension User {
                 contentUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
                 position: 3,
+                ratio: 3,
                 scale: 1,
                 offset: CGSize.zero
             )

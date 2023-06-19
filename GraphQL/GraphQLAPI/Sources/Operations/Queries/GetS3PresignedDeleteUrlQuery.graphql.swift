@@ -8,8 +8,8 @@ public class GetS3PresignedDeleteUrlQuery: GraphQLQuery {
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query GetS3PresignedDeleteUrl($fileName: String!) {
-        getS3PresignedDeleteUrl(fileName: $fileName) {
+      query GetS3PresignedDeleteUrl($sourceType: MediaSourceType!, $fileName: String!) {
+        getS3PresignedDeleteUrl(sourceType: $sourceType, fileName: $fileName) {
           __typename
           status
           statusCode
@@ -20,13 +20,21 @@ public class GetS3PresignedDeleteUrlQuery: GraphQLQuery {
       """#
     ))
 
+  public var sourceType: GraphQLEnum<MediaSourceType>
   public var fileName: String
 
-  public init(fileName: String) {
+  public init(
+    sourceType: GraphQLEnum<MediaSourceType>,
+    fileName: String
+  ) {
+    self.sourceType = sourceType
     self.fileName = fileName
   }
 
-  public var __variables: Variables? { ["fileName": fileName] }
+  public var __variables: Variables? { [
+    "sourceType": sourceType,
+    "fileName": fileName
+  ] }
 
   public struct Data: GraphQLAPI.SelectionSet {
     public let __data: DataDict
@@ -34,7 +42,10 @@ public class GetS3PresignedDeleteUrlQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("getS3PresignedDeleteUrl", GetS3PresignedDeleteUrl.self, arguments: ["fileName": .variable("fileName")]),
+      .field("getS3PresignedDeleteUrl", GetS3PresignedDeleteUrl.self, arguments: [
+        "sourceType": .variable("sourceType"),
+        "fileName": .variable("fileName")
+      ]),
     ] }
 
     public var getS3PresignedDeleteUrl: GetS3PresignedDeleteUrl { __data["getS3PresignedDeleteUrl"] }

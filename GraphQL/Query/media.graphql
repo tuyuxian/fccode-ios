@@ -7,8 +7,11 @@ query GetS3PresignedPutUrl($sourceType: MediaSourceType!) {
   }
 }
 
-query GetS3PresignedDeleteUrl($fileName: String!) {
-  getS3PresignedDeleteUrl(fileName: $fileName) {
+query GetS3PresignedDeleteUrl(
+  $sourceType: MediaSourceType!
+  $fileName: String!
+) {
+  getS3PresignedDeleteUrl(sourceType: $sourceType, fileName: $fileName) {
     status
     statusCode
     message

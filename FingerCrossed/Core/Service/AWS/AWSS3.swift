@@ -9,6 +9,11 @@ import Foundation
 
 struct AWSS3 {
     
+    private enum MediaType {
+        case audio
+        case image
+    }
+    
     private enum AWSError: Error {
         case networkError
         case permissionDenied
@@ -36,9 +41,8 @@ struct AWSS3 {
                         return
                     }
                     let cdnUrl = self.parseCDNUrl(
-                        from: self.extractFilename(
-                            from: url
-                        )
+                        .image,
+                        from: self.extractFilename(from: url)
                     )
                     guard let cdnUrl else {
                         continuation.resume(throwing: AWSError.unknownError)
@@ -68,9 +72,8 @@ struct AWSS3 {
                         return
                     }
                     let cdnUrl = self.parseCDNUrl(
-                        from: self.extractFilename(
-                            from: url
-                        )
+                        .audio,
+                        from: self.extractFilename(from: url)
                     )
                     guard let cdnUrl else {
                         continuation.resume(throwing: AWSError.unknownError)
@@ -161,14 +164,20 @@ struct AWSS3 {
     }
     
     static private func parseCDNUrl(
+        _ mediaType: MediaType,
         from fileName: String?
     ) -> URL? {
         guard let fileName else {
             return nil
         }
-        let cdnUrl = "https://d2yydc9fog8bo7.cloudfront.net/\(fileName)"
-        
-        return URL(string: cdnUrl)
+        switch mediaType {
+        case .audio:
+            let cdnUrl = "https://d2yydc9fog8bo7.cloudfront.net/audio/\(fileName)"
+            return URL(string: cdnUrl)
+        case .image:
+            let cdnUrl = "https://d2yydc9fog8bo7.cloudfront.net/image/\(fileName)"
+            return URL(string: cdnUrl)
+        }
     }
 }
 
@@ -216,7 +225,8 @@ extension AWSS3 {
                 return
             }
             
-            if httpResponse.statusCode == 204 { // Successful deletion
+            // Successful deletion
+            if httpResponse.statusCode == 204 {
                 completion(.success(()))
             } else {
                 let error = NSError(

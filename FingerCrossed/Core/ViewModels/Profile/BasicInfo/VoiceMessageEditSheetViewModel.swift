@@ -194,7 +194,6 @@ extension VoiceMessageEditSheetViewModel {
             self.audioUrl = self.audioRecorder.url
             self.voiceMessageDuration = Int(floor(self.audioPlayer.duration))
             self.timeRemaining = self.voiceMessageDuration
-            print(audioRecorder.url)
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
@@ -281,7 +280,10 @@ extension VoiceMessageEditSheetViewModel {
         guard let fileName = self.extractFileName(url: sourceUrl) else {
             throw FCError.VoiceMessage.unknown
         }
-        let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+        let url = try await MediaService.getPresignedDeleteUrl(
+            .case(.audio),
+            fileName: fileName
+        )
         guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
         let success = try await AWSS3.deleteObject(presignedURL: url)
         guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }

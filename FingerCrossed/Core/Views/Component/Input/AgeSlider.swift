@@ -42,7 +42,9 @@ struct AgeSlider: View {
                             )
                             .offset(x: self.from)
                             .onChange(of: from) { val in
-                                ageFrom = Int(self.getValue(val: ((val / (proxy.size.width - 56 - 46)) * 47))) ?? 18
+                                ageFrom = Int(
+                                    self.getValue(val: ((val / (proxy.size.width - 56 - 46)) * 47))
+                                ) ?? 18
                             }
                         : nil
                         isToDragging
@@ -60,7 +62,9 @@ struct AgeSlider: View {
                             )
                             .offset(x: isFromDragging ? self.to : self.to + 28)
                             .onChange(of: to) { val in
-                                ageTo = Int(self.getValue(val: ((val / (proxy.size.width - 56 - 46)) * 47))) ?? 65
+                                ageTo = Int(
+                                    self.getValue(val: ((val / (proxy.size.width - 56 - 46)) * 47))
+                                ) ?? 65
                             }
                         : nil
                         Spacer()
@@ -87,10 +91,13 @@ struct AgeSlider: View {
                                     .frame(width: isFromDragging ? 16 : 28, height: isFromDragging ? 16 : 28)
                                     .overlay(
                                         !isFromDragging
-                                        ? Text(self.getValue(val: ((self.from / (proxy.size.width - 56 - 46)) * 47)))
-                                            .fontTemplate(.noteMedium)
-                                            .multilineTextAlignment(.center)
-                                            .foregroundColor(Color.white)
+                                        ? Text(
+                                            self.getValue(
+                                                val: ((self.from / (proxy.size.width - 56 - 46)) * 47))
+                                        )
+                                        .fontTemplate(.noteMedium)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(Color.white)
                                         : nil
                                         
                                     )
@@ -106,7 +113,7 @@ struct AgeSlider: View {
                                             .onEnded({ _ in
                                                 self.isFromDragging = false
                                             })
-                                        // TODO(Sam): long press gesture
+                                        // TODO(): long press gesture
                                     )
 
                                 Circle()
@@ -114,10 +121,14 @@ struct AgeSlider: View {
                                     .frame(width: isToDragging ? 16 : 28, height: isToDragging ? 16 : 28)
                                     .overlay(
                                         !isToDragging
-                                        ? Text(self.getValue(val: ((self.to / (proxy.size.width - 56 - 46)) * 47)))
-                                            .fontTemplate(.noteMedium)
-                                            .multilineTextAlignment(.center)
-                                            .foregroundColor(Color.white)
+                                        ? Text(
+                                            self.getValue(
+                                                val: ((self.to / (proxy.size.width - 56 - 46)) * 47)
+                                            )
+                                        )
+                                        .fontTemplate(.noteMedium)
+                                        .multilineTextAlignment(.center)
+                                        .foregroundColor(Color.white)
                                         : nil
                                     )
                                     .offset(x: getOffset(val: self.to))

@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-typealias Gender = GraphQLAPI.UserGender
+typealias Gender = UserGender
 
 extension Gender: Codable {
     

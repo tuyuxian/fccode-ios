@@ -82,8 +82,8 @@ struct User: Codable {
 }
 
 extension User {
-    public func getGraphQLInput() -> GraphQLAPI.CreateUserInput {
-        return GraphQLAPI.CreateUserInput(
+    public func getGraphQLInput() -> CreateUserInput {
+        return CreateUserInput(
             email: self.email,
             password: self.password != nil && self.password != "" ? .some(self.password!) : nil,
             username: self.username,
@@ -152,6 +152,7 @@ extension User {
         ],
         lifePhoto: [
             LifePhoto(
+                id: "0",
                 contentUrl: "https://i.pravatar.cc/150?img=6",
                 caption: "123",
                 position: 0,
@@ -159,6 +160,7 @@ extension User {
                 offset: CGSize.zero
             ),
             LifePhoto(
+                id: "1",
                 contentUrl: "https://i.pravatar.cc/150?img=7",
                 caption: "123",
                 position: 1,
@@ -166,6 +168,7 @@ extension User {
                 offset: CGSize.zero
             ),
             LifePhoto(
+                id: "2",
                 contentUrl: "https://i.pravatar.cc/150?img=8",
                 caption: "123",
                 position: 2,
@@ -173,6 +176,7 @@ extension User {
                 offset: CGSize.zero
             ),
             LifePhoto(
+                id: "3",
                 contentUrl: "https://i.pravatar.cc/150?img=9",
                 caption: "",
                 position: 3,

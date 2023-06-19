@@ -24,8 +24,10 @@ public enum FCIcon: String {
     case stop = "Stop"
     // - Photo
     case addPicture = "AddPicture"
+    case addPictureMedium = "AddPictureMedium"
     case camera = "Camera"
     case picture = "Picture"
+    case pictureMedium = "PictureMedium"
     
     // MARK: Selection
     case checkbox = "CheckBox"

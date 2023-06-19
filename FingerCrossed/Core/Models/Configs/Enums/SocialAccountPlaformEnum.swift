@@ -8,6 +8,6 @@
 import Foundation
 import GraphQLAPI
 
-typealias SocialPlatform = GraphQLAPI.SocialAccountPlatform
+typealias SocialPlatform = SocialAccountPlatform
 
 extension SocialPlatform: Codable {}

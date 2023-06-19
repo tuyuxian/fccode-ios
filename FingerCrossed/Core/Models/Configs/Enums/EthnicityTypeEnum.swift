@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-typealias EthnicityType = GraphQLAPI.EthnicityEthnicityType
+typealias EthnicityType = EthnicityEthnicityType
 
 extension EthnicityType: Codable {
     public func getString() -> String {

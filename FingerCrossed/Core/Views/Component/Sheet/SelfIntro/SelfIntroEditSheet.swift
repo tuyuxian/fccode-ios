@@ -121,7 +121,7 @@ extension SelfIntroEditSheet {
                 self.state = .loading
                 let statusCode = try await UserService.updateUser(
                     userId: self.userId,
-                    input: GraphQLAPI.UpdateUserInput(
+                    input: UpdateUserInput(
                         selfIntro: .some(text)
                     )
                 )

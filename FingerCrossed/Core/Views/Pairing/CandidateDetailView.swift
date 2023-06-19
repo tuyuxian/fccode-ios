@@ -144,6 +144,7 @@ struct CandidateDetailView_Previews: PreviewProvider {
                     caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
                     // swiftlint: enable line_length
                     position: 0,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 ),
@@ -154,6 +155,7 @@ struct CandidateDetailView_Previews: PreviewProvider {
                     caption: "malesuada fames ac turpis egestas. Quisque vitae mi sed diam tincidunt euismod. Maecenas sed mollis lorem. Mauris elementum ac tor",
                     // swiftlint: enable line_length
                     position: 1,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 )

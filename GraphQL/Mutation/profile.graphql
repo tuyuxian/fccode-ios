@@ -63,6 +63,7 @@ mutation UpdateUser($userId: ID!, $input: UpdateUserInput!) {
         caption
         contentURL
         position
+        ratio
         scale
         offsetX
         offsetY

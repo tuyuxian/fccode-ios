@@ -44,11 +44,13 @@ struct MediaService {
     }
     
     static public func getPresignedDeleteUrl(
+        _ sourceType: GraphQLEnum<MediaSourceType>,
         fileName: String
     ) async throws -> String? {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(
                 query: GetS3PresignedDeleteUrlQuery(
+                    sourceType: sourceType,
                     fileName: fileName
                 ),
                 cachePolicy: .fetchIgnoringCacheCompletely
@@ -111,6 +113,7 @@ struct MediaService {
                                 contentUrl: $0.contentURL,
                                 caption: $0.caption ?? "",
                                 position: $0.position,
+                                ratio: $0.ratio,
                                 scale: $0.scale,
                                 offset: CGSize(width: $0.offsetX, height: $0.offsetY)
                             )
@@ -163,6 +166,7 @@ struct MediaService {
                                 contentUrl: $0.contentURL,
                                 caption: $0.caption ?? "",
                                 position: $0.position,
+                                ratio: $0.ratio,
                                 scale: $0.scale,
                                 offset: CGSize(width: $0.offsetX, height: $0.offsetY)
                             )

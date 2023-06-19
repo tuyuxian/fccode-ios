@@ -61,6 +61,7 @@ struct SignUpLocationView: View {
                         contentUrl: result.absoluteString,
                         caption: "",
                         position: 0,
+                        ratio: 3,
                         scale: 1,
                         offset: CGSize.zero
                     )

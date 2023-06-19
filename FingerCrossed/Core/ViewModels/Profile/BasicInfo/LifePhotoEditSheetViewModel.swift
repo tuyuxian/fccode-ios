@@ -18,7 +18,7 @@ class LifePhotoEditSheetViewModel: ObservableObject {
     @Published var state: ViewStatus = .none
     @Published var isSatisfied: Bool = false
     @Published var isKeyboardShowUp: Bool = false
-    @Published var selectedTag: Int = 2
+    @Published var selectedTag: Int = 3
 
     @Published var bottomPadding: CGFloat = 0
     @Published var currentOffset: CGSize = .zero
@@ -37,6 +37,7 @@ extension LifePhotoEditSheetViewModel {
         data: Data?,
         caption: String,
         position: Int,
+        ratio: Int,
         scale: Double,
         offsetX: Double,
         offsetY: Double
@@ -54,6 +55,7 @@ extension LifePhotoEditSheetViewModel {
                 contentURL: remoteUrl.absoluteString,
                 caption: .some(caption),
                 position: position,
+                ratio: ratio,
                 scale: scale,
                 offsetX: offsetX,
                 offsetY: offsetY
@@ -71,6 +73,7 @@ extension LifePhotoEditSheetViewModel {
         lifePhotoId: String,
         caption: String,
         position: Int,
+        ratio: Int,
         scale: Double,
         offsetX: Double,
         offsetY: Double
@@ -82,6 +85,7 @@ extension LifePhotoEditSheetViewModel {
             input: UpdateLifePhotoInput(
                 caption: .some(caption),
                 position: .some(position),
+                ratio: .some(ratio),
                 scale: .some(scale),
                 offsetX: .some(offsetX),
                 offsetY: .some(offsetY)

@@ -145,7 +145,10 @@ extension VoiceMessageActionSheet {
             guard let fileName = MediaService.extractFileName(url: url) else {
                 throw FCError.VoiceMessage.extractFilenameFailed
             }
-            let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+            let url = try await MediaService.getPresignedDeleteUrl(
+                .case(.audio),
+                fileName: fileName
+            )
             guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
             let success = try await AWSS3.deleteObject(presignedURL: url)
             guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }

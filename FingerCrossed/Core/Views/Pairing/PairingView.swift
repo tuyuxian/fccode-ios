@@ -18,6 +18,7 @@ struct PairingView: View {
                     // swiftlint: enable line_length
                     caption: "caption1",
                     position: 0,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 ), LifePhoto(
@@ -27,6 +28,7 @@ struct PairingView: View {
                     // swiftlint: enable line_length
                     caption: "caption2",
                     position: 1,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 )
@@ -49,6 +51,7 @@ struct PairingView: View {
                     // swiftlint: enable line_length
                     caption: "caption1",
                     position: 0,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 ),
@@ -59,6 +62,7 @@ struct PairingView: View {
                     // swiftlint: enable line_length
                     caption: "caption2",
                     position: 1,
+                    ratio: 3,
                     scale: 1,
                     offset: CGSize.zero
                 )

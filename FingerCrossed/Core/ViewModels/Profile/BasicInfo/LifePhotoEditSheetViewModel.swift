@@ -65,6 +65,34 @@ extension LifePhotoEditSheetViewModel {
         self.state = .complete
         return lifePhotos
     }
+    
+    @MainActor
+    public func update(
+        lifePhotoId: String,
+        caption: String,
+        position: Int,
+        scale: Double,
+        offsetX: Double,
+        offsetY: Double
+    ) async throws -> [LifePhoto] {
+        self.state = .loading
+        let (statusCode, lifePhotos) = try await MediaService.updateLifePhoto(
+            userId: self.userId,
+            lifePhotoId: lifePhotoId,
+            input: UpdateLifePhotoInput(
+                caption: .some(caption),
+                position: .some(position),
+                scale: .some(scale),
+                offsetX: .some(offsetX),
+                offsetY: .some(offsetY)
+            )
+        )
+        guard statusCode == 200 else {
+            throw FCError.LifePhoto.updateLifePhotoFailed
+        }
+        self.state = .complete
+        return lifePhotos
+    }
     // swiftlint: enable function_parameter_count
     
 }

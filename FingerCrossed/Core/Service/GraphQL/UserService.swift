@@ -221,6 +221,7 @@ struct UserService {
                                     contentUrl: $0.contentURL,
                                     caption: $0.caption ?? "",
                                     position: $0.position,
+                                    ratio: $0.ratio,
                                     scale: $0.scale,
                                     offset: CGSize(width: $0.offsetX, height: $0.offsetY)
                                 )

@@ -17,6 +17,7 @@ public struct UpdateLifePhotoInput: InputObject {
     caption: GraphQLNullable<String> = nil,
     clearCaption: GraphQLNullable<Bool> = nil,
     position: GraphQLNullable<Int> = nil,
+    ratio: GraphQLNullable<Int> = nil,
     scale: GraphQLNullable<Double> = nil,
     offsetX: GraphQLNullable<Double> = nil,
     offsetY: GraphQLNullable<Double> = nil,
@@ -28,6 +29,7 @@ public struct UpdateLifePhotoInput: InputObject {
       "caption": caption,
       "clearCaption": clearCaption,
       "position": position,
+      "ratio": ratio,
       "scale": scale,
       "offsetX": offsetX,
       "offsetY": offsetY,
@@ -54,6 +56,11 @@ public struct UpdateLifePhotoInput: InputObject {
   public var position: GraphQLNullable<Int> {
     get { __data["position"] }
     set { __data["position"] = newValue }
+  }
+
+  public var ratio: GraphQLNullable<Int> {
+    get { __data["ratio"] }
+    set { __data["ratio"] = newValue }
   }
 
   public var scale: GraphQLNullable<Double> {

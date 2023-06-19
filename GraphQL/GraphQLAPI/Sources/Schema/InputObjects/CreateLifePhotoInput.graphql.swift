@@ -16,6 +16,7 @@ public struct CreateLifePhotoInput: InputObject {
     contentURL: String,
     caption: GraphQLNullable<String> = nil,
     position: Int,
+    ratio: Int,
     scale: Double,
     offsetX: Double,
     offsetY: Double,
@@ -25,6 +26,7 @@ public struct CreateLifePhotoInput: InputObject {
       "contentURL": contentURL,
       "caption": caption,
       "position": position,
+      "ratio": ratio,
       "scale": scale,
       "offsetX": offsetX,
       "offsetY": offsetY,
@@ -45,6 +47,11 @@ public struct CreateLifePhotoInput: InputObject {
   public var position: Int {
     get { __data["position"] }
     set { __data["position"] = newValue }
+  }
+
+  public var ratio: Int {
+    get { __data["ratio"] }
+    set { __data["ratio"] = newValue }
   }
 
   public var scale: Double {

@@ -1,6 +1,9 @@
 extend type Query {
   getS3PresignedPutUrl(sourceType: MediaSourceType!): MediaCRUDResponse!
-  getS3PresignedDeleteUrl(fileName: String!): MediaCRUDResponse!
+  getS3PresignedDeleteUrl(
+    sourceType: MediaSourceType!
+    fileName: String!
+  ): MediaCRUDResponse!
 }
 
 enum MediaSourceType {

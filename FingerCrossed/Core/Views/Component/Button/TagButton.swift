@@ -36,6 +36,6 @@ struct TagButton: View {
 
 struct TagButton_Previews: PreviewProvider {
     static var previews: some View {
-        TagButton(label: "16:9", tag: .constant(0), isSelected: .constant(0))
+        TagButton(label: "16:9", tag: .constant(1), isSelected: .constant(1))
     }
 }

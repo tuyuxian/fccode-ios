@@ -59,10 +59,10 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                             }
 
                             HStack(spacing: 12) {
-                                TagButton(label: "16:9", tag: .constant(0), isSelected: $vm.selectedTag)
-                                TagButton(label: "9:16", tag: .constant(1), isSelected: $vm.selectedTag)
-                                TagButton(label: "4:3", tag: .constant(2), isSelected: $vm.selectedTag)
-                                TagButton(label: "3:4", tag: .constant(3), isSelected: $vm.selectedTag)
+                                TagButton(label: "16:9", tag: .constant(1), isSelected: $vm.selectedTag)
+                                TagButton(label: "9:16", tag: .constant(2), isSelected: $vm.selectedTag)
+                                TagButton(label: "4:3", tag: .constant(3), isSelected: $vm.selectedTag)
+                                TagButton(label: "3:4", tag: .constant(4), isSelected: $vm.selectedTag)
                             }
                             
                             CaptionInputBar(
@@ -124,6 +124,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                     data: basicInfoVM.selectedImage?.jpegData(compressionQuality: 0.1),
                     caption: text,
                     position: basicInfoVM.lifePhotoMap.count,
+                    ratio: basicInfoVM.selectedTab.rawValue,
                     scale: 1,
                     offsetX: 0,
                     offsetY: 0
@@ -149,6 +150,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                         lifePhotoId: lifePhoto.id,
                         caption: text,
                         position: lifePhoto.position,
+                        ratio: lifePhoto.ratio,
                         scale: lifePhoto.scale,
                         offsetX: lifePhoto.offset.width,
                         offsetY: lifePhoto.offset.height

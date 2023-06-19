@@ -308,7 +308,10 @@ extension LifePhotoActionSheet {
             guard let fileName = MediaService.extractFileName(url: url) else {
                 throw FCError.LifePhoto.extractFilenameFailed
             }
-            let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+            let url = try await MediaService.getPresignedDeleteUrl(
+                .case(.image),
+                fileName: fileName
+            )
             guard let url = url else { throw FCError.LifePhoto.getPresignedUrlFailed }
             let success = try await AWSS3.deleteObject(presignedURL: url)
             guard success else { throw FCError.LifePhoto.deleteS3ObjectFailed }

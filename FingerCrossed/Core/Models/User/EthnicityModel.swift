@@ -21,8 +21,8 @@ struct Ethnicity: Equatable, Codable {
 
 extension Ethnicity {
     
-    public func getGraphQLInput() -> GraphQLAPI.CreateEthnicityInput {
-        return GraphQLAPI.CreateEthnicityInput(
+    public func getGraphQLInput() -> CreateEthnicityInput {
+        return CreateEthnicityInput(
             ethnicityType: GraphQLEnum.case(self.type)
         )
     }

@@ -6,53 +6,17 @@
 //
 
 import SwiftUI
-import PhotosUI
+import GraphQLAPI
 
 struct LifePhotoActionSheet: View {
-    
-    @ObservedObject var vm: BasicInfoViewModel
-        
-    @State var showEditSheet: Bool = false
-        
-    @State var showCamera: Bool = false
-    
-    @State var showCameraAlert: Bool = false
-    
-    @State var showImagePicker: Bool = false
-    
-    @State var showPhotoLibraryAlert: Bool = false
-    
-    let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
-    
-    let cameraPermissionManager = CameraPermissionManager()
-
-    private func takePhotosOnTap() {
-        switch cameraPermissionManager.permissionStatus {
-        case .notDetermined:
-            cameraPermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showCamera = true
-            }
-        case .denied:
-            showCameraAlert.toggle()
-        default:
-            showCamera = true
-        }
-    }
-    
-    private func uploadPhotosOnTap() {
-        switch photoLibraryPermissionManager.permissionStatus {
-        case .notDetermined:
-            photoLibraryPermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showImagePicker = true
-            }
-        case .denied:
-            showPhotoLibraryAlert.toggle()
-        default:
-            showImagePicker = true
-        }
-    }
+    /// View controller
+    @Environment(\.dismiss) private var dismiss
+    /// Banner
+    @EnvironmentObject private var bm: BannerManager
+    /// Observed basic info view model
+    @ObservedObject var basicInfoVM: BasicInfoViewModel
+    /// Init view model
+    @StateObject private var vm = ViewModel()
     
     var body: some View {
         Sheet(
@@ -65,45 +29,45 @@ struct LifePhotoActionSheet: View {
                     alignment: .leading,
                     spacing: 30
                 ) {
-                    if vm.hasLifePhoto {
+                    if basicInfoVM.hasLifePhoto {
                         Button {
-                            // TODO(Sam): add delete method
+                            vm.deleteOnTap { delete() }
                         } label: {
                             LifePhotoActionRow(actionType: .delete)
                         }
                         
                         Button {
-                            showEditSheet = true
+                            vm.showEditSheet = true
                         } label: {
                             LifePhotoActionRow(actionType: .edit)
                         }
                     } else {
                         Button {
-                            takePhotosOnTap()
+                            vm.takePhotosOnTap()
                         } label: {
                             LifePhotoActionRow(actionType: .camera)
                         }
                         .fullScreenCover(
-                            isPresented: $showCamera,
+                            isPresented: $vm.showCamera,
                             onDismiss: {
-                                guard vm.selectedImage != nil else { return }
-                                showEditSheet = true
+                                guard basicInfoVM.selectedImage != nil else { return }
+                                vm.showEditSheet = true
                             },
                             content: {
                                 ImagePicker(
                                     sourceType: .camera,
-                                    selectedImage: $vm.selectedImage
+                                    selectedImage: $basicInfoVM.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
                             }
                         )
-                        .alert(isPresented: $showCameraAlert) {
+                        .alert(isPresented: $vm.showCameraAlert) {
                             Alert(
                                 title:
-                                    Text(cameraPermissionManager.alertTitle)
+                                    Text(vm.cameraPermissionManager.alertTitle)
                                     .font(Font.system(size: 18, weight: .medium)),
                                 message:
-                                    Text(cameraPermissionManager.alertMessage)
+                                    Text(vm.cameraPermissionManager.alertMessage)
                                     .font(Font.system(size: 12, weight: .medium)),
                                 primaryButton: .default(Text("Cancel")),
                                 secondaryButton: .default(
@@ -118,30 +82,30 @@ struct LifePhotoActionSheet: View {
                         }
                         
                         Button {
-                            uploadPhotosOnTap()
+                            vm.uploadPhotosOnTap()
                         } label: {
                             LifePhotoActionRow(actionType: .photo)
                         }
                         .sheet(
-                            isPresented: $showImagePicker,
+                            isPresented: $vm.showImagePicker,
                             onDismiss: {
-                                guard vm.selectedImage != nil else { return }
-                                showEditSheet = true
+                                guard basicInfoVM.selectedImage != nil else { return }
+                                vm.showEditSheet = true
                             },
                             content: {
                                 ImagePicker(
                                     sourceType: .photoLibrary,
-                                    selectedImage: $vm.selectedImage
+                                    selectedImage: $basicInfoVM.selectedImage
                                 )
                             }
                         )
-                        .alert(isPresented: $showPhotoLibraryAlert) {
+                        .alert(isPresented: $vm.showPhotoLibraryAlert) {
                             Alert(
                                 title:
-                                    Text(photoLibraryPermissionManager.alertTitle)
+                                    Text(vm.photoLibraryPermissionManager.alertTitle)
                                     .font(Font.system(size: 18, weight: .medium)),
                                 message:
-                                    Text(photoLibraryPermissionManager.alertMessage)
+                                    Text(vm.photoLibraryPermissionManager.alertMessage)
                                     .font(Font.system(size: 12, weight: .medium)),
                                 primaryButton: .default(Text("Cancel")),
                                 secondaryButton: .default(
@@ -157,38 +121,69 @@ struct LifePhotoActionSheet: View {
                     }
                 }
                 .padding(.top, 15) // 30 - 15
+//                .padding(.bottom, 16)
+                .appAlert($vm.appAlert)
+                .onChange(of: vm.state) { state in
+                    if state == .error {
+                        bm.pop(
+                            title: vm.bannerMessage,
+                            type: vm.bannerType
+                        )
+                        vm.state = .none
+                    }
+                }
             },
             footer: {}
         )
         .sheet(
-            isPresented: $showEditSheet,
+            isPresented: $vm.showEditSheet,
             onDismiss: {
-                vm.selectedImage = nil
+                basicInfoVM.selectedImage = nil
+                dismiss()
             },
             content: {
                 LifePhotoEditSheet(
-                    vm: vm,
-                    text: vm.selectedLifePhoto?.caption ?? ""
+                    basicInfoVM: basicInfoVM,
+                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
                 )
             }
         )
+    }
+    
+    private func delete() {
+        Task {
+            if let lifePhoto = basicInfoVM.selectedLifePhoto {
+                do {
+                    try await vm.deleteLifePhoto(
+                        lifePhotoId: lifePhoto.id,
+                        url: lifePhoto.contentUrl
+                    )
+                    guard vm.state == .complete else { return }
+                    basicInfoVM.lifePhotoMap = basicInfoVM.lifePhotoMap.filter {
+                        $0.value.id != lifePhoto.id
+                    }
+                    dismiss()
+                } catch {
+                    vm.state = .error
+                    vm.bannerMessage = "Something went wrong"
+                    vm.bannerType = .error
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 }
 
 struct LifePhotoActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            LifePhotoActionSheet(
-                vm: BasicInfoViewModel()
-            )
-            LifePhotoActionSheet(
-                vm: BasicInfoViewModel()
-            )
-        }
+        LifePhotoActionSheet(
+            basicInfoVM: BasicInfoViewModel()
+        )
+        .environmentObject(BannerManager())
     }
 }
 
-private struct LifePhotoActionRow: View {
+extension LifePhotoActionSheet {
     
     enum ActionType {
         case camera
@@ -197,37 +192,133 @@ private struct LifePhotoActionRow: View {
         case photo
     }
     
-    @State var actionType: ActionType
-    
-    var body: some View {
-        HStack(spacing: 20) {
-            switch actionType {
-            case .camera:
-                FCIcon.camera
-                Text("Take Photos")
-                    .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.text)
-                Spacer()
-            case .delete:
-                FCIcon.trash
-                Text("Delete")
-                    .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.text)
-                Spacer()
-            case .edit:
-                FCIcon.edit
-                Text("Edit Photo")
-                    .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.text)
-                Spacer()
-            case .photo:
-                FCIcon.addPicture
-                Text("Upload Photos")
-                    .fontTemplate(.h3Medium)
-                    .foregroundColor(Color.text)
-                Spacer()
-                
+    struct LifePhotoActionRow: View {
+        
+        @State var actionType: ActionType
+        
+        var body: some View {
+            HStack(spacing: 20) {
+                switch actionType {
+                case .camera:
+                    FCIcon.camera
+                    Text("Take Photos")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
+                case .delete:
+                    FCIcon.trash
+                    Text("Delete")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
+                case .edit:
+                    FCIcon.edit
+                    Text("Edit Photo")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
+                case .photo:
+                    FCIcon.addPicture
+                    Text("Upload Photos")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
+                    
+                }
             }
         }
     }
+    
+}
+
+extension LifePhotoActionSheet {
+    
+    class ViewModel: ObservableObject {
+        
+        @AppStorage("UserId") var userId: String = ""
+
+        /// View state
+        @Published var state: ViewStatus = .none
+        @Published var showEditSheet: Bool = false
+        @Published var showCamera: Bool = false
+        @Published var showImagePicker: Bool = false
+        
+        /// Toast message
+        @Published var bannerMessage: String?
+        @Published var bannerType: Banner.BannerType?
+
+        /// Alert
+        @Published var appAlert: AppAlert?
+        @Published var showCameraAlert: Bool = false
+        @Published var showPhotoLibraryAlert: Bool = false
+        
+        /// Permission manager
+        let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
+        let cameraPermissionManager = CameraPermissionManager()
+        
+        @MainActor
+        public func takePhotosOnTap() {
+            switch cameraPermissionManager.permissionStatus {
+            case .notDetermined:
+                cameraPermissionManager.requestPermission { granted, _ in
+                    guard granted else { return }
+                    self.showCamera = true
+                }
+            case .denied:
+                self.showCameraAlert = true
+            default:
+                self.showCamera = true
+            }
+        }
+        
+        @MainActor
+        public func uploadPhotosOnTap() {
+            switch photoLibraryPermissionManager.permissionStatus {
+            case .notDetermined:
+                photoLibraryPermissionManager.requestPermission { granted, _ in
+                    guard granted else { return }
+                    self.showImagePicker = true
+                }
+            case .denied:
+                self.showPhotoLibraryAlert = true
+            default:
+                self.showImagePicker = true
+            }
+        }
+        
+        @MainActor
+        public func deleteOnTap(
+            action: @escaping () -> Void
+        ) {
+            self.appAlert = .basic(
+                title: "Do you really want to delete it?",
+                message: "",
+                actionLabel: "Yes",
+                cancelLabel: "No",
+                action: action
+            )
+        }
+        
+        @MainActor
+        public func deleteLifePhoto(
+            lifePhotoId: String,
+            url: String
+        ) async throws {
+            self.state = .loading
+            guard let fileName = MediaService.extractFileName(url: url) else {
+                throw FCError.LifePhoto.extractFilenameFailed
+            }
+            let url = try await MediaService.getPresignedDeleteUrl(fileName: fileName)
+            guard let url = url else { throw FCError.LifePhoto.getPresignedUrlFailed }
+            let success = try await AWSS3.deleteObject(presignedURL: url)
+            guard success else { throw FCError.LifePhoto.deleteS3ObjectFailed }
+            let statusCode = try await MediaService.deleteLifePhoto(
+                userId: self.userId,
+                lifePhotoId: lifePhotoId
+            )
+            guard statusCode == 200 else { throw FCError.LifePhoto.updateUserFailed }
+            self.state = .complete
+        }
+    }
+    
 }

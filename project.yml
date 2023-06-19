@@ -31,7 +31,6 @@ packages:
     url: https://github.com/dmrschmidt/DSWaveformImage
     from: 13.0.0
 
-
 targets:
   FingerCrossed:
     type: application

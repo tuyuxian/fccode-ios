@@ -110,7 +110,7 @@ extension VoiceMessageEditSheetViewModel {
             )
             let statusCode = try await UserService.updateUser(
                 userId: self.userId,
-                input: GraphQLAPI.UpdateUserInput(
+                input: UpdateUserInput(
                     voiceContentURL: .some(remoteUrl.absoluteString)
                 )
             )
@@ -287,7 +287,7 @@ extension VoiceMessageEditSheetViewModel {
         guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }
         let statusCode = try await UserService.updateUser(
             userId: self.userId,
-            input: GraphQLAPI.UpdateUserInput(
+            input: UpdateUserInput(
                 voiceContentURL: ""
             )
         )

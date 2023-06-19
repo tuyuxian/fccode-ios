@@ -47,7 +47,10 @@ struct ProgressWaveformView: View {
     private func update(size: CGSize, url: URL, configuration: Waveform.Configuration) {
         Task(priority: .userInitiated) {
             do {
-                let image = try await waveformDrawer.waveformImage(fromAudioAt: url, with: configuration.with(size: size))
+                let image = try await waveformDrawer.waveformImage(
+                    fromAudioAt: url,
+                    with: configuration.with(size: size)
+                )
                 await MainActor.run { waveformImage = image }
             } catch {
                 print(error.localizedDescription)

@@ -23,8 +23,8 @@ struct SocialAccount: Equatable, Codable {
 }
 
 extension SocialAccount {
-    public func getGraphQLInput() -> GraphQLAPI.CreateSocialAccountInput {
-        return GraphQLAPI.CreateSocialAccountInput(
+    public func getGraphQLInput() -> CreateSocialAccountInput {
+        return CreateSocialAccountInput(
             email: self.email,
             platform: GraphQLEnum.case(self.platform)
         )

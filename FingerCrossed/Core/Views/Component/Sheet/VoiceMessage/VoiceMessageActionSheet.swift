@@ -30,9 +30,7 @@ struct VoiceMessageActionSheet: View {
                     spacing: 30
                 ) {
                     Button {
-                        vm.voiceDeleteOnTap(
-                            action: delete
-                        )
+                        vm.deleteOnTap { delete() }
                     } label: {
                         HStack(spacing: 20) {
                             FCIcon.trash
@@ -60,9 +58,9 @@ struct VoiceMessageActionSheet: View {
                             selectedSheet: $selectedSheet
                         )
                     }
-                    .padding(.bottom, 16)
                 }
                 .padding(.top, 15) // 30 - 15
+//                .padding(.bottom, 16)
                 .appAlert($vm.appAlert)
                 .onChange(of: vm.state) { state in
                     if state == .error {
@@ -113,8 +111,6 @@ extension VoiceMessageActionSheet {
     
     class ViewModel: ObservableObject {
         
-        @Environment(\.dismiss) private var dismiss
-        
         @AppStorage("UserId") var userId: String = ""
 
         /// View state
@@ -129,7 +125,7 @@ extension VoiceMessageActionSheet {
         @Published var appAlert: AppAlert?
         
         @MainActor
-        public func voiceDeleteOnTap(
+        public func deleteOnTap(
             action: @escaping () -> Void
         ) {
             self.appAlert = .basic(
@@ -142,7 +138,9 @@ extension VoiceMessageActionSheet {
         }
         
         @MainActor
-        public func deleteVoiceMessage(url: String) async throws {
+        public func deleteVoiceMessage(
+            url: String
+        ) async throws {
             self.state = .loading
             guard let fileName = MediaService.extractFileName(url: url) else {
                 throw FCError.VoiceMessage.extractFilenameFailed
@@ -153,7 +151,7 @@ extension VoiceMessageActionSheet {
             guard success else { throw FCError.VoiceMessage.deleteS3ObjectFailed }
             let statusCode = try await UserService.updateUser(
                 userId: self.userId,
-                input: GraphQLAPI.UpdateUserInput(
+                input: UpdateUserInput(
                     voiceContentURL: ""
                 )
             )

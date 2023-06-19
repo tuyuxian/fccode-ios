@@ -15,12 +15,8 @@ struct LifePhotoButton: View {
     
     @Binding var isEditable: Bool
     
-    @Binding var showEditSheet: Bool
-    
-    @Binding var hasLifePhoto: Bool
-    
-    @Binding var selectedLifePhoto: LifePhoto?
-            
+    var action: () -> Void = {}
+                        
     var body: some View {
         Rectangle()
             .fill(
@@ -45,6 +41,7 @@ struct LifePhotoButton: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .clipped()
                     case .failure:
                         if isEditable {
                             FCAddPhotoIcon()
@@ -62,9 +59,7 @@ struct LifePhotoButton: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 16))
                 .onTapGesture {
-                    showEditSheet = true
-                    selectedLifePhoto = lifePhoto
-                    hasLifePhoto = lifePhoto != nil
+                    action()
                 }
             )
             .clipped()
@@ -79,16 +74,12 @@ struct LifePhotoButton_Previews: PreviewProvider {
                 LifePhotoButton(
                     lifePhoto: .constant(LifePhoto.MockLifePhoto),
                     isEditable: .constant(true),
-                    showEditSheet: .constant(false),
-                    hasLifePhoto: .constant(true),
-                    selectedLifePhoto: .constant(LifePhoto.MockLifePhoto)
+                    action: {}
                 )
                 LifePhotoButton(
                     lifePhoto: .constant(nil),
                     isEditable: .constant(true),
-                    showEditSheet: .constant(false),
-                    hasLifePhoto: .constant(false),
-                    selectedLifePhoto: .constant(LifePhoto.MockLifePhoto)
+                    action: {}
                 )
             }
         }
@@ -97,22 +88,26 @@ struct LifePhotoButton_Previews: PreviewProvider {
     }
 }
 
-private struct FCPhotoIcon: View {
-    var body: some View {
-        FCIcon.picture
-            .resizable()
-            .renderingMode(.template)
-            .frame(width: 46.15, height: 46.15)
-            .foregroundColor(Color.white)
+extension LifePhotoButton {
+    
+    private struct FCPhotoIcon: View {
+        var body: some View {
+            FCIcon.pictureMedium
+                .resizable()
+                .renderingMode(.template)
+                .frame(width: 42, height: 42)
+                .foregroundColor(Color.white)
+        }
     }
-}
 
-private struct FCAddPhotoIcon: View {
-    var body: some View {
-        FCIcon.addPicture
-            .resizable()
-            .renderingMode(.template)
-            .frame(width: 46.15, height: 46.15)
-            .foregroundColor(Color.white)
+    private struct FCAddPhotoIcon: View {
+        var body: some View {
+            FCIcon.addPictureMedium
+                .resizable()
+                .renderingMode(.template)
+                .frame(width: 42, height: 42)
+                .foregroundColor(Color.white)
+        }
     }
+    
 }

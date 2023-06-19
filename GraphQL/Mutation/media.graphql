@@ -26,6 +26,17 @@ mutation UpdateLifePhoto(
     status
     statusCode
     message
+    user {
+      lifePhoto {
+        id
+        caption
+        contentURL
+        position
+        scale
+        offsetX
+        offsetY
+      }
+    }
   }
 }
 

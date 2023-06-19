@@ -20,8 +20,8 @@ struct Goal: Equatable, Codable {
 }
 
 extension Goal {
-    public func getGraphQLInput() -> GraphQLAPI.CreateGoalInput {
-        return GraphQLAPI.CreateGoalInput(
+    public func getGraphQLInput() -> CreateGoalInput {
+        return CreateGoalInput(
             goalType: GraphQLEnum.case(self.type)
         )
     }

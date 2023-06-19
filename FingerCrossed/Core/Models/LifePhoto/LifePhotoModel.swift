@@ -9,7 +9,7 @@ import Foundation
 import GraphQLAPI
 
 struct LifePhoto: Identifiable, Equatable, Codable {
-    var id: UUID = UUID()
+    var id: String
     var contentUrl: String
     var caption: String
     var position: Int
@@ -17,12 +17,14 @@ struct LifePhoto: Identifiable, Equatable, Codable {
     var offset: CGSize
     
     init(
+        id: String,
         contentUrl: String,
         caption: String,
         position: Int,
         scale: CGFloat,
         offset: CGSize
     ) {
+        self.id = id
         self.contentUrl = contentUrl
         self.caption = caption
         self.position = position
@@ -32,8 +34,8 @@ struct LifePhoto: Identifiable, Equatable, Codable {
 }
 
 extension LifePhoto {
-    public func getGraphQLInput() -> GraphQLAPI.CreateLifePhotoInput {
-        return GraphQLAPI.CreateLifePhotoInput(
+    public func getGraphQLInput() -> CreateLifePhotoInput {
+        return CreateLifePhotoInput(
             contentURL: self.contentUrl,
             caption: .some(self.caption),
             position: self.position,
@@ -46,6 +48,7 @@ extension LifePhoto {
 
 extension LifePhoto {
     static var MockLifePhoto: LifePhoto = .init(
+        id: "0",
         contentUrl: "https://i.pravatar.cc/150?img=9",
         caption: "0",
         position: 0,
@@ -55,6 +58,7 @@ extension LifePhoto {
     
     static var MockLifePhotoList: [LifePhoto] = [
         .init(
+            id: "0",
             contentUrl: "https://i.pravatar.cc/150?img=9",
             caption: "0",
             position: 0,
@@ -62,6 +66,7 @@ extension LifePhoto {
             offset: CGSize.zero
         ),
         .init(
+            id: "1",
             contentUrl: "https://i.pravatar.cc/150?img=10",
             caption: "1",
             position: 1,
@@ -69,6 +74,7 @@ extension LifePhoto {
             offset: CGSize.zero
         ),
         .init(
+            id: "2",
             contentUrl: "https://i.pravatar.cc/150?img=11",
             caption: "2",
             position: 2,

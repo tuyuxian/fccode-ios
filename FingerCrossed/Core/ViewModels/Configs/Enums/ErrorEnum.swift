@@ -34,6 +34,15 @@ extension FCError {
     }
     
     public enum LifePhoto: Error {
-        
+        case unknown
+        case extractFilenameFailed
+        case downloadFailed
+        case getPresignedUrlFailed
+        case uploadS3ObjectFailed
+        case deleteS3ObjectFailed
+        case uploadFailed
+        case createLifePhotoFailed
+        case updateLifePhotoFailed
+        case updateUserFailed
     }
 }

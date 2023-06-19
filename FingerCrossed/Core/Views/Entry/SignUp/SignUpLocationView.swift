@@ -57,6 +57,7 @@ struct SignUpLocationView: View {
                 vm.user.profilePictureUrl = result.absoluteString
                 vm.user.lifePhoto.append(
                     LifePhoto(
+                        id: "0",
                         contentUrl: result.absoluteString,
                         caption: "",
                         position: 0,

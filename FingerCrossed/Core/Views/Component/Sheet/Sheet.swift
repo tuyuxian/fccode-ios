@@ -28,7 +28,7 @@ struct Sheet<Header: View, Content: View, Footer: View>: View, KeyboardReadable 
     @State private var isKeyboardShowUp: Bool = false
     
     var body: some View {
-//        ScrollView([]) {
+        ScrollView([]) {
             VStack(spacing: 0) {
                 VStack(spacing: 15) {
                     showDragIndicator
@@ -44,15 +44,16 @@ struct Sheet<Header: View, Content: View, Footer: View>: View, KeyboardReadable 
                 }
                 content
             }
-//        }
-        .readHeight()
-        .onPreferenceChange(HeightPreferenceKey.self) { height in
-            if let height {
-                self.sheetContentHeight = height
-            }
         }
-        .presentationDetents([.height(self.sheetContentHeight - (isKeyboardShowUp ? 34 : 0))])
-//        .presentationDetents(size)
+//        .readHeight()
+//        .onPreferenceChange(HeightPreferenceKey.self) { height in
+//            print(height)
+//            if let height {
+//                self.sheetContentHeight = height
+//            }
+//        }
+//        .presentationDetents([.height(self.sheetContentHeight - (isKeyboardShowUp ? 34 : 0))])
+        .presentationDetents(size)
         .scrollDismissesKeyboard(.immediately)
         .safeAreaInset(
             edge: .bottom,
@@ -87,7 +88,10 @@ struct Sheet_Previews: PreviewProvider {
 struct HeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat?
 
-    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+    static func reduce(
+        value: inout CGFloat?,
+        nextValue: () -> CGFloat?
+    ) {
         guard let nextValue = nextValue() else { return }
         value = nextValue
     }
@@ -96,7 +100,10 @@ struct HeightPreferenceKey: PreferenceKey {
 private struct ReadHeightModifier: ViewModifier {
     private var sizeView: some View {
         GeometryReader { geometry in
-            Color.clear.preference(key: HeightPreferenceKey.self, value: geometry.size.height)
+            Color.clear.preference(
+                key: HeightPreferenceKey.self,
+                value: geometry.size.height
+            )
         }
     }
 

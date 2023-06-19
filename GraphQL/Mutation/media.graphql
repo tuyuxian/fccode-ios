@@ -3,6 +3,17 @@ mutation CreateLifePhoto($userId: ID!, $input: CreateLifePhotoInput!) {
     status
     statusCode
     message
+    user {
+      lifePhoto {
+        id
+        caption
+        contentURL
+        position
+        scale
+        offsetX
+        offsetY
+      }
+    }
   }
 }
 

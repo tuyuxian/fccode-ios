@@ -139,10 +139,10 @@ extension BasicInfoView {
                                 .frame(height: 24)
                             Spacer()
                         }
-    //                    LifePhotoStack(vm: vm)
-    //                        .onChange(of: vm.user.lifePhoto, perform: {val in
-    //                            vm.lifePhotoMap = Dictionary(uniqueKeysWithValues: val.map { ($0.position, $0) })
-    //                        })
+                        LifePhotoStack(
+                            basicInfoVM: vm,
+                            user: user
+                        )
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 16)

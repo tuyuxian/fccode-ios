@@ -8,7 +8,7 @@
 import Foundation
 import GraphQLAPI
 
-typealias GoalType = GraphQLAPI.GoalGoalType
+typealias GoalType = GoalGoalType
 
 extension GoalType: Codable {
     

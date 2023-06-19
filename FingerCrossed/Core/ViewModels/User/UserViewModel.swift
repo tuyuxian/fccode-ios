@@ -22,7 +22,7 @@ class UserViewModel: ObservableObject {
     @Published var toastType: Banner.BannerType?
     
     init(preview: Bool = false) {
-        print("-> [Profile] vm init")
+        print("-> [User] vm init")
         if !preview {
             Task { await fetchUser() }
         } else {

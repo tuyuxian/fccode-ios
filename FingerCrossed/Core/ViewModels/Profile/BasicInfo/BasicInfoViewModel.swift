@@ -21,8 +21,8 @@ class BasicInfoViewModel: ObservableObject {
     @Published var showEditSheet: Bool = false
     @Published var selectedImage: UIImage?
     @Published var selectedLifePhoto: LifePhoto?
-    @Published var currentDragLifePhoto: LifePhoto?
-//    @Published var lifePhotoMap: [Int: LifePhoto]
+//    @Published var currentDragLifePhoto: LifePhoto?
+    @Published var lifePhotoMap: [Int: LifePhoto] = [Int: LifePhoto]()
 
     /// Toast message
     @Published var bannerMessage: String?
@@ -33,7 +33,6 @@ class BasicInfoViewModel: ObservableObject {
 
     init() {
         print("-> [Basic Info] vm init")
-//        self.lifePhotoMap = Dictionary(uniqueKeysWithValues: user.lifePhoto.map { ($0.position, $0) })
     }
 
     deinit {

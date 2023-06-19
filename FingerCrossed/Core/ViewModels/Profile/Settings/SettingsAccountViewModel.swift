@@ -102,7 +102,7 @@ extension SettingsAccountViewModel {
             }
             let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
-                input: GraphQLAPI.CreateSocialAccountInput(
+                input: CreateSocialAccountInput(
                     email: email,
                     platform: .case(.apple)
                 )
@@ -132,7 +132,7 @@ extension SettingsAccountViewModel {
             }
             let statusCode = try await UserService.connectSocialAccount(
                 userId: self.userId,
-                input: GraphQLAPI.CreateSocialAccountInput(
+                input: CreateSocialAccountInput(
                     email: email,
                     platform: .case(.google)
                 )

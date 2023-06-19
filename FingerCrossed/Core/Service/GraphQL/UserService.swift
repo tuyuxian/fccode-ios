@@ -217,6 +217,7 @@ struct UserService {
                             } ?? []),
                             lifePhoto: Array(userData.lifePhoto?.map {
                                 LifePhoto(
+                                    id: $0.id,
                                     contentUrl: $0.contentURL,
                                     caption: $0.caption ?? "",
                                     position: $0.position,
@@ -344,7 +345,7 @@ struct UserService {
     
     static public func socialSignIn(
         email: String,
-        platform: GraphQLEnum<GraphQLAPI.SocialAccountPlatform>
+        platform: GraphQLEnum<SocialAccountPlatform>
     ) async throws -> (String, String) {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.fetch(

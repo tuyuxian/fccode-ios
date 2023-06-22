@@ -13,23 +13,42 @@ import GraphQLAPI
 class LifePhotoEditSheetViewModel: ObservableObject {
     
     @AppStorage("UserId") private var userId: String = ""
+    
+    enum CurrentView: Int {
+        case lifePhoto
+        case caption
+    }
+    
+    enum Transition: Int {
+        case forward
+        case backward
+    }
+    
+    @Published var transition: Transition = .forward
+    @Published var switchView: CurrentView = .lifePhoto
         
     /// View state
     @Published var state: ViewStatus = .none
     @Published var isSatisfied: Bool = false
     @Published var isKeyboardShowUp: Bool = false
-    @Published var selectedTag: Int = 3
+    @Published var selectedTag: Int = 0
 
     @Published var bottomPadding: CGFloat = 0
     @Published var currentOffset: CGSize = .zero
     @Published var uiImage: UIImage = UIImage()
     @Published var newUIImage: UIImage = UIImage()
+    @Published var caption: String = ""
     
     let textLengthLimit: Int = 200
     
 }
 
 extension LifePhotoEditSheetViewModel {
+    
+    public func continueOnTap() {
+        transition = .forward
+        switchView = .caption
+    }
     
     // swiftlint: disable function_parameter_count
     @MainActor
@@ -104,18 +123,33 @@ extension LifePhotoEditSheetViewModel {
 // MARK: Helper function
 extension LifePhotoEditSheetViewModel {
     
-    public func imageHeight() -> CGFloat {
+//    public func imageHeight() -> CGFloat {
+//        switch self.selectedTag {
+//        case 0:
+//            return (UIScreen.main.bounds.width - 48)/16 * 9
+//        case 1:
+//            return UIScreen.main.bounds.width - 48
+//        case 2:
+//            return (UIScreen.main.bounds.width - 48)/4 * 3
+//        case 3:
+//            return UIScreen.main.bounds.width - 48
+//        default:
+//            return UIScreen.main.bounds.width - 48
+//        }
+//    }
+    
+    public func imageHeight(width: CGFloat) -> CGFloat {
         switch self.selectedTag {
         case 0:
-            return (UIScreen.main.bounds.width - 48)/16 * 9
+            return (width - 48) * 9 / 16
         case 1:
-            return UIScreen.main.bounds.width - 48
+            return (width - 48) * 16 / 9
         case 2:
-            return (UIScreen.main.bounds.width - 48)/4 * 3
+            return (width - 48) * 3 / 4
         case 3:
-            return UIScreen.main.bounds.width - 48
+            return (width - 48) * 4 / 3
         default:
-            return UIScreen.main.bounds.width - 48
+            return (width - 48) * 9 / 16
         }
     }
     

@@ -41,47 +41,52 @@ extension LifePhotoEditSheet {
         }
         
         var body: some View {
-            AsyncImage(
-                url: URL(string: url),
-                transaction: Transaction(animation: .easeInOut)
-            ) { phase in
-                switch phase {
-                case .empty:
-                    Shimmer(
-                        size: CGSize(
-                            width: UIScreen.main.bounds.size.width - 48,
-                            height: 342
+            GeometryReader { geometry in
+                AsyncImage(
+                    url: URL(string: url),
+                    transaction: Transaction(animation: .easeInOut)
+                ) { phase in
+                    switch phase {
+                    case .empty:
+                        Shimmer(
+                            size: CGSize(
+                                width: UIScreen.main.bounds.size.width - 48,
+                                height: 342
+                            )
                         )
-                    )
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(
-                            width: vm.imageWidth(),
-                            height: vm.imageHeight()
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(
+                                width: geometry.size.width,
+                                height: vm.imageHeight(width: geometry.size.width)
+                            )
+                            .scaleEffect(basicInfoVM.selectedLifePhoto?.scale ?? 1)
+                            .cornerRadius(6)
+                            .gesture(magnification)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .strokeBorder(Color.yellow100, lineWidth: 1)
+                            )
+//                            .overlay(
+//                                BackgroundGrid(geometry: geometry)
+//                            )
+    //                        .onChange(of: uiImage, perform: { newImage in
+    //                            newUIImage = UIImage(
+    //                                data: newImage.jpegData(compressionQuality: 0.95)!)!
+    //                        })
+                        
+                    case .failure:
+                        Shimmer(
+                            size: CGSize(
+                                width: UIScreen.main.bounds.size.width - 48,
+                                height: 342
+                            )
                         )
-                        .scaleEffect(basicInfoVM.selectedLifePhoto?.scale ?? 1)
-                        .cornerRadius(6)
-                        .gesture(magnification)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .strokeBorder(Color.yellow100, lineWidth: 1)
-                        )
-//                        .onChange(of: uiImage, perform: { newImage in
-//                            newUIImage = UIImage(
-//                                data: newImage.jpegData(compressionQuality: 0.95)!)!
-//                        })
-                    
-                case .failure:
-                    Shimmer(
-                        size: CGSize(
-                            width: UIScreen.main.bounds.size.width - 48,
-                            height: 342
-                        )
-                    )
-                @unknown default:
-                    EmptyView()
+                    @unknown default:
+                        EmptyView()
+                    }
                 }
             }
         }

@@ -89,7 +89,7 @@ struct LifePhotoActionSheet: View {
                         .sheet(
                             isPresented: $vm.showImagePicker,
                             onDismiss: {
-                                guard basicInfoVM.selectedImage != nil else { return }
+                                guard  basicInfoVM.selectedImage != nil else { return }
                                 vm.showEditSheet = true
                             },
                             content: {
@@ -138,7 +138,8 @@ struct LifePhotoActionSheet: View {
         .sheet(
             isPresented: $vm.showEditSheet,
             onDismiss: {
-                basicInfoVM.selectedImage = nil
+                basicInfoVM.resetImage()
+//                basicInfoVM.selectedImage = nil
                 dismiss()
             },
             content: {

@@ -9,6 +9,7 @@ import SwiftUI
 import GraphQLAPI
 
 struct VoiceMessageActionSheet: View {
+    
     /// Banner
     @EnvironmentObject private var bm: BannerManager
     /// Observed user view model

@@ -19,7 +19,10 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     
     @Published var extractUIImage: UIImage!
     
-    let photoPermissionComfirmationDialogMessage: String = "To access all of your photos in Finger Crossed, allow access to your full library in device setting."
+    let photoPermissionComfirmationDialogMessage: String = """
+            To access all of your photos in Finger Crossed,
+            allow access to your full library in device setting.
+            """
     
     func openLimitedPicker() {
         if fetchedPhotos.isEmpty {
@@ -32,13 +35,13 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     }
         
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard let _ = allPhotos else { return }
+        guard let allPhotos = allPhotos else { return }
         
         if let updates = changeInstance.changeDetails(for: allPhotos) {
             
             let updatedPhotos = updates.fetchResultAfterChanges
             
-            updatedPhotos.enumerateObjects { [self] asset, index, _ in
+            updatedPhotos.enumerateObjects { [self] asset, _, _ in
                 if !allPhotos.contains(asset) {
                     if asset.mediaType == .image {
                         getImageFromAsset(asset: asset, size: CGSize(width: 110, height: 110)) { image in
@@ -50,7 +53,7 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
                 }
             }
             
-            allPhotos.enumerateObjects { asset, index, _ in
+            allPhotos.enumerateObjects { asset, _, _ in
                 if !updatedPhotos.contains(asset) {
                     DispatchQueue.main.async {
                         self.fetchedPhotos.removeAll { result -> Bool in
@@ -78,7 +81,7 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
         
         allPhotos = fetchResults
         
-        fetchResults.enumerateObjects { [self] asset, index, _ in
+        fetchResults.enumerateObjects { [self] asset, _, _ in
             if asset.mediaType == .image {
                 getImageFromAsset(asset: asset, size: CGSize(width: 110, height: 110)) { [self] image in
                     fetchedPhotos.append(PhotoAsset(photoAsset: asset, image: image))
@@ -95,7 +98,12 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
         imageOptions.deliveryMode = .highQualityFormat
         imageOptions.isSynchronous = false
         
-        imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: imageOptions) { image, _ in
+        imageManager.requestImage(
+            for: asset,
+            targetSize: size,
+            contentMode: .aspectFill,
+            options: imageOptions
+        ) { image, _ in
             guard let resizeImage = image else { return }
             
             completion(resizeImage)
@@ -103,7 +111,10 @@ class PhotoPickerViewModel: NSObject, ObservableObject, PHPhotoLibraryChangeObse
     }
     
     func extractImage(asset: PHAsset) {
-        getImageFromAsset(asset: asset, size: PHImageManagerMaximumSize) { image in
+        getImageFromAsset(
+            asset: asset,
+            size: PHImageManagerMaximumSize
+        ) { image in
             DispatchQueue.main.async {
                 self.extractUIImage = image
             }

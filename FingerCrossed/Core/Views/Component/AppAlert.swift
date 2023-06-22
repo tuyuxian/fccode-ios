@@ -23,12 +23,19 @@ enum AppAlert {
         cancelLabel: String,
         action: () -> Void
     )
+    case one(
+        title: String,
+        message: String,
+        dismissLabel: LocalizedStringKey,
+        dismissAction: () -> Void
+    )
     
     var title: String {
         switch self {
         case .basic(let title, _, _, _, _, _): return title
         case .errors: return "Oopsie!"
         case .singleButton(let title, _, _, _): return title
+        case .one(let title, _, _, _): return title
         }
     }
     
@@ -37,6 +44,7 @@ enum AppAlert {
         case .basic(_, let message, _, _, _, _): return message
         case .errors(let message): return message
         case .singleButton(_, let message, _, _): return message
+        case .one(_, let message, _, _): return message
         }
     }
     
@@ -45,6 +53,7 @@ enum AppAlert {
         case .basic(_, _, let actionLabel, _, _, _): return actionLabel
         case .errors: return "Cancel"
         case .singleButton: return ""
+        case .one: return ""
         }
     }
     
@@ -53,6 +62,7 @@ enum AppAlert {
         case .basic(_, _, _, let cancelLabel, _, _): return cancelLabel
         case .errors: return "Cancel"
         case .singleButton(_, _, let cancelLabel, _): return cancelLabel
+        case .one: return ""
         }
     }
     
@@ -61,6 +71,7 @@ enum AppAlert {
         case .basic(_, _, _, _, let action, _): return action
         case .errors: return {}
         case .singleButton(_, _, _, let action): return action
+        case .one: return {}
         }
     }
     
@@ -69,11 +80,59 @@ enum AppAlert {
         case .basic(_, _, _, _, _, let isDefaultStyle): return isDefaultStyle
         case .errors: return true
         case .singleButton: return true
+        case .one: return true
+        }
+    }
+
+    var dismissLabel: LocalizedStringKey {
+        switch self {
+        case .basic: return ""
+        case .errors: return ""
+        case .singleButton: return ""
+        case .one(_, _, let dismissLabel, _): return dismissLabel
+        }
+    }
+    
+    var dismissAction: () -> Void {
+        switch self {
+        case .basic: return {}
+        case .errors: return {}
+        case .singleButton: return {}
+        case .one(_, _, _, let action): return action
         }
     }
 }
 
 extension View {
+//    func one(_ appAlert: Binding<AppAlert?>) -> some View {
+//        let alertType = appAlert.wrappedValue
+//        return alert(
+//            title: alertType?.title ?? "",
+//            message: alertType?.message ?? "",
+//            dismissButton:
+//                CustomAlertButton(
+//                    title: alertType?.dismissLabel ?? "",
+//                    action: alertType?.dismissAction ?? {}
+//                ),
+//            isPresented: .constant(alertType != nil)
+//        )
+//    }
+    
+    func one(_ appAlert: Binding<AppAlert?>) -> some View {
+        let alertType = appAlert.wrappedValue
+        return
+        alertType != nil
+        ?
+        CustomAlert(
+            title: alertType?.title ?? "",
+            message: alertType?.message ?? "",
+            dismissButton: CustomAlertButton(title: alertType?.dismissLabel ?? "", action: alertType?.dismissAction ?? {}),
+            primaryButton: nil,
+            secondaryButton: nil)
+        :
+        nil
+    }
+    
     func singleButtonAlert(_ appAlert: Binding<AppAlert?>) -> some View {
         let alertType = appAlert.wrappedValue
         return alert(

@@ -43,6 +43,46 @@ extension View {
         )
     }
     
+    func alert(
+        title: String = "",
+        message: String = "",
+        dismissButton: CustomAlertButton,
+        isPresented: Binding<Bool>
+    ) -> some View {
+        let title   = NSLocalizedString(title, comment: "")
+        let message = NSLocalizedString(message, comment: "")
+    
+        return modifier(
+            CustomAlertModifier(
+                title: title,
+                message: message,
+                dismissButton: dismissButton,
+                isPresented: isPresented
+            )
+        )
+    }
+
+    func alert(
+        title: String = "",
+        message: String = "",
+        primaryButton: CustomAlertButton,
+        secondaryButton: CustomAlertButton,
+        isPresented: Binding<Bool>
+    ) -> some View {
+        let title   = NSLocalizedString(title, comment: "")
+        let message = NSLocalizedString(message, comment: "")
+    
+        return modifier(
+            CustomAlertModifier(
+                title: title,
+                message: message,
+                primaryButton: primaryButton,
+                secondaryButton: secondaryButton,
+                isPresented: isPresented
+            )
+        )
+    }
+    
     func hideKeyboard() {
         UIApplication.shared.sendAction(
             #selector(
@@ -54,15 +94,67 @@ extension View {
         )
     }
     
-    @ViewBuilder func applyTextColor(
-        _ color: Color
+    func transparentFullScreenCover<Content: View>(
+        isPresented: Binding<Bool>,
+        content: @escaping () -> Content
     ) -> some View {
-        if UITraitCollection.current.userInterfaceStyle == .light {
-          self.colorInvert().colorMultiply(color)
-        } else {
-          self.colorMultiply(color)
-        }
+        modifier(TransparentFullScreenModifier(
+            isPresented: isPresented,
+            fullScreenContent: content)
+        )
     }
+}
+
+// Transparent full screen cover background
+private struct TransparentFullScreenModifier<FullScreenContent: View>: ViewModifier {
+    
+    @Binding var isPresented: Bool
+    let fullScreenContent: () -> (FullScreenContent)
+    
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented) { _ in
+                UIView.setAnimationsEnabled(false)
+            }
+            .fullScreenCover(isPresented: $isPresented,
+                             content: {
+                ZStack {
+                    fullScreenContent()
+                }
+                .background(FullScreenCoverBackgroundRemovalView())
+                .onAppear {
+                    if !UIView.areAnimationsEnabled {
+                        UIView.setAnimationsEnabled(true)
+                    }
+                }
+                .onDisappear {
+                    if !UIView.areAnimationsEnabled {
+                        UIView.setAnimationsEnabled(true)
+                    }
+                }
+            })
+    }
+    
+}
+
+private struct FullScreenCoverBackgroundRemovalView: UIViewRepresentable {
+    
+    private class BackgroundRemovalView: UIView {
+        
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            
+            superview?.superview?.backgroundColor = .clear
+        }
+        
+    }
+    
+    func makeUIView(context: Context) -> UIView {
+        return BackgroundRemovalView()
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {}
+    
 }
 
 // Custom RoundedCorner shape used for cornerRadius extension above

@@ -16,6 +16,8 @@ struct FingerCrossedApp: App {
     
     @StateObject var pageSpinnerManager: PageSpinnerManager = PageSpinnerManager()
     
+    @State private var id: UUID = UUID()
+    
     var body: some Scene {
         
         WindowGroup {
@@ -42,11 +44,11 @@ struct FingerCrossedApp: App {
                         .environmentObject(userManager)
                         .environmentObject(bannerManager)
                 }
-                
+
                 if bannerManager.isPresented {
                     BannerContent(bm: bannerManager)
                 }
-                
+
                 if pageSpinnerManager.isPresented {
                     PageSpinner()
                 }

@@ -10,11 +10,9 @@ import SwiftUI
 public enum FCIcon: String {
     // MARK: Heart
     case brokenHeart = "BrokenHeart"
-    case brokenHeartPink = "BrokenHeartPink"
-    case brokenHeartWhite = "BrokenHeartWhite"
+    case brokenHeartMedium = "BrokenHeartMedium"
     case heart = "Heart"
-    case heartPink = "heartPink"
-    case heartWhite = "heartWhite"
+    case heartMedium = "HeartMedium"
     
     // MARK: Media
     // - Audio
@@ -60,7 +58,7 @@ public enum FCIcon: String {
     case globeWhite = "GlobeWhite"
     case infoCircle = "InfoCircle"
     case location = "Location"
-    case locationWhite = "locationWhite"
+    case locationWhite = "LocationWhite"
     case more = "More"
     case moreWhite = "MoreWhite"
     case search = "Search"

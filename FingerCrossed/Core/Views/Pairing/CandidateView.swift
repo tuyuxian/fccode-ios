@@ -8,252 +8,152 @@
 import SwiftUI
 
 struct CandidateView: View {
-    @State var candidateModel: CandidateModel
-    @State var lifePhotoList: [LifePhoto]
-    @State var index = 0
+    
+    @State var candidate: CandidateModel
+    
+    @State private var photoIndex = 0
+    
     @State private var currentTab = 0
-    @State var isSheetPresented: Bool = false
-    @Binding var isLiked: Bool
-    @Binding var isDisliked: Bool
-    @State var config: ProfileViewModel = ProfileViewModel()
+    
+    @State private var showSheet: Bool = false
     
     var body: some View {
         
         ZStack {
             GeometryReader { geometry in
                 TabView(selection: $currentTab) {
-                    ForEach(lifePhotoList) { list in
-
-                        AsyncImageLoader(
-                            url: URL(string: list.contentUrl)!,
-                            placeholder: {
-                                Shimmer(
-                                    size: CGSize(
-                                        width: geometry.size.width,
-                                        height: geometry.size.height
-                                    )
-                                )
-                            },
-                            image: { Image(uiImage: $0)})
-                        .tag(lifePhotoList.firstIndex(where: { $0 == list })!)
-                        
+                    ForEach(candidate.lifePhotos) { lifePhoto in
+                        FCAsyncImage(
+                            url: URL(string: lifePhoto.contentUrl)!
+                        )
+                        .frame(width: geometry.size.width)
+                        .clipped()
+                        .tag(lifePhoto.position)
                     }
                 }
-                .frame(width: geometry.size.width)
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .edgesIgnoringSafeArea(.all)
-                .onChange(of: currentTab) { value in
-                    index = value
+                .onChange(of: currentTab) { val in
+                    withAnimation(.spring()) {
+                        photoIndex = val
+                    }
                 }
                 .onTapGesture(count: 2) {
-                    isLiked.toggle()
+                    
                 }
             }
             
-            VStack(spacing: 0.0) {
-                Spacer()
-                    .frame(height: 70)
-                // Carousel Index section
-                HStack(spacing: 14) {
-                    ForEach(0..<lifePhotoList.count, id: \.self) { index in
-                        
-                        if index == self.index {
-                            RoundedRectangle(cornerRadius: 50)
-                                .fill(Color.white)
-                                .frame(width: 40, height: 8)
-                        }else {
-                            Circle()
-                                .fill(Color.white)
-                                .frame(width: 8, height: 8)
+            VStack(spacing: 0) {
+                if candidate.lifePhotos.count > 1 {
+                    HStack(spacing: 14) {
+                        ForEach(
+                            0..<candidate.lifePhotos.count,
+                            id: \.self
+                        ) { index in
+                            if index == photoIndex {
+                                RoundedRectangle(cornerRadius: 50)
+                                    .fill(Color.white)
+                                    .frame(width: 40, height: 8)
+                            } else {
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 8, height: 8)
+                            }
                         }
                     }
+                    .padding(.top, 60)
                 }
                 
                 Spacer()
                 
-                // Heart Button Section
                 VStack(spacing: 16) {
+                    Circle()
+                        .fill(Color.text.opacity(0.4))
+                        .frame(width: 50, height: 50)
+                        .overlay(
+                            FCIcon.heartMedium
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Color.white)
+                                .frame(width: 36, height: 36)
+                        )
                     
-//                    Button {
-//                        print("like")
-//                        isLiked.toggle()
-//                    } label: {
-//                        Image(isLiked ? "HeartPink" : "HeartWhite")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(width: 30, height: 30)
-//                    }
-//                    .buttonStyle(IconButtonWithBackground(size: 50, buttonColor: Color.text.opacity(0.4)))
-//
-//                    Button {
-//                        print("dislike")
-//                        isDisliked.toggle()
-//                    } label: {
-//                        Image(isDisliked ? "BrokenHeartPink" : "BrokenHeartWhite")
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(width: 30, height: 30)
-//                            .foregroundColor(Color.white)
-//                    }
-//                    .buttonStyle(IconButtonWithBackground(size: 50, buttonColor: Color.text.opacity(0.4)))
+                    Circle()
+                        .fill(Color.text.opacity(0.4))
+                        .frame(width: 50, height: 50)
+                        .overlay(
+                            FCIcon.brokenHeartMedium
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Color.white)
+                                .frame(width: 36, height: 36)
+                        )
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.horizontal, 24)
                 .padding(.bottom, 16)
                 
-                // CandidateInfo Section
-                ZStack {
-                    VStack(spacing: 8.0) {
-                        Text(candidateModel.username)
-                            .fontTemplate(.h2Medium)
-                            .foregroundColor(Color.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 10)
-                        
-                        HStack {
-                            CandidateDetailItem(
-                                iconName: "GenderWhite",
-                                label: candidateModel.gender,
-                                iconColor: Color.white,
-                                labelColor: Color.white
-                            )
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.text.opacity(0.4))
+                    .frame(height: 112)
+                    .overlay(
+                        ZStack(alignment: .top) {
+                            VStack(spacing: 6) {
+                                Text(candidate.username)
+                                    .fontTemplate(.h2Medium)
+                                    .foregroundColor(Color.white)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 
-                            CandidateDetailItem(
-                                iconName: "AgeWhite",
-                                label: String(candidateModel.age),
-                                iconColor: Color.white,
-                                labelColor: Color.white
-                            )
-                        }
-                        .padding(.horizontal, 19)
-                        
-                        HStack {
-                            CandidateDetailItem(
-                                iconName: "LocationWhite",
-                                label: candidateModel.location,
-                                iconColor: Color.white,
-                                labelColor: Color.white
-                            )
+                                CandidateDetailView.InfoCard(
+                                    candidate: candidate,
+                                    labelColor: Color.white
+                                )
+                            }
                             
-                            CandidateDetailItem(
-                                iconName: "GlobeWhite",
-                                label: candidateModel.nationality,
-                                iconColor: Color.white,
-                                labelColor: Color.white
-                            )
+                            FCIcon.moreWhite
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
-                        .padding(.horizontal, 19)
-                        .padding(.bottom, 12)
-                        
-                    }
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        print("\(isSheetPresented)")
-                        isSheetPresented.toggle()
-                    }
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.text.opacity(0.4))
+                        .padding(10)
                     )
-                    .padding(.horizontal, 24)
-                    
-                    Button {
-                        print("Btb: \(isSheetPresented)")
-                        isSheetPresented.toggle()
-                    } label: {
-                        Image("MoreWhite")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .padding(.trailing, 10)
-                            .padding(.top, 15)
-                    }
-                    .padding(.horizontal, 24)
-                    .frame(height: 112, alignment: .top)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    
-                }
-                .padding(.bottom, 30)
+                    .onTapGesture { showSheet.toggle() }
+                    .padding(.bottom, 16)
             }
+            .padding(.horizontal, 24)
             .frame(width: UIScreen.main.bounds.width)
         }
-        .sheet(isPresented: $isSheetPresented) {
-            print("Sheet dismissed")
-        } content: {
-            CandidateDetailView(candidateModel: candidateModel, lifePhotoList: lifePhotoList)
+        .sheet(isPresented: $showSheet) {
+            CandidateDetailView(candidate: candidate)
                 .presentationDetents([.large])
+                .preferredColorScheme(.light)
         }
-        .overlay(
-            ZStack {
-                Color.text.opacity(0.4)
-                
-                isLiked ?
-                Image("HeartPink")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 90, height: 90)
-                : nil
-                
-                isDisliked ?
-                Image("BrokenHeartPink")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 90, height: 90)
-                : nil
-                
-            }
-            .ignoresSafeArea(.all)
-            .opacity(isLiked || isDisliked ? 1 : 0)
-        )
-        
+//        .overlay(
+//            ZStack {
+//                Color.text.opacity(0.4)
+//
+//                isLiked ?
+//                Image("HeartPink")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: 90, height: 90)
+//                : nil
+//
+//                isDisliked ?
+//                Image("BrokenHeartPink")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: 90, height: 90)
+//                : nil
+//
+//            }
+//            .ignoresSafeArea(.all)
+//            .opacity(isLiked || isDisliked ? 1 : 0)
+//        )
     }
     
-}
-
-private var isLiked: Binding<Bool> {
-    Binding.constant(false)
 }
 
 struct CandidateView_Previews: PreviewProvider {
     static var previews: some View {
         CandidateView(
-            candidateModel:
-                CandidateModel(
-                    lifePhotoList: [LifePhoto](),
-                    username: "UserName",
-                    selfIntro: "selfIntro",
-                    gender: "Female",
-                    age: 30,
-                    location: "Tempe",
-                    nationality: "America"
-                ),
-            lifePhotoList: [
-                LifePhoto(
-                    id: "0",
-                    // swiftlint: disable line_length
-                    contentUrl: "https://img.freepik.com/free-photo/smiling-portrait-business-woman-beautiful_1303-2288.jpg?t=st=1681419194~exp=1681419794~hmac=72eb85b89df744cb0d7276e0a0c76a0f568c9e11d1f6b621303e0c6325a7f35c",
-                    // swiftlint: enable line_length
-                    caption: "caption1",
-                    position: 0,
-                    ratio: 3,
-                    scale: 1,
-                    offset: CGSize.zero
-                ),
-                LifePhoto(
-                    id: "1",
-                    // swiftlint: disable line_length
-                    contentUrl: "https://lifetouch.ca/wp-content/uploads/2015/03/photography-and-self-esteem.jpg",
-                    // swiftlint: enable line_length
-                    caption: "caption2",
-                    position: 1,
-                    ratio: 3,
-                    scale: 1,
-                    offset: CGSize.zero
-                )
-            ],
-            isLiked: isLiked,
-            isDisliked: isLiked
+            candidate: CandidateModel.MockCandidate
         )
     }
 }

@@ -44,8 +44,12 @@ struct SelfIntroEditSheet: View {
                     .frame(height: 244)
                     .padding(.top, 16)
                     .padding(.bottom, 10)
-                    .onChange(of: text) { _ in
-                        vm.isSatisfied = true
+                    .onChange(of: text) { val in
+                        if val != user.data?.selfIntro {
+                            vm.isSatisfied = true
+                        } else {
+                            vm.isSatisfied = false
+                        }
                     }
                     .focused($focus)
                     

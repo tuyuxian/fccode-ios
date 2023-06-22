@@ -104,13 +104,12 @@ struct NationalityEditSheet: View {
         }
     }
 
-    // MARK: functions
     private func searchForCountry(
         _ txt: String
     ) -> Bool {
-        // swiftlint: disable line_length
-        return txt.lowercased(with: .current).hasPrefix(countryName.lowercased(with: .current)) || countryName.isEmpty
-        // swiftlint: enable line_length
+        return txt.lowercased(with: .current).hasPrefix(
+            countryName.lowercased(with: .current)
+        ) || countryName.isEmpty
     }
     
     private func isSelected(
@@ -147,4 +146,51 @@ struct NationalityEditSheet_Previews: PreviewProvider {
             isPreference: .constant(false)
         )
     }
+}
+
+extension NationalityEditSheet {
+    
+    struct NationalityItem: View {
+        
+        let nationality: Nationality
+        
+        var isSelected: Bool = false
+        
+        init(
+            nationality: Nationality,
+            isSelected: Bool
+        ) {
+            self.nationality = nationality
+            self.isSelected = isSelected
+        }
+        
+        var body: some View {
+            VStack {
+                HStack(
+                    alignment: .center,
+                    spacing: 6
+                ) {
+                    Text(nationality.name)
+                        .fontTemplate(.pMedium)
+                        .foregroundColor(Color.text)
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .leading
+                        )
+                        .frame(height: 24)
+                    isSelected
+                    ? FCIcon.checkCirle
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Color.gold)
+                        .frame(
+                            width: 24,
+                            height: 24
+                        )
+                    : nil
+                }
+            }
+        }
+    }
+
 }

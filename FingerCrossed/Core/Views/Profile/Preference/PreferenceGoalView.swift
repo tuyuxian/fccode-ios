@@ -15,10 +15,6 @@ struct PreferenceGoalView: View {
     /// Init preference goal view model
     @StateObject var vm = PreferenceGoalViewModel()
     
-    init() {
-        print("[Preference Goal] view init")
-    }
-    
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
@@ -53,7 +49,7 @@ struct PreferenceGoalView: View {
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
                     .onChange(of: vm.preference.goals) { goals in
-                        vm.showSaveButton = !(goals == vm.originalValue)
+                        vm.checkEquality(goals: goals)
                     }
                     
                     Spacer()

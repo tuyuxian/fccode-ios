@@ -36,7 +36,10 @@ class PreferenceEthnicityViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
-    @Published var oringinalValue: [Ethnicity] = []
+    
+    /// Check Equality
+    @Published var originalValue: [Ethnicity] = []
+    private var checkList: [Bool] = []
     
     /// View state
     @Published var state: ViewStatus = .none
@@ -45,14 +48,6 @@ class PreferenceEthnicityViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Ethnicity] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Ethnicity] vm deinit")
-    }
 }
 
 extension PreferenceEthnicityViewModel {
@@ -81,6 +76,20 @@ extension PreferenceEthnicityViewModel {
             return .et9
         default:
             return nil
+        }
+    }
+    
+    public func checkEquality(ethnicities: [Ethnicity]) {
+        if ethnicities.count == originalValue.count {
+            ethnicities.forEach { ethnicitie in
+                checkList.append(originalValue.contains { item in
+                    item.type == ethnicitie.type
+                })
+            }
+            showSaveButton = checkList.contains(false)
+            checkList = []
+        } else {
+            showSaveButton = true
         }
     }
     

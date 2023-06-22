@@ -14,10 +14,6 @@ struct PreferenceAgeView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference age view model
     @StateObject var vm = PreferenceAgeViewModel()
-    
-    init() {
-        print("[Preference Age] view init")
-    }
         
     var body: some View {
         ContainerWithHeaderView(
@@ -40,10 +36,16 @@ struct PreferenceAgeView: View {
                     vm.originalAgeTo = vm.preference.ageRange.to
                 }
                 .onChange(of: vm.preference.ageRange.from) { ageFrom in
-                    vm.showSaveButton = !(ageFrom == vm.originalAgeFrom && vm.originalAgeTo == vm.preference.ageRange.to)
+                    vm.showSaveButton = !(
+                        ageFrom == vm.originalAgeFrom &&
+                        vm.originalAgeTo == vm.preference.ageRange.to
+                    )
                 }
                 .onChange(of: vm.preference.ageRange.to) { ageTo in
-                    vm.showSaveButton = !(ageTo == vm.originalAgeTo && vm.originalAgeFrom == vm.preference.ageRange.from)
+                    vm.showSaveButton = !(
+                        ageTo == vm.originalAgeTo &&
+                        vm.originalAgeFrom == vm.preference.ageRange.from
+                    )
                 }
                 
                 Spacer()

@@ -157,6 +157,20 @@ struct VoiceMessageEditSheet: View {
         )
         .appAlert($vm.appAlert)
         .singleButtonAlert($vm.appAlert)
+        .one($vm.appAlert)
+//        .alert(
+//            title: "Oopsie",
+//            message: "Something went wrong",
+//            dismissButton:
+//                CustomAlertButton(
+//                    title: "Try again",
+//                    action: {
+//                        DispatchQueue.main.async {
+//                            vm.errorReset()
+//                        }
+//                    }
+//                ),
+//            isPresented: $vm.isPresented)
         .task {
             if let url = user.data?.voiceContentURL {
                 if url != "" {

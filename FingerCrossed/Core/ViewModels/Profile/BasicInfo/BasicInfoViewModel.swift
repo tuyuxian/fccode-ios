@@ -66,6 +66,11 @@ extension BasicInfoViewModel {
             sheetContent: sheetContent
         )
     }
+    
+    @MainActor
+    public func resetImage() {
+        self.selectedImage = nil
+    }
 }
 
 extension BasicInfoViewModel {

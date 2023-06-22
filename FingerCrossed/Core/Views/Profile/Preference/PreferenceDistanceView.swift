@@ -14,10 +14,6 @@ struct PreferenceDistanceView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference distance view model
     @StateObject var vm = PreferenceDistanceViewModel()
-
-    init() {
-        print("[Preference Distance] view init")
-    }
     
     var body: some View {
         ContainerWithHeaderView(

@@ -44,15 +44,15 @@ extension LifePhotoEditSheet {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(
-                        width: vm.imageWidth(),
-                        height: vm.imageHeight()
+                        width: geometry.size.width,
+                        height: vm.imageHeight(width: geometry.size.width)
                     )
                     .scaleEffect(basicInfoVM.selectedLifePhoto?.scale ?? 1)
                     .cornerRadius(6)
                     .gesture(magnification)
-                    .overlay(
-                        BackgroundGrid(geometry: geometry)
-                    )
+//                    .overlay(
+//                        BackgroundGrid(geometry: geometry)
+//                    )
             }
         }
         

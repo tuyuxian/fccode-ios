@@ -32,14 +32,6 @@ class PreferenceAgeViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Age] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Age] vm deinit")
-    }
 }
 
 extension PreferenceAgeViewModel {

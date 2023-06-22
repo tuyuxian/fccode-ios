@@ -18,6 +18,16 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
     @State var text: String
     
     @FocusState private var focus: Bool
+    
+    let transitionForward: AnyTransition = .asymmetric(
+        insertion: .move(edge: .trailing),
+        removal: .move(edge: .leading)
+    )
+    
+    let transitionBackward: AnyTransition = .asymmetric(
+        insertion: .move(edge: .leading),
+        removal: .move(edge: .trailing)
+    )
 
     var body: some View {
         Sheet(
@@ -27,83 +37,123 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                     .fontTemplate(.h2Medium)
                     .foregroundColor(Color.text)
                     .frame(height: 34)
-                    .padding(.bottom, 16)
+                    .padding(.bottom, 4)
             },
             content: {
-                ScrollViewReader { scroll in
-                    ScrollView {
-                        VStack(spacing: 16) {
-                            if basicInfoVM.selectedImage != nil {
-                                VStack {}
-                                    .frame(width: UIScreen.main.bounds.width - 48, height: 342)
-                                    .id(2)
-                                    .background(
-                                        EditableImage(
-                                            basicInfoVM: basicInfoVM,
-                                            vm: vm
-                                        )
-                                    )
-                            } else {
-                                if let url = basicInfoVM.selectedLifePhoto?.contentUrl {
-                                    VStack {}
-                                        .frame(width: UIScreen.main.bounds.width - 48, height: 342)
-                                        .id(2)
-                                        .background(
-                                            EditableAsyncImage(
-                                                basicInfoVM: basicInfoVM,
-                                                vm: vm,
-                                                url: url
-                                            )
-                                        )
-                                }
-                            }
-
-                            HStack(spacing: 12) {
-                                TagButton(label: "16:9", tag: .constant(1), isSelected: $vm.selectedTag)
-                                TagButton(label: "9:16", tag: .constant(2), isSelected: $vm.selectedTag)
-                                TagButton(label: "4:3", tag: .constant(3), isSelected: $vm.selectedTag)
-                                TagButton(label: "3:4", tag: .constant(4), isSelected: $vm.selectedTag)
-                            }
-                            
-                            CaptionInputBar(
-                                text: $text,
-                                hint: "Write a caption...",
-                                defaultPresentLine: 8,
-                                lineLimit: 8,
-                                textLengthLimit: vm.textLengthLimit
+                Group {
+                    switch vm.switchView {
+                    case .lifePhoto:
+                        LifePhotoView(basicInfoVM: basicInfoVM, vm: vm)
+                            .transition(
+                                vm.transition == .forward
+                                ? transitionForward
+                                : transitionBackward
                             )
-                            .focused($focus)
-                            .onChange(of: text) { _ in
-                                vm.isSatisfied = true
-                            }
-                            .onReceive(keyboardPublisher) { val in
-                                vm.isKeyboardShowUp = val
-                                withAnimation {
-                                    scroll.scrollTo(
-                                        vm.isKeyboardShowUp ? 1 : 2,
-                                        anchor: .top
-                                    )
-                                }
-                            }
-                            
-                            Spacer().id(1)
-                        }
-                        .onTapGesture {
-                            focus = false
-                        }
+                    case .caption:
+                        CaptionView(basicInfoVM: basicInfoVM, vm: vm)
+                            .transition(
+                                vm.transition == .forward
+                                ? transitionForward
+                                : transitionBackward
+                            )
                     }
-                    .scrollDisabled(true)
                 }
+                .animation(
+                    .easeInOut(duration: 0.5),
+                    value: vm.switchView
+                )
+                
+//                ScrollViewReader { scroll in
+//                    ScrollView {
+//                        VStack(spacing: 16) {
+//                            if basicInfoVM.selectedImage != nil {
+//                                VStack {}
+//                                    .frame(width: UIScreen.main.bounds.width - 48, height: 342)
+//                                    .id(2)
+//                                    .background(
+//                                        EditableImage(
+//                                            basicInfoVM: basicInfoVM,
+//                                            vm: vm
+//                                        )
+//                                    )
+//                            } else {
+//                                if let url = basicInfoVM.selectedLifePhoto?.contentUrl {
+//                                    VStack {}
+//                                        .frame(width: UIScreen.main.bounds.width - 48, height: 342)
+//                                        .id(2)
+//                                        .background(
+//                                            EditableAsyncImage(
+//                                                basicInfoVM: basicInfoVM,
+//                                                vm: vm,
+//                                                url: url
+//                                            )
+//                                        )
+//                                }
+//                            }
+//
+//                            HStack(spacing: 12) {
+//                                TagButton(label: "16:9", tag: .constant(1), isSelected: $vm.selectedTag)
+//                                TagButton(label: "9:16", tag: .constant(2), isSelected: $vm.selectedTag)
+//                                TagButton(label: "4:3", tag: .constant(3), isSelected: $vm.selectedTag)
+//                                TagButton(label: "3:4", tag: .constant(4), isSelected: $vm.selectedTag)
+//                            }
+//
+//                            CaptionInputBar(
+//                                text: $text,
+//                                hint: "Write a caption...",
+//                                defaultPresentLine: 8,
+//                                lineLimit: 8,
+//                                textLengthLimit: vm.textLengthLimit
+//                            )
+//                            .focused($focus)
+//                            .onChange(of: text) { _ in
+//                                vm.isSatisfied = true
+//                            }
+//                            .onReceive(keyboardPublisher) { val in
+//                                vm.isKeyboardShowUp = val
+//                                withAnimation {
+//                                    scroll.scrollTo(
+//                                        vm.isKeyboardShowUp ? 1 : 2,
+//                                        anchor: .top
+//                                    )
+//                                }
+//                            }
+//
+//                            Spacer().id(1)
+//                        }
+//                        .onTapGesture {
+//                            focus = false
+//                        }
+//                    }
+//                    .scrollDisabled(true)
+//                }
             },
             footer: {
-                vm.isKeyboardShowUp
-                ? nil
-                : PrimaryButton(
-                    label: "Save",
-                    action: save,
-                    isTappable: $vm.isSatisfied,
-                    isLoading: .constant(vm.state == .loading)
-                )
+//                vm.isKeyboardShowUp
+//                ? nil
+//                : PrimaryButton(
+//                    label: "Save",
+//                    action: save,
+//                    isTappable: $vm.isSatisfied,
+//                    isLoading: .constant(vm.state == .loading)
+//                )
+                Group {
+                    vm.switchView == .lifePhoto
+                    ?
+                    PrimaryButton(
+                        label: "Continuie",
+                        action: vm.continueOnTap,
+                        isTappable: .constant(true),
+                        isLoading: .constant(vm.state == .loading)
+                    )
+                    :
+                    PrimaryButton(
+                        label: "Save",
+                        action: save,
+                        isTappable: $vm.isSatisfied,
+                        isLoading: .constant(vm.state == .loading)
+                    )
+                }
                 .padding(.bottom, 16)
             }
         )

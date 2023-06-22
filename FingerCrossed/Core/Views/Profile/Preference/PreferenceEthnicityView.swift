@@ -14,10 +14,6 @@ struct PreferenceEthnicityView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference ethnicity view model
     @StateObject var vm = PreferenceEthnicityViewModel()
-    
-    init() {
-        print("[Preference Ethnicity] view init")
-    }
 
     var body: some View {
         ContainerWithHeaderView(
@@ -48,12 +44,12 @@ struct PreferenceEthnicityView: View {
                         }
                     )
                     .onAppear {
-                        vm.oringinalValue = vm.preference.ethnicities
+                        vm.originalValue = vm.preference.ethnicities
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
                     .onChange(of: vm.preference.ethnicities) { ethnicities in
-                        vm.showSaveButton = !(ethnicities == vm.oringinalValue)
+                        vm.checkEquality(ethnicities: ethnicities)
                     }
                     
                     Spacer()

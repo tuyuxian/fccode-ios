@@ -40,14 +40,6 @@ class PreferenceDistanceViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Distance] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Distance] vm deinit")
-    }
 }
 
 extension PreferenceDistanceViewModel {

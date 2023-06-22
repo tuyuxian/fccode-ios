@@ -15,10 +15,6 @@ struct PreferenceNationalityView: View {
     /// Init preference nationality view model
     @StateObject var vm = PreferenceNationalityViewModel()
 
-    init() {
-        print("[Preference Nationality] view init")
-    }
-
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Preference",
@@ -43,7 +39,7 @@ struct PreferenceNationalityView: View {
                         vm.originalValue = vm.preference.nationalities
                     }
                     .onChange(of: vm.preference.nationalities) { nationalities in
-                        vm.showSaveButton = !(nationalities == vm.originalValue)
+                        vm.checkEquality(nationalities: nationalities)
                     }
                 }
                 .padding(.top, 30)

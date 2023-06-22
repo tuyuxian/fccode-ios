@@ -56,8 +56,8 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
     @Published var appAlert: AppAlert?
     let alertTitle: String = "Oopsie!"
     let alertMessage: String = "Something went wrong."
-    let alertButtonLabel: String = "Try again"
-
+    let alertButtonLabel: LocalizedStringKey = "Redo Recording"
+    @Published var isPresented: Bool = false
 }
 
 extension VoiceMessageEditSheetViewModel {
@@ -85,15 +85,25 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
-            self.appAlert = .singleButton(
+//            self.appAlert = .singleButton(
+//                title: alertTitle,
+//                message: alertMessage,
+//                cancelLabel: alertButtonLabel,
+//                action: {
+//                    self.errorReset()
+//                }
+//            )
+//            self.isPresented.toggle()
+            self.appAlert = .one(
                 title: alertTitle,
                 message: alertMessage,
-                cancelLabel: alertButtonLabel,
-                action: {
+                dismissLabel: alertButtonLabel,
+                dismissAction: {
                     self.errorReset()
                 }
             )
             print(error.localizedDescription)
+            print("Label: \(alertButtonLabel)")
         }
     }
     
@@ -102,6 +112,9 @@ extension VoiceMessageEditSheetViewModel {
         do {
             self.stopPlaying()
             self.state = .loading
+            if self.sourceUrl != "" {
+                try await self.deleteRemote()
+            }
             let url = try await MediaService.getPresignedPutUrl(.case(.audio))
             guard let url = url else { throw FCError.VoiceMessage.getPresignedUrlFailed }
             let remoteUrl = try await AWSS3.uploadAudio(
@@ -120,14 +133,24 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
-            self.appAlert = .singleButton(
+//            self.appAlert = .singleButton(
+//                title: alertTitle,
+//                message: alertMessage,
+//                cancelLabel: alertButtonLabel,
+//                action: {
+//                    self.errorReset()
+//                }
+//            )
+//            self.isPresented.toggle()
+            self.appAlert = .one(
                 title: alertTitle,
                 message: alertMessage,
-                cancelLabel: alertButtonLabel,
-                action: {
+                dismissLabel: alertButtonLabel,
+                dismissAction: {
                     self.errorReset()
                 }
             )
+            print("Label: \(alertButtonLabel)")
             print(error.localizedDescription)
         }
     }
@@ -168,14 +191,24 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
-            self.appAlert = .singleButton(
+//            self.appAlert = .singleButton(
+//                title: alertTitle,
+//                message: alertMessage,
+//                cancelLabel: alertButtonLabel,
+//                action: {
+//                    self.errorReset()
+//                }
+//            )
+//            self.isPresented.toggle()
+            self.appAlert = .one(
                 title: alertTitle,
                 message: alertMessage,
-                cancelLabel: alertButtonLabel,
-                action: {
+                dismissLabel: alertButtonLabel,
+                dismissAction: {
                     self.errorReset()
                 }
             )
+            print("Label: \(alertButtonLabel)")
             print(error.localizedDescription)
         }
     }
@@ -197,14 +230,24 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
-            self.appAlert = .singleButton(
+//            self.appAlert = .singleButton(
+//                title: alertTitle,
+//                message: alertMessage,
+//                cancelLabel: alertButtonLabel,
+//                action: {
+//                    self.errorReset()
+//                }
+//            )
+//            self.isPresented.toggle()
+            self.appAlert = .one(
                 title: alertTitle,
                 message: alertMessage,
-                cancelLabel: alertButtonLabel,
-                action: {
+                dismissLabel: alertButtonLabel,
+                dismissAction: {
                     self.errorReset()
                 }
             )
+            print("Label: \(alertButtonLabel)")
             print(error.localizedDescription)
         }
     }
@@ -228,6 +271,7 @@ extension VoiceMessageEditSheetViewModel {
     public func stopPlaying() {
         self.audioPlayer.pause()
         self.timeRemaining = self.voiceMessageDuration
+        self.progress = 0.0
         self.stopTimer()
         self.isPlaying = false
         self.updateTimer?.invalidate()
@@ -239,7 +283,10 @@ extension VoiceMessageEditSheetViewModel {
         do {
             self.state = .loading
             self.stopPlaying()
-            try await self.delete()
+            if audioUrl != nil {
+                try await self.deleteLocal()
+            }
+            self.timeRemaining = 59
             self.hasVoiceMessage = false
             self.showSaveButton = false
             self.samples = []
@@ -248,34 +295,44 @@ extension VoiceMessageEditSheetViewModel {
         } catch {
             self.state = .error
             // TODO(Lawrence): show alert
-            self.appAlert = .singleButton(
+//            self.appAlert = .singleButton(
+//                title: alertTitle,
+//                message: alertMessage,
+//                cancelLabel: alertButtonLabel,
+//                action: {
+//                    self.errorReset()
+//                }
+//            )
+//            self.isPresented.toggle()
+            self.appAlert = .one(
                 title: alertTitle,
                 message: alertMessage,
-                cancelLabel: alertButtonLabel,
-                action: {
+                dismissLabel: alertButtonLabel,
+                dismissAction: {
                     self.errorReset()
                 }
             )
+            print("Label: \(alertButtonLabel)")
             print(error.localizedDescription)
         }
     }
     
-    @MainActor
-    private func delete() async throws {
-        if self.sourceUrl != "" {
-            try await self.deleteRemote()
-        } else {
-            try await deleteLocal()
-        }
-
-        self.timeRemaining = 59
-        self.sourceUrl = ""
-
-    }
+//    @MainActor
+//    private func delete() async throws {
+//        if self.sourceUrl != "" {
+//            try await self.deleteRemote()
+//        } else {
+//            try await deleteLocal()
+//        }
+//
+//        self.timeRemaining = 59
+//        self.sourceUrl = ""
+//
+//    }
 
     @MainActor
     private func deleteLocal() async throws {
-        try FileManager.default.removeItem(at: self.audioRecorder.url)
+        try FileManager.default.removeItem(at: self.audioUrl!)
     }
 
     @MainActor
@@ -338,11 +395,12 @@ extension VoiceMessageEditSheetViewModel {
     }
     
     @MainActor
-    private func errorReset() {
+    public func errorReset() {
         self.state = .loading
         self.stopPlaying()
         self.hasVoiceMessage = false
         self.showSaveButton = false
+        self.timeRemaining = 59
         self.samples = []
         self.state = .none
     }

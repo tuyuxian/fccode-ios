@@ -27,9 +27,9 @@ struct HelpSupportView: View {
                         
                         ContactUs()
                         
-                        TermsOfService()
+                        TermsOfServiceSheet.TermsOfService()
 
-                        Privacy()
+                        PrivacySheet.Privacy()
                         
                         Spacer()
                             .frame(height: 30)

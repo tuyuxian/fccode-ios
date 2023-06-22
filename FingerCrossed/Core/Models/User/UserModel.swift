@@ -121,6 +121,22 @@ extension User {
 }
 
 extension User {
+    public func getCandidate() -> CandidateModel {
+        return .init(
+            userId: self.id,
+            username: self.username,
+            selfIntro: self.selfIntro ?? "",
+            gender: self.gender,
+            dateOfBirth: self.dateOfBirth,
+            location: "\(self.administrativeArea ?? ""), \( self.country ?? "")",
+            nationality: self.citizen,
+            voiceContentUrl: self.voiceContentURL,
+            lifePhotos: self.lifePhoto
+        )
+    }
+}
+
+extension User {
     static var MockUser: User = .init(
         id: "00000000001",
         email: "mock_user1@gmail.com",

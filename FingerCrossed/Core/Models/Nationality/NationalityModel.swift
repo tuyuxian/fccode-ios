@@ -83,4 +83,14 @@ extension Nationality {
         )
     }
     
+    static public func getNationalitiesCode(
+        from nationalities: [Nationality]
+    ) -> String {
+        return String(
+            nationalities.reduce("") { result, nationality in
+                return result + nationality.code + ", "
+            }.dropLast(2)
+        )
+    }
+    
 }

@@ -69,3 +69,27 @@ struct ContainerWithHeaderView_Previews: PreviewProvider {
         ) {}
     }
 }
+
+extension ContainerWithHeaderView {
+    
+    struct NavigationHeader: View {
+        
+        let parentTitle: String
+        
+        let childTitle: String
+        
+        var body: some View {
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(parentTitle)
+                        .fontTemplate(.h4Medium)
+                        .foregroundColor(Color.surface1)
+                        .padding(.bottom, -8)
+                    Text(childTitle)
+                        .fontTemplate(.h1Medium)
+                        .foregroundColor(Color.text)
+                }
+            }
+        }
+    }
+}

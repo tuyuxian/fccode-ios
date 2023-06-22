@@ -21,7 +21,7 @@ class UserStateManager: ObservableObject {
     @AppStorage("UserToken") var token: String?
     
     @AppStorage("UserId") var userId: String?
-    
+        
     @Published var viewState: ViewState = .landing
     
 }

@@ -19,27 +19,9 @@ struct Avatar: View {
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            AsyncImage(
-                url: URL(string: avatarUrl),
-                transaction: Transaction(animation: .easeInOut)
-            ) { phase in
-                switch phase {
-                case .empty:
-                    Shimmer(size: CGSize(width: size, height: size))
-                case .success(let image):
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(
-                            width: size,
-                            height: size
-                        )
-                case .failure:
-                    Shimmer(size: CGSize(width: size, height: size))
-                @unknown default:
-                    EmptyView()
-                }
-            }
+            FCAsyncImage(
+                url: URL(string: avatarUrl)!
+            )
             .frame(width: size, height: size)
             .clipShape(RoundedRectangle(cornerRadius: 100))
             

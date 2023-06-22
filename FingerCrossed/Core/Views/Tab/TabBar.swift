@@ -9,12 +9,12 @@ import SwiftUI
 
 struct TabBar: View {
     
-    @StateObject var vm = TabViewModel()
+    @StateObject var vm = ViewModel()
     
     @EnvironmentObject var usm: UserStateManager
     
     @EnvironmentObject var bm: BannerManager
-    
+        
     let notificationPermissionManager = NotificationPermissionManager()
     
     init() {
@@ -25,11 +25,11 @@ struct TabBar: View {
         VStack(spacing: 0) {
             TabView(selection: $vm.currentTab) {
                 TextingView()
-                    .tag(TabViewModel.ViewState.chat)
-//                PairingView()
-//                    .tag(TabViewModel.ViewState.pairing)
+                    .tag(TabState.chat)
+                PairingView()
+                    .tag(TabState.pairing)
                 ProfileView()
-                    .tag(TabViewModel.ViewState.profile)
+                    .tag(TabState.profile)
             }
             .preferredColorScheme(vm.currentTab == .pairing ? .dark : .light)
             
@@ -39,7 +39,7 @@ struct TabBar: View {
                     [FCIcon.chat, FCIcon.pairing, FCIcon.profile],
                     id: \.self
                 ) { icon in
-                    TabBarButton(
+                    TabButton(
                         icon: icon,
                         currentTab: $vm.currentTab
                     )
@@ -67,55 +67,64 @@ struct TabBar_Previews: PreviewProvider {
     }
 }
 
-struct TabBarButton: View {
+extension TabBar {
     
-    let icon: FCIcon
-    
-    @Binding var currentTab: TabViewModel.ViewState
-    
-    var body: some View {
-        Button {
-            currentTab = TabViewModel.getTab(icon)
-        } label: {
-            ZStack {
-                icon.resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 35, height: 35)
+    struct TabButton: View {
+        
+        let icon: FCIcon
+        
+        @Binding var currentTab: TabState
+        
+        var body: some View {
+            Button {
+                currentTab = getTab(icon)
+            } label: {
+                ZStack {
+                    icon.resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 35, height: 35)
+                }
+                .foregroundColor(
+                    currentTab == getTab(icon)
+                    ? Color.yellow100
+                    : Color.surface2
+                )
+                .frame(maxWidth: .infinity)
             }
-            .foregroundColor(
-                currentTab == TabViewModel.getTab(icon)
-                ? Color.yellow100
-                : Color.surface2
-            )
-            .frame(maxWidth: .infinity)
+        }
+        
+        private func getTab(
+            _ from: FCIcon
+        ) -> TabBar.TabState {
+            switch from {
+            case .chat:
+                return .chat
+            case .pairing:
+                return .pairing
+            case .profile:
+                return .profile
+            default:
+                return .pairing
+            }
         }
     }
+    
 }
 
-class TabViewModel: ObservableObject {
+extension TabBar {
     
-    public enum ViewState {
+    enum TabState {
         case chat
         case pairing
         case profile
     }
     
-    public class func getTab(_ from: FCIcon) -> ViewState {
-        switch from {
-        case .chat:
-            return .chat
-        case .pairing:
-            return .pairing
-        case .profile:
-            return .profile
-        default:
-            return .pairing
-        }
+    class ViewModel: ObservableObject {
+        @Published var currentTab: TabState = .pairing
+        @Published var showTab: Bool = true
     }
     
-    @Published var currentTab: ViewState = .profile
-    @Published var showTab: Bool = true
 }
 
 extension AnyTransition {

@@ -28,75 +28,84 @@ struct BasicInfoView: View {
         ) {
             ZStack {
                 VStack(spacing: 0) {
-                    BoxTab(isSelected: $vm.selectedTab).zIndex(1)
+                    Tab(isSelected: $vm.selectedTab).zIndex(1)
                     if let userData = user.data {
                         Box {
-                            // FIXME: add tab back
-                            BasicInfoContent(
-                                user: user,
-                                vm: vm,
-                                basicInfoOptions: [
-                                    DestinationView(
-                                        label: "Voice Message",
-                                        icon: .edit,
-                                        previewText:
-                                            userData.voiceContentURL == ""
+                            TabView(selection: $vm.selectedTab) {
+                                BasicInfoContent(
+                                    user: user,
+                                    vm: vm,
+                                    basicInfoOptions: [
+                                        DestinationView(
+                                            label: "Voice Message",
+                                            icon: .edit,
+                                            previewText:
+                                                userData.voiceContentURL == ""
                                             ? "Add a voice message to your profile"
                                             : "Tap to edit your voice message",
-                                        subview: .basicInfoVoiceMessage
-                                    ),
-                                    DestinationView(
-                                        label: "Self Introduction",
-                                        icon: .edit,
-                                        previewText: {
-                                            if let selfIntro = userData.selfIntro {
-                                                if selfIntro != "" {
-                                                    return selfIntro
+                                            subview: .basicInfoVoiceMessage
+                                        ),
+                                        DestinationView(
+                                            label: "Self Introduction",
+                                            icon: .edit,
+                                            previewText: {
+                                                if let selfIntro = userData.selfIntro {
+                                                    if selfIntro != "" {
+                                                        return selfIntro
+                                                    }
                                                 }
-                                            }
-                                            return "Tell people more about you!"
-                                        }(),
-                                        subview: .basicInfoSelfIntro
-                                    ),
-                                    DestinationView(
-                                        label: "Name",
-                                        icon: .infoCircle,
-                                        previewText: userData.username,
-                                        hasSubview: false
-                                    ),
-                                    DestinationView(
-                                        label: "Birthday",
-                                        icon: .infoCircle,
-                                        previewText: userData.getBirthdayString(),
-                                        hasSubview: false
-                                    ),
-                                    DestinationView(
-                                        label: "Gender",
-                                        icon: .infoCircle,
-                                        previewText: userData.gender.getString(),
-                                        hasSubview: false
-                                    ),
-                                    DestinationView(
-                                        label: "Nationality",
-                                        icon: .infoCircle,
-                                        previewText: Nationality.getNationalitiesString(
-                                            from: userData.citizen
+                                                return "Tell people more about you!"
+                                            }(),
+                                            subview: .basicInfoSelfIntro
                                         ),
-                                        hasSubview: false
-                                    ),
-                                    DestinationView(
-                                        label: "Ethnicity",
-                                        icon: .infoCircle,
-                                        previewText: Ethnicity.getEthnicitiesString(
-                                            from: userData.ethnicity
+                                        DestinationView(
+                                            label: "Name",
+                                            icon: .infoCircle,
+                                            previewText: userData.username,
+                                            hasSubview: false
                                         ),
-                                        hasSubview: false
-                                    )
-                                ]
-                            )
+                                        DestinationView(
+                                            label: "Birthday",
+                                            icon: .infoCircle,
+                                            previewText: userData.getBirthdayString(),
+                                            hasSubview: false
+                                        ),
+                                        DestinationView(
+                                            label: "Gender",
+                                            icon: .infoCircle,
+                                            previewText: userData.gender.getString(),
+                                            hasSubview: false
+                                        ),
+                                        DestinationView(
+                                            label: "Nationality",
+                                            icon: .infoCircle,
+                                            previewText: Nationality.getNationalitiesString(
+                                                from: userData.citizen
+                                            ),
+                                            hasSubview: false
+                                        ),
+                                        DestinationView(
+                                            label: "Ethnicity",
+                                            icon: .infoCircle,
+                                            previewText: Ethnicity.getEthnicitiesString(
+                                                from: userData.ethnicity
+                                            ),
+                                            hasSubview: false
+                                        )
+                                    ]
+                                )
+                                .tag(TabState.edit)
+                                
+                                CandidateDetailView(
+                                    candidate: userData.getCandidate(),
+                                    showIndicator: false
+                                )
+                                .padding(.top, 54) // 30 + 24 (offset)
+                                .tag(TabState.preview)
+                            }
+                            .tabViewStyle(.page(indexDisplayMode: .never))
                         }
                         .padding(.top, -24) // offset 24px to hidden in tab
-                        
                     }
                 }
             }
@@ -210,4 +219,48 @@ extension BasicInfoView {
             }
         }
     }
+}
+
+extension BasicInfoView {
+    
+    enum TabState: Int {
+        case edit
+        case preview
+    }
+    
+    struct Tab: View {
+
+        @Binding var isSelected: TabState
+
+        var body: some View {
+            HStack(
+                alignment: .center,
+                spacing: 0
+            ) {
+                Button {
+                    isSelected = .edit
+                } label: {
+                    Text("Edit")
+                }
+                .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
+                .background(isSelected == .edit ? Color.yellow100 : Color.yellow20)
+                .cornerRadius(50)
+                
+                Button {
+                    isSelected = .preview
+                } label: {
+                    Text("Preview")
+                }
+                .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
+                .background(isSelected == .preview ? Color.yellow100 : Color.yellow20)
+                .cornerRadius(50)
+            }
+            .frame(width: UIScreen.main.bounds.size.width - 48, height: 48)
+            .fontTemplate(.h3Medium)
+            .foregroundColor(Color.text)
+            .background(Color.yellow20)
+            .cornerRadius(50)
+        }
+    }
+
 }

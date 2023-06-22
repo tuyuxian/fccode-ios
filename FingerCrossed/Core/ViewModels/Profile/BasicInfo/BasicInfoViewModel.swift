@@ -13,7 +13,7 @@ class BasicInfoViewModel: ObservableObject {
         
     /// View state
     @Published var state: ViewStatus = .none
-    @Published var selectedTab: BasicInfoTabState = .edit
+    @Published var selectedTab: BasicInfoView.TabState = .edit
     @Published var selectedSheet: SheetView<BasicInfoDestination>?
     
     /// Life photo state

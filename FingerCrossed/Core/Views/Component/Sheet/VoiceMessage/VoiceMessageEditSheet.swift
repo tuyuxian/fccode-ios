@@ -119,7 +119,7 @@ struct VoiceMessageEditSheet: View {
                             .frame(width: 70, height: 70)
                             .overlay(
                                 LottieView(lottieFile: "spinner.json")
-                                    .frame(width: 33.6, height: 33.6)
+                                    .frame(width: 32, height: 32)
                             )
                             .padding(.bottom, vm.hasVoiceMessage ? 20 : 52)
                     } else {
@@ -134,7 +134,7 @@ struct VoiceMessageEditSheet: View {
                                 )
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 33.6, height: 33.6)
+                                .frame(width: 32, height: 32)
                                 .foregroundColor(Color.white)
                             )
                             .padding(.bottom, vm.hasVoiceMessage ? 20 : 52)

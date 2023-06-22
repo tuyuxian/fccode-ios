@@ -174,7 +174,7 @@ struct LifePhotoEditSheet: View, KeyboardReadable {
                     data: basicInfoVM.selectedImage?.jpegData(compressionQuality: 0.1),
                     caption: text,
                     position: basicInfoVM.lifePhotoMap.count,
-                    ratio: basicInfoVM.selectedTab.rawValue,
+                    ratio: vm.selectedTag,
                     scale: 1,
                     offsetX: 0,
                     offsetY: 0

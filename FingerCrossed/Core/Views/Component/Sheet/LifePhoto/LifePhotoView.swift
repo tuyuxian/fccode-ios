@@ -61,7 +61,7 @@ extension LifePhotoEditSheet {
         static var previews: some View {
             LifePhotoView(
                 basicInfoVM: BasicInfoViewModel(),
-                          vm: LifePhotoEditSheetViewModel()
+                vm: LifePhotoEditSheetViewModel()
             )
         }
     }

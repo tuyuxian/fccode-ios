@@ -85,13 +85,8 @@ struct ResetPasswordEmailCheckView: View {
                     
                     Spacer()
                     
-                    LottieView(
-                        lottieFile: "email.json"
-                    )
-                    .frame(
-                        width: 240,
-                        height: 240
-                    )
+                    LottieView(lottieFile: "email.json")
+                        .frame(width: 240,height: 240)
                     
                     Spacer()
                 }

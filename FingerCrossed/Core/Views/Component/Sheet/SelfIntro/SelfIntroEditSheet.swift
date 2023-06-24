@@ -59,8 +59,9 @@ struct SelfIntroEditSheet: View {
                         isTappable: $vm.isSatisfied,
                         isLoading: .constant(vm.state == .loading)
                     )
-                    .padding(.bottom, 16)
                 }
+                .padding(.bottom, 16)
+
             },
             footer: {}
         )

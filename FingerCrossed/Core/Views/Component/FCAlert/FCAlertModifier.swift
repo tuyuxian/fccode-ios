@@ -1,5 +1,5 @@
 //
-//  CustomAlertModifier.swift
+//  FCAlertModifier.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 6/19/23.
@@ -7,21 +7,21 @@
 
 import SwiftUI
 
-struct CustomAlertModifier {
+struct AlertModifier {
     @Binding private var isPresented: Bool
     
     private let title: String
     private let message: String
-    private let dismissButton: CustomAlertButton?
-    private let primaryButton: CustomAlertButton?
-    private let secondaryButton: CustomAlertButton?
+    private let dismissButton: FCAlertView.AlertButton?
+    private let primaryButton: FCAlertView.AlertButton?
+    private let secondaryButton: FCAlertView.AlertButton?
 }
 
-extension CustomAlertModifier: ViewModifier {
+extension AlertModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .fullScreenCover(isPresented: $isPresented) {
-                CustomAlert(
+            .transparentFullScreenCover(isPresented: $isPresented) {
+                FCAlertView(
                     title: title,
                     message: message,
                     dismissButton: dismissButton,
@@ -32,9 +32,14 @@ extension CustomAlertModifier: ViewModifier {
     }
 }
 
-extension CustomAlertModifier {
+extension AlertModifier {
 
-    init(title: String = "", message: String = "", dismissButton: CustomAlertButton, isPresented: Binding<Bool>) {
+    init(
+        title: String = "",
+        message: String = "",
+        dismissButton: FCAlertView.AlertButton,
+        isPresented: Binding<Bool>
+    ) {
         self.title         = title
         self.message       = message
         self.dismissButton = dismissButton
@@ -45,7 +50,13 @@ extension CustomAlertModifier {
         _isPresented = isPresented
     }
 
-    init(title: String = "", message: String = "", primaryButton: CustomAlertButton, secondaryButton: CustomAlertButton, isPresented: Binding<Bool>) {
+    init(
+        title: String = "",
+        message: String = "",
+        primaryButton: FCAlertView.AlertButton,
+        secondaryButton: FCAlertView.AlertButton,
+        isPresented: Binding<Bool>
+    ) {
         self.title           = title
         self.message         = message
         self.primaryButton   = primaryButton
@@ -55,4 +66,5 @@ extension CustomAlertModifier {
     
         _isPresented = isPresented
     }
+    
 }

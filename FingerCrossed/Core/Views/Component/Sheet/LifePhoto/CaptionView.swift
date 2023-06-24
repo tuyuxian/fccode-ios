@@ -8,12 +8,11 @@
 import SwiftUI
 
 extension LifePhotoEditSheet {
-    struct CaptionView: View {
+    struct CaptionView: View, KeyboardReadable {
+        @Environment(\.dismiss) private var dismiss
         
         @ObservedObject var basicInfoVM: BasicInfoViewModel
         @ObservedObject var vm: LifePhotoEditSheetViewModel
-        
-        @FocusState private var focus: Bool
         
         var body: some View {
             VStack {
@@ -25,35 +24,100 @@ extension LifePhotoEditSheet {
                 
                 CaptionInputBar(
                     text: $vm.caption,
-                    hint: "Write a caption...",
+                    hint: "Add a caption",
                     defaultPresentLine: 8,
                     lineLimit: 8,
                     textLengthLimit: vm.textLengthLimit
                 )
-                .focused($focus)
-                .onChange(of: vm.caption) { _ in
-                    vm.isSatisfied = true
+                .onReceive(keyboardPublisher) { val in
+                    vm.isKeyboardShowUp = val
                 }
-    //        .onReceive(keyboardPublisher) { val in
-    //            vm.isKeyboardShowUp = val
-    //            withAnimation {
-    //                scroll.scrollTo(
-    //                    vm.isKeyboardShowUp ? 1 : 2,
-    //                    anchor: .top
-    //                )
-    //            }
-    //        }
+                
+                Spacer()
+                
+                PrimaryButton(
+                    label: "Save",
+                    action: save,
+                    isTappable: .constant(true),
+                    isLoading: .constant(vm.state == .loading)
+                )
+                .padding(.bottom, vm.isKeyboardShowUp ? 16 : 20)
+                
+                !vm.isKeyboardShowUp
+                ? Text("Back")
+                    .foregroundColor(Color.text)
+                    .fontTemplate(.pMedium)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 24)
+                    .onTapGesture {
+                        withAnimation {
+                            vm.currentView -= 1
+                        }
+                    }
+                    .padding(.bottom, 16)
+                : nil
             }
-
+            
         }
-    }
-
-    struct CaptionView_Previews: PreviewProvider {
-        static var previews: some View {
-            CaptionView(
-                basicInfoVM: BasicInfoViewModel(),
-                vm: LifePhotoEditSheetViewModel()
-            )
+        
+        private func save() {
+            if basicInfoVM.selectedImage != nil {
+                create()
+            } else {
+                update()
+            }
+        }
+        
+        private func create() {
+            Task {
+                do {
+                    let lifePhotos = try await vm.save(
+                        data: basicInfoVM.selectedImage?.jpegData(compressionQuality: 0.1),
+                        caption: vm.caption,
+                        position: basicInfoVM.lifePhotoMap.count,
+                        ratio: vm.selectedTag,
+                        scale: vm.currentScale,
+                        offsetX: vm.currentOffset.width,
+                        offsetY: vm.currentOffset.height
+                    )
+                    guard vm.state == .complete else {
+                        throw FCError.LifePhoto.createLifePhotoFailed
+                    }
+                    basicInfoVM.lifePhotoMap = Dictionary(
+                        uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
+                    )
+                    dismiss()
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
+        
+        private func update() {
+            if let lifePhoto = basicInfoVM.selectedLifePhoto {
+                Task {
+                    do {
+                        let lifePhotos = try await vm.update(
+                            lifePhotoId: lifePhoto.id,
+                            caption: vm.caption,
+                            position: lifePhoto.position,
+                            ratio: lifePhoto.ratio,
+                            scale: lifePhoto.scale,
+                            offsetX: lifePhoto.offset.width,
+                            offsetY: lifePhoto.offset.height
+                        )
+                        guard vm.state == .complete else {
+                            throw FCError.LifePhoto.updateLifePhotoFailed
+                        }
+                        basicInfoVM.lifePhotoMap = Dictionary(
+                            uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
+                        )
+                        dismiss()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
         }
     }
 }

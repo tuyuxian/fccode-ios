@@ -13,19 +13,8 @@ import GraphQLAPI
 class LifePhotoEditSheetViewModel: ObservableObject {
     
     @AppStorage("UserId") private var userId: String = ""
-    
-    enum CurrentView: Int {
-        case lifePhoto
-        case caption
-    }
-    
-    enum Transition: Int {
-        case forward
-        case backward
-    }
-    
-    @Published var transition: Transition = .forward
-    @Published var switchView: CurrentView = .lifePhoto
+
+    @Published var currentView: Int = 0
         
     /// View state
     @Published var state: ViewStatus = .none
@@ -35,6 +24,7 @@ class LifePhotoEditSheetViewModel: ObservableObject {
 
     @Published var bottomPadding: CGFloat = 0
     @Published var currentOffset: CGSize = .zero
+    @Published var currentScale: CGFloat = 0
     @Published var uiImage: UIImage = UIImage()
     @Published var newUIImage: UIImage = UIImage()
     @Published var caption: String = ""
@@ -46,8 +36,9 @@ class LifePhotoEditSheetViewModel: ObservableObject {
 extension LifePhotoEditSheetViewModel {
     
     public func continueOnTap() {
-        transition = .forward
-        switchView = .caption
+        withAnimation {
+            currentView += 1
+        }
     }
     
     // swiftlint: disable function_parameter_count

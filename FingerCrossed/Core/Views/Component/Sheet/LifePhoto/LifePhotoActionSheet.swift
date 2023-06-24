@@ -20,7 +20,7 @@ struct LifePhotoActionSheet: View {
     
     var body: some View {
         Sheet(
-            size: [.height(138)],
+            size: [.height(basicInfoVM.hasLifePhoto ? 192 : 138)],
             hasHeader: false,
             hasFooter: false,
             header: {},
@@ -40,6 +40,12 @@ struct LifePhotoActionSheet: View {
                             vm.showEditSheet = true
                         } label: {
                             LifePhotoActionRow(actionType: .edit)
+                        }
+                        
+                        Button {
+                            dismiss()
+                        } label: {
+                            LifePhotoActionRow(actionType: .setToMain)
                         }
                     } else {
                         Button {
@@ -144,8 +150,7 @@ struct LifePhotoActionSheet: View {
             },
             content: {
                 LifePhotoEditSheet(
-                    basicInfoVM: basicInfoVM,
-                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
+                    basicInfoVM: basicInfoVM
                 )
             }
         )
@@ -191,6 +196,7 @@ extension LifePhotoActionSheet {
         case delete
         case edit
         case photo
+        case setToMain
     }
     
     struct LifePhotoActionRow: View {
@@ -221,6 +227,12 @@ extension LifePhotoActionSheet {
                 case .photo:
                     FCIcon.addPicture
                     Text("Upload Photos")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
+                case .setToMain:
+                    FCIcon.star
+                    Text("Set to main")
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
                     Spacer()

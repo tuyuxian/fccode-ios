@@ -15,35 +15,53 @@ extension LifePhotoEditSheet {
         
         var body: some View {
             VStack(spacing: 0) {
-                Text("Drag the corners of the picture to crop it.")
+                Text("Zoom in or out to crop the picture.")
                     .foregroundColor(Color.text)
                     .fontTemplate(.noteMedium)
                     .frame(height: 16)
                     .padding(.bottom, 16)
                 
                 HStack(spacing: 12) {
-                    TagButton(label: "16:9", tag: .constant(0), isSelected: $vm.selectedTag)
-                    TagButton(label: "9:16", tag: .constant(1), isSelected: $vm.selectedTag)
-                    TagButton(label: "4:3", tag: .constant(2), isSelected: $vm.selectedTag)
-                    TagButton(label: "3:4", tag: .constant(3), isSelected: $vm.selectedTag)
+                    TagButton(
+                        label: Crop.type1.name(),
+                        tag: .constant(Crop.type1.tag()),
+                        isSelected: $vm.selectedTag
+                    )
+                    
+                    TagButton(
+                        label: Crop.type2.name(),
+                        tag: .constant(Crop.type2.tag()),
+                        isSelected: $vm.selectedTag
+                    )
+                    
+                    TagButton(
+                        label: Crop.type3.name(),
+                        tag: .constant(Crop.type3.tag()),
+                        isSelected: $vm.selectedTag
+                    )
+                    
+                    TagButton(
+                        label: Crop.type4.name(),
+                        tag: .constant(Crop.type4.tag()),
+                        isSelected: $vm.selectedTag
+                    )
                 }
+                .zIndex(2)
                 .padding(.bottom, 16)
                 
                 if basicInfoVM.selectedImage != nil {
-                    VStack {}
-                    .frame(width: UIScreen.main.bounds.width - 48, height: 456)
-                    .id(2)
-                    .background(
-                        EditableImage(
-                            basicInfoVM: basicInfoVM,
-                            vm: vm
-                        )
+                    EditableImage(
+                        basicInfoVM: basicInfoVM,
+                        vm: vm
+                    )
+                    .frame(
+                        width: (UIScreen.main.bounds.width - 48),
+                        height: (UIScreen.main.bounds.height - 320)
                     )
                 } else {
                     if let url = basicInfoVM.selectedLifePhoto?.contentUrl {
                         VStack {}
-                            .frame(width: UIScreen.main.bounds.width - 48, height: 456)
-                            .id(2)
+                            .frame(width: UIScreen.main.bounds.width - 48)
                             .background(
                                 EditableAsyncImage(
                                     basicInfoVM: basicInfoVM,
@@ -53,10 +71,19 @@ extension LifePhotoEditSheet {
                             )
                     }
                 }
+                
+                PrimaryButton(
+                    label: "Continue",
+                    action: vm.continueOnTap,
+                    isTappable: .constant(true),
+                    isLoading: .constant(vm.state == .loading)
+                )
+                .padding(.top, 16)
+                .padding(.bottom, 16)
             }
         }
     }
-    
+ 
     struct LifePhotoView_Previews: PreviewProvider {
         static var previews: some View {
             LifePhotoView(
@@ -65,4 +92,5 @@ extension LifePhotoEditSheet {
             )
         }
     }
+
 }

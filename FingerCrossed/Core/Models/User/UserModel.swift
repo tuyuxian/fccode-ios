@@ -128,7 +128,15 @@ extension User {
             selfIntro: self.selfIntro ?? "",
             gender: self.gender,
             dateOfBirth: self.dateOfBirth,
-            location: "\(self.administrativeArea ?? ""), \( self.country ?? "")",
+            location: {
+                if let country = self.country,
+                   let administrativeArea = self.administrativeArea {
+                    if country != "" && administrativeArea != "" {
+                        return "\(administrativeArea), \(country)"
+                    }
+                }
+                return ""
+            }(),
             nationality: self.citizen,
             voiceContentUrl: self.voiceContentURL,
             lifePhotos: self.lifePhoto

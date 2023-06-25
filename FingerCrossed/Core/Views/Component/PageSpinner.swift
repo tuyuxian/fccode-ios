@@ -29,13 +29,8 @@ struct PageSpinner: View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(.all)
                 .opacity(0.6)
-            LottieView(
-                lottieFile: "loading.json"
-            )
-            .frame(
-                width: 110,
-                height: 110
-            )
+            LottieView(lottieFile: "loading.json")
+                .frame(width: 110, height: 110)
         }
     }
 }

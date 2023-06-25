@@ -63,6 +63,7 @@ public enum FCIcon: String {
     case moreWhite = "MoreWhite"
     case search = "Search"
     case sent = "Sent"
+    case star = "Star"
     case trash = "Trash"
     case warning = "Warning"
     // - Close

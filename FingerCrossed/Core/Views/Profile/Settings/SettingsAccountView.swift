@@ -105,7 +105,7 @@ struct SettingsAccountView: View {
                 
                 Spacer()
             }
-            .appAlert($vm.appAlert)
+            .showAlert($vm.fcAlert)
             .overlay {
                 vm.state == .loading
                 ? PageSpinner()

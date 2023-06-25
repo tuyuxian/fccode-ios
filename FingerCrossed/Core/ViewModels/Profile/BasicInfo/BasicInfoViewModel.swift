@@ -29,7 +29,7 @@ class BasicInfoViewModel: ObservableObject {
     @Published var bannerType: Banner.BannerType?
     
     /// Alert
-    @Published var appAlert: AppAlert?
+    @Published var fcAlert: FCAlert?
 
     init() {
         print("-> [Basic Info] vm init")
@@ -44,18 +44,15 @@ extension BasicInfoViewModel {
     
     @MainActor
     public func uneditableRowOnTap() {
-        self.appAlert = .basic(
-            title: "Do you really want to change it?",
+        self.fcAlert = .info(
+            type: .info,
+            title: "Request unavailable",
             // swiftlint: disable line_length
-            message: "To provide a better overall experience, users are only allowed to change this information once.",
+            message: "To provide a better overall experience, users are not allowed to change this information.",
             // swiftlint: enable line_length
-            actionLabel: "Yes",
-            cancelLabel: "No",
-            action: {
-                // TODO(Sam): send email
-                self.bannerMessage = "We've sent a reset link to your email!"
-                self.bannerType = .info
-                self.state = .error
+            dismissLabel: "OK",
+            dismissAction: {
+                self.fcAlert = nil
             }
         )
     }

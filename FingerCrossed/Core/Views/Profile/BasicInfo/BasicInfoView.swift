@@ -207,7 +207,7 @@ extension BasicInfoView {
                     )
                 }
             }
-            .appAlert($vm.appAlert)
+            .showAlert($vm.fcAlert)
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(

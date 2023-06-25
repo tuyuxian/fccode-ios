@@ -1,5 +1,5 @@
 //
-//  CustomAlert.swift
+//  FCAlertView.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 6/19/23.
@@ -7,23 +7,21 @@
 
 import SwiftUI
 
-struct CustomAlert: View {
+struct FCAlertView: View {
     
     let title: String
     let message: String
-    let dismissButton: CustomAlertButton?
-    let primaryButton: CustomAlertButton?
-    let secondaryButton: CustomAlertButton?
-    
-    @Environment(\.dismiss) private var dismiss
-    
+    let dismissButton: AlertButton?
+    let primaryButton: AlertButton?
+    let secondaryButton: AlertButton?
+        
     var body: some View {
         ZStack {
             dimView
             
             alertView
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(.all)
     }
     
     private var alertView: some View {
@@ -35,10 +33,7 @@ struct CustomAlert: View {
             }
             .padding(16)
             
-            Divider()
-                .overlay {
-                    Color.surface1
-                }
+            Divider().overlay { Color.surface1 }
             
             buttonView
         }
@@ -75,16 +70,10 @@ struct CustomAlert: View {
         HStack(spacing: 0) {
             if dismissButton != nil {
                 dismissButtonView
-                
             } else if primaryButton != nil, secondaryButton != nil {
-                primaryButtonView
-                
-                Divider()
-                    .overlay {
-                        Color.surface1
-                    }
-                
                 secondaryButtonView
+                Divider().overlay { Color.surface1 }
+                primaryButtonView
             }
         }
         .frame(maxHeight: 50)
@@ -93,14 +82,11 @@ struct CustomAlert: View {
     @ViewBuilder
     private var primaryButtonView: some View {
         if let button = primaryButton {
-            CustomAlertButton(title: button.title) {
-                withAnimation {
-                    dismiss()
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    button.action?()
-                }
+            AlertButton(
+                title: button.title,
+                textColor: Color.warning
+            ) {
+                button.action?()
             }
         }
     }
@@ -108,14 +94,8 @@ struct CustomAlert: View {
     @ViewBuilder
     private var secondaryButtonView: some View {
         if let button = secondaryButton {
-            CustomAlertButton(title: button.title, textColor: Color.warning) {
-                withAnimation {
-                    dismiss()
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    button.action?()
-                }
+            AlertButton(title: button.title) {
+                button.action?()
             }
         }
     }
@@ -123,40 +103,33 @@ struct CustomAlert: View {
     @ViewBuilder
     private var dismissButtonView: some View {
         if let button = dismissButton {
-            CustomAlertButton(title: button.title) {
-                withAnimation {
-                    dismiss()
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    button.action?()
-                }
+            AlertButton(title: button.title) {
+                button.action?()
             }
         }
     }
     
     private var dimView: some View {
         Color.black
-            .blur(radius: 4)
+            .background(.ultraThickMaterial)
             .opacity(0.4)
     }
 }
 
-struct CustomAlert_Previews: PreviewProvider {
+struct FCAlertView_Previews: PreviewProvider {
     static var previews: some View {
         
-        let dismissButton   = CustomAlertButton(title: "OK")
-        let primaryButton   = CustomAlertButton(title: "No")
-        let secondaryButton = CustomAlertButton(title: "Yes")
+        let dismissButton   = FCAlertView.AlertButton(title: "OK")
+        let primaryButton   = FCAlertView.AlertButton(title: "No")
+        let secondaryButton = FCAlertView.AlertButton(title: "Yes")
 
-        let title = "This is your life. Do what you want and do it often."
-        let message = """
-                    If you don't like something, change it.
-                    If you don't have enough time, stop watching TV.
-                    """
+        let title = "Request unavailable."
+        // swiftlint: disable line_length
+        let message = "To provide a better overall experience, users are not allowed to change this information."
+        // swiftlint: enable line_length
 
         return VStack {
-            CustomAlert(
+            FCAlertView(
                 title: title,
                 message: message,
                 dismissButton: dismissButton,
@@ -164,7 +137,7 @@ struct CustomAlert_Previews: PreviewProvider {
                 secondaryButton: nil
             )
             
-            CustomAlert(
+            FCAlertView(
                 title: title,
                 message: message,
                 dismissButton: nil,
@@ -173,4 +146,28 @@ struct CustomAlert_Previews: PreviewProvider {
             )
         }
     }
+}
+
+extension FCAlertView {
+    
+    struct AlertButton: View {
+        @State var title: LocalizedStringKey
+        @State var textColor: Color = Color.systemBlue
+        @State var action: (() -> Void)?
+        
+        var body: some View {
+            Button {
+                action?()
+            } label: {
+                Text(title)
+                    .fontTemplate(.pSemibold)
+                    .foregroundColor(textColor)
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+
+        }
+    }
+    
 }

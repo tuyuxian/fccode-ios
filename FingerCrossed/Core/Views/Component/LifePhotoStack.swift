@@ -72,8 +72,7 @@ struct LifePhotoStack: View {
         .sheet(isPresented: $basicInfoVM.showEditSheet) {
             if basicInfoVM.hasLifePhoto && basicInfoVM.lifePhotoMap.count == 1 {
                 LifePhotoEditSheet(
-                    basicInfoVM: basicInfoVM,
-                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
+                    basicInfoVM: basicInfoVM
                 )
             } else {
                 LifePhotoActionSheet(

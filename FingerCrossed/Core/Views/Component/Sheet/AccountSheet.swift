@@ -344,5 +344,7 @@ struct AccountSheet_Previews: PreviewProvider {
             entry: EntryViewModel(),
             vm: AccountSheetViewModel()
         )
+        .environmentObject(BannerManager())
+        .environmentObject(PageSpinnerManager())
     }
 }

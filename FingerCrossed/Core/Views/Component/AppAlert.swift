@@ -118,20 +118,20 @@ extension View {
 //        )
 //    }
     
-    func one(_ appAlert: Binding<AppAlert?>) -> some View {
-        let alertType = appAlert.wrappedValue
-        return
-        alertType != nil
-        ?
-        CustomAlert(
-            title: alertType?.title ?? "",
-            message: alertType?.message ?? "",
-            dismissButton: CustomAlertButton(title: alertType?.dismissLabel ?? "", action: alertType?.dismissAction ?? {}),
-            primaryButton: nil,
-            secondaryButton: nil)
-        :
-        nil
-    }
+//    func one(_ appAlert: Binding<AppAlert?>) -> some View {
+//        let alertType = appAlert.wrappedValue
+//        return
+//        alertType != nil
+//        ?
+//        CustomAlert(
+//            title: alertType?.title ?? "",
+//            message: alertType?.message ?? "",
+//            dismissButton: CustomAlertButton(title: alertType?.dismissLabel ?? "", action: alertType?.dismissAction ?? {}),
+//            primaryButton: nil,
+//            secondaryButton: nil)
+//        :
+//        nil
+//    }
     
     func singleButtonAlert(_ appAlert: Binding<AppAlert?>) -> some View {
         let alertType = appAlert.wrappedValue

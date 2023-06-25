@@ -1,0 +1,5 @@
+extend type Mutation {
+  createGoal(userId: ID!, input: CreateGoalInput!): CRUDResponse!
+  updateGoal(userId: ID!, goalId: ID!, input: UpdateGoalInput!): CRUDResponse!
+  deleteGoal(userId: ID!, goalId: ID!): CRUDResponse!
+}

@@ -1,0 +1,59 @@
+extend type Mutation {
+  createUser(input: CreateUserInput!): SignInResponse!
+  updateUser(userId: ID!, input: UpdateUserInput!): CRUDResponse!
+  deleteUserById(userId: ID!): CRUDResponse!
+
+  resetPassword(email: String!, password: String!): OTPResponse!
+  updatePassword(
+    userId: ID!
+    oldPassword: String
+    newPassword: String!
+  ): CRUDResponse!
+
+  connectSocialAccount(
+    userId: ID!
+    input: CreateSocialAccountInput!
+  ): CRUDResponse!
+}
+
+extend input CreateUserInput {
+  createUserCitizen: [CreateCitizenInput!]
+  createUserGoal: [CreateGoalInput!]
+  createUserEthnicity: [CreateEthnicityInput!]
+  createUserSocialAccount: CreateSocialAccountInput!
+  createUserLifePhoto: CreateLifePhotoInput!
+}
+
+extend type Query {
+  signIn(email: String!, password: String!): SignInResponse!
+  socialSignIn(
+    email: String!
+    platform: SocialAccountPlatform!
+  ): SignInResponse!
+  checkEmail(email: String!): CRUDResponse!
+  requestOTP(email: String!): OTPResponse!
+  verifyOTP(email: String!, userOTP: String!): OTPResponse!
+  getUserById(userId: ID!): CRUDResponse!
+}
+
+type SignInResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  userId: ID
+  token: String
+}
+
+type CRUDResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  user: User
+}
+
+type OTPResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  valid: Boolean!
+}

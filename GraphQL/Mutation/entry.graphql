@@ -1,0 +1,18 @@
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    status
+    statusCode
+    message
+    userId
+    token
+  }
+}
+
+mutation ResetPassword($email: String!, $password: String!) {
+  resetPassword(email: $email, password: $password) {
+    status
+    statusCode
+    message
+    valid
+  }
+}

@@ -20,7 +20,7 @@ struct LifePhotoActionSheet: View {
     
     var body: some View {
         Sheet(
-            size: [.height(138)],
+            size: [.height(basicInfoVM.hasLifePhoto ? 192 : 138)],
             hasHeader: false,
             hasFooter: false,
             header: {},
@@ -40,6 +40,12 @@ struct LifePhotoActionSheet: View {
                             vm.showEditSheet = true
                         } label: {
                             LifePhotoActionRow(actionType: .edit)
+                        }
+                        
+                        Button {
+                            dismiss()
+                        } label: {
+                            LifePhotoActionRow(actionType: .setToMain)
                         }
                     } else {
                         Button {
@@ -89,7 +95,7 @@ struct LifePhotoActionSheet: View {
                         .sheet(
                             isPresented: $vm.showImagePicker,
                             onDismiss: {
-                                guard basicInfoVM.selectedImage != nil else { return }
+                                guard  basicInfoVM.selectedImage != nil else { return }
                                 vm.showEditSheet = true
                             },
                             content: {
@@ -122,7 +128,7 @@ struct LifePhotoActionSheet: View {
                 }
                 .padding(.top, 15) // 30 - 15
 //                .padding(.bottom, 16)
-                .appAlert($vm.appAlert)
+                .showAlert($vm.fcAlert)
                 .onChange(of: vm.state) { state in
                     if state == .error {
                         bm.pop(
@@ -138,13 +144,13 @@ struct LifePhotoActionSheet: View {
         .sheet(
             isPresented: $vm.showEditSheet,
             onDismiss: {
-                basicInfoVM.selectedImage = nil
+                basicInfoVM.resetImage()
+//                basicInfoVM.selectedImage = nil
                 dismiss()
             },
             content: {
                 LifePhotoEditSheet(
-                    basicInfoVM: basicInfoVM,
-                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
+                    basicInfoVM: basicInfoVM
                 )
             }
         )
@@ -190,6 +196,7 @@ extension LifePhotoActionSheet {
         case delete
         case edit
         case photo
+        case setToMain
     }
     
     struct LifePhotoActionRow: View {
@@ -223,6 +230,12 @@ extension LifePhotoActionSheet {
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
                     Spacer()
+                case .setToMain:
+                    FCIcon.star
+                    Text("Set to main")
+                        .fontTemplate(.h3Medium)
+                        .foregroundColor(Color.text)
+                    Spacer()
                     
                 }
             }
@@ -248,7 +261,7 @@ extension LifePhotoActionSheet {
         @Published var bannerType: Banner.BannerType?
 
         /// Alert
-        @Published var appAlert: AppAlert?
+        @Published var fcAlert: FCAlert?
         @Published var showCameraAlert: Bool = false
         @Published var showPhotoLibraryAlert: Bool = false
         
@@ -290,12 +303,19 @@ extension LifePhotoActionSheet {
         public func deleteOnTap(
             action: @escaping () -> Void
         ) {
-            self.appAlert = .basic(
-                title: "Do you really want to delete it?",
+            self.fcAlert = .action(
+                type: .action,
+                title: "Do you really want to delete\nit?",
                 message: "",
-                actionLabel: "Yes",
-                cancelLabel: "No",
-                action: action
+                primaryLabel: "Yes",
+                primaryAction: {
+                    action()
+                    self.fcAlert = nil
+                },
+                secondaryLabel: "No",
+                secondaryAction: {
+                    self.fcAlert = nil
+                }
             )
         }
         

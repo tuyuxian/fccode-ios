@@ -14,10 +14,6 @@ struct PreferenceSexOrientationView: View {
     @EnvironmentObject var bm: BannerManager
     /// Init preference sex orientation view model
     @StateObject var vm = PreferenceSexOrientationViewModel()
-
-    init() {
-        print("[Preference Sex Orientation] view init")
-    }
     
     var body: some View {
         ContainerWithHeaderView(
@@ -45,10 +41,13 @@ struct PreferenceSexOrientationView: View {
                             }
                         }
                     )
+                    .onAppear {
+                        vm.originalValue = vm.preference.sexOrientations
+                    }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 30)
-                    .onChange(of: vm.preference.sexOrientations) { _ in
-                        vm.showSaveButton = true
+                    .onChange(of: vm.preference.sexOrientations) { sexOrientations in
+                        vm.checkEquality(sexOrientations: sexOrientations)
                     }
                     
                     Spacer()

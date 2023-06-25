@@ -127,13 +127,8 @@ struct SignUpLocationView: View {
                         .fontTemplate(.h3Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
-                    LottieView(
-                        lottieFile: "location.json"
-                    )
-                    .frame(
-                        width: 320,
-                        height: 320
-                    )
+                    LottieView(lottieFile: "location.json")
+                        .frame(width: 320, height: 320)
                 }
                 .frame(maxWidth: .infinity)
                 

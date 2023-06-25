@@ -11,8 +11,10 @@ import Lottie
 struct LottieView: UIViewRepresentable {
     
     let lottieFile: String
- 
+     
     let animationView = LottieAnimationView()
+    
+    var loop: Bool = true
  
     func makeUIView(
         context: Context
@@ -24,7 +26,11 @@ struct LottieView: UIViewRepresentable {
         animationView.play()
  
         view.addSubview(animationView)
-        animationView.loopMode = .loop
+        if loop {
+            animationView.loopMode = .loop
+        } else {
+            animationView.loopMode = .playOnce
+        }
         animationView.translatesAutoresizingMaskIntoConstraints = false
         animationView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
         animationView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true

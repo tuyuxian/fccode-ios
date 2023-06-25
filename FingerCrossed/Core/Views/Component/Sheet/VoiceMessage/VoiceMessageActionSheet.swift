@@ -9,6 +9,7 @@ import SwiftUI
 import GraphQLAPI
 
 struct VoiceMessageActionSheet: View {
+    
     /// Banner
     @EnvironmentObject private var bm: BannerManager
     /// Observed user view model
@@ -17,6 +18,8 @@ struct VoiceMessageActionSheet: View {
     @Binding var selectedSheet: BasicInfoViewModel.SheetView<BasicInfoDestination>?
     /// Init view model
     @StateObject private var vm = ViewModel()
+    
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         Sheet(
@@ -52,7 +55,10 @@ struct VoiceMessageActionSheet: View {
                             Spacer()
                         }
                     }
-                    .sheet(isPresented: $vm.showEditSheet) {
+                    .sheet(
+                        isPresented: $vm.showEditSheet,
+                        onDismiss: { dismiss() }
+                    ) {
                         VoiceMessageEditSheet(
                             user: user,
                             selectedSheet: $selectedSheet
@@ -61,7 +67,7 @@ struct VoiceMessageActionSheet: View {
                 }
                 .padding(.top, 15) // 30 - 15
 //                .padding(.bottom, 16)
-                .appAlert($vm.appAlert)
+                .showAlert($vm.fcAlert)
                 .onChange(of: vm.state) { state in
                     if state == .error {
                         bm.pop(
@@ -122,18 +128,25 @@ extension VoiceMessageActionSheet {
         @Published var bannerType: Banner.BannerType?
         
         /// Alert
-        @Published var appAlert: AppAlert?
+        @Published var fcAlert: FCAlert?
         
         @MainActor
         public func deleteOnTap(
             action: @escaping () -> Void
         ) {
-            self.appAlert = .basic(
-                title: "Do you really want to delete it?",
+            self.fcAlert = .action(
+                type: .action,
+                title: "Do you really want to delete\nit?",
                 message: "",
-                actionLabel: "Yes",
-                cancelLabel: "No",
-                action: action
+                primaryLabel: "Yes",
+                primaryAction: {
+                    action()
+                    self.fcAlert = nil
+                },
+                secondaryLabel: "No",
+                secondaryAction: {
+                    self.fcAlert = nil
+                }
             )
         }
         

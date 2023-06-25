@@ -156,8 +156,8 @@ struct CandidateDetailView: View {
                             isTappable: .constant(true),
                             isLoading: .constant(false)
                         )
-                        .padding(.bottom, 16)
                     }
+                    .padding(.bottom, 16)
                 }
             }
         }
@@ -330,6 +330,7 @@ extension CandidateDetailView {
         public func stopPlaying() {
             self.audioPlayer.pause()
             self.isPlaying = false
+            self.progress = 0.0
             self.updateTimer?.invalidate()
             self.updateTimer = nil
         }

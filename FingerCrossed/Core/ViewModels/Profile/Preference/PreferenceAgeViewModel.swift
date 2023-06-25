@@ -22,6 +22,8 @@ class PreferenceAgeViewModel: ObservableObject {
         }
         return Preference.MockPreference // for preview purpose
     }()
+    @Published var originalAgeFrom = 0
+    @Published var originalAgeTo = 0
     
     /// View state
     @Published var state: ViewStatus = .none
@@ -30,14 +32,6 @@ class PreferenceAgeViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Age] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Age] vm deinit")
-    }
 }
 
 extension PreferenceAgeViewModel {

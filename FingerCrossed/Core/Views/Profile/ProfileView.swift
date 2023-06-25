@@ -1,0 +1,108 @@
+//
+//  ProfileView.swift
+//  FingerCrossed
+//
+//  Created by Yu-Hsien Tu on 4/8/23.
+//
+
+import SwiftUI
+
+struct ProfileView: View {
+    /// Banner
+    @EnvironmentObject var bm: BannerManager
+    /// Init user view model
+    @StateObject var user: UserViewModel
+    
+    init(preview: Bool = false) {
+        _user = StateObject(wrappedValue: UserViewModel(preview: preview))
+    }
+    
+    var body: some View {
+        ContainerWithLogoHeaderView(headerTitle: "Profile") {
+            VStack(spacing: 0) {
+                VStack(spacing: 18.75) {
+                    Circle()
+                        .fill(Color.surface2)
+                        .frame(width: 122.5, height: 122.5, alignment: .center)
+                        .overlay(
+                            user.state == .complete
+                            ? Avatar(
+                                avatarUrl: user.data?.profilePictureUrl ?? "",
+                                size: 121.5,
+                                isActive: false
+                            )
+                            : nil
+                        )
+                    Text(user.data?.username ?? "")
+                        .fontTemplate(.h2Medium)
+                        .foregroundColor(Color.text)
+                }
+                .zIndex(1)
+                
+                Box {
+                    FCList<ProfileDestination>(
+                        destinationViewList: [
+                            DestinationView(
+                                label: "Basic Info",
+                                subview: .basicInfo
+                            ),
+                            DestinationView(
+                                label: "Preference",
+                                subview: .preference
+                            ),
+                            DestinationView(
+                                label: "Settings",
+                                subview: .settings
+                            ),
+                            DestinationView(
+                                label: "Help & Support",
+                                subview: .helpSupport
+                            )
+                        ]
+                    )
+                    .padding(.top, 104) // 134 - 20 (ListRow) - 10 (first item)
+                    .scrollDisabled(true)
+                }
+                .padding(.top, -104)
+                .navigationDestination(for: ProfileDestination.self) { destination in
+                    Group {
+                        switch destination {
+                        case .basicInfo:
+                            BasicInfoView(user: user)
+                        case .helpSupport:
+                            HelpSupportView()
+                        case .preference:
+                            PreferenceView()
+                        case .settings:
+                            SettingsView(user: user)
+                        }
+                    }
+                    .navigationBarBackButtonHidden(true)
+                }
+            }
+            .overlay {
+                user.state == .loading
+                ? PageSpinner()
+                : nil
+            }
+            .onChange(of: user.state) { state in
+                if state == .error {
+                    bm.pop(
+                        title: user.toastMessage,
+                        type: .error
+                    )
+                    user.state = .none
+                }
+            }
+        }
+    }
+}
+
+struct ProfileView_Previews: PreviewProvider {
+    static var previews: some View {
+        ProfileView(
+            preview: true
+        )
+        .environmentObject(BannerManager())
+    }
+}

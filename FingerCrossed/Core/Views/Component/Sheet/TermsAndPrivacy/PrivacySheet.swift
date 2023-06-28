@@ -21,31 +21,32 @@ struct PrivacySheet: View {
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                         .frame(height: 34)
-                    
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Close")
-                            .fontTemplate(.pMedium)
-                            .foregroundColor(Color.gold)
-                            .frame(height: 34, alignment: .center)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                }
-            },
-            content: {
-                VStack(spacing: 0) {
-                    ScrollView {
-                        VStack(
-                            alignment: .leading,
-                            spacing: 0
-                        ) {
-                            PrivacySheet.Privacy()
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Close")
+                                .fontTemplate(.pMedium)
+                                .foregroundColor(Color.gold)
+                                .frame(height: 34, alignment: .center)
                         }
                     }
-                    .padding(.top, 30)
-                    .scrollIndicators(.hidden)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
+                .padding(.horizontal, 24)
+            },
+            content: {
+                ScrollView {
+                    VStack(
+                        alignment: .leading,
+                        spacing: 0
+                    ) {
+                        PrivacySheet.Privacy()
+                    }
+                }
+                .padding(.top, 30)
+                .padding(.horizontal, 24)
+                .scrollIndicators(.hidden)
             },
             footer: {}
         )

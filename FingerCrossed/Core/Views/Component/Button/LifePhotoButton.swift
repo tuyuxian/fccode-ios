@@ -26,29 +26,15 @@ struct LifePhotoButton: View {
             )
             .aspectRatio(contentMode: .fill)
             .overlay(
-                AsyncImage(
-                    url: URL(string: lifePhoto?.contentUrl ?? ""),
-                    transaction: Transaction(animation: .easeInOut)
-                ) { phase in
-                    switch phase {
-                    case .empty:
-                        if isEditable {
-                            FCAddPhotoIcon()
-                        } else {
-                            FCPhotoIcon()
-                        }
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                    case .failure:
-                        if isEditable {
-                            FCAddPhotoIcon()
-                        } else {
-                            FCPhotoIcon()
-                        }
-                    @unknown default:
+                Group {
+                    if let url = lifePhoto?.contentUrl {
+                        FCAsyncImage(
+                            url: URL(string: url)!
+                        )
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                        .id(UUID())
+                    } else {
                         if isEditable {
                             FCAddPhotoIcon()
                         } else {
@@ -56,14 +42,13 @@ struct LifePhotoButton: View {
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(.dragPreview, RoundedRectangle(cornerRadius: 16))
-                .onTapGesture {
-                    action()
-                }
             )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .clipped()
             .cornerRadius(16)
+            .onTapGesture {
+                action()
+            }
     }
 }
 

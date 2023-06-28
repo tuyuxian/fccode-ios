@@ -14,14 +14,22 @@ struct FCAlertView: View {
     let dismissButton: AlertButton?
     let primaryButton: AlertButton?
     let secondaryButton: AlertButton?
+    
+    @State private var opacity: CGFloat = 0
+    @State private var backgroundOpacity: CGFloat = 0
+    
+    @Environment(\.dismiss) private var dismiss
         
     var body: some View {
         ZStack {
             dimView
             
             alertView
+                .opacity(opacity)
         }
         .ignoresSafeArea(.all)
+        .transition(.opacity)
+        .task { animate(isShown: true) }
     }
     
     private var alertView: some View {
@@ -87,6 +95,9 @@ struct FCAlertView: View {
                 textColor: Color.warning
             ) {
                 button.action?()
+                animate(isShown: false) {
+                    dismiss()
+                }
             }
         }
     }
@@ -96,6 +107,9 @@ struct FCAlertView: View {
         if let button = secondaryButton {
             AlertButton(title: button.title) {
                 button.action?()
+                animate(isShown: false) {
+                    dismiss()
+                }
             }
         }
     }
@@ -105,6 +119,9 @@ struct FCAlertView: View {
         if let button = dismissButton {
             AlertButton(title: button.title) {
                 button.action?()
+                animate(isShown: false) {
+                    dismiss()
+                }
             }
         }
     }
@@ -113,6 +130,30 @@ struct FCAlertView: View {
         Color.black
             .background(.ultraThickMaterial)
             .opacity(0.4)
+            .opacity(backgroundOpacity)
+    }
+    
+    private func animate(
+        isShown: Bool,
+        completion: (() -> Void)? = nil
+    ) {
+        switch isShown {
+        case true:
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.9, blendDuration: 0)) {
+                opacity = 1
+                backgroundOpacity = 1
+            }
+    
+            completion?()
+    
+        case false:
+            withAnimation(.default) {
+                backgroundOpacity = 0
+                opacity = 0
+            }
+    
+            completion?()
+        }
     }
 }
 
@@ -166,7 +207,6 @@ extension FCAlertView {
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
-
         }
     }
     

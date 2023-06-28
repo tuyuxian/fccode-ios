@@ -14,26 +14,32 @@ struct LifePhotoEditSheet: View {
     @ObservedObject var basicInfoVM: BasicInfoViewModel
     /// Init life photo edit sheet view model
     @StateObject private var vm = LifePhotoEditSheetViewModel()
-
+    
     var body: some View {
         Sheet(
             size: [.large],
+            hasFooter: false,
             header: {
                 Text("Nice Picture!")
                     .fontTemplate(.h2Medium)
                     .foregroundColor(Color.text)
                     .frame(height: 34)
-                    .padding(.bottom, 4)
             },
             content: {
                 TabView(selection: $vm.currentView) {
-                    LifePhotoView(basicInfoVM: basicInfoVM, vm: vm)
-                        .tag(0)
-                        .contentShape(Rectangle()).simultaneousGesture(DragGesture())
-                    
-                    CaptionView(basicInfoVM: basicInfoVM, vm: vm)
-                        .tag(1)
-                        .contentShape(Rectangle()).simultaneousGesture(DragGesture())
+                    LifePhotoView(
+                        basicInfoVM: basicInfoVM,
+                        vm: vm
+                    )
+                    .tag(0)
+                    .contentShape(Rectangle()).simultaneousGesture(DragGesture())
+
+                    CaptionView(
+                        basicInfoVM: basicInfoVM,
+                        vm: vm
+                    )
+                    .tag(1)
+                    .contentShape(Rectangle()).simultaneousGesture(DragGesture())
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .transition(.slide)
@@ -41,10 +47,23 @@ struct LifePhotoEditSheet: View {
             footer: {}
         )
         .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.16)) {
-                UIApplication.shared.closeKeyboard()
+            self.hideKeyboard()
+        }
+        .onAppear {
+            if let selectedLifePhoto = basicInfoVM.selectedLifePhoto {
+                vm.selectedTag = CropRatio.allCases.first { ratio in
+                    ratio.rawValue == selectedLifePhoto.ratio
+                }!
+                vm.currentOffset = selectedLifePhoto.offset
+                vm.currentScale = selectedLifePhoto.scale
+                vm.caption = selectedLifePhoto.caption
             }
         }
+    }
+    
+    private func hideKeyboard() {
+        let resign = #selector(UIResponder.resignFirstResponder)
+        UIApplication.shared.sendAction(resign, to: nil, from: nil, for: nil)
     }
 }
 

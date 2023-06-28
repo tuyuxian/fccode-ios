@@ -10,7 +10,7 @@ import SwiftUI
 import GraphQLAPI
 
 class BasicInfoViewModel: ObservableObject {
-        
+            
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoView.TabState = .edit
@@ -18,10 +18,9 @@ class BasicInfoViewModel: ObservableObject {
     
     /// Life photo state
     @Published var hasLifePhoto: Bool = false
-    @Published var showEditSheet: Bool = false
+    @Published var showLifePhotoEditSheet: Bool = false
     @Published var selectedImage: UIImage?
     @Published var selectedLifePhoto: LifePhoto?
-//    @Published var currentDragLifePhoto: LifePhoto?
     @Published var lifePhotoMap: [Int: LifePhoto] = [Int: LifePhoto]()
 
     /// Toast message
@@ -68,11 +67,14 @@ extension BasicInfoViewModel {
     public func resetImage() {
         self.selectedImage = nil
     }
+    
 }
 
 extension BasicInfoViewModel {
+    
     struct SheetView<T>: Identifiable {
         let id = UUID()
         let sheetContent: T
     }
+    
 }

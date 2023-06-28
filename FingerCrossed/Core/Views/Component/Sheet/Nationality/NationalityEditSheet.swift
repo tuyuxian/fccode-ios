@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NationalityEditSheet: View {
     
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
 
     @ObservedObject var vm: NationalityViewModel
     
@@ -36,29 +36,34 @@ struct NationalityEditSheet: View {
                             .frame(height: 14)
                     }
                     
-                    Button("Done") {
-                        presentationMode.wrappedValue.dismiss()
+                    HStack {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("Done")
+                                .fontTemplate(.pMedium)
+                                .foregroundColor(Color.gold)
+                                .frame(height: 34, alignment: .center)
+                        }
                     }
-                    .fontTemplate(.pMedium)
-                    .foregroundColor(Color.gold)
-                    .frame(height: 34, alignment: .center)
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .trailing
-                    )
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
+                .padding(.horizontal, 24)
             },
             content: {
-                NationalitySearchBar(
-                    vm: vm,
-                    nationalityList: $nationalityList,
-                    countryName: $countryName,
-                    isSheet: true
-                )
-                .frame(width: UIScreen.main.bounds.width - 50)
-                .padding(.vertical, 20)
-                
-                countriesListView
+                Group {
+                    NationalitySearchBar(
+                        vm: vm,
+                        nationalityList: $nationalityList,
+                        countryName: $countryName,
+                        isSheet: true
+                    )
+                    .frame(width: UIScreen.main.bounds.width - 50)
+                    .padding(.vertical, 20)
+                    
+                    countriesListView
+                }
+                .padding(.horizontal, 24)
             },
             footer: {}
         )

@@ -23,7 +23,8 @@ struct VoiceMessageActionSheet: View {
     
     var body: some View {
         Sheet(
-            size: [.height(138)],
+            size: [.height(124)],
+            showDragIndicator: false,
             hasHeader: false,
             hasFooter: false,
             header: {},
@@ -65,18 +66,9 @@ struct VoiceMessageActionSheet: View {
                         )
                     }
                 }
-                .padding(.top, 15) // 30 - 15
-//                .padding(.bottom, 16)
+                .padding(.top, 30)
+                .padding(.horizontal, 24)
                 .showAlert($vm.fcAlert)
-                .onChange(of: vm.state) { state in
-                    if state == .error {
-                        bm.pop(
-                            title: vm.bannerMessage,
-                            type: vm.bannerType
-                        )
-                        vm.state = .none
-                    }
-                }
             },
             footer: {}
         )
@@ -92,8 +84,16 @@ struct VoiceMessageActionSheet: View {
                     selectedSheet = nil
                 } catch {
                     vm.state = .error
-                    vm.bannerMessage = "Something went wrong"
-                    vm.bannerType = .error
+                    vm.fcAlert = .info(
+                        type: .info,
+                        title: "Oopsie!",
+                        message: "Something went wrong.",
+                        dismissLabel: "Dismiss",
+                        dismissAction: {
+                            vm.state = .none
+                            vm.fcAlert = nil
+                        }
+                    )
                     print(error.localizedDescription)
                 }
             }
@@ -115,6 +115,7 @@ struct VoiceMessageActionSheet_Previews: PreviewProvider {
 
 extension VoiceMessageActionSheet {
     
+    @MainActor
     class ViewModel: ObservableObject {
         
         @AppStorage("UserId") var userId: String = ""
@@ -130,7 +131,6 @@ extension VoiceMessageActionSheet {
         /// Alert
         @Published var fcAlert: FCAlert?
         
-        @MainActor
         public func deleteOnTap(
             action: @escaping () -> Void
         ) {
@@ -150,7 +150,6 @@ extension VoiceMessageActionSheet {
             )
         }
         
-        @MainActor
         public func deleteVoiceMessage(
             url: String
         ) async throws {

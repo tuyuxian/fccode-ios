@@ -7,26 +7,24 @@
 
 import SwiftUI
 
-struct Sheet<Header: View, Content: View, Footer: View>: View, KeyboardReadable {
+struct Sheet<Header: View, Content: View, Footer: View>: View {
     
-    @State var size: Set<PresentationDetent>
+    var size: Set<PresentationDetent>
     
-    @State var showDragIndicator: Bool = true
+    var showDragIndicator: Bool = true
+    
+//    var 
         
-    @State var hasHeader: Bool = true
+    var hasHeader: Bool = true
     
-    @State var hasFooter: Bool = true
+    var hasFooter: Bool = true
     
     @ViewBuilder var header: Header
     
     @ViewBuilder var content: Content
     
     @ViewBuilder var footer: Footer
-    
-    @State private var sheetContentHeight = CGFloat(0)
-    
-    @State private var isKeyboardShowUp: Bool = false
-    
+            
     var body: some View {
         ScrollView([]) {
             VStack(spacing: 0) {
@@ -39,30 +37,19 @@ struct Sheet<Header: View, Content: View, Footer: View>: View, KeyboardReadable 
                         .padding(.top, 10)
                     : nil
                     hasHeader
-                    ? header
+                    ? header.padding(.top, showDragIndicator ? 0 : 30)
                     : nil
                 }
                 content
             }
         }
-//        .readHeight()
-//        .onPreferenceChange(HeightPreferenceKey.self) { height in
-//            print(height)
-//            if let height {
-//                self.sheetContentHeight = height
-//            }
-//        }
-//        .presentationDetents([.height(self.sheetContentHeight - (isKeyboardShowUp ? 34 : 0))])
         .presentationDetents(size)
+        .presentationDragIndicator(.hidden)
         .scrollDismissesKeyboard(.immediately)
         .safeAreaInset(
             edge: .bottom,
             content: { hasFooter ? footer : nil }
         )
-        .padding(.horizontal, 24)
-        .onReceive(keyboardPublisher) { val in
-            isKeyboardShowUp = val
-        }
     }
 }
 
@@ -82,39 +69,5 @@ struct Sheet_Previews: PreviewProvider {
                 .padding(.horizontal, 24)
             }
         )
-    }
-}
-
-struct HeightPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat?
-
-    static func reduce(
-        value: inout CGFloat?,
-        nextValue: () -> CGFloat?
-    ) {
-        guard let nextValue = nextValue() else { return }
-        value = nextValue
-    }
-}
-
-private struct ReadHeightModifier: ViewModifier {
-    private var sizeView: some View {
-        GeometryReader { geometry in
-            Color.clear.preference(
-                key: HeightPreferenceKey.self,
-                value: geometry.size.height
-            )
-        }
-    }
-
-    func body(content: Content) -> some View {
-        content.background(sizeView)
-    }
-}
-
-extension View {
-    func readHeight() -> some View {
-        self
-            .modifier(ReadHeightModifier())
     }
 }

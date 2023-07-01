@@ -15,9 +15,7 @@ struct FingerCrossedApp: App {
     @StateObject var bannerManager: BannerManager = BannerManager()
     
     @StateObject var pageSpinnerManager: PageSpinnerManager = PageSpinnerManager()
-    
-    @State private var id: UUID = UUID()
-    
+        
     var body: some Scene {
         
         WindowGroup {

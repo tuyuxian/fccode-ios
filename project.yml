@@ -54,8 +54,8 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         UIRequiresFullScreen: true
         NSCameraUsageDescription: "Finger Crossed needs access to your camera so you can take photos."
-        NSPhotoLibraryUsageDescription: "Finger Crossed needs access to your photo library so you can share photos."
-        PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
+        # NSPhotoLibraryUsageDescription: "Finger Crossed needs access to your photo library so you can share photos."
+        # PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
         NSMicrophoneUsageDescription: "Finger Crossed needs access to your microphone so you can record voice messages."
         NSLocationWhenInUseUsageDescription: "Finger Crossed needs access to your location to show you who's around."
         GIDClientID: "796251774309-qoqun0ovm6ttv6adjs9jdjll0ug9qsi8.apps.googleusercontent.com"

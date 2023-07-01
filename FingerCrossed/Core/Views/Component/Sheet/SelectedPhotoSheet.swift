@@ -8,8 +8,10 @@
 import SwiftUI
 import Photos
 
+@available(*, deprecated)
 struct SelectedPhotoSheet: View {
-    @Environment(\.presentationMode) private var presentationMode
+    
+    @Environment(\.dismiss) private var dismiss
     
     let columns = [GridItem(.adaptive(minimum: 100))]
     
@@ -21,18 +23,19 @@ struct SelectedPhotoSheet: View {
     
     var body: some View {
         Sheet(
-            size: [.fraction(0.6)],
+            size: [.medium, .large],
             header: {
-                VStack(spacing: 0) {
+                VStack(spacing: 4) {
                     Text("Selected Photos")
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                         .frame(height: 34)
                     Text("Finger Crossed has access to the following photos")
-                        .fontTemplate(.captionMedium)
+                        .fontTemplate(.noteMedium)
                         .foregroundColor(Color.text)
-                        .frame(height: 14)
+                        .frame(height: 16)
                 }
+                .padding(.horizontal, 24)
             },
             content: {
                 LimitedPhotoPicker(isPresented: $limitedPhotoPicker.showLimitedPicker)
@@ -62,7 +65,7 @@ struct SelectedPhotoSheet: View {
                                 ThumbnailView(photo: photo)
                                     .onTapGesture {
                                         limitedPhotoPicker.extractImage(asset: photo.photoAsset)
-                                        presentationMode.wrappedValue.dismiss()
+                                        dismiss()
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             if limitedPhotoPicker.extractUIImage != nil {
                                                 selectedImage = limitedPhotoPicker.extractUIImage
@@ -106,7 +109,7 @@ struct SelectedPhotoSheet: View {
     }
 }
 
-struct ThumbnailView: View {
+fileprivate struct ThumbnailView: View {
     var photo: PhotoAsset
     
     var body: some View {
@@ -115,15 +118,5 @@ struct ThumbnailView: View {
             .aspectRatio(contentMode: .fill)
             .frame(width: 110, height: 110)
             .cornerRadius(16)
-    }
-}
-
-private var uiImage: Binding<UIImage?> {
-    Binding.constant(UIImage())
-}
-
-struct SelectedPhotoSheet_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectedPhotoSheet(selectedImage: uiImage)
     }
 }

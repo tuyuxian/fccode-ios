@@ -5,9 +5,7 @@
 //  Created by Yu-Hsien Tu on 5/21/23.
 //
 
-import Foundation
 import PhotosUI
-import UIKit
 
 final class PhotoLibraryPermissionManager {
     
@@ -15,7 +13,7 @@ final class PhotoLibraryPermissionManager {
     
     let alertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
     
-    typealias PhotoAuthStatus = (isAllowed: Bool, isLimited: Bool)
+    typealias PhotoLibraryAuthStatus = (isAllowed: Bool, isLimited: Bool)
     
     public var permissionStatus: PermissionStatus {
         switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
@@ -30,7 +28,9 @@ final class PhotoLibraryPermissionManager {
         }
     }
     
-    public func requestPermission (completion: @escaping (PhotoAuthStatus) -> Void) {
+    public func requestPermission(
+        completion: @escaping (PhotoLibraryAuthStatus) -> Void
+    ) {
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
             switch status {
             case .notDetermined:
@@ -50,4 +50,5 @@ final class PhotoLibraryPermissionManager {
             }
         }
     }
+    
 }

@@ -28,8 +28,6 @@ struct VoiceMessageEditSheet: View {
                         .frame(maxWidth: .infinity, alignment: .center)
                     
                     HStack {
-                        Spacer()
-                        
                         vm.showSaveButton
                         ? Button {
                             Task {
@@ -46,7 +44,9 @@ struct VoiceMessageEditSheet: View {
                         }
                         : nil
                     }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
+                .padding(.horizontal, 24)
             },
             content: {
                 VStack(spacing: 0) {
@@ -179,6 +179,7 @@ struct VoiceMessageEditSheet: View {
                     }
                 }
                 .padding(.bottom, 16)
+                .padding(.horizontal, 24)
             },
             footer: {}
         )

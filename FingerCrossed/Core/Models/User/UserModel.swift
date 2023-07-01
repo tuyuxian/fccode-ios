@@ -174,44 +174,7 @@ extension User {
                 code: "US"
             )
         ],
-        lifePhoto: [
-            LifePhoto(
-                id: "0",
-                contentUrl: "https://i.pravatar.cc/150?img=6",
-                caption: "123",
-                position: 0,
-                ratio: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                id: "1",
-                contentUrl: "https://i.pravatar.cc/150?img=7",
-                caption: "123",
-                position: 1,
-                ratio: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                id: "2",
-                contentUrl: "https://i.pravatar.cc/150?img=8",
-                caption: "123",
-                position: 2,
-                ratio: 3,
-                scale: 1,
-                offset: CGSize.zero
-            ),
-            LifePhoto(
-                id: "3",
-                contentUrl: "https://i.pravatar.cc/150?img=9",
-                caption: "",
-                position: 3,
-                ratio: 3,
-                scale: 1,
-                offset: CGSize.zero
-            )
-        ],
+        lifePhoto: LifePhoto.MockLifePhotoList,
         socialAccount: [],
         ethnicity: [
             Ethnicity(type: .et1)

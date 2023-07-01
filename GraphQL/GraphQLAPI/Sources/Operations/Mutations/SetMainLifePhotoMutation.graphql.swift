@@ -3,13 +3,18 @@
 
 @_exported import ApolloAPI
 
-public class DeleteLifePhotoMutation: GraphQLMutation {
-  public static let operationName: String = "DeleteLifePhoto"
+public class SetMainLifePhotoMutation: GraphQLMutation {
+  public static let operationName: String = "setMainLifePhoto"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!, $position: Int!) {
-        deleteLifePhoto(userId: $userId, lifePhotoId: $lifePhotoId, position: $position) {
+      mutation setMainLifePhoto($userId: ID!, $sourceLifePhotoId: ID!, $targetLifePhotoId: ID!, $fromPosition: Int!) {
+        setMainLifePhoto(
+          userId: $userId
+          sourceLifePhotoId: $sourceLifePhotoId
+          targetLifePhotoId: $targetLifePhotoId
+          fromPosition: $fromPosition
+        ) {
           __typename
           status
           statusCode
@@ -20,23 +25,27 @@ public class DeleteLifePhotoMutation: GraphQLMutation {
     ))
 
   public var userId: ID
-  public var lifePhotoId: ID
-  public var position: Int
+  public var sourceLifePhotoId: ID
+  public var targetLifePhotoId: ID
+  public var fromPosition: Int
 
   public init(
     userId: ID,
-    lifePhotoId: ID,
-    position: Int
+    sourceLifePhotoId: ID,
+    targetLifePhotoId: ID,
+    fromPosition: Int
   ) {
     self.userId = userId
-    self.lifePhotoId = lifePhotoId
-    self.position = position
+    self.sourceLifePhotoId = sourceLifePhotoId
+    self.targetLifePhotoId = targetLifePhotoId
+    self.fromPosition = fromPosition
   }
 
   public var __variables: Variables? { [
     "userId": userId,
-    "lifePhotoId": lifePhotoId,
-    "position": position
+    "sourceLifePhotoId": sourceLifePhotoId,
+    "targetLifePhotoId": targetLifePhotoId,
+    "fromPosition": fromPosition
   ] }
 
   public struct Data: GraphQLAPI.SelectionSet {
@@ -45,19 +54,20 @@ public class DeleteLifePhotoMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { GraphQLAPI.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("deleteLifePhoto", DeleteLifePhoto.self, arguments: [
+      .field("setMainLifePhoto", SetMainLifePhoto.self, arguments: [
         "userId": .variable("userId"),
-        "lifePhotoId": .variable("lifePhotoId"),
-        "position": .variable("position")
+        "sourceLifePhotoId": .variable("sourceLifePhotoId"),
+        "targetLifePhotoId": .variable("targetLifePhotoId"),
+        "fromPosition": .variable("fromPosition")
       ]),
     ] }
 
-    public var deleteLifePhoto: DeleteLifePhoto { __data["deleteLifePhoto"] }
+    public var setMainLifePhoto: SetMainLifePhoto { __data["setMainLifePhoto"] }
 
-    /// DeleteLifePhoto
+    /// SetMainLifePhoto
     ///
     /// Parent Type: `CRUDResponse`
-    public struct DeleteLifePhoto: GraphQLAPI.SelectionSet {
+    public struct SetMainLifePhoto: GraphQLAPI.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

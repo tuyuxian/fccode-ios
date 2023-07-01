@@ -1,19 +1,24 @@
 //
-//  ImagePicker.swift
+//  Camera.swift
 //  FingerCrossed
 //
 //  Created by Lawrence on 4/24/23.
 //
 
 import SwiftUI
+import PhotosUI
+import UIKit
 
-struct ImagePicker: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) private var presentationMode
-    var sourceType: UIImagePickerController.SourceType = .photoLibrary
+struct Camera: UIViewControllerRepresentable {
+    
+    @Environment(\.dismiss) private var dismiss
+    
     @Binding var selectedImage: UIImage?
-
+    
+    var sourceType: UIImagePickerController.SourceType = .camera
+    
     func makeUIViewController(
-        context: UIViewControllerRepresentableContext<ImagePicker>
+        context: UIViewControllerRepresentableContext<Camera>
     ) -> UIImagePickerController {
         let imagePicker = UIImagePickerController()
         imagePicker.allowsEditing = false
@@ -24,7 +29,7 @@ struct ImagePicker: UIViewControllerRepresentable {
 
     func updateUIViewController(
         _ uiViewController: UIImagePickerController,
-        context: UIViewControllerRepresentableContext<ImagePicker>
+        context: UIViewControllerRepresentableContext<Camera>
     ) {}
 
     func makeCoordinator() -> Coordinator {
@@ -33,9 +38,9 @@ struct ImagePicker: UIViewControllerRepresentable {
 
     final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-        var parent: ImagePicker
+        var parent: Camera
 
-        init(_ parent: ImagePicker) {
+        init(_ parent: Camera) {
             self.parent = parent
         }
 
@@ -46,8 +51,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
                 parent.selectedImage = image
             }
-
-            parent.presentationMode.wrappedValue.dismiss()
+            parent.dismiss()
         }
     }
 }

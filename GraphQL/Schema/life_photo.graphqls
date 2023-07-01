@@ -5,5 +5,11 @@ extend type Mutation {
     lifePhotoId: ID!
     input: UpdateLifePhotoInput!
   ): CRUDResponse!
-  deleteLifePhoto(userId: ID!, lifePhotoId: ID!): CRUDResponse!
+  deleteLifePhoto(userId: ID!, lifePhotoId: ID!, position: Int!): CRUDResponse!
+  setMainLifePhoto(
+    userId: ID!
+    sourceLifePhotoId: ID!
+    targetLifePhotoId: ID!
+    fromPosition: Int!
+  ): CRUDResponse!
 }

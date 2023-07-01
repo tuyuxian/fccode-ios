@@ -171,3 +171,11 @@ extension View {
         )
     }
 }
+
+extension View {
+    public func haptics(
+        _ style: UIImpactFeedbackGenerator.FeedbackStyle
+    ) {
+        UIImpactFeedbackGenerator(style: style).impactOccurred()
+    }
+}

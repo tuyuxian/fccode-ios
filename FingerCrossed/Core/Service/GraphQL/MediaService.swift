@@ -115,7 +115,7 @@ struct MediaService {
                                 position: $0.position,
                                 ratio: $0.ratio,
                                 scale: $0.scale,
-                                offset: CGSize(width: $0.offsetX, height: $0.offsetY)
+                                offset: CGPoint(x: $0.offsetX, y: $0.offsetY)
                             )
                         } ?? [])
                         continuation.resume(returning: (200, lifePhotos))
@@ -168,7 +168,7 @@ struct MediaService {
                                 position: $0.position,
                                 ratio: $0.ratio,
                                 scale: $0.scale,
-                                offset: CGSize(width: $0.offsetX, height: $0.offsetY)
+                                offset: CGPoint(x: $0.offsetX, y: $0.offsetY)
                             )
                         } ?? [])
                         continuation.resume(returning: (200, lifePhotos))

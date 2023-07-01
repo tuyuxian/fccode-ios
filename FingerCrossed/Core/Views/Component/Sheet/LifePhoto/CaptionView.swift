@@ -86,8 +86,8 @@ extension LifePhotoEditSheet {
                         position: basicInfoVM.lifePhotoMap.count,
                         ratio: vm.selectedTag.rawValue,
                         scale: vm.currentScale,
-                        offsetX: vm.currentOffset.width,
-                        offsetY: vm.currentOffset.height
+                        offsetX: vm.currentOffset.x,
+                        offsetY: vm.currentOffset.y
                     )
                     guard vm.state == .complete else {
                         throw FCError.LifePhoto.createLifePhotoFailed
@@ -113,8 +113,8 @@ extension LifePhotoEditSheet {
                             caption: vm.caption,
                             ratio: vm.selectedTag.rawValue,
                             scale: vm.currentScale,
-                            offsetX: vm.currentOffset.width,
-                            offsetY: vm.currentOffset.height
+                            offsetX: vm.currentOffset.x,
+                            offsetY: vm.currentOffset.y
                         )
                         guard vm.state == .complete else {
                             throw FCError.LifePhoto.updateLifePhotoFailed

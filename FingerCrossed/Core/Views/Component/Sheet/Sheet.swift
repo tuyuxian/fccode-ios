@@ -44,6 +44,7 @@ struct Sheet<Header: View, Content: View, Footer: View>: View {
             }
         }
         .presentationDetents(size)
+        .presentationDragIndicator(.hidden)
         .scrollDismissesKeyboard(.immediately)
         .safeAreaInset(
             edge: .bottom,

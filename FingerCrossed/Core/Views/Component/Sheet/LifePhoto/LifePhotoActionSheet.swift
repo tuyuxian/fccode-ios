@@ -59,8 +59,7 @@ struct LifePhotoActionSheet: View {
                                 vm.showEditSheet = true
                             },
                             content: {
-                                ImagePicker(
-                                    sourceType: .camera,
+                                Camera(
                                     selectedImage: $basicInfoVM.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
@@ -86,42 +85,11 @@ struct LifePhotoActionSheet: View {
                             )
                         }
                         
-                        Button {
-                            vm.uploadPhotosOnTap()
-                        } label: {
+                        FCPhotoPicker(
+                            selectedImage: $basicInfoVM.selectedImage,
+                            action: { vm.showEditSheet = true }
+                        ) {
                             LifePhotoActionRow(actionType: .photo)
-                        }
-                        .sheet(
-                            isPresented: $vm.showImagePicker,
-                            onDismiss: {
-                                guard  basicInfoVM.selectedImage != nil else { return }
-                                vm.showEditSheet = true
-                            },
-                            content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
-                                    selectedImage: $basicInfoVM.selectedImage
-                                )
-                            }
-                        )
-                        .alert(isPresented: $vm.showPhotoLibraryAlert) {
-                            Alert(
-                                title:
-                                    Text(vm.photoLibraryPermissionManager.alertTitle)
-                                    .font(Font.system(size: 18, weight: .medium)),
-                                message:
-                                    Text(vm.photoLibraryPermissionManager.alertMessage)
-                                    .font(Font.system(size: 12, weight: .medium)),
-                                primaryButton: .default(Text("Cancel")),
-                                secondaryButton: .default(
-                                    Text("Settings"),
-                                    action: {
-                                        UIApplication.shared.open(
-                                            URL(string: UIApplication.openSettingsURLString)!
-                                        )
-                                    }
-                                )
-                            )
                         }
                     }
                 }
@@ -277,15 +245,12 @@ extension LifePhotoActionSheet {
         @Published var state: ViewStatus = .none
         @Published var showEditSheet: Bool = false
         @Published var showCamera: Bool = false
-        @Published var showImagePicker: Bool = false
 
         /// Alert
         @Published var fcAlert: FCAlert?
         @Published var showCameraAlert: Bool = false
-        @Published var showPhotoLibraryAlert: Bool = false
         
         /// Permission manager
-        let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
         let cameraPermissionManager = CameraPermissionManager()
         
         public func takePhotosOnTap() {
@@ -299,20 +264,6 @@ extension LifePhotoActionSheet {
                 self.showCameraAlert = true
             default:
                 self.showCamera = true
-            }
-        }
-        
-        public func uploadPhotosOnTap() {
-            switch photoLibraryPermissionManager.permissionStatus {
-            case .notDetermined:
-                photoLibraryPermissionManager.requestPermission { granted, _ in
-                    guard granted else { return }
-                    self.showImagePicker = true
-                }
-            case .denied:
-                self.showPhotoLibraryAlert = true
-            default:
-                self.showImagePicker = true
             }
         }
         

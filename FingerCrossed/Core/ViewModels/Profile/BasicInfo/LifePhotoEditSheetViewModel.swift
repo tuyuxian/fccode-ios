@@ -24,7 +24,7 @@ class LifePhotoEditSheetViewModel: ObservableObject {
     @Published var caption: String = ""
     
     /// Offset
-    @Published var currentOffset: CGSize = .zero
+    @Published var currentOffset: CGPoint = .zero
     /// Scale
     @Published var currentScale: CGFloat = 1.0
     /// Alert

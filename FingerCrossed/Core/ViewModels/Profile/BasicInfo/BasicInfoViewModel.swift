@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import GraphQLAPI
 
+@MainActor
 class BasicInfoViewModel: ObservableObject {
             
     /// View state
@@ -30,18 +31,10 @@ class BasicInfoViewModel: ObservableObject {
     /// Alert
     @Published var fcAlert: FCAlert?
 
-    init() {
-        print("-> [Basic Info] vm init")
-    }
-
-    deinit {
-        print("-> [Basic Info] vm deinit")
-    }
 }
 
 extension BasicInfoViewModel {
     
-    @MainActor
     public func uneditableRowOnTap() {
         self.fcAlert = .info(
             type: .info,
@@ -55,15 +48,13 @@ extension BasicInfoViewModel {
             }
         )
     }
-    
-    @MainActor
+
     public func editableRowOnTap(_ sheetContent: BasicInfoDestination) {
         self.selectedSheet = SheetView(
             sheetContent: sheetContent
         )
     }
-    
-    @MainActor
+
     public func resetImage() {
         self.selectedImage = nil
     }

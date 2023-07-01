@@ -1,15 +1,16 @@
 {
   "images" : [
     {
-      "filename" : "Sam.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "Robot.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "Robot 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -52,7 +52,7 @@ extension LifePhotoEditSheet {
                 
                 if let image = basicInfoVM.selectedImage {
                     EditableImage(
-                        image: image,
+                        image: { Image(uiImage: image).resizable().scaledToFill() },
                         cropRatio: $vm.selectedTag,
                         currentOffset: $vm.currentOffset,
                         currentScale: $vm.currentScale
@@ -63,23 +63,16 @@ extension LifePhotoEditSheet {
                     )
                 } else {
                     if let url = basicInfoVM.selectedLifePhoto?.contentUrl {
-                        let renderer = ImageRenderer(
-                            content: FCAsyncImage(url: URL(string: url)!)
+                        EditableImage(
+                            image: { FCAsyncImage(url: URL(string: url)!) },
+                            cropRatio: $vm.selectedTag,
+                            currentOffset: $vm.currentOffset,
+                            currentScale: $vm.currentScale
                         )
-                        if let image = renderer.uiImage {
-                            EditableImage(
-                                image: image,
-                                cropRatio: $vm.selectedTag,
-                                currentOffset: $vm.currentOffset,
-                                currentScale: $vm.currentScale,
-                                offset: vm.currentOffset,
-                                scale: vm.currentScale
-                            )
-                            .frame(
-                                width: UIScreen.main.bounds.width - 48,
-                                height: UIScreen.main.bounds.height - 320
-                            )
-                        }
+                        .frame(
+                            width: UIScreen.main.bounds.width - 48,
+                            height: UIScreen.main.bounds.height - 320
+                        )
                     }
                 }
                 

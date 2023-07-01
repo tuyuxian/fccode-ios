@@ -32,17 +32,14 @@ struct LifePhotoEditSheet: View {
                         vm: vm
                     )
                     .tag(0)
-                    .contentShape(Rectangle()).simultaneousGesture(DragGesture())
-
+                    
                     CaptionView(
                         basicInfoVM: basicInfoVM,
                         vm: vm
                     )
                     .tag(1)
-                    .contentShape(Rectangle()).simultaneousGesture(DragGesture())
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .transition(.slide)
+                .tabViewStyle(.automatic)
             },
             footer: {}
         )
@@ -50,6 +47,7 @@ struct LifePhotoEditSheet: View {
             self.hideKeyboard()
         }
         .onAppear {
+            // FIXME: incorrect offset after scaling
             if let selectedLifePhoto = basicInfoVM.selectedLifePhoto {
                 vm.selectedTag = CropRatio.allCases.first { ratio in
                     ratio.rawValue == selectedLifePhoto.ratio

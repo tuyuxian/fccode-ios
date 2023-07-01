@@ -9,8 +9,9 @@ import Foundation
 import SwiftUI
 import GraphQLAPI
 
+@MainActor
 class BasicInfoViewModel: ObservableObject {
-        
+            
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoView.TabState = .edit
@@ -18,10 +19,9 @@ class BasicInfoViewModel: ObservableObject {
     
     /// Life photo state
     @Published var hasLifePhoto: Bool = false
-    @Published var showEditSheet: Bool = false
+    @Published var showLifePhotoEditSheet: Bool = false
     @Published var selectedImage: UIImage?
     @Published var selectedLifePhoto: LifePhoto?
-//    @Published var currentDragLifePhoto: LifePhoto?
     @Published var lifePhotoMap: [Int: LifePhoto] = [Int: LifePhoto]()
 
     /// Toast message
@@ -31,18 +31,10 @@ class BasicInfoViewModel: ObservableObject {
     /// Alert
     @Published var fcAlert: FCAlert?
 
-    init() {
-        print("-> [Basic Info] vm init")
-    }
-
-    deinit {
-        print("-> [Basic Info] vm deinit")
-    }
 }
 
 extension BasicInfoViewModel {
     
-    @MainActor
     public func uneditableRowOnTap() {
         self.fcAlert = .info(
             type: .info,
@@ -56,23 +48,24 @@ extension BasicInfoViewModel {
             }
         )
     }
-    
-    @MainActor
+
     public func editableRowOnTap(_ sheetContent: BasicInfoDestination) {
         self.selectedSheet = SheetView(
             sheetContent: sheetContent
         )
     }
-    
-    @MainActor
+
     public func resetImage() {
         self.selectedImage = nil
     }
+    
 }
 
 extension BasicInfoViewModel {
+    
     struct SheetView<T>: Identifiable {
         let id = UUID()
         let sheetContent: T
     }
+    
 }

@@ -13,9 +13,7 @@ struct BasicInfoView: View {
     /// Init basic info view model
     @StateObject var vm = BasicInfoViewModel()
         
-    init(
-        user: UserViewModel
-    ) {
+    init(user: UserViewModel) {
         self.user = user
     }
     

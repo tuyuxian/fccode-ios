@@ -11,8 +11,6 @@ import GraphQLAPI
 struct LifePhotoActionSheet: View {
     /// View controller
     @Environment(\.dismiss) private var dismiss
-    /// Banner
-    @EnvironmentObject private var bm: BannerManager
     /// Observed basic info view model
     @ObservedObject var basicInfoVM: BasicInfoViewModel
     /// Init view model
@@ -20,7 +18,8 @@ struct LifePhotoActionSheet: View {
     
     var body: some View {
         Sheet(
-            size: [.height(basicInfoVM.hasLifePhoto ? 192 : 138)],
+            size: [.height(basicInfoVM.hasLifePhoto ? 178 : 124)],
+            showDragIndicator: false,
             hasHeader: false,
             hasFooter: false,
             header: {},
@@ -43,7 +42,7 @@ struct LifePhotoActionSheet: View {
                         }
                         
                         Button {
-                            dismiss()
+                            setToMain()
                         } label: {
                             LifePhotoActionRow(actionType: .setToMain)
                         }
@@ -60,8 +59,7 @@ struct LifePhotoActionSheet: View {
                                 vm.showEditSheet = true
                             },
                             content: {
-                                ImagePicker(
-                                    sourceType: .camera,
+                                Camera(
                                     selectedImage: $basicInfoVM.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
@@ -87,57 +85,17 @@ struct LifePhotoActionSheet: View {
                             )
                         }
                         
-                        Button {
-                            vm.uploadPhotosOnTap()
-                        } label: {
+                        FCPhotoPicker(
+                            selectedImage: $basicInfoVM.selectedImage,
+                            action: { vm.showEditSheet = true }
+                        ) {
                             LifePhotoActionRow(actionType: .photo)
                         }
-                        .sheet(
-                            isPresented: $vm.showImagePicker,
-                            onDismiss: {
-                                guard  basicInfoVM.selectedImage != nil else { return }
-                                vm.showEditSheet = true
-                            },
-                            content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
-                                    selectedImage: $basicInfoVM.selectedImage
-                                )
-                            }
-                        )
-                        .alert(isPresented: $vm.showPhotoLibraryAlert) {
-                            Alert(
-                                title:
-                                    Text(vm.photoLibraryPermissionManager.alertTitle)
-                                    .font(Font.system(size: 18, weight: .medium)),
-                                message:
-                                    Text(vm.photoLibraryPermissionManager.alertMessage)
-                                    .font(Font.system(size: 12, weight: .medium)),
-                                primaryButton: .default(Text("Cancel")),
-                                secondaryButton: .default(
-                                    Text("Settings"),
-                                    action: {
-                                        UIApplication.shared.open(
-                                            URL(string: UIApplication.openSettingsURLString)!
-                                        )
-                                    }
-                                )
-                            )
-                        }
                     }
                 }
-                .padding(.top, 15) // 30 - 15
-//                .padding(.bottom, 16)
+                .padding(.top, 30)
+                .padding(.horizontal, 24)
                 .showAlert($vm.fcAlert)
-                .onChange(of: vm.state) { state in
-                    if state == .error {
-                        bm.pop(
-                            title: vm.bannerMessage,
-                            type: vm.bannerType
-                        )
-                        vm.state = .none
-                    }
-                }
             },
             footer: {}
         )
@@ -145,7 +103,6 @@ struct LifePhotoActionSheet: View {
             isPresented: $vm.showEditSheet,
             onDismiss: {
                 basicInfoVM.resetImage()
-//                basicInfoVM.selectedImage = nil
                 dismiss()
             },
             content: {
@@ -162,17 +119,51 @@ struct LifePhotoActionSheet: View {
                 do {
                     try await vm.deleteLifePhoto(
                         lifePhotoId: lifePhoto.id,
-                        url: lifePhoto.contentUrl
+                        url: lifePhoto.contentUrl,
+                        position: lifePhoto.position
                     )
                     guard vm.state == .complete else { return }
-                    basicInfoVM.lifePhotoMap = basicInfoVM.lifePhotoMap.filter {
-                        $0.value.id != lifePhoto.id
+                    basicInfoVM.lifePhotoMap.removeValue(forKey: lifePhoto.position)
+                    var lifePhotos = [LifePhoto]()
+                    for var value in basicInfoVM.lifePhotoMap.values {
+                        if value.position > lifePhoto.position {
+                            value.position -= 1
+                        }
+                        lifePhotos.append(value)
                     }
+                    basicInfoVM.lifePhotoMap = Dictionary(
+                        uniqueKeysWithValues: lifePhotos.map { ($0.position, $0) }
+                    )
                     dismiss()
                 } catch {
                     vm.state = .error
-                    vm.bannerMessage = "Something went wrong"
-                    vm.bannerType = .error
+                    vm.showAlert()
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func setToMain() {
+        Task {
+            if let sourceLifePhoto = basicInfoVM.selectedLifePhoto,
+               var targetLifePhoto = basicInfoVM.lifePhotoMap[0] {
+                do {
+                    try await vm.setToMainOnTap(
+                        sourceLifePhotoId: sourceLifePhoto.id,
+                        targetLifePhotoId: targetLifePhoto.id,
+                        fromPosition: sourceLifePhoto.position
+                    )
+                    guard vm.state == .complete else { return }
+                    var from = basicInfoVM.lifePhotoMap[sourceLifePhoto.position]
+                    from?.position = 0
+                    targetLifePhoto.position = sourceLifePhoto.position
+                    basicInfoVM.lifePhotoMap[sourceLifePhoto.position] = targetLifePhoto
+                    basicInfoVM.lifePhotoMap[0] = from
+                    dismiss()
+                } catch {
+                    vm.state = .error
+                    vm.showAlert()
                     print(error.localizedDescription)
                 }
             }
@@ -185,7 +176,6 @@ struct LifePhotoActionSheet_Previews: PreviewProvider {
         LifePhotoActionSheet(
             basicInfoVM: BasicInfoViewModel()
         )
-        .environmentObject(BannerManager())
     }
 }
 
@@ -208,7 +198,7 @@ extension LifePhotoActionSheet {
                 switch actionType {
                 case .camera:
                     FCIcon.camera
-                    Text("Take Photos")
+                    Text("Take Photo")
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
                     Spacer()
@@ -226,13 +216,13 @@ extension LifePhotoActionSheet {
                     Spacer()
                 case .photo:
                     FCIcon.addPicture
-                    Text("Upload Photos")
+                    Text("Upload Photo")
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
                     Spacer()
                 case .setToMain:
                     FCIcon.star
-                    Text("Set to main")
+                    Text("Set to main photo")
                         .fontTemplate(.h3Medium)
                         .foregroundColor(Color.text)
                     Spacer()
@@ -246,6 +236,7 @@ extension LifePhotoActionSheet {
 
 extension LifePhotoActionSheet {
     
+    @MainActor
     class ViewModel: ObservableObject {
         
         @AppStorage("UserId") var userId: String = ""
@@ -254,22 +245,14 @@ extension LifePhotoActionSheet {
         @Published var state: ViewStatus = .none
         @Published var showEditSheet: Bool = false
         @Published var showCamera: Bool = false
-        @Published var showImagePicker: Bool = false
-        
-        /// Toast message
-        @Published var bannerMessage: String?
-        @Published var bannerType: Banner.BannerType?
 
         /// Alert
         @Published var fcAlert: FCAlert?
         @Published var showCameraAlert: Bool = false
-        @Published var showPhotoLibraryAlert: Bool = false
         
         /// Permission manager
-        let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
         let cameraPermissionManager = CameraPermissionManager()
         
-        @MainActor
         public func takePhotosOnTap() {
             switch cameraPermissionManager.permissionStatus {
             case .notDetermined:
@@ -284,22 +267,6 @@ extension LifePhotoActionSheet {
             }
         }
         
-        @MainActor
-        public func uploadPhotosOnTap() {
-            switch photoLibraryPermissionManager.permissionStatus {
-            case .notDetermined:
-                photoLibraryPermissionManager.requestPermission { granted, _ in
-                    guard granted else { return }
-                    self.showImagePicker = true
-                }
-            case .denied:
-                self.showPhotoLibraryAlert = true
-            default:
-                self.showImagePicker = true
-            }
-        }
-        
-        @MainActor
         public func deleteOnTap(
             action: @escaping () -> Void
         ) {
@@ -319,10 +286,10 @@ extension LifePhotoActionSheet {
             )
         }
         
-        @MainActor
         public func deleteLifePhoto(
             lifePhotoId: String,
-            url: String
+            url: String,
+            position: Int
         ) async throws {
             self.state = .loading
             guard let fileName = MediaService.extractFileName(url: url) else {
@@ -337,10 +304,40 @@ extension LifePhotoActionSheet {
             guard success else { throw FCError.LifePhoto.deleteS3ObjectFailed }
             let statusCode = try await MediaService.deleteLifePhoto(
                 userId: self.userId,
-                lifePhotoId: lifePhotoId
+                lifePhotoId: lifePhotoId,
+                position: position
             )
-            guard statusCode == 200 else { throw FCError.LifePhoto.updateUserFailed }
+            guard statusCode == 200 else { throw FCError.LifePhoto.updateLifePhotoFailed }
             self.state = .complete
+        }
+        
+        public func setToMainOnTap(
+            sourceLifePhotoId: String,
+            targetLifePhotoId: String,
+            fromPosition: Int
+        ) async throws {
+            self.state = .loading
+            let statusCode = try await MediaService.setMainLifePhoto(
+                userId: self.userId,
+                sourceLifePhotoId: sourceLifePhotoId,
+                targetLifePhotoId: targetLifePhotoId,
+                fromPosition: fromPosition
+            )
+            guard statusCode == 200 else { throw FCError.LifePhoto.updateLifePhotoFailed }
+            self.state = .complete
+        }
+        
+        public func showAlert() {
+            self.fcAlert = .info(
+                type: .info,
+                title: "Oopsie!",
+                message: "Something went wrong.",
+                dismissLabel: "Dismiss",
+                dismissAction: {
+                    self.state = .none
+                    self.fcAlert = nil
+                }
+            )
         }
     }
     

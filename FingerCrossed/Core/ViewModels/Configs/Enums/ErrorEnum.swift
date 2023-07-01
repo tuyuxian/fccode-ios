@@ -5,8 +5,6 @@
 //  Created by Yu-Hsien Tu on 6/11/23.
 //
 
-import Foundation
-
 public struct FCError {}
 
 extension FCError {
@@ -16,6 +14,10 @@ extension FCError {
         case getUserFailed
         case updateUserFailed
     }
+    
+}
+
+extension FCError {
     
     public enum VoiceMessage: Error {
         case unknown
@@ -28,10 +30,18 @@ extension FCError {
         case updateUserFailed
     }
     
+}
+
+extension FCError {
+    
     public enum SelfIntro: Error {
         case unknown
         case updateUserFailed
     }
+    
+}
+    
+extension FCError {
     
     public enum LifePhoto: Error {
         case unknown
@@ -45,4 +55,14 @@ extension FCError {
         case updateLifePhotoFailed
         case updateUserFailed
     }
+    
+}
+
+extension FCError {
+    
+    public enum PhotoLibrary: Error {
+        case unknown
+        case queryError
+    }
+    
 }

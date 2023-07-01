@@ -14,10 +14,8 @@ struct SignUpAvatarView: View {
     @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for selected photo list sheet' signal
-    @State var showSelectedPhotoList: Bool = false
     /// Flag for image picker's signal
-    @State private var showImagePicker: Bool = false
+    @State private var showPhotoPicker: Bool = false
     /// Flag for camera's signal
     @State private var showCamera: Bool = false
     /// Flag for loading state
@@ -47,29 +45,29 @@ struct SignUpAvatarView: View {
         }
     }
     /// Handler for photo library on tap
-    private func photoLibraryOnTap() {
-        switch photoLibraryPermissionManager.permissionStatus {
-        case .notDetermined:
-            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
-                if photoAuthStatus.isAllowed {
-                    if photoAuthStatus.isLimited {
-                        showSelectedPhotoList.toggle()
-                    } else {
-                        showImagePicker = true
-                    }
-                }
-                else {
-                    showPhotoLibraryAlert.toggle()
-                }
-            }
-        case .authorized:
-            showImagePicker = true
-        case .limited:
-            showSelectedPhotoList.toggle()
-        default:
-            showPhotoLibraryAlert.toggle()
-        }
-    }
+//    private func photoLibraryOnTap() {
+//        switch photoLibraryPermissionManager.permissionStatus {
+//        case .notDetermined:
+//            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
+//                if photoAuthStatus.isAllowed {
+//                    if photoAuthStatus.isLimited {
+//                        showSelectedPhotoList.toggle()
+//                    } else {
+//                        showImagePicker = true
+//                    }
+//                }
+//                else {
+//                    showPhotoLibraryAlert.toggle()
+//                }
+//            }
+//        case .authorized:
+//            showImagePicker = true
+//        case .limited:
+//            showSelectedPhotoList.toggle()
+//        default:
+//            showPhotoLibraryAlert.toggle()
+//        }
+//    }
     /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
@@ -154,10 +152,12 @@ struct SignUpAvatarView: View {
                             )
                             .frame(width: 194, height: 194)
                             .background {
-                                Image("Sam")
+                                Image("Robot")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 194, height: 194)
+                                    .padding(.top, 20)
+                                    .clipShape(Circle())
                             }
                     }
                     
@@ -183,8 +183,7 @@ struct SignUpAvatarView: View {
                         .fullScreenCover(
                             isPresented: $showCamera,
                             content: {
-                                ImagePicker(
-                                    sourceType: .camera,
+                                Camera(
                                     selectedImage: $vm.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
@@ -210,9 +209,7 @@ struct SignUpAvatarView: View {
                             )
                         }
                         
-                        Button {
-                            photoLibraryOnTap()
-                        } label: {
+                        FCPhotoPicker(selectedImage: $vm.selectedImage) {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
@@ -227,41 +224,6 @@ struct SignUpAvatarView: View {
                                         .foregroundColor(Color.white)
                                         .frame(width: 42, height: 42)
                                 )
-                        }
-                        .sheet(
-                            isPresented: $showSelectedPhotoList,
-                            content: {
-                                SelectedPhotoSheet(
-                                    selectedImage: $vm.selectedImage
-                                )
-                            }
-                        )
-                        .sheet(
-                            isPresented: $showImagePicker,
-                            content: {
-                                PhotoPicker(
-                                    selectedImage: $vm.selectedImage
-                                )
-                            }
-                        )
-                        .alert(isPresented: $showPhotoLibraryAlert) {
-                            Alert(
-                                title:
-                                    Text(photoLibraryPermissionManager.alertTitle)
-                                    .font(Font.system(size: 18, weight: .medium)),
-                                message:
-                                    Text(photoLibraryPermissionManager.alertMessage)
-                                    .font(Font.system(size: 12, weight: .medium)),
-                                primaryButton: .default(Text("Cancel")),
-                                secondaryButton: .default(
-                                    Text("Settings"),
-                                    action: {
-                                        UIApplication.shared.open(
-                                            URL(string: UIApplication.openSettingsURLString)!
-                                        )
-                                    }
-                                )
-                            )
                         }
                     }
                     .padding(.bottom, -14)

@@ -11,6 +11,7 @@ import GraphQLAPI
 import SwiftUI
 import DSWaveformImage
 
+@MainActor
 class VoiceMessageEditSheetViewModel: ObservableObject {
     
     /// Audio permission manager
@@ -65,7 +66,6 @@ class VoiceMessageEditSheetViewModel: ObservableObject {
 
 extension VoiceMessageEditSheetViewModel {
 
-    @MainActor
     public func loadVoiceMessage() async {
         do {
             self.state = .loading
@@ -94,7 +94,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     public func save() async {
         do {
             self.stopPlaying()
@@ -124,7 +123,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     private func startRecording() {
         do {
             try AVAudioSession.sharedInstance().setCategory(
@@ -165,7 +163,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     public func stopRecording() async {
         do {
             self.updateTimer?.invalidate()
@@ -186,7 +183,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     public func startPlaying() {
         self.audioPlayer.setVolume(1, fadeDuration: 0)
         self.isPlaying = true
@@ -201,7 +197,6 @@ extension VoiceMessageEditSheetViewModel {
         )
     }
     
-    @MainActor
     public func stopPlaying() {
         self.audioPlayer.pause()
         self.timeRemaining = self.voiceMessageDuration
@@ -211,7 +206,6 @@ extension VoiceMessageEditSheetViewModel {
         self.updateTimer = nil
     }
     
-    @MainActor
     public func redo() async {
         do {
             self.state = .loading
@@ -232,14 +226,12 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
 
-    @MainActor
     private func deleteLocal() async throws {
         if let localUrl = self.audioUrl {
             try FileManager.default.removeItem(at: localUrl)
         }
     }
 
-    @MainActor
     private func deleteRemote() async throws {
         guard let fileName = self.extractFileName(url: sourceUrl) else {
             throw FCError.VoiceMessage.unknown
@@ -260,7 +252,6 @@ extension VoiceMessageEditSheetViewModel {
         guard statusCode == 200 else { throw FCError.VoiceMessage.updateUserFailed }
     }
 
-    @MainActor
     public func checkMicrophonePermissionAndRecord() {
         switch self.audioPermissionManager.permissionStatus {
         case .notDetermined:
@@ -275,7 +266,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     public func cleanUp() async {
         do {
             if self.shouldCleanUp {
@@ -287,7 +277,6 @@ extension VoiceMessageEditSheetViewModel {
         }
     }
     
-    @MainActor
     private func showAlert() {
         self.fcAlert = .info(
             type: .info,
@@ -300,7 +289,6 @@ extension VoiceMessageEditSheetViewModel {
         )
     }
     
-    @MainActor
     private func errorReset() {
         self.state = .loading
         if self.isPlaying {

@@ -7,31 +7,66 @@
 
 import SwiftUI
 
-struct MessageInputField: View {
+struct MessageInputField: View, KeyboardReadable {
     
     @State var message: String = ""
     @State var height: CGFloat = 30
     @State var keyboardHeight: CGFloat = 0
+    @State var isKeyboardShowUp: Bool = false
+    @State var isMessageSending: Bool = false
+    
+    @ObservedObject var vm: ChatRoomViewModel
         
     var body: some View {
         HStack(alignment: .bottom, spacing: 6) {
-            HStack(alignment: .center, spacing: 6) {
-                IconButton(
-                    icon: .mic,
-                    color: Color.text,
-                    action: {}
-                )
-                IconButton(
-                    icon: .picture,
-                    color: Color.text,
-                    action: {}
+            if isKeyboardShowUp {
+                HStack(alignment: .center, spacing: 6) {
+                    IconButton(
+                        icon: .arrowRight,
+                        color: Color.text,
+                        action: {}
+                    )
+                }
+                .frame(height: 38)
+            } else {
+                HStack(alignment: .center, spacing: 6) {
+                    IconButton(
+                        icon: .camera,
+                        color: Color.text,
+                        action: {
+                            vm.cameraOnTap()
+                        }
+                    )
+                    
+                    FCPhotoPicker(selectedImage: $vm.selectedImage) {
+                        FCIcon.addPicture
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(Color.text)
+                            .frame(width: 24, height: 24)
+                    }
+                }
+                .frame(height: 38)
+                .showAlert($vm.fcAlert)
+                .fullScreenCover(
+                    isPresented: $vm.showCamera,
+                    content: {
+                        Camera(
+                            selectedImage: $vm.selectedImage
+                        )
+                        .edgesIgnoringSafeArea(.all)
+                    }
                 )
             }
-            .frame(height: 38)
+            
             HStack(alignment: .bottom, spacing: 0) {
                 ZStack(alignment: .leading) {
                     ResizeableTextView(text: $message, height: $height)
                         .frame(height: self.height > 106 ? 106 : self.height)
+                        .onReceive(keyboardPublisher) { val in
+                            isKeyboardShowUp = val
+                        }
                     
                     message.isEmpty
                     ? Text("Aa")
@@ -40,13 +75,19 @@ struct MessageInputField: View {
                         .padding(.leading, 4)
                     : nil
                 }
+                
                 !message.isEmpty
                 ? HStack(alignment: .center) {
-                    IconButton(
-                        icon: .sent,
-                        color: Color.text,
-                        action: {}
-                    )
+                    if isMessageSending {
+                        LottieView(lottieFile: "spinner.json")
+                            .frame(width: 36)
+                    } else {
+                        IconButton(
+                            icon: .sent,
+                            color: Color.text,
+                            action: { print("sent message") }
+                        )
+                    }
                 }
                 .frame(height: 36)
                 : nil
@@ -59,10 +100,10 @@ struct MessageInputField: View {
                     .stroke(Color.surface2, lineWidth: 1)
             )
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 11)
-        //.padding(.bottom, self.keyboardHeight)
+//        .padding(.bottom, self.keyboardHeight)
         .background(Color.background)
         .onAppear {
 //            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) {
@@ -85,7 +126,11 @@ struct MessageInputField: View {
 
 struct MessageInputField_Previews: PreviewProvider {
     static var previews: some View {
-        MessageInputField()
+        VStack {
+            MessageInputField(vm: ChatRoomViewModel())
+            
+            MessageInputField(message: "testing", isKeyboardShowUp: true, vm: ChatRoomViewModel())
+        }
     }
 }
 

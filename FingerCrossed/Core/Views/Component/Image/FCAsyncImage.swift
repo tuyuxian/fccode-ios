@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum PhotoType {
+    case landscape
+    case portrait
+    case square
+}
+
 struct FCAsyncImage: View {
     
     @State private var phase: AsyncImagePhase
@@ -16,6 +22,8 @@ struct FCAsyncImage: View {
     let urlRequest: URLRequest
     
     var session: URLSession = .imageSession
+    
+    var photoType: PhotoType = .landscape
     
     init(
         url: URL,
@@ -27,6 +35,15 @@ struct FCAsyncImage: View {
         
         if let data = session.configuration.urlCache?.cachedResponse(for: urlRequest)?.data,
            let uiImage = UIImage(data: data) {
+            
+            if uiImage.size.width > uiImage.size.height {
+                self.photoType = .landscape
+            } else if uiImage.size.height > uiImage.size.width {
+                self.photoType = .portrait
+            } else {
+                self.photoType = .square
+            }
+            
             if uiImage.size.width >= uiImage.size.height {
                 _shouldFit = .init(wrappedValue: true)
             }
@@ -65,6 +82,7 @@ struct FCAsyncImage: View {
             else {
                 throw FCError.LifePhoto.downloadFailed
             }
+            
             withAnimation(.spring()) {
                 phase = .success(.init(uiImage: uiImage))
             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Message: Hashable, Codable, Equatable, Identifiable {
     var id = UUID()
@@ -21,6 +22,8 @@ class TextingViewModel: ObservableObject {
     enum IconButtonStatus {
         case edit, cancel, delete
     }
+    /// Alert
+    @Published var fcAlert: FCAlert?
     
     @Published var isEditing: Bool = false
     
@@ -94,6 +97,19 @@ class TextingViewModel: ObservableObject {
             isActive: false
         )
     ]
+    
+    func unmatchOnTap() {
+        self.fcAlert = .action(
+            type: .action,
+            title: "Hold On!",
+            message: "You won’t be able to see each other’s \nprofiles and chat history after unmatch.",
+            primaryLabel: "Unmatch",
+            primaryLabelColor: Color.warning,
+            primaryAction: { print("unmatch") },
+            secondaryLabel: "Cancel", 
+            secondaryAction: { self.fcAlert = nil }
+        )
+    }
     
     func getIconButtonName(
         state: TextingViewModel.IconButtonStatus

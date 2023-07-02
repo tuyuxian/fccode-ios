@@ -11,7 +11,7 @@ struct TextList: View {
     
     @Binding var messageList: [Message]
     
-    @Binding var isEditing: Bool
+    @ObservedObject var vm: TextingViewModel
         
     var body: some View {
         List {
@@ -23,7 +23,7 @@ struct TextList: View {
                     // Top padding
                     index == 0
                     ? HStack {}
-                        .frame(height: 14)
+                        .frame(height: 8)
                     : nil
                     
                     ZStack {
@@ -33,26 +33,24 @@ struct TextList: View {
                             latestMessage: message.latestMessage,
                             timestamp: message.timestamp,
                             unreadMessageCount: message.unreadMessageCount,
-                            isActive: message.isActive,
-                            isEditing: $isEditing
+                            isActive: message.isActive
                         )
                         
-                        if !isEditing {
-                            NavigationLink(
-                                destination: ChatRoomView(
-                                    username: message.username,
-                                    avatarUrl: message.avatarUrl,
-                                    isActive: message.isActive
-                                )
-                                .navigationBarBackButtonHidden(true)
-                                .toolbarRole(.editor)
-                            ) {
-                                EmptyView()
-                            }
-                            .listRowBackground(Color.white)
-                            .buttonStyle(PlainButtonStyle())
-                            .opacity(0)
+                        NavigationLink(
+                            destination: ChatRoomView(
+                                username: message.username,
+                                avatarUrl: message.avatarUrl,
+                                isActive: message.isActive
+                            )
+                            .navigationBarBackButtonHidden(true)
+                            .toolbarRole(.editor)
+                        ) {
+                            EmptyView()
                         }
+                        .listRowBackground(Color.white)
+                        .buttonStyle(PlainButtonStyle())
+                        .opacity(0)
+                        
                     }
                     
                     index != $messageList.count - 1
@@ -67,6 +65,17 @@ struct TextList: View {
                             )
                         )
                     : nil
+                }
+                .swipeActions(allowsFullSwipe: false) {
+                    Button {
+                        vm.unmatchOnTap()
+                        print("Deleting\(index)")
+                    } label: {
+                        Text("Unmatch")
+                            .foregroundColor(Color.white)
+                            .fontTemplate(.noteMedium)
+                    }
+                    .tint(Color.warning)
                 }
             }
             .listRowSeparator(.hidden)
@@ -119,7 +128,7 @@ struct TextList: View {
         static var previews: some View {
             TextList(
                 messageList: demoData,
-                isEditing: .constant(false)
+                vm: TextingViewModel()
             )
         }
     }

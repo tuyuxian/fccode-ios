@@ -156,8 +156,8 @@ struct NationalitySearchBar: View {
                 FCIcon.search
                     .foregroundColor(Color.text)
                     .frame(width: 24, height: 36)
-                    .padding(.trailing, 16)
             }
+            .padding(.trailing, 16)
         }
         .frame(
             height:

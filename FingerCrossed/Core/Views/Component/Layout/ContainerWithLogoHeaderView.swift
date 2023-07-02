@@ -26,8 +26,9 @@ struct ContainerWithLogoHeaderView<Content: View>: View {
                             NavigationHeaderWithLogo(
                                 title: $headerTitle
                             )
+                            .padding(.top, 11) // 70px - 59px (iPhone 14 Pro safe area)
                     )
-                    .padding(.top, 19) // 75px - 59px (iPhone 14 Pro safe area)
+                    .padding(.top, 16)
             }
         }
     }
@@ -54,14 +55,14 @@ private struct NavigationHeaderWithLogo: View {
             Image("Logo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 40, height: 40)
+                .frame(width: 48, height: 48)
 
             Text(title)
                 .fontTemplate(.h1Medium)
                 .foregroundColor(Color.text)
                 .frame(height: 40)
         }
-        .frame(height: 40)
+        .frame(height: 48)
         .padding(.horizontal, 8)
     }
 }

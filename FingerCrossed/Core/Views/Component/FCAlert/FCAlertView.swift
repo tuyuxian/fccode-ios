@@ -14,11 +14,12 @@ struct FCAlertView: View {
     let dismissButton: AlertButton?
     let primaryButton: AlertButton?
     let secondaryButton: AlertButton?
-    
+
     @State private var opacity: CGFloat = 0
     @State private var backgroundOpacity: CGFloat = 0
     
     @Environment(\.dismiss) private var dismiss
+
         
     var body: some View {
         ZStack {

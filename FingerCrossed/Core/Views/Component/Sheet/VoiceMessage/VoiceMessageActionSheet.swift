@@ -139,6 +139,7 @@ extension VoiceMessageActionSheet {
                 title: "Do you really want to delete\nit?",
                 message: "",
                 primaryLabel: "Yes",
+                primaryLabelColor: Color.warning,
                 primaryAction: {
                     action()
                     self.fcAlert = nil

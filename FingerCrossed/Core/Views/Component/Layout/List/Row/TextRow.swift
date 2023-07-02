@@ -14,32 +14,15 @@ struct TextRow: View {
     @Binding var timestamp: String // The type will change to int after API integration
     @Binding var unreadMessageCount: Int
     @Binding var isActive: Bool
-    @Binding var isEditing: Bool
     @State var isSelected: Bool = false
     
     var body: some View {
         HStack(spacing: 12) {
-            isEditing
-            ? VStack {
-                Button {
-                    isSelected.toggle()
-                } label: {
-                    isSelected ? FCIcon.checkboxSelected : FCIcon.checkbox
-                }
-            }
-            .frame(
-                width: 50,
-                height: 50
-            )
-            : nil
-            
-            !isEditing
-            ? Avatar(
+            Avatar(
                 avatarUrl: avatarUrl,
                 size: 50,
                 isActive: isActive
             )
-            : nil
             
             VStack(
                 alignment: .leading,
@@ -97,8 +80,7 @@ struct TextItem_Previews: PreviewProvider {
             latestMessage: .constant("This is a test message from Sam."),
             timestamp: .constant("05:17 pm"),
             unreadMessageCount: .constant(9),
-            isActive: .constant(true),
-            isEditing: .constant(false)
+            isActive: .constant(true)
         )
     }
 }

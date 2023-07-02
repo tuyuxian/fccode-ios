@@ -14,41 +14,87 @@ struct ChatView: View {
     @Binding var messageCellList: [MessageCell]
     
     @State private var keyboardHeight: CGFloat = 0
+
+    @State private var scrollViewOffset: CGFloat = 0
+    
+    @State private var startOffset: CGFloat = 0
     
     var body: some View {
-        ScrollView(
-            .vertical,
-            showsIndicators: false
-        ) {
-            VStack(spacing: 0) {
-                ForEach(
-                    $messageCellList,
-                    id: \.id
-                ) { messageCell in
-                    MessageBubble(
-                        message: messageCell.message,
-                        isReceived: messageCell.isReceived,
-                        avatarUrl: $avatarUrl
-                    )
-                    .rotationEffect(Angle(degrees: 180))
+        ScrollViewReader { scrollViewReader in
+            ScrollView(
+                .vertical,
+                showsIndicators: false
+            ) {
+                VStack(spacing: 0) {
+                    ForEach(
+                        $messageCellList,
+                        id: \.id
+                    ) { messageCell in
+                        MessageBubble(
+                            message: messageCell.message,
+                            timeStamp: messageCell.timestamp, 
+                            isReceived: messageCell.isReceived,
+                            avatarUrl: $avatarUrl
+                        )
+                        .rotationEffect(Angle(degrees: 180))
+                    }
+                    // TODO(Sam): annoucement banner and datestamp will be integrated in message bubble array
+                    // Rules:
+                    // - if the date first appears -> generate datestamp
+                    // - add anouncebanner on top
+                    DateStamp(datestamp: "Wed, Mar 15, 2023")
+                        .rotationEffect(Angle(degrees: 180))
+                    
+                    AnnoucementBanner(info: "Finger Crossed !\n Hope he or she will be your prefect match.")
+                        .rotationEffect(Angle(degrees: 180))
+                    
+                    HStack {}
+                        .frame(height: 22)
                 }
-                // TODO(Sam): annoucement banner and datestamp will be integrated in message bubble array
-                // Rules:
-                // - if the date first appears -> generate datestamp
-                // - add anouncebanner on top
-                DateStamp(datestamp: "Wed, Mar 15, 2023")
-                    .rotationEffect(Angle(degrees: 180))
-                
-                AnnoucementBanner(info: "Finger Crossed !\n Hope he or she will be your prefect match.")
-                    .rotationEffect(Angle(degrees: 180))
-                
-                HStack {}
-                    .frame(height: 22)
+                .id("SCROLL_TO_BOTTOM")
+                .background(
+                    GeometryReader { geometry -> Color in
+                        DispatchQueue.main.async {
+                            if startOffset == 0 {
+                                self.startOffset = geometry.frame(in: .global).minY
+                            }
+                            
+                            let offset = geometry.frame(in: .global).minY
+                            self.scrollViewOffset = offset - startOffset
+                        }
+                        return Color.clear
+                    }
+                    .frame(width: 0, height: 0)
+                    , alignment: .bottom
+                )
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 24)
+            .scrollDismissesKeyboard(.immediately)
+            .rotationEffect(Angle(degrees: 180))
+            .overlay(
+                HStack {
+                    Circle()
+                        .foregroundColor(Color.yellow100)
+                        .frame(width: 42, height: 42)
+                        .overlay {
+                            FCIcon.arrowDown
+                                .resizable()
+                                .renderingMode(.template)
+                                .foregroundColor(Color.white)
+                                .frame(width: 24, height: 24)
+                        }
+                        .opacity(scrollViewOffset > UIScreen.main.bounds.size.height / 2 ? 1 :0)
+                        .onTapGesture {
+                            withAnimation(.spring()) {
+                                scrollViewReader.scrollTo("SCROLL_TO_BOTTOM", anchor: .top)
+                            }
+                    }
+                }
+                .padding(.bottom, 15)
+                
+                , alignment: .bottom
+            )
         }
-        .scrollDismissesKeyboard(.immediately)
-        .rotationEffect(Angle(degrees: 180))
     }
     
     static private var demoData: Binding<[MessageCell]> {
@@ -56,13 +102,13 @@ struct ChatView: View {
             [
                 MessageCell(
                     message: "This is the first test message.",
-                    timestamp: "13:45",
+                    timestamp: "Wed, Mar 15 13:45",
                     isReceived: true,
                     isRead: false
                 ),
                 MessageCell(
                     message: "I got your message.",
-                    timestamp: "14:20",
+                    timestamp: "Wed, Mar 15 13:45",
                     isReceived: false,
                     isRead: true
                 )
@@ -93,14 +139,14 @@ private struct AnnoucementBanner: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .frame(height: 44)
-                .background(Color.yellow100)
+                .background(Color.yellow20)
                 .cornerRadius(16)
         }
         .padding(.vertical, 8)
     }
 }
 
-private struct DateStamp: View {
+struct DateStamp: View {
     
     @State var datestamp: String
     
@@ -111,5 +157,6 @@ private struct DateStamp: View {
                 .foregroundColor(Color.textHelper)
         }
         .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }

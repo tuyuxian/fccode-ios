@@ -12,6 +12,7 @@ public enum FCAlert {
     public enum AlertType {
         case action
         case info
+        case permission
     }
     
     case action(
@@ -19,6 +20,7 @@ public enum FCAlert {
         title: String,
         message: String,
         primaryLabel: LocalizedStringKey,
+        primaryLabelColor: Color,
         primaryAction: () -> Void,
         secondaryLabel: LocalizedStringKey,
         secondaryAction: () -> Void
@@ -34,49 +36,56 @@ public enum FCAlert {
     
     var type: AlertType {
         switch self {
-        case .action(let type, _, _, _, _, _, _): return type
+        case .action(let type, _, _, _, _, _, _, _): return type
         case .info(let type, _, _, _, _): return type
         }
     }
     
     var title: String {
         switch self {
-        case .action(_, let title, _, _, _, _, _): return title
+        case .action(_, let title, _, _, _, _, _, _): return title
         case .info(_, let title, _, _, _): return title
         }
     }
     
     var message: String {
         switch self {
-        case .action(_, _, let message, _, _, _, _): return message
+        case .action(_, _, let message, _, _, _, _, _): return message
         case .info(_, _, let message, _, _): return message
         }
     }
     
     var primaryLabel: LocalizedStringKey {
         switch self {
-        case .action(_, _, _, let primaryLabel, _, _, _): return primaryLabel
+        case .action(_, _, _, let primaryLabel, _, _, _, _): return primaryLabel
         case .info: return ""
+        }
+    }
+    
+    var primaryLabelColor: Color {
+        switch self {
+        case .action(_, _, _, _, let primaryLabelColor, _, _, _): return primaryLabelColor
+        case .info: return Color.systemBlue
         }
     }
     
     var primaryAction: () -> Void {
         switch self {
-        case .action(_, _, _, _, let primaryAction, _, _): return primaryAction
+        case .action(_, _, _, _, _, let primaryAction, _, _): return primaryAction
         case .info: return {}
         }
     }
     
     var secondaryLabel: LocalizedStringKey {
         switch self {
-        case .action(_, _, _, _, _, let secondaryLabel, _): return secondaryLabel
+        case .action(_, _, _, _, _, _, let secondaryLabel, _): return secondaryLabel
         case .info: return ""
         }
     }
     
     var secondaryAction: () -> Void {
         switch self {
-        case .action(_, _, _, _, _, _, let secondaryAction): return secondaryAction
+        case .action(_, _, _, _, _, _, _, let secondaryAction): return secondaryAction
         case .info: return {}
         }
     }
@@ -105,13 +114,14 @@ extension View {
         if alertType?.type == .action {
             let title   = NSLocalizedString(alertType?.title ?? "", comment: "")
             let message = NSLocalizedString(alertType?.message ?? "", comment: "")
-            
+
             return modifier(
                 AlertModifier(
                     title: title,
                     message: message,
                     primaryButton: FCAlertView.AlertButton(
                         title: alertType?.primaryLabel ?? "",
+                        textColor: alertType?.primaryLabelColor ?? Color.warning, 
                         action: alertType?.primaryAction ?? {}
                     ),
                     secondaryButton: FCAlertView.AlertButton(
@@ -124,7 +134,7 @@ extension View {
         } else {
             let title   = NSLocalizedString(alertType?.title ?? "", comment: "")
             let message = NSLocalizedString(alertType?.message ?? "", comment: "")
-            
+
             return modifier(
                 AlertModifier(
                     title: title,

@@ -58,6 +58,7 @@ extension SettingsAccountViewModel {
             title: "Are you sure you want to sign out?",
             message: "",
             primaryLabel: "Yes",
+            primaryLabelColor: Color.warning,
             primaryAction: {
                 self.fcAlert = nil
                 action()
@@ -80,6 +81,7 @@ extension SettingsAccountViewModel {
             message: "Please noted that once you delete your account, you will need to sign up again for our service.",
             // swiftlint: enable line_length
             primaryLabel: "Yes",
+            primaryLabelColor: Color.warning, 
             primaryAction: {
                 Task {
                     do {

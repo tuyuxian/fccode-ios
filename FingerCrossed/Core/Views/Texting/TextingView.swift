@@ -12,48 +12,49 @@ struct TextingView: View {
     @StateObject var vm = TextingViewModel()
     
     var body: some View {
-        ContainerWithLogoHeaderView(headerTitle: "Message") {
+        ContainerWithLogoHeaderView(headerTitle: "Chats") {
             VStack(spacing: 0) {
                 Box {
                     TextList(
                         messageList: $vm.textData,
-                        isEditing: $vm.isEditing
+                        vm: vm
                     )
                 }
             }
-            .navigationBarItems(
-                trailing:
-                    HStack(alignment: .center) {
-                        HeaderButton(
-                            name: .constant(vm.getIconButtonName(state: vm.iconButtonStatus)),
-                            isLoading: .constant(false),
-                            action: vm.getIconButtonAction(state: vm.iconButtonStatus)
-                        )
-                    }
-                    .frame(height: 40)
-                    .padding(
-                        EdgeInsets(
-                            top: 0,
-                            leading: 0,
-                            bottom: 0,
-                            trailing: 8 // Navigation bar has 16px padding at trailing
-                        )
-                    )
-            )
-            .alert(isPresented: $vm.showAlert) {
-                Alert(
-                    title: Text("Do you really want to permanently delete these conversation(s)?")
-                        .font(Font.system(size: 18, weight: .medium)),
-                    primaryButton: .destructive(
-                        Text("Delete")
-                    ) {
-                        // TODO(Sam): add error banner if failed
-                    },
-                    secondaryButton: .cancel(
-                        Text("Cancel")
-                    )
-                )
-            }
+            .showAlert($vm.fcAlert)
+//            .navigationBarItems(
+//                trailing:
+//                    HStack(alignment: .center) {
+//                        HeaderButton(
+//                            name: .constant(vm.getIconButtonName(state: vm.iconButtonStatus)),
+//                            isLoading: .constant(false),
+//                            action: vm.getIconButtonAction(state: vm.iconButtonStatus)
+//                        )
+//                    }
+//                    .frame(height: 40)
+//                    .padding(
+//                        EdgeInsets(
+//                            top: 0,
+//                            leading: 0,
+//                            bottom: 0,
+//                            trailing: 8 // Navigation bar has 16px padding at trailing
+//                        )
+//                    )
+//            )
+//            .alert(isPresented: $vm.showAlert) {
+//                Alert(
+//                    title: Text("Do you really want to permanently delete these conversation(s)?")
+//                        .font(Font.system(size: 18, weight: .medium)),
+//                    primaryButton: .destructive(
+//                        Text("Delete")
+//                    ) {
+//                        // TODO(Sam): add error banner if failed
+//                    },
+//                    secondaryButton: .cancel(
+//                        Text("Cancel")
+//                    )
+//                )
+//            }
         }
     }
 }

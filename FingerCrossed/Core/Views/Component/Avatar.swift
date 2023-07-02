@@ -27,12 +27,12 @@ struct Avatar: View {
             
             isActive
             ? Circle()
-                .fill(Color.yellow100)
-                .frame(width: 8, height: 8)
+                .fill(Color.gold)
+                .frame(width: size == 50 ? 8 : 5.44, height: size == 50 ? 8 : 5.44)
                 .overlay(
                     Circle()
-                        .stroke(dotBackground, lineWidth: 3)
-                        .frame(width: 11, height: 11)
+                        .stroke(dotBackground, lineWidth: 2)
+                        .frame(width: size == 50 ? 10 : 7.44, height: size == 50 ? 10 : 7.44)
                 )
             : nil
         }
@@ -41,10 +41,22 @@ struct Avatar: View {
 
 struct Avatar_Previews: PreviewProvider {
     static var previews: some View {
-        Avatar(
-            avatarUrl: "https://i.pravatar.cc/150?img=5",
-            size: 50,
-            isActive: true
-        )
+        ZStack {
+            Color.background
+            
+            VStack {
+                Avatar(
+                    avatarUrl: "https://i.pravatar.cc/150?img=5",
+                    size: 34,
+                    isActive: true
+                )
+                
+                Avatar(
+                    avatarUrl: "https://i.pravatar.cc/150?img=5",
+                    size: 50,
+                    isActive: true
+                )
+            }
+        }
     }
 }

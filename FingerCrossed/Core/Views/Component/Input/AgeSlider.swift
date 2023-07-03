@@ -73,14 +73,15 @@ struct AgeSlider: View {
                         self.from = self.getX(age: ageFrom, width: proxy.size.width - 46)
                         self.to = self.getX(age: ageTo, width: proxy.size.width - 46)
                     }
-                    .frame(width: proxy.size.width - 46, height: 34.85)
+//                    .frame(width: proxy.size.width - 46, height: 34.85)
+                    .frame(height: 34.85)
                     .padding(.bottom, 8.15)
                     
                     HStack(spacing: 0) {
                         ZStack(alignment: .leading) {
                             RoundedRectangle(cornerRadius: 50)
                                 .fill(Color.surface3)
-                                .frame(width: proxy.size.width - 46, height: 28)
+                                .frame(height: 28)
                             RoundedRectangle(cornerRadius: 50)
                                 .fill(Color.yellow20)
                                 .frame(width: self.to - self.from + 56, height: 28)

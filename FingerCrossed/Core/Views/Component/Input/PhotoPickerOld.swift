@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 import PhotosUI
 
-struct PhotoPicker: UIViewControllerRepresentable {
+struct PhotoPickerOld: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
 
     func makeUIViewController(context: Context) -> some UIViewController {
@@ -30,16 +30,14 @@ struct PhotoPicker: UIViewControllerRepresentable {
       
     // Create the Coordinator, in this case it is a way to communicate with the PHPickerViewController
     class Coordinator: PHPickerViewControllerDelegate {
-        private let parent: PhotoPicker
+        private let parent: PhotoPickerOld
 
-        init(_ parent: PhotoPicker) {
+        init(_ parent: PhotoPickerOld) {
           self.parent = parent
         }
 
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            //        parent.pickerResult.removeAll() // remove previous pictures from the main view
             picker.dismiss(animated: true)
-            // unpack the selected items
             for image in results {
                 if image.itemProvider.canLoadObject(ofClass: UIImage.self) {
                     image.itemProvider.loadObject(ofClass: UIImage.self) { [self] newImage, error in
@@ -47,10 +45,8 @@ struct PhotoPicker: UIViewControllerRepresentable {
                             print("Can't load image \(error.localizedDescription)")
                         } else if let image = newImage as? UIImage {
                             DispatchQueue.main.async {
-                                // Add new image and pass it back to the main view
                                 print("size: \(image.size)")
                                 self.parent.selectedImage = image
-                                //                      self?.parent.pickerResult.append(image)
                             }
                             
                         }

@@ -15,7 +15,7 @@ struct LifePhoto: Identifiable, Equatable, Codable {
     var position: Int
     var ratio: Int
     var scale: CGFloat
-    var offset: CGSize
+    var offset: CGPoint
     
     init(
         id: String,
@@ -24,7 +24,7 @@ struct LifePhoto: Identifiable, Equatable, Codable {
         position: Int,
         ratio: Int,
         scale: CGFloat,
-        offset: CGSize
+        offset: CGPoint
     ) {
         self.id = id
         self.contentUrl = contentUrl
@@ -44,8 +44,8 @@ extension LifePhoto {
             position: self.position,
             ratio: self.ratio,
             scale: self.scale,
-            offsetX: self.offset.width,
-            offsetY: self.offset.height
+            offsetX: self.offset.x,
+            offsetY: self.offset.y
         )
     }
 }
@@ -58,7 +58,7 @@ extension LifePhoto {
         position: 0,
         ratio: 3,
         scale: 1,
-        offset: CGSize.zero
+        offset: CGPoint.zero
     )
     
     static var MockLifePhotoList: [LifePhoto] = [
@@ -69,7 +69,7 @@ extension LifePhoto {
             position: 0,
             ratio: 3,
             scale: 1,
-            offset: CGSize.zero
+            offset: CGPoint.zero
         ),
         .init(
             id: "1",
@@ -78,7 +78,7 @@ extension LifePhoto {
             position: 1,
             ratio: 3,
             scale: 1,
-            offset: CGSize.zero
+            offset: CGPoint.zero
         ),
         .init(
             id: "2",
@@ -87,7 +87,7 @@ extension LifePhoto {
             position: 2,
             ratio: 3,
             scale: 1,
-            offset: CGSize.zero
+            offset: CGPoint.zero
         )
     ]
 }

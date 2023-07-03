@@ -30,7 +30,7 @@ struct ProfileView: View {
                                 avatarUrl: user.data?.profilePictureUrl ?? "",
                                 size: 121.5,
                                 isActive: false
-                            )
+                            ).id(UUID())
                             : nil
                         )
                     Text(user.data?.username ?? "")

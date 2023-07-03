@@ -68,12 +68,12 @@ struct LifePhotoStack: View {
         }
         .onChange(of: basicInfoVM.lifePhotoMap) { val in
             user.data?.lifePhoto = Array(val.values)
+            user.data?.profilePictureUrl = basicInfoVM.lifePhotoMap[0]?.contentUrl
         }
-        .sheet(isPresented: $basicInfoVM.showEditSheet) {
+        .sheet(isPresented: $basicInfoVM.showLifePhotoEditSheet) {
             if basicInfoVM.hasLifePhoto && basicInfoVM.lifePhotoMap.count == 1 {
                 LifePhotoEditSheet(
-                    basicInfoVM: basicInfoVM,
-                    text: basicInfoVM.selectedLifePhoto?.caption ?? ""
+                    basicInfoVM: basicInfoVM
                 )
             } else {
                 LifePhotoActionSheet(
@@ -86,7 +86,7 @@ struct LifePhotoStack: View {
     private func loadLifePhoto(
         fromIndex: Int
     ) {
-        basicInfoVM.showEditSheet = true
+        basicInfoVM.showLifePhotoEditSheet = true
         basicInfoVM.selectedLifePhoto = basicInfoVM.lifePhotoMap[fromIndex]
         basicInfoVM.hasLifePhoto = basicInfoVM.lifePhotoMap[fromIndex] != nil
     }

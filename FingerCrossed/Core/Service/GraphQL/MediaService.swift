@@ -115,7 +115,7 @@ struct MediaService {
                                 position: $0.position,
                                 ratio: $0.ratio,
                                 scale: $0.scale,
-                                offset: CGSize(width: $0.offsetX, height: $0.offsetY)
+                                offset: CGPoint(x: $0.offsetX, y: $0.offsetY)
                             )
                         } ?? [])
                         continuation.resume(returning: (200, lifePhotos))
@@ -168,7 +168,7 @@ struct MediaService {
                                 position: $0.position,
                                 ratio: $0.ratio,
                                 scale: $0.scale,
-                                offset: CGSize(width: $0.offsetX, height: $0.offsetY)
+                                offset: CGPoint(x: $0.offsetX, y: $0.offsetY)
                             )
                         } ?? [])
                         continuation.resume(returning: (200, lifePhotos))
@@ -186,13 +186,15 @@ struct MediaService {
     
     static public func deleteLifePhoto(
         userId: String,
-        lifePhotoId: String
+        lifePhotoId: String,
+        position: Int
     ) async throws -> Int {
         return try await withCheckedThrowingContinuation { continuation in
             Network.shared.apollo.perform(
                 mutation: DeleteLifePhotoMutation(
                     userId: userId,
-                    lifePhotoId: lifePhotoId
+                    lifePhotoId: lifePhotoId,
+                    position: position
                 )
             ) { result in
                 switch result {
@@ -219,10 +221,51 @@ struct MediaService {
             }
         }
     }
+    
+    static public func setMainLifePhoto(
+        userId: String,
+        sourceLifePhotoId: String,
+        targetLifePhotoId: String,
+        fromPosition: Int
+    ) async throws -> Int {
+        return try await withCheckedThrowingContinuation { continuation in
+            Network.shared.apollo.perform(
+                mutation: SetMainLifePhotoMutation(
+                    userId: userId,
+                    sourceLifePhotoId: sourceLifePhotoId,
+                    targetLifePhotoId: targetLifePhotoId,
+                    fromPosition: fromPosition
+                )
+            ) { result in
+                switch result {
+                case .success:
+                    guard (try? result.get().errors) == nil else {
+                        continuation.resume(throwing: GraphQLError.unknown)
+                        return
+                    }
+                    guard let data = try? result.get().data else {
+                        continuation.resume(throwing: GraphQLError.unknown)
+                        return
+                    }
+                    switch data.setMainLifePhoto.statusCode {
+                    case 200:
+                        continuation.resume(returning: 200)
+                    default:
+                        continuation.resume(throwing: GraphQLError.customError(
+                            data.setMainLifePhoto.message)
+                        )
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 
 }
 
 extension MediaService {
+    
     static public func extractFileName(
         url: String
     ) -> String? {
@@ -231,4 +274,5 @@ extension MediaService {
         }
         return nil
     }
+    
 }

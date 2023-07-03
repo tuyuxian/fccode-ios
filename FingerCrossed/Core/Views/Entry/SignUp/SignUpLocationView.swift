@@ -27,7 +27,10 @@ struct SignUpLocationView: View {
         switch locationPermissionManger.permissionStatus {
         case .notDetermined:
             locationPermissionManger.requestPermission { granted, _ in
-                guard granted else { return }
+                guard granted else {
+                    isLoading.toggle()
+                    return
+                }
                 createUser()
             }
         case .denied:
@@ -63,7 +66,7 @@ struct SignUpLocationView: View {
                         position: 0,
                         ratio: 3,
                         scale: 1,
-                        offset: CGSize.zero
+                        offset: CGPoint.zero
                     )
                 )
                 let (userId, token) = try await UserService.createUser(
@@ -127,13 +130,8 @@ struct SignUpLocationView: View {
                         .fontTemplate(.h3Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
-                    LottieView(
-                        lottieFile: "location.json"
-                    )
-                    .frame(
-                        width: 320,
-                        height: 320
-                    )
+                    LottieView(lottieFile: "location.json")
+                        .frame(width: 320, height: 320)
                 }
                 .frame(maxWidth: .infinity)
                 

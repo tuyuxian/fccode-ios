@@ -25,15 +25,17 @@ struct SelfIntroEditSheet: View {
     var body: some View {
         Sheet(
             size: [.height(402)],
+            showDragIndicator: false,
             hasFooter: false,
             header: {
                 Text("Self Introduction")
                     .fontTemplate(.h2Medium)
                     .foregroundColor(Color.text)
                     .frame(height: 34)
+                    .padding(.bottom, 16)
             },
             content: {
-                VStack(spacing: 0) {
+                VStack(spacing: 16) {
                     CaptionInputBar(
                         text: $text,
                         hint: "Type your self introduction",
@@ -42,8 +44,7 @@ struct SelfIntroEditSheet: View {
                         textLengthLimit: vm.textLengthLimit
                     )
                     .frame(height: 244)
-                    .padding(.top, 16)
-                    .padding(.bottom, 10)
+                    .padding(.bottom, -10)
                     .onChange(of: text) { val in
                         if val != user.data?.selfIntro {
                             vm.isSatisfied = true
@@ -52,15 +53,17 @@ struct SelfIntroEditSheet: View {
                         }
                     }
                     .focused($focus)
-                    
+                                        
                     PrimaryButton(
                         label: "Save",
                         action: { save(selfIntro: text) },
                         isTappable: $vm.isSatisfied,
                         isLoading: .constant(vm.state == .loading)
                     )
-                    .padding(.bottom, 16)
                 }
+                .padding(.bottom, 16)
+                .padding(.horizontal, 24)
+                .disabled(vm.state == .loading)
             },
             footer: {}
         )
@@ -68,15 +71,7 @@ struct SelfIntroEditSheet: View {
             focus = false
         }
         .interactiveDismissDisabled(vm.state == .loading)
-        .onChange(of: vm.state) { val in
-            if val == .error {
-                bm.pop(
-                    title: vm.bannerMessage,
-                    type: vm.bannerType
-                )
-                vm.state = .none
-            }
-        }
+        .showAlert($vm.fcAlert)
     }
     
     private func save(
@@ -103,6 +98,7 @@ struct SelfIntroEditSheet_Previews: PreviewProvider {
 
 extension SelfIntroEditSheet {
     
+    @MainActor
     class ViewModel: ObservableObject {
         
         @AppStorage("UserId") private var userId: String = ""
@@ -111,13 +107,11 @@ extension SelfIntroEditSheet {
         @Published var state: ViewStatus = .none
         @Published var isSatisfied: Bool = false
         
-        /// Toast message
-        @Published var bannerMessage: String?
-        @Published var bannerType: Banner.BannerType?
+        /// Alert
+        @Published var fcAlert: FCAlert?
         
         let textLengthLimit: Int = 200
         
-        @MainActor
         public func save(
             text: String
         ) async {
@@ -135,8 +129,16 @@ extension SelfIntroEditSheet {
                 self.state = .complete
             } catch {
                 self.state = .error
-                self.bannerMessage = "Something went wrong"
-                self.bannerType = .error
+                self.fcAlert = .info(
+                    type: .info,
+                    title: "Oopsie!",
+                    message: "Something went wrong.",
+                    dismissLabel: "Dismiss",
+                    dismissAction: {
+                        self.state = .none
+                        self.fcAlert = nil
+                    }
+                )
                 print(error.localizedDescription)
             }
         }

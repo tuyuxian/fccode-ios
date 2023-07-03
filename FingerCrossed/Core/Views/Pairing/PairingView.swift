@@ -108,10 +108,10 @@ extension PairingView {
         var body: some View {
             VStack {
                 HStack {
-                    LottieView(lottieFile: "swipeLeft")
+                    LottieView(lottieFile: "swipeLeft.json")
                         .frame(width: 160, height: 160)
                     
-                    LottieView(lottieFile: "swipeRight")
+                    LottieView(lottieFile: "swipeRight.json")
                         .frame(width: 160, height: 160)
                 }
                 .padding(.bottom, 100)
@@ -130,7 +130,7 @@ extension PairingView {
     struct InstructionSwipUp: View {
         var body: some View {
             VStack {
-                LottieView(lottieFile: "swipeUp")
+                LottieView(lottieFile: "swipeUp.json")
                     .frame(width: 160, height: 160)
                     .padding(.bottom, 100)
                 
@@ -148,7 +148,7 @@ extension PairingView {
     struct InstructionDoubleTap: View {
         var body: some View {
             VStack {
-                LottieView(lottieFile: "doubleTap")
+                LottieView(lottieFile: "doubleTap.json")
                     .frame(width: 160, height: 160)
                     .padding(.bottom, 100)
                 
@@ -166,7 +166,7 @@ extension PairingView {
     struct InstructionDefaultItem: View {
         var body: some View {
             VStack {
-                LottieView(lottieFile: "spinner")
+                LottieView(lottieFile: "spinner.json")
                     .frame(width: 160, height: 160)
                     .padding(.bottom, 100)
                 
@@ -187,15 +187,15 @@ extension PairingView {
                 
                 VStack(alignment: .leading, spacing: 10) {
                     Shimmer(
-                        primaryColor: Color.surface1,
+                        primaryColor: Color.text,
                         size: CGSize(width: 115, height: 30)
                     )
                     Shimmer(
-                        primaryColor: Color.surface1,
+                        primaryColor: Color.text,
                         size: CGSize(width: 200, height: 20)
                     )
                     Shimmer(
-                        primaryColor: Color.surface1,
+                        primaryColor: Color.text,
                         size: CGSize(width: 332, height: 20)
                     )
                 }

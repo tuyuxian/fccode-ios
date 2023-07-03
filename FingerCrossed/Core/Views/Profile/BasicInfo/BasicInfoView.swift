@@ -13,9 +13,7 @@ struct BasicInfoView: View {
     /// Init basic info view model
     @StateObject var vm = BasicInfoViewModel()
         
-    init(
-        user: UserViewModel
-    ) {
+    init(user: UserViewModel) {
         self.user = user
     }
     
@@ -207,7 +205,7 @@ extension BasicInfoView {
                     )
                 }
             }
-            .appAlert($vm.appAlert)
+            .showAlert($vm.fcAlert)
             .onChange(of: vm.state) { state in
                 if state == .error {
                     bm.pop(

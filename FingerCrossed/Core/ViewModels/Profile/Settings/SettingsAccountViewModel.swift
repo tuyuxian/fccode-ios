@@ -21,7 +21,7 @@ class SettingsAccountViewModel: ObservableObject {
     @Published var state: ViewStatus = .none
     
     /// Alert
-    @Published var appAlert: AppAlert?
+    @Published var fcAlert: FCAlert?
     
     /// Toast message
     @Published var toastMessage: String?
@@ -53,12 +53,19 @@ extension SettingsAccountViewModel {
     public func signOutOnTap(
         action: @escaping () -> Void
     ) {
-        self.appAlert = .basic(
+        self.fcAlert = .action(
+            type: .action,
             title: "Are you sure you want to sign out?",
             message: "",
-            actionLabel: "Yes",
-            cancelLabel: "No",
-            action: action
+            primaryLabel: "Yes",
+            primaryAction: {
+                self.fcAlert = nil
+                action()
+            },
+            secondaryLabel: "No",
+            secondaryAction: {
+                self.fcAlert = nil
+            }
         )
     }
     
@@ -66,14 +73,14 @@ extension SettingsAccountViewModel {
     public func deleteAccountOnTap(
         action: @escaping () -> Void
     ) {
-        self.appAlert = .basic(
+        self.fcAlert = .action(
+            type: .action,
             title: "Do you really want to delete account?",
             // swiftlint: disable line_length
             message: "Please noted that once you delete your account, you will need to sign up again for our service.",
             // swiftlint: enable line_length
-            actionLabel: "Yes",
-            cancelLabel: "No",
-            action: {
+            primaryLabel: "Yes",
+            primaryAction: {
                 Task {
                     do {
                         self.state = .loading
@@ -88,6 +95,11 @@ extension SettingsAccountViewModel {
                         print(error.localizedDescription)
                     }
                 }
+                self.fcAlert = nil
+            },
+            secondaryLabel: "No",
+            secondaryAction: {
+                self.fcAlert = nil
             }
         )
     }
@@ -152,12 +164,14 @@ extension SettingsAccountViewModel {
     @MainActor
     private func showInfoAlert() {
         self.state = .none
-        self.appAlert = .basic(
+        self.fcAlert = .info(
+            type: .info,
             title: "Oopsie!",
             message: "The email is connected to another user.",
-            actionLabel: "",
-            cancelLabel: "Cancel",
-            action: {}
+            dismissLabel: "Try Another One",
+            dismissAction: {
+                self.fcAlert = nil
+            }
         )
     }
     

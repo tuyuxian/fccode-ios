@@ -42,8 +42,30 @@ mutation UpdateLifePhoto(
   }
 }
 
-mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!) {
-  deleteLifePhoto(userId: $userId, lifePhotoId: $lifePhotoId) {
+mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!, $position: Int!) {
+  deleteLifePhoto(
+    userId: $userId
+    lifePhotoId: $lifePhotoId
+    position: $position
+  ) {
+    status
+    statusCode
+    message
+  }
+}
+
+mutation setMainLifePhoto(
+  $userId: ID!
+  $sourceLifePhotoId: ID!
+  $targetLifePhotoId: ID!
+  $fromPosition: Int!
+) {
+  setMainLifePhoto(
+    userId: $userId
+    sourceLifePhotoId: $sourceLifePhotoId
+    targetLifePhotoId: $targetLifePhotoId
+    fromPosition: $fromPosition
+  ) {
     status
     statusCode
     message

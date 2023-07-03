@@ -31,6 +31,10 @@ class PreferenceSexOrientationViewModel: ObservableObject {
         return Preference.MockPreference // for preview purpose
     }()
     
+    /// Check Equality
+    @Published var originalValue: [SexOrientation] = []
+    private var checkList: [Bool] = []
+    
     /// View state
     @Published var state: ViewStatus = .none
     @Published var showSaveButton: Bool = false
@@ -38,14 +42,6 @@ class PreferenceSexOrientationViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Sex Orientation] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Sex Orientation] vm deinit")
-    }
 }
 
 extension PreferenceSexOrientationViewModel {
@@ -62,6 +58,20 @@ extension PreferenceSexOrientationViewModel {
             return .SO4
         default:
             return .SO1
+        }
+    }
+    
+    public func checkEquality(sexOrientations: [SexOrientation]) {
+        if sexOrientations.count == originalValue.count {
+            sexOrientations.forEach { sexOrientation in
+                checkList.append(originalValue.contains { item in
+                    item.type == sexOrientation.type
+                })
+            }
+            showSaveButton = checkList.contains(false)
+            checkList = []
+        } else {
+            showSaveButton = true
         }
     }
     

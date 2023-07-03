@@ -124,10 +124,15 @@ struct CandidateView: View {
                 .presentationDetents([.large])
                 .preferredColorScheme(.light)
         }
-//        .overlay(
-//            ZStack {
-//                Color.text.opacity(0.4)
-//
+        .overlay(
+            ZStack {
+                Color.text.opacity(0.4)
+                
+                LottieView(
+                    lottieFile: "heart.json",
+                    loop: false
+                )
+                .frame(width: 200, height: 200)
 //                isLiked ?
 //                Image("HeartPink")
 //                    .resizable()
@@ -141,11 +146,11 @@ struct CandidateView: View {
 //                    .aspectRatio(contentMode: .fit)
 //                    .frame(width: 90, height: 90)
 //                : nil
-//
-//            }
-//            .ignoresSafeArea(.all)
+
+            }
+            .ignoresSafeArea(.all)
 //            .opacity(isLiked || isDisliked ? 1 : 0)
-//        )
+        )
     }
     
 }

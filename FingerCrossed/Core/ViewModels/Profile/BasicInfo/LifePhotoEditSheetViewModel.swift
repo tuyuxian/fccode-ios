@@ -10,29 +10,46 @@ import PhotosUI
 import SwiftUI
 import GraphQLAPI
 
+@MainActor
 class LifePhotoEditSheetViewModel: ObservableObject {
     
     @AppStorage("UserId") private var userId: String = ""
-        
+
     /// View state
+    @Published var currentView: Int = 0
     @Published var state: ViewStatus = .none
     @Published var isSatisfied: Bool = false
     @Published var isKeyboardShowUp: Bool = false
-    @Published var selectedTag: Int = 3
-
-    @Published var bottomPadding: CGFloat = 0
-    @Published var currentOffset: CGSize = .zero
-    @Published var uiImage: UIImage = UIImage()
-    @Published var newUIImage: UIImage = UIImage()
+    @Published var selectedTag: LifePhotoEditSheet.CropRatio = .ratio1
+    @Published var caption: String = ""
+    
+    /// Offset
+    @Published var currentOffset: CGPoint = .zero
+    /// Scale
+    @Published var currentScale: CGFloat = 1.0
+    /// Alert
+    @Published var fcAlert: FCAlert?
     
     let textLengthLimit: Int = 200
-    
+
 }
 
 extension LifePhotoEditSheetViewModel {
     
+    public func showAlert() {
+        self.fcAlert = .info(
+            type: .info,
+            title: "Oopsie!",
+            message: "Something went wrong.",
+            dismissLabel: "Dismiss",
+            dismissAction: {
+                self.state = .none
+                self.fcAlert = nil
+            }
+        )
+    }
+    
     // swiftlint: disable function_parameter_count
-    @MainActor
     public func save(
         data: Data?,
         caption: String,
@@ -68,11 +85,9 @@ extension LifePhotoEditSheetViewModel {
         return lifePhotos
     }
     
-    @MainActor
     public func update(
         lifePhotoId: String,
         caption: String,
-        position: Int,
         ratio: Int,
         scale: Double,
         offsetX: Double,
@@ -84,7 +99,6 @@ extension LifePhotoEditSheetViewModel {
             lifePhotoId: lifePhotoId,
             input: UpdateLifePhotoInput(
                 caption: .some(caption),
-                position: .some(position),
                 ratio: .some(ratio),
                 scale: .some(scale),
                 offsetX: .some(offsetX),
@@ -99,38 +113,4 @@ extension LifePhotoEditSheetViewModel {
     }
     // swiftlint: enable function_parameter_count
     
-}
-
-// MARK: Helper function
-extension LifePhotoEditSheetViewModel {
-    
-    public func imageHeight() -> CGFloat {
-        switch self.selectedTag {
-        case 0:
-            return (UIScreen.main.bounds.width - 48)/16 * 9
-        case 1:
-            return UIScreen.main.bounds.width - 48
-        case 2:
-            return (UIScreen.main.bounds.width - 48)/4 * 3
-        case 3:
-            return UIScreen.main.bounds.width - 48
-        default:
-            return UIScreen.main.bounds.width - 48
-        }
-    }
-    
-    public func imageWidth() -> CGFloat {
-        switch self.selectedTag {
-        case 0:
-            return UIScreen.main.bounds.width - 48
-        case 1:
-            return (UIScreen.main.bounds.width - 48)/16 * 9
-        case 2:
-            return UIScreen.main.bounds.width - 48
-        case 3:
-            return (UIScreen.main.bounds.width - 48)/4 * 3
-        default:
-            return (UIScreen.main.bounds.width - 48)/16 * 9
-        }
-    }
 }

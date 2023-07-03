@@ -23,6 +23,10 @@ class PreferenceNationalityViewModel: ObservableObject {
         return Preference.MockPreference // for preview purpose
     }()
     
+    /// Check Equality
+    @Published var originalValue: [Nationality] = []
+    private var checkList: [Bool] = []
+    
     /// View state
     @Published var state: ViewStatus = .none
     @Published var showSaveButton: Bool = false
@@ -30,17 +34,23 @@ class PreferenceNationalityViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-
-    init() {
-        print("-> [Preference Nationality] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Nationality] vm deinit")
-    }
 }
 
 extension PreferenceNationalityViewModel {
+    
+    public func checkEquality(nationalities: [Nationality]) {
+        if nationalities.count == originalValue.count {
+            nationalities.forEach { nationality in
+                checkList.append(originalValue.contains { item in
+                    item.name == nationality.name
+                })
+            }
+            showSaveButton = checkList.contains(false)
+            checkList = []
+        } else {
+            showSaveButton = true
+        }
+    }
     
     @MainActor
     public func save() async {

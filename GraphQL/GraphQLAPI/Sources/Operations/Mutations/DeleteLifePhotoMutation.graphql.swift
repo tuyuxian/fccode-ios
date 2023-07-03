@@ -8,8 +8,8 @@ public class DeleteLifePhotoMutation: GraphQLMutation {
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!) {
-        deleteLifePhoto(userId: $userId, lifePhotoId: $lifePhotoId) {
+      mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!, $position: Int!) {
+        deleteLifePhoto(userId: $userId, lifePhotoId: $lifePhotoId, position: $position) {
           __typename
           status
           statusCode
@@ -21,18 +21,22 @@ public class DeleteLifePhotoMutation: GraphQLMutation {
 
   public var userId: ID
   public var lifePhotoId: ID
+  public var position: Int
 
   public init(
     userId: ID,
-    lifePhotoId: ID
+    lifePhotoId: ID,
+    position: Int
   ) {
     self.userId = userId
     self.lifePhotoId = lifePhotoId
+    self.position = position
   }
 
   public var __variables: Variables? { [
     "userId": userId,
-    "lifePhotoId": lifePhotoId
+    "lifePhotoId": lifePhotoId,
+    "position": position
   ] }
 
   public struct Data: GraphQLAPI.SelectionSet {
@@ -43,7 +47,8 @@ public class DeleteLifePhotoMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("deleteLifePhoto", DeleteLifePhoto.self, arguments: [
         "userId": .variable("userId"),
-        "lifePhotoId": .variable("lifePhotoId")
+        "lifePhotoId": .variable("lifePhotoId"),
+        "position": .variable("position")
       ]),
     ] }
 

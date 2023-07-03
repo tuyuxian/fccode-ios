@@ -32,6 +32,10 @@ class PreferenceGoalViewModel: ObservableObject {
         return Preference.MockPreference // for preview purpose
     }()
     
+    /// Check Equality
+    @Published var originalValue: [Goal] = []
+    private var checkList: [Bool] = []
+    
     /// View state
     @Published var state: ViewStatus = .none
     @Published var showSaveButton: Bool = false
@@ -39,14 +43,6 @@ class PreferenceGoalViewModel: ObservableObject {
     /// Toast message
     @Published var toastMessage: String?
     @Published var toastType: Banner.BannerType?
-    
-    init() {
-        print("-> [Preference Goal] vm init")
-    }
-    
-    deinit {
-        print("-> [Preference Goal] vm deinit")
-    }
 }
 
 extension PreferenceGoalViewModel {
@@ -65,6 +61,20 @@ extension PreferenceGoalViewModel {
             return .gt4
         default:
             return nil
+        }
+    }
+    
+    public func checkEquality(goals: [Goal]) {
+        if goals.count == originalValue.count {
+            goals.forEach { goal in
+                checkList.append(originalValue.contains { item in
+                    item.type == goal.type
+                })
+            }
+            showSaveButton = checkList.contains(false)
+            checkList = []
+        } else {
+            showSaveButton = true
         }
     }
     

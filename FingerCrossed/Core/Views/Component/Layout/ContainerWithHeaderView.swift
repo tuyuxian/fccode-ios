@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ContainerWithHeaderView<Content: View>: View {
     
-    @State var parentTitle: String
+    let parentTitle: String
     
-    @State var childTitle: String
+    let childTitle: String
     
     @Binding var showSaveButton: Bool
     
@@ -30,7 +30,7 @@ struct ContainerWithHeaderView<Content: View>: View {
         .navigationBarItems(
             leading:
                 HStack(spacing: 0) {
-                    NavigationBarBackButton()
+                    NavigationBackButton()
                         .padding(.top, 12)
                     NavigationHeader(
                         parentTitle: parentTitle,
@@ -49,14 +49,8 @@ struct ContainerWithHeaderView<Content: View>: View {
                     )
                 }
                 .frame(height: 40)
-                .padding(
-                    EdgeInsets(
-                        top: 12,
-                        leading: 0,
-                        bottom: 0,
-                        trailing: 8
-                    )
-                )
+                .padding(.top, 12)
+                .padding(.trailing, 8)
                 : nil
         )
         .padding(.top, 19)
@@ -73,5 +67,29 @@ struct ContainerWithHeaderView_Previews: PreviewProvider {
             showSaveButton: .constant(true),
             isLoading: .constant(false)
         ) {}
+    }
+}
+
+extension ContainerWithHeaderView {
+    
+    struct NavigationHeader: View {
+        
+        let parentTitle: String
+        
+        let childTitle: String
+        
+        var body: some View {
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(parentTitle)
+                        .fontTemplate(.h4Medium)
+                        .foregroundColor(Color.surface1)
+                        .padding(.bottom, -8)
+                    Text(childTitle)
+                        .fontTemplate(.h1Medium)
+                        .foregroundColor(Color.text)
+                }
+            }
+        }
     }
 }

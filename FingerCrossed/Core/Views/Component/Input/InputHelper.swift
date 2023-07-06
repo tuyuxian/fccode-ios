@@ -14,21 +14,21 @@ struct InputHelper: View {
         case error
     }
     
-    // Flag for helper
-    // Use .constant(false) for error type
+    /// Flag for helper
+    /// Use .constant(false) for error type
     @Binding var isSatisfied: Bool
-    // Helper label
+    /// Helper label
     @State var label: String
-    // Type of the helper
+    /// Type of the helper
     @State var type: HelperType
     
     var body: some View {
-        HStack(spacing: 6.0) {
+        HStack(alignment: .top, spacing: 6.0) {
             switch type {
             case .info:
-                Image("CheckCircleBased")
-                    .renderingMode(.template)
+                FCIcon.checkCirle
                     .resizable()
+                    .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 16, height: 16)
                     .foregroundColor(isSatisfied ? Color.text : Color.surface1)
@@ -36,7 +36,7 @@ struct InputHelper: View {
                     .fontTemplate(.noteMedium)
                     .foregroundColor(isSatisfied ? Color.text : Color.surface1)
             case .error:
-                Image("Error")
+                FCIcon.errorCircleRed
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 16, height: 16)

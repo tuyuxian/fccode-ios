@@ -37,14 +37,7 @@ struct CaptionInputBar: View {
                 text = String(text.prefix(textLengthLimit))
             }
             .textFieldStyle(.plain)
-            .padding(
-                EdgeInsets(
-                    top: 16,
-                    leading: 16,
-                    bottom: 16,
-                    trailing: 16
-                )
-            )
+            .padding(16)
             .lineLimit(defaultPresentLine...lineLimit)
             .font(Font.system(size: 16, weight: .regular))
             .foregroundColor(Color.text)

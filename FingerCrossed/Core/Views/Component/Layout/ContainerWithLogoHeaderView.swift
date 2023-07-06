@@ -10,14 +10,16 @@ import SwiftUI
 struct ContainerWithLogoHeaderView<Content: View>: View {
     
     @State var headerTitle: String
+    
+    @State var path = NavigationPath()
         
     @ViewBuilder var content: Content
     
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $path) {
             ZStack {
                 Color.background.edgesIgnoringSafeArea(.all)
-                // View builder
+                
                 content
                     .navigationBarItems(
                         leading:
@@ -25,7 +27,7 @@ struct ContainerWithLogoHeaderView<Content: View>: View {
                                 title: $headerTitle
                             )
                     )
-                    .padding(.top, 19) // 75px - 59px(iPhone 14 Pro safe area)
+                    .padding(.top, 19) // 75px - 59px (iPhone 14 Pro safe area)
             }
         }
     }
@@ -33,10 +35,7 @@ struct ContainerWithLogoHeaderView<Content: View>: View {
 
 struct ContainerWithLogoHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        ContainerWithLogoHeaderView(
-            headerTitle: "Header",
-            content: {}
-        )
+        ContainerWithLogoHeaderView(headerTitle: "Header") {}
     }
 }
 
@@ -55,10 +54,7 @@ private struct NavigationHeaderWithLogo: View {
             Image("Logo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(
-                    width: 40,
-                    height: 40
-                )
+                .frame(width: 40, height: 40)
 
             Text(title)
                 .fontTemplate(.h1Medium)

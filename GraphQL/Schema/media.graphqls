@@ -1,0 +1,19 @@
+extend type Query {
+  getS3PresignedPutUrl(sourceType: MediaSourceType!): MediaCRUDResponse!
+  getS3PresignedDeleteUrl(
+    sourceType: MediaSourceType!
+    fileName: String!
+  ): MediaCRUDResponse!
+}
+
+enum MediaSourceType {
+  IMAGE
+  AUDIO
+}
+
+type MediaCRUDResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  url: String
+}

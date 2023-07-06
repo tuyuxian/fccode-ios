@@ -7,40 +7,226 @@
 //
 
 import SwiftUI
+import GraphQLAPI
 
-struct PasswordView: View, KeyboardReadable {
-    /// Observed global view model
-    @ObservedObject var global: GlobalViewModel
+struct PasswordView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
+    /// Global page spinner
+    @EnvironmentObject var psm: PageSpinnerManager
+    /// Observed user state view model
+    @ObservedObject var usm: UserStateManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
+    /// Init account sheet view model
+    @StateObject var accountSheetVM: AccountSheetViewModel = AccountSheetViewModel()
+    /// Flag for account sheet
+    @State private var isAccountPresented: Bool = false
     /// Flag for password validation
     @State private var isPasswordValid: Bool = true
-    /// Flag for keyboard signal
-    @State private var isKeyboardShowUp: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-
-    private func passwordOnSubmit() {
+    /// Handler for button on tap
+    private func buttonOnTap() {
+        isLoading.toggle()
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
+            isLoading.toggle()
             return
         }
         isPasswordValid = true
-        global.isLogin = true
-        global.viewState = .main
+        Task {
+            do {
+                let (statusCode, userId, token) = try await UserService.signIn(
+                    email: vm.user.email,
+                    password: vm.password
+                )
+                isLoading.toggle()
+                guard statusCode == 200 else {
+                    isPasswordValid = false
+                    return
+                }
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+            } catch {
+                isLoading.toggle()
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
-    
+    /// Handler for forgot password
     private func forgotPasswordOnTap() {
+        self.endTextEditing()
         vm.transition = .forward
-        vm.switchView = .resetPassword
+        vm.switchView = .resetPasswordEmailCheck
     }
-    
-    private func backToEntry() {
+    /// Handler for back to email view
+    private func backToEmailView() {
+        self.endTextEditing()
         vm.transition = .backward
         vm.switchView = .email
-        vm.email = ""
+        vm.user.email = ""
         vm.password = ""
         vm.isEmailSatisfied = false
+    }
+    /// Handler for google sso
+    private func googleOnTap() {
+        self.endTextEditing()
+        psm.show()
+        Task {
+            do {
+                let email = try await GoogleSSOManager().signIn()
+                psm.dismiss()
+                guard let email else {
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                let (
+                    userExist,
+                    hasPassword,
+                    hasAppleSSO,
+                    _,
+                    hasGoogleSSO,
+                    username,
+                    profilePictureUrl,
+                    appleEmail,
+                    facebookEmail,
+                    googleEmail
+                ) = try await UserService.checkEmail(
+                    email: email
+                )
+                guard userExist else {
+                    vm.user.socialAccount.append(
+                        SocialAccount(
+                            email: email,
+                            platform: .google
+                        )
+                    )
+                    vm.user.email = email
+                    vm.user.googleConnect = true
+                    vm.transition = .forward
+                    vm.switchView = .name
+                    return
+                }
+                guard hasGoogleSSO ?? false else {
+                    guard hasPassword ?? true else {
+                        accountSheetVM.isSSO = true
+                        accountSheetVM.showAppleSSO = hasAppleSSO ?? false
+                        accountSheetVM.email = email
+                        accountSheetVM.appleEmail = appleEmail
+                        accountSheetVM.facebookEmail = facebookEmail
+                        accountSheetVM.googleEmail = googleEmail
+                        accountSheetVM.username = username
+                        accountSheetVM.profilePictureUrl = profilePictureUrl
+                        isAccountPresented.toggle()
+                        return
+                    }
+                    accountSheetVM.isSSO = false
+                    accountSheetVM.email = email
+                    accountSheetVM.username = username
+                    accountSheetVM.profilePictureUrl = profilePictureUrl
+                    isAccountPresented.toggle()
+                    return
+                }
+                let (userId, token) = try await UserService.socialSignIn(
+                    email: email,
+                    platform: GraphQLEnum.case(.google)
+                )
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+            } catch {
+                psm.dismiss()
+                print(error.localizedDescription)
+            }
+        }
+    }
+    /// Handler for apple sso
+    private func appleOnTap() {
+        self.endTextEditing()
+        psm.show()
+        Task {
+            do {
+                let email = try await AppleSSOManager().signIn()
+                psm.dismiss()
+                guard let email else {
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                let (
+                    userExist,
+                    hasPassword,
+                    hasAppleSSO,
+                    _,
+                    hasGoogleSSO,
+                    username,
+                    profilePictureUrl,
+                    appleEmail,
+                    facebookEmail,
+                    googleEmail
+                ) = try await UserService.checkEmail(
+                    email: email
+                )
+                guard userExist else {
+                    vm.user.socialAccount.append(
+                        SocialAccount(
+                            email: email,
+                            platform: .apple
+                        )
+                    )
+                    vm.user.email = email
+                    vm.user.appleConnect = true
+                    vm.transition = .forward
+                    vm.switchView = .name
+                    return
+                }
+                guard hasAppleSSO ?? false else {
+                    guard hasPassword ?? true else {
+                        accountSheetVM.isSSO = true
+                        accountSheetVM.showGoogleSSO = hasGoogleSSO ?? false
+                        accountSheetVM.email = email
+                        accountSheetVM.appleEmail = appleEmail
+                        accountSheetVM.facebookEmail = facebookEmail
+                        accountSheetVM.googleEmail = googleEmail
+                        accountSheetVM.username = username
+                        accountSheetVM.profilePictureUrl = profilePictureUrl
+                        isAccountPresented.toggle()
+                        return
+                    }
+                    accountSheetVM.isSSO = false
+                    accountSheetVM.email = email
+                    accountSheetVM.username = username
+                    accountSheetVM.profilePictureUrl = profilePictureUrl
+                    isAccountPresented.toggle()
+                    return
+                }
+                let (userId, token) = try await UserService.socialSignIn(
+                    email: email,
+                    platform: GraphQLEnum.case(.apple)
+                )
+                usm.userId = userId
+                usm.token = token
+                usm.isLogin = true
+                usm.viewState = .main
+            } catch {
+                psm.dismiss()
+                print(error.localizedDescription)
+            }
+        }
     }
     
     var body: some View {
@@ -54,23 +240,13 @@ struct PasswordView: View, KeyboardReadable {
             
             ScrollView {
                 LazyVStack(
-                    alignment: .leading,
+                    alignment: .center,
                     spacing: 0
                 ) {
-                    HStack(
+                    LazyHStack(
                         alignment: .center,
-                        spacing: 92
+                        spacing: 0
                     ) {
-                        Button {
-                            vm.transition = .backward
-                            vm.switchView = .email
-                        } label: {
-                            Image("ArrowLeftBased")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                        }
-                        .padding(.leading, -8) // 16 - 24
-                        
                         EntryLogo()
                     }
                     .padding(.top, 5)
@@ -88,7 +264,7 @@ struct PasswordView: View, KeyboardReadable {
                         
                         LazyVStack(
                             alignment: .leading,
-                            spacing: 20
+                            spacing: 30
                         ) {
                             PrimaryInputBar(
                                 input: .password,
@@ -96,25 +272,50 @@ struct PasswordView: View, KeyboardReadable {
                                 hint: "Password",
                                 isValid: $isPasswordValid
                             )
-                            .onReceive(keyboardPublisher) { val in
-                                isKeyboardShowUp = val
-                            }
                             .onChange(of: vm.password) { val in
                                 vm.isPasswordSatisfied = val.count > 0
                             }
                             
                             !isPasswordValid
-                            ? ErrorHelper(vm: vm)
+                            ? PasswordErrorHelper(action: forgotPasswordOnTap)
                                 .padding(.leading, 16)
-                                .padding(.vertical, -10)
+                                .padding(.top, -20)
                             : nil
                             
                             PrimaryButton(
                                 label: "Continue",
-                                action: passwordOnSubmit,
+                                action: buttonOnTap,
                                 isTappable: $vm.isPasswordSatisfied,
                                 isLoading: $isLoading
                             )
+                            
+                            LazyVStack(alignment: .center, spacing: 30) {
+                                !isPasswordValid
+                                ? nil
+                                : Button {
+                                    forgotPasswordOnTap()
+                                } label: {
+                                    Text("Forgot password")
+                                        .fontTemplate(.noteMedium)
+                                        .foregroundColor(Color.text)
+                                        .underline(
+                                            true,
+                                            color: Color.text
+                                        )
+                                }
+                                
+                                Button {
+                                    backToEmailView()
+                                } label: {
+                                    Text("Not to continue with \(vm.user.email)?")
+                                        .fontTemplate(.noteMedium)
+                                        .foregroundColor(Color.text)
+                                        .underline(
+                                            true,
+                                            color: Color.text
+                                        )
+                                }
+                            }
                         }
                         
                         HStack(spacing: 10) {
@@ -122,7 +323,7 @@ struct PasswordView: View, KeyboardReadable {
                                 Divider()
                             }
                             
-                            Text("or")
+                            Text("Or")
                                 .fontTemplate(.pMedium)
                                 .foregroundColor(Color.text)
                             
@@ -131,29 +332,41 @@ struct PasswordView: View, KeyboardReadable {
                             }
                         }
                         
-                        LazyVStack(spacing: 16) {
-                            Button {
-                                forgotPasswordOnTap()
-                            } label: {
-                                Text("Forgot password")
-                                    .fontTemplate(.pMedium)
-                                    .foregroundColor(Color.gold)
-                            }
-                            
-                            Button {
-                                backToEntry()
-                            } label: {
-                                Text("Continue with social sign-in")
-                                    .fontTemplate(.pMedium)
-                                    .foregroundColor(Color.gold)
-                            }
+                        LazyHStack(
+                            alignment: .center,
+                            spacing: 20
+                        ) {
+                            SSOButton(
+                                platform: .google,
+                                handler: {
+                                    googleOnTap()
+                                }
+                            )
+                            SSOButton(
+                                platform: .apple,
+                                handler: {
+                                    appleOnTap()
+                                }
+                            )
                         }
                     }
                 }
                 .padding(.horizontal, 24)
             }
             .scrollDisabled(true)
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.16)) {
+                    UIApplication.shared.closeKeyboard()
+                }
+            }
             .ignoresSafeArea(.keyboard, edges: .bottom)
+            .sheet(isPresented: $isAccountPresented) {
+                AccountSheet(
+                    usm: usm,
+                    entry: vm,
+                    vm: accountSheetVM
+                )
+            }
         }
     }
 }
@@ -161,57 +374,57 @@ struct PasswordView: View, KeyboardReadable {
 struct PasswordView_Previews: PreviewProvider {
     static var previews: some View {
         PasswordView(
-            global: GlobalViewModel(),
+            usm: UserStateManager(),
             vm: EntryViewModel()
         )
     }
 }
 
-private struct ErrorHelper: View {
-    /// Observed entry view model
-    @ObservedObject var vm: EntryViewModel
+struct PasswordErrorHelper: View {
+    
+    @State var action: () -> Void
     
     var body: some View {
         VStack(
             alignment: .leading,
             spacing: 6
         ) {
-            InputHelper(
-                isSatisfied: .constant(false),
-                label: "Please enter a valid password",
-                type: .error
-            )
-            
-            vm.checkLength(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "Password should be 8 to 36 characters",
-                type: .error
-            )
-            
-            vm.checkUpper(str: vm.password) && vm.checkLower(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "At least 1 uppercase and 1 lowercase",
-                type: .error
-            )
-            
-            vm.checkNumber(str: vm.password) && vm.checkSymbols(str: vm.password)
-            ? nil
-            : InputHelper(
-                isSatisfied: .constant(false),
-                label: "At least 1 number and 1 symbol",
-                type: .error
-            )
-            
-            // TODO(Sam): handle wrong password
-//            InputHelper(
-//                isSatisfied: .constant(false),
-//                label: "Wrong password",
-//                type: .error
-//            )
+            HStack(
+                alignment: .top,
+                spacing: 6
+            ) {
+                FCIcon.errorCircleRed
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(
+                        width: 16,
+                        height: 16
+                    )
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Hmm, that's not the right password.")
+                        .fontTemplate(.noteMedium)
+                        .foregroundColor(Color.warning)
+                    HStack(spacing: 0) {
+                        Text("Please try again or tap ")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                        Text("Forgot password")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                            .underline(
+                                true,
+                                color: Color.warning
+                            )
+                            .onTapGesture {
+                                self.endTextEditing()
+                                action()
+                            }
+                        Text(".")
+                            .fontTemplate(.noteMedium)
+                            .foregroundColor(Color.warning)
+                    }
+                }
+            }
         }
     }
 }

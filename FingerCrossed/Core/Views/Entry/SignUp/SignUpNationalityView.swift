@@ -10,11 +10,7 @@ import SwiftUI
 struct SignUpNationalityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-
-    @StateObject var countrySelectionList = CountrySelectionList(countrySelections: [CountryModel]())
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .avatar
@@ -41,9 +37,7 @@ struct SignUpNationalityView: View {
                         vm.transition = .backward
                         vm.switchView = .ethnicity
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -80,14 +74,13 @@ struct SignUpNationalityView: View {
                     spacing: 10
                 ) {
                     NationalityPicker(
-                        countrySelectionList: countrySelectionList,
+                        nationalityList: $vm.user.citizen,
                         isPreference: false
                     )
-                    .onChange(of: countrySelectionList.countrySelections) { _ in
-                        vm.nationality = countrySelectionList.countrySelections
+                    .onChange(of: vm.user.citizen) { val in
                         vm.isNationalitySatisfied =
-                            vm.nationality.count > 0 &&
-                            vm.nationality.count <= 3
+                        val.count > 0 &&
+                        val.count <= 3
                     }
                     
                     InputHelper(
@@ -95,7 +88,7 @@ struct SignUpNationalityView: View {
                         label: "Up to 3 Nationalities",
                         type: .info
                     )
-                    .padding(.leading, 16)
+                    .padding(.leading, 9)
                 }
                 .padding(.top, 20)
                 
@@ -105,7 +98,7 @@ struct SignUpNationalityView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isNationalitySatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

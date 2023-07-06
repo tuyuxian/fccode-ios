@@ -87,7 +87,7 @@ struct ChatRoomView: View {
             isRead: false
         )
     ]
-    @EnvironmentObject private var vm: TabViewModel
+//    @EnvironmentObject private var vm: TabViewModel
     
     var body: some View {
         Box {
@@ -105,11 +105,7 @@ struct ChatRoomView: View {
             : MessageInputField()
         }
         .onTapGesture {
-            withAnimation(
-                .easeInOut(
-                    duration: 0.16
-                )
-            ) {
+            withAnimation(.easeInOut(duration: 0.16)) {
                 UIApplication.shared.closeKeyboard()
             }
         }
@@ -119,7 +115,7 @@ struct ChatRoomView: View {
                     alignment: .center,
                     spacing: 8
                 ) {
-                    NavigationBarBackButton()
+                    NavigationBackButton()
                         .frame(width: 24, height: 24)
                         // leading padding for navigation bar is 16px
                         // offset 3px already
@@ -149,14 +145,14 @@ struct ChatRoomView: View {
         )
         .padding(.top, 19)
         .background(Color.background)
-        .onAppear(perform: {
-            vm.showTab = false
-        })
-        .onDisappear(perform: {
-            withAnimation(.easeInOut(duration: 0.1)) {
-                vm.showTab = true
-            }
-        })
+//        .onAppear(perform: {
+//            vm.showTab = false
+//        })
+//        .onDisappear(perform: {
+//            withAnimation(.easeInOut(duration: 0.1)) {
+//                vm.showTab = true
+//            }
+//        })
     }
 }
 
@@ -167,6 +163,7 @@ struct ChatRoomView_Previews: PreviewProvider {
             avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
             isActive: .constant(true)
         )
+//        .environmentObject(TabViewModel())
     }
 }
 

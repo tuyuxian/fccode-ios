@@ -1,0 +1,73 @@
+mutation CreateLifePhoto($userId: ID!, $input: CreateLifePhotoInput!) {
+  createLifePhoto(userId: $userId, input: $input) {
+    status
+    statusCode
+    message
+    user {
+      lifePhoto {
+        id
+        caption
+        contentURL
+        position
+        ratio
+        scale
+        offsetX
+        offsetY
+      }
+    }
+  }
+}
+
+mutation UpdateLifePhoto(
+  $userId: ID!
+  $lifePhotoId: ID!
+  $input: UpdateLifePhotoInput!
+) {
+  updateLifePhoto(userId: $userId, lifePhotoId: $lifePhotoId, input: $input) {
+    status
+    statusCode
+    message
+    user {
+      lifePhoto {
+        id
+        caption
+        contentURL
+        position
+        ratio
+        scale
+        offsetX
+        offsetY
+      }
+    }
+  }
+}
+
+mutation DeleteLifePhoto($userId: ID!, $lifePhotoId: ID!, $position: Int!) {
+  deleteLifePhoto(
+    userId: $userId
+    lifePhotoId: $lifePhotoId
+    position: $position
+  ) {
+    status
+    statusCode
+    message
+  }
+}
+
+mutation setMainLifePhoto(
+  $userId: ID!
+  $sourceLifePhotoId: ID!
+  $targetLifePhotoId: ID!
+  $fromPosition: Int!
+) {
+  setMainLifePhoto(
+    userId: $userId
+    sourceLifePhotoId: $sourceLifePhotoId
+    targetLifePhotoId: $targetLifePhotoId
+    fromPosition: $fromPosition
+  ) {
+    status
+    statusCode
+    message
+  }
+}

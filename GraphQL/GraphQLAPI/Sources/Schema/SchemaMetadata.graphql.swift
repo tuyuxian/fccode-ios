@@ -22,10 +22,11 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> Object? {
     switch typename {
-    case "Query": return GraphQLAPI.Objects.Query
-    case "EmailCheckResponse": return GraphQLAPI.Objects.EmailCheckResponse
-    case "LoginResponse": return GraphQLAPI.Objects.LoginResponse
+    case "Mutation": return GraphQLAPI.Objects.Mutation
     case "CRUDResponse": return GraphQLAPI.Objects.CRUDResponse
+    case "SignInResponse": return GraphQLAPI.Objects.SignInResponse
+    case "OTPResponse": return GraphQLAPI.Objects.OTPResponse
+    case "MediaCRUDResponse": return GraphQLAPI.Objects.MediaCRUDResponse
     case "MatchResponse": return GraphQLAPI.Objects.MatchResponse
     case "User": return GraphQLAPI.Objects.User
     case "Citizen": return GraphQLAPI.Objects.Citizen
@@ -33,6 +34,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Goal": return GraphQLAPI.Objects.Goal
     case "LifePhoto": return GraphQLAPI.Objects.LifePhoto
     case "SocialAccount": return GraphQLAPI.Objects.SocialAccount
+    case "Query": return GraphQLAPI.Objects.Query
     default: return nil
     }
   }

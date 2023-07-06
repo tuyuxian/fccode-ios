@@ -10,9 +10,9 @@ import GoogleSignIn
 import FacebookCore
 
 struct EntryView: View {
-    
-    @ObservedObject var global: GlobalViewModel
-    
+    /// Observed global user state
+    @ObservedObject var usm: UserStateManager
+    /// Init new entry view model
     @StateObject var vm: EntryViewModel = EntryViewModel()
         
     let transitionForward: AnyTransition = .asymmetric(
@@ -29,24 +29,27 @@ struct EntryView: View {
         Group {
             switch vm.switchView {
             case .email:
-                EmailView(vm: vm)
-                    .transition(
-                        vm.transition == .forward
-                        ? transitionForward
-                        : transitionBackward
-                    )
-                    .onOpenURL { url in
-                        GIDSignIn.sharedInstance.handle(url)
-                    }
-                    .onAppear {
-                        ApplicationDelegate.shared.application(
-                            UIApplication.shared,
-                            didFinishLaunchingWithOptions: nil
-                        )
-                    }
+                EmailView(
+                    usm: usm,
+                    vm: vm
+                )
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
+                }
+                .transition(
+                    vm.transition == .forward
+                    ? transitionForward
+                    : transitionBackward
+                )
+//                .onAppear {
+//                    ApplicationDelegate.shared.application(
+//                        UIApplication.shared,
+//                        didFinishLaunchingWithOptions: nil
+//                    )
+//                }
             case .password:
                 PasswordView(
-                    global: global,
+                    usm: usm,
                     vm: vm
                 )
                 .transition(
@@ -65,6 +68,14 @@ struct EntryView: View {
  
             case .resetPasswordEmailCheck:
                 ResetPasswordEmailCheckView(vm: vm)
+                    .transition(
+                        vm.transition == .forward
+                        ? transitionForward
+                        : transitionBackward
+                    )
+                
+            case .resetPasswordOTP:
+                ResetPasswordOTPView(vm: vm)
                     .transition(
                         vm.transition == .forward
                         ? transitionForward
@@ -126,6 +137,16 @@ struct EntryView: View {
                         ? transitionForward
                         : transitionBackward
                     )
+            case .location:
+                SignUpLocationView(
+                    usm: usm,
+                    vm: vm
+                )
+                .transition(
+                    vm.transition == .forward
+                    ? transitionForward
+                    : transitionBackward
+                )
             }
         }
         .animation(.easeInOut(duration: 0.5), value: vm.switchView)
@@ -136,39 +157,7 @@ struct EntryView: View {
 struct EntryView_Previews: PreviewProvider {
     static var previews: some View {
         EntryView(
-            global: GlobalViewModel()
+            usm: UserStateManager()
         )
-    }
-}
-
-/// View modifier that applies a move transition on the leading edge
-struct TransitionLeading: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content.transition(.move(edge: .leading))
-        } else {
-            content.transition(
-                .asymmetric(
-                    insertion: .move(edge: .leading),
-                    removal: .move(edge: .trailing)
-                )
-            )
-        }
-    }
-}
-
-/// View modifier that applies a move transition on the trailing edge
-struct TransitionTrailing: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content.transition(.move(edge: .trailing))
-        } else {
-            content.transition(
-                .asymmetric(
-                    insertion: .move(edge: .trailing),
-                    removal: .move(edge: .leading)
-                )
-            )
-        }
     }
 }

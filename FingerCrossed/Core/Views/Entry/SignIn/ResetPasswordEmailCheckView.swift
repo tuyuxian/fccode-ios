@@ -8,41 +8,94 @@
 import SwiftUI
 
 struct ResetPasswordEmailCheckView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
-        vm.transition = .backward
-        vm.switchView = .email
-        vm.email = ""
-        vm.isEmailSatisfied = false
+        isLoading.toggle()
+        Task {
+            do {
+                let success = try await UserService.requestOTP(
+                    email: vm.user.email
+                )
+                guard success else {
+                    isLoading.toggle()
+                    bm.pop(
+                        title: "Something went wrong.",
+                        type: .error
+                    )
+                    return
+                }
+                isLoading.toggle()
+                vm.transition = .forward
+                vm.switchView = .resetPasswordOTP
+            } catch {
+                print(error.localizedDescription)
+                bm.pop(
+                    title: "Something went wrong.",
+                    type: .error
+                )
+            }
+        }
     }
     
     var body: some View {
-        ZStack {
+        ZStack(
+            alignment: Alignment(
+                horizontal: .center,
+                vertical: .top
+            )
+        ) {
             Color.background.ignoresSafeArea(.all)
             
-            VStack(spacing: 0) {
-                EntryLogo()
-                    .padding(.top, 5)
-                    .padding(.bottom, 55)
+            VStack(
+                alignment: .leading,
+                spacing: 0
+            ) {
+                HStack(
+                    alignment: .center,
+                    spacing: 92
+                ) {
+                    Button {
+                        vm.user.password = ""
+                        vm.transition = .backward
+                        vm.switchView = .password
+                    } label: {
+                        FCIcon.arrowLeft
+                    }
+                    .padding(.leading, -8) // 16 - 24
+                                        
+                    EntryLogo()
+                }
+                .padding(.top, 5)
+                .padding(.bottom, 55)
                 
-                VStack(spacing: 33) {
-                    Text("Please check your email to reset password")
-                        .fontTemplate(.bigBoldTitle)
+                VStack(
+                    alignment: .center,
+                    spacing: 0
+                ) {
+                    Text("Verification code\nwill be sent to\n \(vm.user.email)")
+                        .fontTemplate(.h2Bold)
                         .foregroundColor(Color.text)
                         .multilineTextAlignment(.center)
                     
-                    Text("✉️")
-                        .font(Font.system(size: 160))
+                    Spacer()
+                    
+                    LottieView(lottieFile: "email.json")
+                        .frame(width: 240,height: 240)
+                    
+                    Spacer()
                 }
+                .frame(maxWidth: .infinity)
                 
                 Spacer()
                 
                 PrimaryButton(
-                    label: "Back to Login",
+                    label: "Send Code",
                     action: buttonOnTap,
                     isTappable: .constant(true),
                     isLoading: $isLoading

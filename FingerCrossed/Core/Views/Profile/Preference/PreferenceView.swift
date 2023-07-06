@@ -9,8 +9,6 @@ import SwiftUI
 
 struct PreferenceView: View {
     
-    @ObservedObject var vm: ProfileViewModel
-
     var body: some View {
         ContainerWithHeaderView(
             parentTitle: "Profile",
@@ -19,31 +17,31 @@ struct PreferenceView: View {
             isLoading: .constant(false)
         ) {
             Box {
-                MenuList(
-                    childViewList: [
-                        ChildView(
+                FCList<PreferenceDestination>(
+                    destinationViewList: [
+                        DestinationView(
                             label: "Sex Orientation",
-                            subview: AnyView(PreferenceSexOrientationView(vm: vm))
+                            subview: .preferenceSexOrientation
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Goal",
-                            subview: AnyView(PreferenceGoalView(vm: vm))
+                            subview: .preferenceGoal
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Nationality",
-                            subview: AnyView(PreferenceNationalityView(vm: vm))
+                            subview: .preferenceNationality
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Ethnicity",
-                            subview: AnyView(PreferenceEthnicityView(vm: vm))
+                            subview: .preferenceEthnicity
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Age",
-                            subview: AnyView(PreferenceAgeView(vm: vm))
+                            subview: .preferenceAge
                         ),
-                        ChildView(
+                        DestinationView(
                             label: "Distance",
-                            subview: AnyView(PreferenceDistanceView(vm: vm))
+                            subview: .preferenceDistance
                         )
                     ]
                 )
@@ -51,14 +49,31 @@ struct PreferenceView: View {
                 
                 Spacer()
             }
+            .navigationDestination(for: PreferenceDestination.self) { destination in
+                Group {
+                    switch destination {
+                    case .preferenceAge:
+                        PreferenceAgeView()
+                    case .preferenceGoal:
+                        PreferenceGoalView()
+                    case .preferenceDistance:
+                        PreferenceDistanceView()
+                    case .preferenceEthnicity:
+                        PreferenceEthnicityView()
+                    case .preferenceNationality:
+                        PreferenceNationalityView()
+                    case .preferenceSexOrientation:
+                        PreferenceSexOrientationView()
+                    }
+                }
+                .navigationBarBackButtonHidden(true)
+            }
         }
     }
 }
 
 struct PreferenceView_Previews: PreviewProvider {
     static var previews: some View {
-        PreferenceView(
-            vm: ProfileViewModel()
-        )
+        PreferenceView()
     }
 }

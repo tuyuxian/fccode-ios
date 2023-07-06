@@ -10,36 +10,32 @@ import SwiftUI
 struct SignUpNameView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Flag for alert
+    @State private var showAlert: Bool = false
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         vm.transition = .forward
         vm.switchView = .birthday
     }
-    
-    private func checkLength(
-        str: String
+    /// Check if the user name follow below rules:
+    ///  - 2 to 30 characters
+    ///  - accept only numbers, spaces, and letters
+    ///  - at least 1 letters
+    private func check(
+        _ str: String
     ) -> Bool {
-        return str.count >= 2 && str.count <= 30
+        let usernameRegEx = "^(?=.*[\\p{L}])(?=.{2,30}$)[\\p{L}\\p{N}\\s]+$"
+        let regex = NSPredicate(format: "SELF MATCHES %@", usernameRegEx)
+        let isValid = regex.evaluate(with: str)
+
+        if isValid {
+            return true
+        } else {
+            return false
+        }
     }
-    
-    private func checkCharacter(
-        str: String
-    ) -> Bool {
-        let digitsCharacters = CharacterSet(charactersIn: "0123456789")
-        return !CharacterSet(charactersIn: str).isSubset(of: digitsCharacters)
-    }
-     
-    private func checkSymbols(
-        str: String
-    ) -> Bool {
-        let specialCharacterRegEx  = ".*[!&^%$#@()/*+_]+.*"
-        let symbolChecker = NSPredicate(format: "SELF MATCHES %@", specialCharacterRegEx)
-        guard symbolChecker.evaluate(with: str) else { return false }
-        return true
-    }
-    
+
     var body: some View {
         ZStack(
             alignment: Alignment(
@@ -58,15 +54,39 @@ struct SignUpNameView: View {
                     spacing: 92
                 ) {
                     Button {
-                        vm.transition = .backward
-                        vm.switchView = .account
+                        showAlert.toggle()
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
-                                        
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text(
+                                "Notice!"
+                            )
+                            .font(
+                                Font.system(
+                                    size: 18,
+                                    weight: .medium
+                                )
+                            ),
+                            message: Text(
+                                "Once you go back to the previous page, you will lose all sign up process."
+                            ),
+                            primaryButton: .destructive(
+                                Text("Yes"),
+                                action: {
+                                    vm.reinit()
+                                    vm.transition = .backward
+                                    vm.switchView = .email
+                                }
+                            ),
+                            secondaryButton: .cancel(
+                                Text("No")
+                            )
+                        )
+                    }
+                    
                     EntryLogo()
                 }
                 .padding(.top, 5)
@@ -101,16 +121,13 @@ struct SignUpNameView: View {
                 ) {
                     PrimaryInputBar(
                         input: .text,
-                        value: $vm.name,
+                        value: $vm.user.username,
                         hint: "Enter your name",
                         isValid: .constant(true)
                     )
-                    .onChange(of: vm.name) { name in
-                        vm.name = String(name.prefix(30))
-                        vm.isNameSatisfied =
-                            checkLength(str: name) &&
-                            checkCharacter(str: name) &&
-                            !checkSymbols(str: name)
+                    .onChange(of: vm.user.username) { name in
+                        vm.user.username = String(name.prefix(30))
+                        vm.isNameSatisfied = check(vm.user.username)
                     }
                     
                     VStack {
@@ -129,13 +146,18 @@ struct SignUpNameView: View {
                         label: "Continue",
                         action: buttonOnTap,
                         isTappable: $vm.isNameSatisfied,
-                        isLoading: $isLoading
+                        isLoading: .constant(false)
                     )
                     .padding(.bottom, 16)
                 }
                 .padding(.top, 20)
             }
             .padding(.horizontal, 24)
+        }
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.16)) {
+                UIApplication.shared.closeKeyboard()
+            }
         }
     }
 }

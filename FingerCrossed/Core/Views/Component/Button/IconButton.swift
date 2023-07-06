@@ -10,15 +10,17 @@ import SwiftUI
 
 struct IconButton: View {
     
-    @State var name: String
+    @State var icon: FCIcon
+    @State var color: Color
     var action: () -> () = {}
     
     var body: some View {
         Button {
             action()
         } label: {
-           Image(name)
-               .resizable()
+            icon.resizable()
+               .renderingMode(.template)
+               .foregroundColor(color)
                .frame(width: 24, height: 24)
         }
     }
@@ -26,6 +28,9 @@ struct IconButton: View {
 
 struct IconButton_Previews: PreviewProvider {
     static var previews: some View {
-        IconButton(name: "Sent")
+        IconButton(
+            icon: .picture,
+            color: Color.text
+        )
     }
 }

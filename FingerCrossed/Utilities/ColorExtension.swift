@@ -20,6 +20,7 @@ extension Color {
     static let facebook = Color("FB")
     static let google = Color("Google")
     static let blue = Color("Blue")
+    static let systemBlue = Color("SystemBlue")
     static let peach100 = Color("Peach100")
     static let gold = Color("Gold")
     static let pink100 = Color("Pink100")

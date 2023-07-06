@@ -6,34 +6,31 @@
 //
 
 import SwiftUI
+import GraphQLAPI
+import PhotosUI
 
 struct SignUpAvatarView: View {
+    /// Global banner
+    @EnvironmentObject var bm: BannerManager
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
     /// Flag for image picker's signal
-    @State private var showImagePicker: Bool = false
+    @State private var showPhotoPicker: Bool = false
     /// Flag for camera's signal
     @State private var showCamera: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    
+    /// Flag for camera permission alert
     @State var showCameraAlert: Bool = false
-    
+    /// Flag for photo library permission alert
     @State var showPhotoLibraryAlert: Bool = false
-    
-    let imagePermissionManager = PhotoLibraryPermissionManager()
-    
+    /// Flag for selected photo not image alert
+    @State var showNotImageAlert: Bool = false
+    /// Init photo library permission manager
+    let photoLibraryPermissionManager = PhotoLibraryPermissionManager()
+    /// Init camera permission manager
     let cameraPermissionManager = CameraPermissionManager()
-
-    let cameraAlertTitle: String = "Allow camera access in device settings"
-    
-    let photoLibraryAlertTitle: String = "Allow photos access in device settings"
-    // swiftlint: disable line_length
-    let cameraAlertMessage: String = "Finger Crossed uses your device's camera so you can take photos"
-        
-    let photoLibraryAlertMessage: String = "Finger Crossed uses your device's photo library so you can share photos."
-    // swiftlint: enable line_length
-    
+    /// Handler for camera on tap
     private func cameraOnTap() {
         switch cameraPermissionManager.permissionStatus {
         case .notDetermined:
@@ -47,32 +44,34 @@ struct SignUpAvatarView: View {
             showCamera = true
         }
     }
-    
-    private func photoLibraryOnTap() {
-        switch imagePermissionManager.permissionStatus {
-        case .notDetermined:
-            imagePermissionManager.requestPermission { granted, _ in
-                guard granted else { return }
-                showImagePicker = true
-            }
-        case .denied:
-            showPhotoLibraryAlert.toggle()
-        default:
-            showImagePicker = true
-        }
-    }
-    
+    /// Handler for photo library on tap
+//    private func photoLibraryOnTap() {
+//        switch photoLibraryPermissionManager.permissionStatus {
+//        case .notDetermined:
+//            photoLibraryPermissionManager.requestPermission { photoAuthStatus in
+//                if photoAuthStatus.isAllowed {
+//                    if photoAuthStatus.isLimited {
+//                        showSelectedPhotoList.toggle()
+//                    } else {
+//                        showImagePicker = true
+//                    }
+//                }
+//                else {
+//                    showPhotoLibraryAlert.toggle()
+//                }
+//            }
+//        case .authorized:
+//            showImagePicker = true
+//        case .limited:
+//            showSelectedPhotoList.toggle()
+//        default:
+//            showPhotoLibraryAlert.toggle()
+//        }
+//    }
+    /// Handler for button on tap
     private func buttonOnTap() {
-        Task {
-            do {
-                let result = await AWSS3().uploadImage(
-                    vm.selectedImageData,
-                    // TODO(Sam): replace with presigned Url generated from backend
-                    toPresignedURL: URL(string: "")!
-                )
-                print(result)
-            }
-        }
+        vm.transition = .forward
+        vm.switchView = .location
     }
     
     var body: some View {
@@ -96,9 +95,7 @@ struct SignUpAvatarView: View {
                         vm.transition = .backward
                         vm.switchView = .nationality
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -137,24 +134,31 @@ struct SignUpAvatarView: View {
                     )
                 ) {
                     if vm.selectedImage != nil {
-                        Image(uiImage: vm.selectedImage!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 182, height: 182)
-                            .cornerRadius(100)
-                            .overlay(
-                                Circle()
-                                    .stroke(
-                                        Color.white,
-                                        lineWidth: 12
-                                    )
-                                    .frame(width: 194)
-                            )
-                    } else {
-                        Image("ProfilePicture")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
+                        Circle()
+                            .foregroundColor(Color.yellow100)
                             .frame(width: 194, height: 194)
+                            .overlay {
+                                Image(uiImage: vm.selectedImage!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 170, height: 170)
+                                    .cornerRadius(100)
+                            }
+                    } else {
+                        Circle()
+                            .strokeBorder(
+                                Color.yellow100,
+                                lineWidth: 12
+                            )
+                            .frame(width: 194, height: 194)
+                            .background {
+                                Image("Robot")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 194, height: 194)
+                                    .padding(.top, 20)
+                                    .clipShape(Circle())
+                            }
                     }
                     
                     HStack(spacing: 112) {
@@ -164,35 +168,34 @@ struct SignUpAvatarView: View {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
-                                    Image("CameraBased")
-                                        .renderingMode(.template)
+                                    FCIcon.camera
                                         .resizable()
+                                        .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
                         }
                         .fullScreenCover(
                             isPresented: $showCamera,
                             content: {
-                                ImagePicker(
-                                    sourceType: .camera,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
+                                Camera(
+                                    selectedImage: $vm.selectedImage
                                 )
                                 .edgesIgnoringSafeArea(.all)
                             }
-                        ) .alert(isPresented: $showCameraAlert) {
+                        )
+                        .alert(isPresented: $showCameraAlert) {
                             Alert(
                                 title:
-                                    Text(cameraAlertTitle)
+                                    Text(cameraPermissionManager.alertTitle)
                                     .font(Font.system(size: 18, weight: .medium)),
                                 message:
-                                    Text(cameraAlertMessage)
+                                    Text(cameraPermissionManager.alertMessage)
                                     .font(Font.system(size: 12, weight: .medium)),
                                 primaryButton: .default(Text("Cancel")),
                                 secondaryButton: .default(
@@ -206,54 +209,24 @@ struct SignUpAvatarView: View {
                             )
                         }
                         
-                        Button {
-                            photoLibraryOnTap()
-                        } label: {
+                        FCPhotoPicker(selectedImage: $vm.selectedImage) {
                             Circle()
                                 .fill(Color.yellow100)
                                 .frame(
-                                    width: 54,
-                                    height: 54
+                                    width: 60,
+                                    height: 60
                                 )
                                 .overlay(
-                                    Image("PictureBased")
-                                        .renderingMode(.template)
+                                    FCIcon.addPicture
                                         .resizable()
+                                        .renderingMode(.template)
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.white)
-                                        .frame(width: 36, height: 36)
+                                        .frame(width: 42, height: 42)
                                 )
-                        }
-                        .sheet(
-                            isPresented: $showImagePicker,
-                            content: {
-                                ImagePicker(
-                                    sourceType: .photoLibrary,
-                                    selectedImage: $vm.selectedImage,
-                                    imageData: $vm.selectedImageData
-                                )
-                            }
-                        )
-                        .alert(isPresented: $showPhotoLibraryAlert) {
-                            Alert(
-                                title:
-                                    Text(photoLibraryAlertTitle)
-                                    .font(Font.system(size: 18, weight: .medium)),
-                                message:
-                                    Text(photoLibraryAlertMessage)
-                                    .font(Font.system(size: 12, weight: .medium)),
-                                primaryButton: .default(Text("Cancel")),
-                                secondaryButton: .default(
-                                    Text("Settings"),
-                                    action: {
-                                        UIApplication.shared.open(
-                                            URL(string: UIApplication.openSettingsURLString)!
-                                        )
-                                    }
-                                )
-                            )
                         }
                     }
+                    .padding(.bottom, -14)
                 }
                 .frame(width: UIScreen.main.bounds.size.width - 48)
                 .padding(.top, 20)

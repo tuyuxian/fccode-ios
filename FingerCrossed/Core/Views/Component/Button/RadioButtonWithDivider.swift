@@ -8,15 +8,12 @@
 import SwiftUI
 
 struct RadioButtonWithDivider: View {
-    let callback: (String) -> ()
-    @State var items: [String] = [
-        "Male",
-        "Female",
-        "Transgender",
-        "Nonbinary",
-        "Prefer not to say"
-    ]
+        
+    @State var items: [String] = []
+    
     @State var selectedId: String = ""
+    
+    let callback: (String) -> ()
     
     private func radioGroupCallback(
         id: String
@@ -27,7 +24,10 @@ struct RadioButtonWithDivider: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            ForEach(Array(items.enumerated()), id: \.element.self) { index, item in
+            ForEach(
+                Array(items.enumerated()),
+                id: \.element.self
+            ) { index, item in
                 SelectionButton(
                     id: item,
                     type: .radio,
@@ -47,7 +47,16 @@ struct RadioButtonWithDivider: View {
 
 struct RadioButtonWithDivider_Previews: PreviewProvider {
     static var previews: some View {
-        RadioButtonWithDivider { _ in}
-            .padding(.horizontal, 24)
+        RadioButtonWithDivider(
+            items: [
+                "Male",
+                "Female",
+                "Transgender",
+                "Nonbinary",
+                "Prefer not to say"
+            ],
+            callback: { _ in }
+        )
+        .padding(.horizontal, 24)
     }
 }

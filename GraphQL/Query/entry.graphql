@@ -1,20 +1,57 @@
-query EmailCheck($email: String!) {
-  emailCheck(email: $email) {
-    status
-    statusCode
-    message
-    exist
-  }
-}
-
-query Login($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
+query CheckEmail($email: String!) {
+  checkEmail(email: $email) {
     status
     statusCode
     message
     user {
-      id # and others
+      password
+      username
+      profilePictureURL
+      appleConnect
+      facebookConnect
+      googleConnect
+      socialAccount {
+        email
+        platform
+      }
     }
+  }
+}
+
+query SignIn($email: String!, $password: String!) {
+  signIn(email: $email, password: $password) {
+    status
+    statusCode
+    message
+    userId
     token
+  }
+}
+
+query SocialSignIn($email: String!, $platform: SocialAccountPlatform!) {
+  socialSignIn(email: $email, platform: $platform) {
+    status
+    statusCode
+    message
+    userId
+    token
+  }
+}
+
+query RequestOTP($email: String!) {
+  requestOTP(email: $email) {
+    status
+    statusCode
+    message
+    valid
+  }
+}
+
+query VerifyOTP($email: String!, $userOTP: String!) {
+  verifyOTP(email: $email, userOTP: $userOTP) {
+    status
+    statusCode
+    message
+    valid
   }
 }

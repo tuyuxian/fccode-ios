@@ -6,218 +6,214 @@
 //
 
 import SwiftUI
-import AVFoundation
+import DSWaveformImageViews
 
 struct VoiceMessageEditSheet: View {
-    // @State private var isStatisfied: Bool = true
-    
-    // @State private var isLoading: Bool = false
-    
-    // @State var hasVoiceMessage: Bool = true
-    // // TODO(Lawrence): apply new design
-    // var body: some View {
-    //     ZStack {
-    //         Color.white.edgesIgnoringSafeArea(.all)
-    //         VStack(alignment: .center, spacing: 20) {
-    //             Text("Voice Message")
-    //                 .fontTemplate(.h2Medium)
-    //                 .foregroundColor(Color.text)
-    //                 .padding(.top, 30)
-    //             Text("01:00")
-    //                 .fontTemplate(.h3Bold)
-    //                 .foregroundColor(Color.surface1)
-    //                 .padding(.bottom, 50)
-                
-    //             if hasVoiceMessage {
-    //                 HStack(
-    //                     alignment: .center,
-    //                     spacing: 16
-    //                 ) {
-    //                     Button {
-                            
-    //                     } label: {
-    //                         Image("play")
-    //                             .renderingMode(.template)
-    //                             .resizable()
-    //                             .foregroundColor(Color.white)
-    //                             .frame(width: 18, height: 18)
-    //                             .background(
-    //                                 Circle()
-    //                                     .fill(Color.yellow100)
-    //                                     .frame(width: 50, height: 50)
-    //                             )
-    //                     }
-                        
-    //                     VStack {
-    //                         LottieView(lottieFile: "soundwave.json")
-    //                             .frame(width: 233.05, height: 50)
-    //                     }
-    //                     .frame(maxWidth: .infinity, alignment: .center)
-    //                 }
-    //                 .padding(EdgeInsets(top: 0, leading: 40, bottom: 80, trailing: 24))
-    //             } else {
-    //                 LottieView(lottieFile: "soundwave.json")
-    //                     .frame(width: 233.05, height: 50)
-    //                     .padding(.bottom, 50)
-    //             }
-                
-    //             if hasVoiceMessage {
-    //                 PrimaryButton(
-    //                     label: "Save",
-    //                     isTappable: $isStatisfied,
-    //                     isLoading: $isLoading
-    //                 )
-    //                 .padding(.horizontal, 24)
-    //                 .padding(.bottom, 40)
-    //             } else {
-    //                 Button {
-                        
-    //                 } label: {
-    //                     Image("Mic")
-    //                         .renderingMode(.template)
-    //                         .resizable()
-    //                         .frame(width: 38.4, height: 38.4)
-    //                         .foregroundColor(Color.white)
-    //                         .background(
-    //                             Circle()
-    //                                 .fill(Color.yellow100)
-    //                                 .frame(width: 80, height: 80)
-    //                         )
-    //                 }
-    //                 .padding(.bottom, 62)
-    //             }
-                
-    
-    @Environment(\.presentationMode) private var presentationMode
+    /// Observed user view model
+    @ObservedObject var user: UserViewModel
+    /// Selected sheet from basic info
+    @Binding var selectedSheet: BasicInfoViewModel.SheetView<BasicInfoDestination>?
+    /// Init voice message edit sheet view model
+    @StateObject private var vm = VoiceMessageEditSheetViewModel()
         
-    @State private var isSatisfied: Bool = false
-    
-    @State private var isLoading: Bool = false
-    
-    @State var audioRecorder: AVAudioRecorder!
-    
-    @State var audioPlayer: AVPlayer!
-        
-    @State var isRecording: Bool = false
-    
-    @State var isPlaying: Bool = false
-
-    private func buttonOnTap() {
-        Task {
-            do {
-                let result = await AWSS3().uploadAudio(
-                    audioRecorder.url,
-                    // TODO(Sam): replace with presigned Url generated from backend
-                    toPresignedURL: URL(string: "")!
-                )
-                print(result)
-                presentationMode.wrappedValue.dismiss()
-            }
-        }
-    }
-    
-    public func startRecording() {
-        let audioSession: AVAudioSession = AVAudioSession.sharedInstance()
-        
-        do {
-            try audioSession.setCategory(.playAndRecord)
-        } catch {
-            print(error.localizedDescription)
-        }
-        
-        do {
-            let documentUrl = FileManager.default.urls(
-                for: .documentDirectory,
-                in: .userDomainMask
-            )[0]
-            let fileName = documentUrl.appendingPathComponent("\(UUID()).m4a")
-            let settings = [
-                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 12000,
-                AVNumberOfChannelsKey: 1,
-                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-            ]
-            audioRecorder = try AVAudioRecorder(url: fileName, settings: settings)
-            audioRecorder.record()
-            isRecording.toggle()
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    public func stopRecording() {
-        audioRecorder.stop()
-        isRecording.toggle()
-    }
-    
-    public func startPlaying() {
-        let playerItem = AVPlayerItem(url: audioRecorder.url)
-        audioPlayer = AVPlayer(playerItem: playerItem)
-        audioPlayer.play()
-    }
-    
-    public func stopPlaying() {
-        audioPlayer.pause()
-    }
-    
     var body: some View {
-        ZStack(
-            alignment: Alignment(
-                horizontal: .leading,
-                vertical: .top
-            )
-        ) {
-            Color.white.edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: 16) {
-                VStack(spacing: 0) {
+        Sheet(
+            size: [.height(402)],
+            header: {
+                ZStack(alignment: .top) {
                     Text("Voice Message")
                         .fontTemplate(.h2Medium)
                         .foregroundColor(Color.text)
                         .frame(height: 34)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 30)
-                    Text("Click to replay")
-                        .fontTemplate(.noteMedium)
-                        .foregroundColor(Color.text)
-                        .frame(height: 16)
-                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    HStack {
+                        vm.showSaveButton
+                        ? Button {
+                            Task {
+                                await vm.save()
+                                guard vm.state == .complete else { return }
+                                user.data?.voiceContentURL = vm.sourceUrl
+                                selectedSheet = nil
+                            }
+                        } label: {
+                            Text("Save")
+                                .foregroundColor(Color.gold)
+                                .fontTemplate(.pMedium)
+                                .frame(height: 34, alignment: .center)
+                        }
+                        : nil
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                
-                Button {
-                    isRecording
-                    ? stopRecording()
-                    : startRecording()
-                } label: {
-                    Text("Record audio")
+                .padding(.horizontal, 24)
+            },
+            content: {
+                VStack(spacing: 0) {
+                    Text(
+                        vm.state == .loading && !vm.hasVoiceMessage
+                        ? "--:--"
+                        : vm.hasVoiceMessage || vm.isRecording
+                        ? vm.parseTime(seconds: vm.timeRemaining)
+                        : "Tap to record"
+                    )
+                    .fontTemplate(.h3Bold)
+                    .foregroundColor(Color.surface1)
+                    .padding(.top, 20)
+                    .onAppear { vm.stopTimer()}
+                    .onAppear {
+                        Timer.scheduledTimer(
+                            withTimeInterval: 0.1,
+                            repeats: true
+                        ) { _ in
+                            if let player = vm.audioPlayer {
+                                if !player.isPlaying {
+                                    if vm.isPlaying {
+                                        vm.stopPlaying()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .onReceive(vm.timer) { _ in
+                        if vm.timeRemaining > 0 {
+                            vm.timeRemaining -= 1
+                        } else {
+                            vm.stopTimer()
+                            Task {
+                                if vm.isRecording {
+                                    await vm.stopRecording()
+                                }
+                            }
+                        }
+                    }
+                    
+                    VStack {
+                        if vm.hasVoiceMessage {
+                            if let audioUrl = vm.audioUrl {
+                                ProgressWaveformView(
+                                    audioURL: audioUrl,
+                                    progress: vm.progress
+                                )
+                                .frame(height: 50)
+                            }
+                        } else {
+                            WaveformLiveCanvas(
+                                samples: vm.samples,
+                                configuration: vm.waveformConfiguration,
+                                shouldDrawSilencePadding: true
+                            )
+                            .frame(height: 100)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: 102)
+                    .padding(.vertical, 30)
+                    
+                    VStack(spacing: vm.hasVoiceMessage ? 20 : 52) {
+                        if vm.state == .loading {
+                            Circle()
+                                .fill(Color.yellow100)
+                                .frame(width: 70, height: 70)
+                                .overlay(
+                                    LottieView(lottieFile: "spinner.json")
+                                        .frame(width: 32, height: 32)
+                                )
+                        } else {
+                            Circle()
+                                .fill(Color.yellow100)
+                                .frame(width: 70, height: 70)
+                                .overlay(
+                                    Image(
+                                        vm.hasVoiceMessage
+                                        ? vm.isPlaying ? "Pause" : "Play"
+                                        : vm.isRecording ? "Stop" : "Mic"
+                                    )
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .frame(width: 32, height: 32)
+                                    .foregroundColor(Color.white)
+                                )
+                                .onTapGesture {
+                                    Task {
+                                        vm.hasVoiceMessage
+                                        ? vm.isPlaying
+                                            ? vm.stopPlaying()
+                                            : vm.startPlaying()
+                                        : vm.isRecording
+                                            ? await vm.stopRecording()
+                                            : vm.checkMicrophonePermissionAndRecord()
+                                    }
+                                }
+                                .alert(isPresented: $vm.showMicrophoneAlert) {
+                                    Alert(
+                                        title:
+                                            Text(vm.audioPermissionManager.alertTitle)
+                                            .font(Font.system(size: 18, weight: .medium)),
+                                        message:
+                                            Text(vm.audioPermissionManager.alertMessage)
+                                            .font(Font.system(size: 12, weight: .medium)),
+                                        primaryButton: .default(Text("Cancel")),
+                                        secondaryButton: .default(
+                                            Text("Settings"),
+                                            action: {
+                                                UIApplication.shared.open(
+                                                    URL(string: UIApplication.openSettingsURLString)!
+                                                )
+                                            }
+                                        )
+                                    )
+                                }
+                        }
+                        
+                        vm.hasVoiceMessage
+                        ? Button {
+                            Task { await vm.redo() }
+                        } label: {
+                            Text("Redo recording")
+                                .foregroundColor(Color.text)
+                                .fontTemplate(.noteMedium)
+                                .underline()
+                        }
+                        : nil
+                    }
                 }
-                
-                Button {
-                    isPlaying
-                    ? stopPlaying()
-                    : startPlaying()
-                } label: {
-                    Text("Play audio")
+                .padding(.bottom, 16)
+                .padding(.horizontal, 24)
+            },
+            footer: {}
+        )
+        .showAlert($vm.fcAlert)
+        .task {
+            if let url = user.data?.voiceContentURL {
+                if url != "" {
+                    vm.hasVoiceMessage = true
+                    vm.sourceUrl = url
+                    await vm.loadVoiceMessage()
                 }
-                
-                PrimaryButton(
-                    label: "Save",
-                    action: buttonOnTap,
-                    isTappable: $isSatisfied,
-                    isLoading: $isLoading
-                )
-                .padding(.top, 4) // 20 - 16(spacing)
             }
-            .padding(.horizontal, 24)
-            .background(Color.white)
-            .presentationDetents([.fraction(0.55)])
-            .presentationDragIndicator(.visible)
+        }
+        .onDisappear {
+            Task {
+                if vm.audioPlayer != nil {
+                    vm.stopPlaying()
+                }
+                if vm.audioRecorder != nil {
+                    await vm.stopRecording()
+                }
+                await vm.cleanUp()
+            }
         }
     }
 }
 
 struct VoiceMessageEditSheet_Previews: PreviewProvider {
     static var previews: some View {
-        VoiceMessageEditSheet()
+        VoiceMessageEditSheet(
+            user: UserViewModel(preview: true),
+            selectedSheet: .constant(
+                BasicInfoViewModel.SheetView(sheetContent: .basicInfoVoiceMessage)
+            )
+        )
     }
 }

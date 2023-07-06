@@ -16,16 +16,15 @@ struct SignUpAccountView: View, KeyboardReadable {
     @State private var isKeyboardShowUp: Bool = false
     /// Flag for loading state
     @State private var isLoading: Bool = false
-    /// Flag for sheet
-    @State private var isTermsPresented: Bool = false
-    @State private var isPrivacyPresented: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
+        self.endTextEditing()
         guard vm.isPasswordValid(str: vm.password) else {
             isPasswordValid = false
             return
         }
         isPasswordValid = true
+        vm.user.password = vm.password
         vm.transition = .forward
         vm.switchView = .name
     }
@@ -51,12 +50,10 @@ struct SignUpAccountView: View, KeyboardReadable {
                         vm.transition = .backward
                         vm.switchView = .email
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
-                                        
+                    
                     EntryLogo()
                 }
                 .padding(.top, 5)
@@ -64,14 +61,14 @@ struct SignUpAccountView: View, KeyboardReadable {
                 
                 !isKeyboardShowUp
                 ? Text("Welcome to\nJoin us")
-                        .fontTemplate(.bigBoldTitle)
-                        .foregroundColor(Color.text)
-                        .frame(
-                            maxWidth: .infinity,
-                            alignment: .leading
-                        )
-                        .frame(height: 100)
-                        .padding(.bottom, 30)
+                    .fontTemplate(.bigBoldTitle)
+                    .foregroundColor(Color.text)
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .leading
+                    )
+                    .frame(height: 100)
+                    .padding(.bottom, 30)
                 : nil
                 
                 VStack(
@@ -80,7 +77,7 @@ struct SignUpAccountView: View, KeyboardReadable {
                 ) {
                     PrimaryInputBar(
                         input: .text,
-                        value: $vm.email,
+                        value: $vm.user.email,
                         isValid: .constant(true),
                         isDisable: true
                     )
@@ -93,22 +90,22 @@ struct SignUpAccountView: View, KeyboardReadable {
                     )
                     .onChange(of: vm.password) { password in
                         vm.isAccountPasswordLengthSatisfied =
-                            vm.checkLength(str: password)
+                        vm.checkLength(str: password)
                         vm.isAccountPasswordUpperAndLowerSatisfied =
-                            vm.checkUpper(str: password) &&
-                            vm.checkLower(str: password)
+                        vm.checkUpper(str: password) &&
+                        vm.checkLower(str: password)
                         vm.isAccountPasswordNumberAndSymbolSatisfied =
-                            vm.checkNumber(str: password) &&
-                            vm.checkSymbols(str: password)
+                        vm.checkNumber(str: password) &&
+                        vm.checkSymbols(str: password)
                         vm.isAccountPasswordMatched =
-                            !vm.password.isEmpty &&
-                            !password.isEmpty &&
-                            vm.passwordConfirmed == password
+                        !vm.password.isEmpty &&
+                        !password.isEmpty &&
+                        vm.passwordConfirmed == password
                         vm.isAccountPasswordSatisfied =
-                            vm.isAccountPasswordLengthSatisfied &&
-                            vm.isAccountPasswordUpperAndLowerSatisfied &&
-                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
-                            vm.isAccountPasswordMatched
+                        vm.isAccountPasswordLengthSatisfied &&
+                        vm.isAccountPasswordUpperAndLowerSatisfied &&
+                        vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                        vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
@@ -122,19 +119,19 @@ struct SignUpAccountView: View, KeyboardReadable {
                     )
                     .onChange(of: vm.passwordConfirmed) { password in
                         vm.isAccountPasswordMatched =
-                            !vm.password.isEmpty &&
-                            !password.isEmpty &&
-                            vm.password == password
+                        !vm.password.isEmpty &&
+                        !password.isEmpty &&
+                        vm.password == password
                         vm.isAccountPasswordSatisfied =
-                            vm.isAccountPasswordLengthSatisfied &&
-                            vm.isAccountPasswordUpperAndLowerSatisfied &&
-                            vm.isAccountPasswordNumberAndSymbolSatisfied &&
-                            vm.isAccountPasswordMatched
+                        vm.isAccountPasswordLengthSatisfied &&
+                        vm.isAccountPasswordUpperAndLowerSatisfied &&
+                        vm.isAccountPasswordNumberAndSymbolSatisfied &&
+                        vm.isAccountPasswordMatched
                     }
                     .onReceive(keyboardPublisher) { val in
                         isKeyboardShowUp = val
                     }
-
+                    
                     VStack(
                         alignment: .leading,
                         spacing: 6.0
@@ -169,40 +166,20 @@ struct SignUpAccountView: View, KeyboardReadable {
                 
                 Spacer()
                 
-                HStack(
-                    alignment: .top,
-                    spacing: 0.0
-                ) {
-                    Text("By continuing, I agree to Fingercrossed's ")
-                        .foregroundColor(Color.surface1)
-                        .fontTemplate(.noteMedium)
-                    
-                    TermsText(isTermsPresented: false)
-                }
-                
-                HStack(
-                    alignment: .top,
-                    spacing: 0.0
-                ) {
-                    Text("and acknowledge the ")
-                        .foregroundColor(Color.surface1)
-                        .fontTemplate(.noteMedium)
-                    
-                    PrivacyText(isPrivacyPresented: false)
-                }
-                Spacer()
-                    .ignoresSafeArea(.keyboard)
-                    .frame(height: 30)
-                
                 PrimaryButton(
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isAccountPasswordSatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }
             .padding(.horizontal, 24)
+        }
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.16)) {
+                UIApplication.shared.closeKeyboard()
+            }
         }
     }
 }
@@ -212,45 +189,5 @@ struct SignUpAccountView_Previews: PreviewProvider {
         SignUpAccountView(
             vm: EntryViewModel()
         )
-    }
-}
-
-private struct TermsText: View {
-    @State var isTermsPresented: Bool = false
-    
-    var body: some View {
-        VStack {
-            Text("Terms of Service")
-                .foregroundColor(Color.surface1)
-                .fontTemplate(.noteMedium)
-                .underline()
-                .onTapGesture {
-                    isTermsPresented.toggle()
-                }
-                .sheet(isPresented: $isTermsPresented) {
-                    TermsOfServiceSheet(isPresented: $isTermsPresented)
-                }
-        }
-        
-    }
-}
-
-private struct PrivacyText: View {
-    @State var isPrivacyPresented: Bool
-    
-    var body: some View {
-        VStack {
-            Text("Privacy Policy")
-                .foregroundColor(Color.surface1)
-                .fontTemplate(.noteMedium)
-                .underline()
-                .onTapGesture {
-                    isPrivacyPresented.toggle()
-                }
-                .sheet(isPresented: $isPrivacyPresented) {
-                    PrivacySheet(isPresented: $isPrivacyPresented)
-                }
-        }
-        
     }
 }

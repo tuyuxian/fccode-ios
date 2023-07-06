@@ -10,9 +10,7 @@ import SwiftUI
 struct SignUpEthnicityView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Ethnicity option list
     let ethnicityOptions: [String] = [
         "American Indian",
         "Black/African American",
@@ -25,6 +23,7 @@ struct SignUpEthnicityView: View {
         "White/Caucasian"
     ]
     
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .nationality
@@ -51,9 +50,7 @@ struct SignUpEthnicityView: View {
                         vm.transition = .backward
                         vm.switchView = .gender
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -86,13 +83,26 @@ struct SignUpEthnicityView: View {
                 }
                 
                 CheckBoxGroup(
-                    selectedIdList: Array(vm.ethnicity.map { $0.type.rawValue }),
-                    ethnicityList: $vm.ethnicity,
-                    callback: { _ in }
+                    items: ethnicityOptions,
+                    selectedIdList: Array(
+                        vm.user.ethnicity.map { $0.type.getString() }
+                    ),
+                    callback: { list in
+                        vm.user.ethnicity.removeAll()
+                        for item in list {
+                            vm.user.ethnicity.append(
+                                Ethnicity(
+                                    type: EthnicityType.allCases.first(where: {
+                                        $0.getString() == item
+                                    })!
+                                )
+                            )
+                        }
+                    }
                 )
                 .padding(.vertical, 20)
-                .onChange(of: vm.ethnicity) { _ in
-                    vm.isEthnicitySatisfied = vm.ethnicity.count > 0
+                .onChange(of: vm.user.ethnicity) { _ in
+                    vm.isEthnicitySatisfied = vm.user.ethnicity.count > 0
                 }
                 
                 Spacer()
@@ -101,7 +111,7 @@ struct SignUpEthnicityView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isEthnicitySatisfied,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

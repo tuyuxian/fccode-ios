@@ -1,63 +1,47 @@
 extend type Mutation {
-  createUser(input: CreateUserInput!): CRUDResponse!
-  updateUser(id: ID!, input: UpdateUserInput!): User!
+  createUser(input: CreateUserInput!): SignInResponse!
+  updateUser(userId: ID!, input: UpdateUserInput!): CRUDResponse!
+  deleteUserById(userId: ID!): CRUDResponse!
 
-  deleteUserById(id: ID!): CRUDResponse!
-
-  ##### Field modification only #####
-  # Basic Info
-  updateBasicInfoSelfIntro(id: ID!, selfIntro: String!): CRUDResponse!
-  updateBasicInfoUsername(id: ID!, username: String!): CRUDResponse!
-  updateBasicInfoVoiceMessage(id: ID!, voiceContentUrl: String!): CRUDResponse!
-  # Preference
-  updatePreferenceDistance(id: ID!, distance: Int!): CRUDResponse!
-
-  ##### With Ent modification #####
-  # Basic Info
-  createBasicInfoLifePhoto(
-    id: ID!
-    lifePhotos: [CreateLifePhotoInput!]
+  resetPassword(email: String!, password: String!): OTPResponse!
+  updatePassword(
+    userId: ID!
+    oldPassword: String
+    newPassword: String!
   ): CRUDResponse!
-  deleteBasicInfoLifePhoto(id: ID!, lifePhotoId: ID!): CRUDResponse!
-  # Settings
-  resetSettingsPassword(id: ID!, password: String!): CRUDResponse!
-  updateSettingsPassword(id: ID!, oldPassword: String!, newPassword: String!): CRUDResponse!
-  createSettingsSocialAccount(
-    id: ID!
-    socialAccounts: [CreateSocialAccountInput!]
+
+  connectSocialAccount(
+    userId: ID!
+    input: CreateSocialAccountInput!
   ): CRUDResponse!
-  deleteSettingsSocialAccount(id: ID!, socialAccountId: ID!): CRUDResponse!
 }
 
 extend input CreateUserInput {
   createUserCitizen: [CreateCitizenInput!]
   createUserGoal: [CreateGoalInput!]
   createUserEthnicity: [CreateEthnicityInput!]
-  createUserSocialAccount: [CreateSocialAccountInput!]
-  createUserLifePhoto: [CreateLifePhotoInput!]
+  createUserSocialAccount: CreateSocialAccountInput!
+  createUserLifePhoto: CreateLifePhotoInput!
 }
 
 extend type Query {
-  login(email: String!, password: String!): LoginResponse!
-  socialLogin(email: String!, platform: SocialAccountPlatform!): LoginResponse!
-  emailCheck(email: String!): EmailCheckResponse!
-  getUserById(id: ID!): CRUDResponse!
+  signIn(email: String!, password: String!): SignInResponse!
+  socialSignIn(
+    email: String!
+    platform: SocialAccountPlatform!
+  ): SignInResponse!
+  checkEmail(email: String!): CRUDResponse!
+  requestOTP(email: String!): OTPResponse!
+  verifyOTP(email: String!, userOTP: String!): OTPResponse!
+  getUserById(userId: ID!): CRUDResponse!
 }
 
-# Need to have a response format
-type LoginResponse implements Response {
+type SignInResponse implements Response {
   status: String!
   statusCode: Int!
   message: String!
-  user: User
-  token: String!
-}
-
-type EmailCheckResponse implements Response {
-  status: String!
-  statusCode: Int!
-  message: String!
-  exist: Boolean!
+  userId: ID
+  token: String
 }
 
 type CRUDResponse implements Response {
@@ -65,4 +49,11 @@ type CRUDResponse implements Response {
   statusCode: Int!
   message: String!
   user: User
+}
+
+type OTPResponse implements Response {
+  status: String!
+  statusCode: Int!
+  message: String!
+  valid: Boolean!
 }

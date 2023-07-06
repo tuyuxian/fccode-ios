@@ -15,22 +15,22 @@ struct Banner {
         case success
         case error
         
-        var leadingIcon: String {
+        var leadingIcon: FCIcon {
             switch self {
             case .info:
-                return "HeartBased"
+                return .infoCircle
             case .success:
-                return "HeartBased"
+                return .heart
             case .warning:
-                return "HeartBased"
+                return .warning
             case .error:
-                return "HeartBased"
+                return .errorCircle
             }
         }
     }
     
-    let title: String
-    let type: BannerType
+    let title: String?
+    let type: BannerType?
 }
 
 final class BannerManager: ObservableObject {
@@ -48,6 +48,16 @@ final class BannerManager: ObservableObject {
             isPresented = false
         }
     }
+    
+    public func pop(
+        title: String?,
+        type: Banner.BannerType?
+    ) {
+        self.banner = .init(
+            title: title,
+            type: type
+        )
+    }
 }
 
 struct BannerContent: View {
@@ -62,7 +72,7 @@ struct BannerContent: View {
                 alignment: .center,
                 spacing: 8
             ) {
-                Image(bm.banner?.type.leadingIcon ?? "")
+                bm.banner?.type?.leadingIcon
                     .resizable()
                     .frame(width: 16, height: 16)
 
@@ -71,14 +81,7 @@ struct BannerContent: View {
                     .foregroundColor(Color.text)
                     .lineLimit(1)
             }
-            .padding(
-                EdgeInsets(
-                    top: 16,
-                    leading: 16,
-                    bottom: 16,
-                    trailing: 16
-                )
-            )
+            .padding(16)
             .background(Color.yellow20)
             .cornerRadius(16)
             .frame(
@@ -86,12 +89,11 @@ struct BannerContent: View {
                 alignment: .center
             )
         }
-        .padding(.bottom, UIScreen.main.bounds.height * 0.02)
+        .padding(.bottom, UIScreen.main.bounds.height * 0.07)
         .transition(.opacity)
         .onAppear {
-            DispatchQueue.main.asyncAfter(
-                deadline: .now() + 2  // last for 2 seconds
-            ) {
+            // last for 3 seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation {
                     bm.dismiss()
                 }

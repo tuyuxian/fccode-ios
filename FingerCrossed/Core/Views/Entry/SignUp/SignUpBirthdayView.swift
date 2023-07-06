@@ -10,33 +10,31 @@ import SwiftUI
 struct SignUpBirthdayView: View {
     /// Observed entry view model
     @ObservedObject var vm: EntryViewModel
-    /// Flag for loading state
-    @State private var isLoading: Bool = false
-    
+    /// Handler for button on tap
     private func buttonOnTap() {
         vm.transition = .forward
         vm.switchView = .gender
     }
-    
+    /// Convert single digit to two digit (e.g. 1 to 01)
     private func toTwoDigit(
         index: Int
     ) -> String {
         return index + 1 < 10 ? "0\(index + 1)" : "\(index + 1)"
     }
-    
+    /// Convert seleted data to timestamp
     private func getSelectedDate() {
         let currentYear = Calendar.current.component(.year, from: Date())
         // swiftlint:disable line_length
-        vm.dateOfBirth = "\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))-\(toTwoDigit(index: vm.monthIndex))-\(toTwoDigit(index: vm.dayIndex))T00:00:00Z"
+        vm.user.dateOfBirth = "\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))-\(toTwoDigit(index: vm.monthIndex))-\(toTwoDigit(index: vm.dayIndex))T00:00:00Z"
         
-        let selectedString = "0\(toTwoDigit(index: vm.dayIndex))/0\(toTwoDigit(index: vm.monthIndex))/\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))"
+        let selectedString = "\(toTwoDigit(index: vm.dayIndex))/\(toTwoDigit(index: vm.monthIndex))/\(currentYear - (100 - Int(toTwoDigit(index: vm.yearIndex))!))"
         // swiftlint:enable line_length
-
         let dateFormater = DateFormatter()
         dateFormater.dateFormat = "dd/MM/yy"
+
+        let selectedDate = dateFormater.date(from: selectedString) ?? nil
         
-        let selectedDate = dateFormater.date(from: selectedString)!
-        
+        guard let selectedDate else { return }
         let yearGap = Calendar.current.dateComponents([.year], from: selectedDate, to: Date.now)
         
         vm.isAdult = yearGap.year! >= 18
@@ -63,9 +61,7 @@ struct SignUpBirthdayView: View {
                         vm.transition = .backward
                         vm.switchView = .name
                     } label: {
-                        Image("ArrowLeftBased")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                        FCIcon.arrowLeft
                     }
                     .padding(.leading, -8) // 16 - 24
                                         
@@ -130,7 +126,7 @@ struct SignUpBirthdayView: View {
                     label: "Continue",
                     action: buttonOnTap,
                     isTappable: $vm.isAdult,
-                    isLoading: $isLoading
+                    isLoading: .constant(false)
                 )
                 .padding(.bottom, 16)
             }

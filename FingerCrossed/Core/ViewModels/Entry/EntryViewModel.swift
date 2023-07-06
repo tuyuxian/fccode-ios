@@ -8,13 +8,14 @@
 import Foundation
 import SwiftUI
 
-class EntryViewModel: ObservableObject, InputUtils {
+class EntryViewModel: ObservableObject, InputProtocol {
     // MARK: Enum section
     enum CurrentView: Int {
         case email
         case password
         case resetPassword
         case resetPasswordEmailCheck
+        case resetPasswordOTP
         case account
         case name
         case birthday
@@ -22,6 +23,7 @@ class EntryViewModel: ObservableObject, InputUtils {
         case ethnicity
         case nationality
         case avatar
+        case location
     }
     
     enum Transition: Int {
@@ -36,25 +38,41 @@ class EntryViewModel: ObservableObject, InputUtils {
     @Published var switchView: CurrentView = CurrentView.email
     
     // MARK: State Management
-    @Published var isNewUser: Bool = true
-    @Published var email: String = ""
-    @Published var password: String = ""
+    @Published var user: User = User(
+        id: "",
+        email: "",
+        password: "",
+        username: "",
+        dateOfBirth: "",
+        gender: .male,
+        profilePictureUrl: "",
+        selfIntro: "",
+        longitude: 0,
+        latitude: 0,
+        country: "",
+        administrativeArea: "",
+        voiceContentURL: "",
+        googleConnect: false,
+        facebookConnect: false,
+        appleConnect: false,
+        premium: false,
+        goal: [],
+        citizen: [],
+        lifePhoto: [],
+        socialAccount: [],
+        ethnicity: []
+    )
+    @Published var password = ""
     @Published var passwordConfirmed = ""
     @Published var newPassword: String = ""
     @Published var newPasswordConfirmed: String = ""
-    @Published var name: String = ""
-    @Published var dateOfBirth: String = ""
     @Published var selectedDate: Date = Date()
     @Published var gender: Gender?
-    @Published var nationality = [CountryModel]()
-    @Published var ethnicity = [Ethnicity]()
-    @Published var avatarUrl: String?
     @Published var yearIndex = 99
     @Published var monthIndex = Calendar.current.component(.month, from: Date()) - 1
     @Published var dayIndex = Calendar.current.component(.day, from: Date()) - 1
     @Published var selectedImage: UIImage?
-    @Published var selectedImageData: Data?
-    
+
     // MARK: Condition Variables for button
     /// - Email view
     @Published var isEmailSatisfied: Bool = false
@@ -86,4 +104,63 @@ class EntryViewModel: ObservableObject, InputUtils {
     @Published var isNewPasswordUpperAndLowerSatisfied: Bool = false
     @Published var isNewPasswordNumberAndSymbolSatisfied: Bool = false
     @Published var isNewPasswordMatched: Bool = false
+    
+    deinit {
+        print("-> EntryViewModel deinit")
+    }
+    
+    public func reinit() {
+        self.user = User(
+            id: "",
+            email: "",
+            password: "",
+            username: "",
+            dateOfBirth: "",
+            gender: .male,
+            profilePictureUrl: "",
+            selfIntro: "",
+            longitude: 0,
+            latitude: 0,
+            country: "",
+            administrativeArea: "",
+            voiceContentURL: "",
+            googleConnect: false,
+            facebookConnect: false,
+            appleConnect: false,
+            premium: false,
+            goal: [],
+            citizen: [],
+            lifePhoto: [],
+            socialAccount: [],
+            ethnicity: []
+        )
+        self.password = ""
+        self.passwordConfirmed = ""
+        self.newPassword = ""
+        self.newPasswordConfirmed = ""
+        self.selectedDate = Date()
+        self.gender = nil
+        self.yearIndex = 99
+        self.monthIndex = Calendar.current.component(.month, from: Date()) - 1
+        self.dayIndex = Calendar.current.component(.day, from: Date()) - 1
+        self.selectedImage = nil
+        self.isEmailSatisfied = false
+        self.isPasswordSatisfied = false
+        self.isAccountPasswordSatisfied = false
+        self.isAccountPasswordLengthSatisfied = false
+        self.isAccountPasswordUpperAndLowerSatisfied = false
+        self.isAccountPasswordNumberAndSymbolSatisfied = false
+        self.isAccountPasswordMatched = false
+        self.isNameSatisfied = false
+        self.isAdult = false
+        self.isGenderSatisfied = false
+        self.isEthnicitySatisfied = false
+        self.isNationalitySatisfied = false
+        self.isAvatarSatisfied = false
+        self.isNewPasswordSatisfied = false
+        self.isNewPasswordLengthSatisfied = false
+        self.isNewPasswordUpperAndLowerSatisfied = false
+        self.isNewPasswordNumberAndSymbolSatisfied = false
+        self.isNewPasswordMatched = false
+    }
 }

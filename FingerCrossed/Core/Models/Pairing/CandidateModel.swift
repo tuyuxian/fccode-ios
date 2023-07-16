@@ -7,17 +7,21 @@
 
 import Foundation
 
-struct CandidateModel: Identifiable, Equatable {
+class CandidateModel: Identifiable, Equatable, ObservableObject {
+    static func == (lhs: CandidateModel, rhs: CandidateModel) -> Bool {
+        lhs.userId == rhs.userId
+    }
+    
     let id: UUID = UUID()
     var userId: String
     var username: String
-    var selfIntro: String
+    @Published var selfIntro: String
     var gender: Gender
     var dateOfBirth: String
     var location: String
     var nationality: [Nationality]
-    var voiceContentUrl: String?
-    var lifePhotos: [LifePhoto]
+    @Published var voiceContentUrl: String?
+    @Published var lifePhotos: [LifePhoto]
     
     init (
         userId: String,

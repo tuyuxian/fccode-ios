@@ -16,6 +16,7 @@ struct MessageInputField: View, KeyboardReadable {
     @State var isMessageSending: Bool = false
     
     @ObservedObject var vm: ChatRoomViewModel
+    @Environment(\.safeAreaInsets) private var safeAreaInsets
         
     var body: some View {
         HStack(alignment: .bottom, spacing: 6) {
@@ -24,7 +25,12 @@ struct MessageInputField: View, KeyboardReadable {
                     IconButton(
                         icon: .arrowRight,
                         color: Color.text,
-                        action: {}
+                        action: {
+                            withAnimation {
+                                UIApplication.shared.closeKeyboard()
+                                isKeyboardShowUp.toggle()
+                            }
+                        }
                     )
                 }
                 .frame(height: 38)
@@ -38,7 +44,11 @@ struct MessageInputField: View, KeyboardReadable {
                         }
                     )
                     
-                    FCPhotoPicker(selectedImage: $vm.selectedImage) {
+                    FCPhotoPicker(
+                        selectedImage: $vm.selectedImage,
+                        action: {
+                            vm.showImagePreview.toggle()
+                    }) {
                         FCIcon.addPicture
                             .resizable()
                             .renderingMode(.template)
@@ -47,10 +57,52 @@ struct MessageInputField: View, KeyboardReadable {
                             .frame(width: 24, height: 24)
                     }
                 }
+                .transparentFullScreenCover(isPresented: $vm.showImagePreview, content: {
+                    ZStack {
+                        Color.black
+                            .opacity(0.5)
+                            .ignoresSafeArea()
+                        
+                        VStack(spacing: 20) {
+                            if let image = vm.selectedImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .cornerRadius(30)
+                                    .frame(width: UIScreen.main.bounds.width - 32)
+                                    .frame(maxHeight: .infinity, alignment: .center)
+                            }
+                            
+                            PrimaryButton(
+                                label: "Sent",
+                                action: {
+                                    print("Sent")
+                                    vm.uploadImage()
+                                    vm.showImagePreview.toggle()
+                                },
+                                isTappable: .constant(vm.selectedImage != nil),
+                                isLoading: .constant(false)
+                            )
+                            
+                            Text("Cancel")
+                                .foregroundColor(Color.white)
+                                .fontTemplate(.pMedium)
+                                .frame(height: 24)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .onTapGesture {
+                                    vm.showImagePreview.toggle()
+                                }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                })
                 .frame(height: 38)
                 .showAlert($vm.fcAlert)
                 .fullScreenCover(
                     isPresented: $vm.showCamera,
+                    onDismiss: {
+                        vm.uploadImage()
+                    },
                     content: {
                         Camera(
                             selectedImage: $vm.selectedImage
@@ -102,10 +154,15 @@ struct MessageInputField: View, KeyboardReadable {
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)
-        .padding(.bottom, 11)
-//        .padding(.bottom, self.keyboardHeight)
+        .padding(.bottom,
+                 vm.keyboard.currentHeight == 0.0
+                 ? safeAreaInsets.bottom
+                 : vm.keyboard.currentHeight + 10)
         .background(Color.background)
-        .onAppear {
+        .onChange(of: vm.keyboard.currentHeight) { keyboardHeight in
+            isKeyboardShowUp = keyboardHeight != 0.0
+        }
+//        .onAppear {
 //            NotificationCenter.default.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main) {
 //                (data) in
 //
@@ -120,7 +177,7 @@ struct MessageInputField: View, KeyboardReadable {
 //
 //                self.keyboardHeight = 0
 //            }
-        }
+//        }
     }
 }
 

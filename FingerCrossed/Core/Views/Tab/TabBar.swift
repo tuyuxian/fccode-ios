@@ -25,6 +25,7 @@ struct TabBar: View {
         VStack(spacing: 0) {
             TabView(selection: $vm.currentTab) {
                 TextingView()
+                    .environmentObject(vm)
                     .tag(TabState.chat)
                 PairingView()
                     .tag(TabState.pairing)

@@ -11,7 +11,7 @@ import GraphQLAPI
 
 @MainActor
 class BasicInfoViewModel: ObservableObject {
-            
+    
     /// View state
     @Published var state: ViewStatus = .none
     @Published var selectedTab: BasicInfoView.TabState = .edit

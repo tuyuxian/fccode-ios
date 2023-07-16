@@ -93,6 +93,9 @@ private struct TransparentFullScreenModifier<FullScreenContent: View>: ViewModif
                     }
                 }
             })
+            .transaction({ transaction in transaction.disablesAnimations = true })
+                // add custom animation for presenting and dismissing the FullScreenCover
+            .animation(.linear(duration: 0.5), value: isPresented)
     }
     
 }

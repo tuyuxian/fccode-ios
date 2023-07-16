@@ -12,6 +12,7 @@ struct TextList: View {
     @Binding var messageList: [Message]
     
     @ObservedObject var vm: TextingViewModel
+    @Binding var showTab: Bool
         
     var body: some View {
         List {
@@ -40,7 +41,8 @@ struct TextList: View {
                             destination: ChatRoomView(
                                 username: message.username,
                                 avatarUrl: message.avatarUrl,
-                                isActive: message.isActive
+                                isActive: message.isActive,
+                                showTab: $showTab
                             )
                             .navigationBarBackButtonHidden(true)
                             .toolbarRole(.editor)
@@ -50,7 +52,11 @@ struct TextList: View {
                         .listRowBackground(Color.white)
                         .buttonStyle(PlainButtonStyle())
                         .opacity(0)
-                        
+                    }
+                    .onDisappear {
+                        withAnimation {
+                            showTab.toggle()
+                        }
                     }
                     
                     index != $messageList.count - 1
@@ -88,6 +94,9 @@ struct TextList: View {
                 )
             )
             .background(Color.white)
+        }
+        .onAppear {
+            print("\(showTab)")
         }
         .scrollIndicators(.hidden)
         .padding(
@@ -128,7 +137,8 @@ struct TextList: View {
         static var previews: some View {
             TextList(
                 messageList: demoData,
-                vm: TextingViewModel()
+                vm: TextingViewModel(),
+                showTab: .constant(true)
             )
         }
     }

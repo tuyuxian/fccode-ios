@@ -14,8 +14,9 @@ struct ChatRoomView: View {
     @Binding var avatarUrl: String
     
     @Binding var isActive: Bool
-
+    
     @StateObject private var vm = ChatRoomViewModel()
+    @Binding var showTab: Bool
     
     // This data will be fetch here in the future version
     // Message should be soreted by timestamp in descending order
@@ -26,7 +27,8 @@ struct ChatRoomView: View {
         Box {
             ChatView(
                 avatarUrl: $avatarUrl,
-                messageCellList: $vm.messageCellList
+                messageCellList: $vm.messageCellList,
+                vm: vm
             )
             
             if vm.isBot {
@@ -37,16 +39,12 @@ struct ChatRoomView: View {
                 MessageInputField(vm: vm)
             }
         }
-        .actionSheet(
-            isPresented: $vm.showUnmatchDialog,
-            description: "",
-            actionButtonList: [ActionButton(
-                    label: "Unmatch",
-                    action: {
-                    print("unmatch")
-                }
-            )]
-        )
+        .onDisappear {
+            showTab = true
+        }
+        .onAppear {
+            showTab = false
+        }
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.16)) {
                 UIApplication.shared.closeKeyboard()
@@ -104,18 +102,19 @@ struct ChatRoomView: View {
                 .padding(.top, 11)
         )
         .padding(.top, 16)
+        .padding(.bottom, vm.keyboard.currentHeight)
         .background(Color.background)
-//        .onAppear(perform: {
-//            vm.showTab = false
-//        })
-//        .onDisappear(perform: {
-//            withAnimation(.easeInOut(duration: 0.1)) {
-//                vm.showTab = true
-//            }
-//        })
+        .actionSheet(
+            isPresented: $vm.showUnmatchDialog,
+            description: "",
+            actionButtonList: [ActionButton(
+                    label: "Unmatch",
+                    action: {
+                    print("unmatch")
+                }
+            )]
+        )
     }
-    
-    
 }
 
 struct ChatRoomView_Previews: PreviewProvider {
@@ -123,9 +122,9 @@ struct ChatRoomView_Previews: PreviewProvider {
         ChatRoomView(
             username: .constant("Kelly"),
             avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
-            isActive: .constant(true)
+            isActive: .constant(true),
+            showTab: .constant(true)
         )
-//        .environmentObject(TabViewModel())
     }
 }
 
@@ -178,5 +177,35 @@ private struct BottomMessage: View {
             )
         )
         .background(Color.background)
+    }
+}
+
+private struct SafeAreaInsetsKey: EnvironmentKey {
+    static var defaultValue: EdgeInsets {
+        
+        (UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first(where: { $0.isKeyWindow })?
+            .safeAreaInsets ?? .zero 
+        ).insets
+        
+//        (UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.safeAreaInsets ?? .zero).insets
+    }
+}
+
+extension EnvironmentValues {
+    
+    var safeAreaInsets: EdgeInsets {
+        self[SafeAreaInsetsKey.self]
+    }
+}
+
+private extension UIEdgeInsets {
+    
+    var insets: EdgeInsets {
+        EdgeInsets(top: top, leading: left, bottom: bottom, trailing: right)
     }
 }

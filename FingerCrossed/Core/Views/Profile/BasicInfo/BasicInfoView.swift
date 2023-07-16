@@ -12,6 +12,18 @@ struct BasicInfoView: View {
     @ObservedObject private var user: UserViewModel
     /// Init basic info view model
     @StateObject var vm = BasicInfoViewModel()
+    
+    @StateObject var candidate = CandidateModel(
+        userId: "",
+        username: "",
+        selfIntro: "",
+        gender: .female,
+        dateOfBirth: "",
+        location: "",
+        nationality: [],
+        voiceContentUrl: "",
+        lifePhotos: []
+    )
         
     init(user: UserViewModel) {
         self.user = user
@@ -95,16 +107,25 @@ struct BasicInfoView: View {
                                 .tag(TabState.edit)
                                 
                                 CandidateDetailView(
-                                    candidate: userData.getCandidate(),
+                                    candidate: candidate, 
                                     showIndicator: false
                                 )
                                 .padding(.top, 54) // 30 + 24 (offset)
                                 .tag(TabState.preview)
                             }
+                            .onChange(of: vm.selectedTab, perform: { tabState in
+                                if tabState == .preview {
+                                    insertCandidateData(
+                                        oldCandidate: candidate,
+                                        newCandidate: userData.getCandidate()
+                                    )
+                                }
+                            })
                             .tabViewStyle(.page(indexDisplayMode: .never))
                         }
                         .padding(.top, -24) // offset 24px to hidden in tab
                     }
+                    
                 }
             }
         }
@@ -121,6 +142,18 @@ struct BasicInfoView_Previews: PreviewProvider {
 }
 
 extension BasicInfoView {
+    
+    private func insertCandidateData(oldCandidate: CandidateModel, newCandidate: CandidateModel) {
+        oldCandidate.userId = newCandidate.userId
+        oldCandidate.username = newCandidate.username
+        oldCandidate.selfIntro = newCandidate.selfIntro
+        oldCandidate.gender = newCandidate.gender
+        oldCandidate.dateOfBirth = newCandidate.dateOfBirth
+        oldCandidate.location = newCandidate.location
+        oldCandidate.nationality = newCandidate.nationality
+        oldCandidate.lifePhotos = newCandidate.lifePhotos
+        oldCandidate.voiceContentUrl = newCandidate.voiceContentUrl
+    }
     
     struct BasicInfoContent: View {
         /// Banner
@@ -239,6 +272,7 @@ extension BasicInfoView {
                     isSelected = .edit
                 } label: {
                     Text("Edit")
+                        .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
                 }
                 .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
                 .background(isSelected == .edit ? Color.yellow100 : Color.yellow20)
@@ -248,6 +282,7 @@ extension BasicInfoView {
                     isSelected = .preview
                 } label: {
                     Text("Preview")
+                        .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
                 }
                 .frame(width: (UIScreen.main.bounds.size.width - 48)/2, height: 48)
                 .background(isSelected == .preview ? Color.yellow100 : Color.yellow20)

@@ -22,13 +22,14 @@ struct EditableImage<Content: View>: View {
         GeometryReader { proxy in
             image
             .aspectRatio(1, contentMode: .fit)
-            .frame(width: proxy.size.width)
-            .frame(maxHeight: .infinity)
+            .frame(width: proxy.size.width, height: proxy.size.height)
+//            .frame(maxHeight: .infinity)
             .modifier(
                 EditableImageModifier(
                     contentSize: cropRatio.size(),
                     currentScale: $currentScale,
-                    currentOffset: $currentOffset
+                    currentOffset: $currentOffset,
+                    currentRatio: $cropRatio
                 )
             )
             .overlay { grids(size: proxy.size) }
@@ -37,9 +38,7 @@ struct EditableImage<Content: View>: View {
     }
 
     @ViewBuilder
-    private func grids(
-        size: CGSize
-    ) -> some View {
+    private func grids(size: CGSize) -> some View {
         ZStack {
             RoundedRectangle(cornerRadius: 6)
                 .strokeBorder(Color.yellow100, lineWidth: 1)
@@ -139,6 +138,7 @@ struct EditableImageModifier: ViewModifier {
     var max: CGFloat = 3.0
     @Binding var currentScale: CGFloat
     @Binding var currentOffset: CGPoint
+    @Binding var currentRatio: LifePhotoEditSheet.CropRatio
     
     var doubleTapGesture: some Gesture {
         TapGesture(count: 2).onEnded {
@@ -155,10 +155,16 @@ struct EditableImageModifier: ViewModifier {
             ScrollView([.horizontal, .vertical], showsIndicators: false) {
                 content
                     .frame(
-                        width: contentSize.width * currentScale,
+                        width: currentRatio.size().width * currentScale,
+                        height: currentRatio.size().height * currentScale,
                         alignment: .center
                     )
-                    .frame(maxHeight: .infinity, alignment: .center)
+//                    .frame(
+//                        width: contentSize.width * currentScale,
+//                        height: contentSize.height * currentScale,
+//                        alignment: .center
+//                    )
+//                    .frame(maxHeight: .infinity, alignment: .center)
                     .modifier(
                         PinchToZoom(
                             minScale: min,
@@ -167,10 +173,10 @@ struct EditableImageModifier: ViewModifier {
                         )
                     )
                     .background(
-                        GeometryReader {
+                        GeometryReader { geometry in
                             Color.clear.preference(
                                 key: ViewOffsetKey.self,
-                                value: $0.frame(in: .named("scrollOffset")).origin
+                                value: geometry.frame(in: .named("scrollOffset")).origin
                             )
                         }
                     )
@@ -179,11 +185,13 @@ struct EditableImageModifier: ViewModifier {
                     }
                     .scrollAnchor(ScrollPosition.image(index: 0))
                     .onAppear {
+                        print("frameHeight: \(contentSize.height * currentScale)")
+                        print("frameWidth: \(contentSize.width * currentScale)")
                         DispatchQueue.main.async {
-//                            print(">> \(currentOffset)")
+                            print("onAppear: \(currentOffset)")
                             proxy.scroll(
                                 to: ScrollPosition.image(index: 0),
-                                anchor: .center,
+                                anchor: .topLeading,
                                 offset: CGPoint(
                                     x: -currentOffset.x,
                                     y: -currentOffset.y
@@ -193,7 +201,7 @@ struct EditableImageModifier: ViewModifier {
                     }
             }
             .gesture(doubleTapGesture)
-            .animation(.spring(), value: currentScale)
+//            .animation(.spring(), value: currentScale)
             .coordinateSpace(name: "scrollOffset")
         }
     }
@@ -243,6 +251,7 @@ class PinchZoomView: UIView {
                 scale = gesture.scale
             }
             scaleChange(scale)
+            print("pinch: \(scale)")
         case .cancelled, .failed:
             isPinching = false
             scale = 1.0
@@ -281,7 +290,7 @@ struct PinchToZoom: ViewModifier {
     func body(content: Content) -> some View {
         content
             .scaleEffect(scale, anchor: anchor)
-            .animation(.spring(), value: isPinching)
+//            .animation(.spring(), value: isPinching)
             .overlay(
                 PinchZoom(
                     minScale: minScale,
@@ -299,5 +308,7 @@ struct ViewOffsetKey: PreferenceKey {
     static func reduce(value: inout Value, nextValue: () -> Value) {
         value.x += nextValue().x
         value.y += nextValue().y
+        print("viewOffsetX:\(value.x)")
+        print("viewOffsetY:\(value.y)")
     }
 }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ActionSheet: View {
     @Binding var isPresented: Bool
-//    @ViewBuilder var content: Content
     @State var description: String = ""
     @State var actionButtonList: [ActionButton] = []
     
@@ -71,6 +70,7 @@ struct ActionSheet: View {
                 .padding(.bottom, 40)
                 .padding(.horizontal, 10)
                 .transition(.move(edge: .bottom))
+                .animation(.easeInOut, value: isPresented)
                 .cornerRadius(16, corners: [.topLeft, .topRight])
             }
         } 

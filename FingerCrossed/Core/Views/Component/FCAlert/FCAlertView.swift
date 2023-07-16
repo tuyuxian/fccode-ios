@@ -20,7 +20,6 @@ struct FCAlertView: View {
     
     @Environment(\.dismiss) private var dismiss
 
-        
     var body: some View {
         ZStack {
             dimView

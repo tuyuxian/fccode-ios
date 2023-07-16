@@ -72,18 +72,47 @@ struct MessageBubble: View {
                         
                         FCAsyncImage(url: url)
                             .aspectRatio(contentMode: .fill)
-                            .frame(
-                                height: MessageBubble.getHeight(
-                                        photoType: FCAsyncImage(url: url).photoType,
-                                        width: 230
-                                )
-                            )
+                            .onTapGesture {
+                                if isReceived {
+                                    switch loadingPhase {
+                                    case .fail:
+                                        withAnimation {
+                                            showActionSheet.toggle()
+                                        }
+                                    case .success:
+                                        withAnimation {
+                                            showFullImageCover.toggle()
+                                        }
+                                    case .loading:
+                                        print("loading")
+                                    }
+                                } else {
+                                    switch sendingPhase {
+                                    case .sending:
+                                        print("sending")
+                                    case .sent:
+                                        withAnimation {
+                                            showFullImageCover.toggle()
+                                        }
+                                    case .fail:
+                                        withAnimation {
+                                            showActionSheet.toggle()
+                                        }
+                                    }
+                                }
+                            }
                             .frame(
                                 maxWidth: 230,
                                 alignment:
                                    isReceived
                                    ? .leading
                                    : .trailing
+                            )
+                            .frame(
+                                height: MessageBubble.getHeight(
+                                        photoType: FCAsyncImage(url: url).photoType,
+                                        width: 230
+                                )
                             )
                             .cornerRadius(
                                 10,
@@ -100,34 +129,6 @@ struct MessageBubble: View {
                                         .bottomLeft
                                     ]
                             )
-                            .onTapGesture {
-                                switch sendingPhase {
-                                case .sending:
-                                    print("sending")
-                                case .sent:
-                                    withAnimation {
-                                        showFullImageCover.toggle()
-                                    }
-                                case .fail:
-                                    withAnimation {
-                                        showActionSheet.toggle()
-                                    }
-                                }
-                            }
-                            .onTapGesture {
-                                switch loadingPhase {
-                                case .fail:
-                                    withAnimation {
-                                        showActionSheet.toggle()
-                                    }
-                                case .success:
-                                    withAnimation {
-                                        showFullImageCover.toggle()
-                                    }
-                                case .loading:
-                                    print("loading")
-                                }
-                            }
                             .overlay(
                                 sendingPhase == .sending ?
                                 CircularProgress(progress: uploadingProgress)
@@ -252,7 +253,7 @@ struct MessageBubble_Previews: PreviewProvider {
                 avatarUrl: .constant("")
             )
             MessageBubble(
-                message: .constant("https://i.pravatar.cc/150?img=5"),
+                message: .constant("https://d2yydc9fog8bo7.cloudfront.net/image/679484ad-201b-4722-8bb8-85cd65fd0a33.jpg"),
                 timeStamp: .constant("Wed, Mar 15 13:45"),
                 isReceived: .constant(true),
                 avatarUrl: .constant("https://i.pravatar.cc/150?img=5")
@@ -291,21 +292,26 @@ extension MessageBubble {
                 
                 if let url = URL(string: message) {
                     FCAsyncImage(url: url)
-                        .aspectRatio(contentMode: .fill)
-                        .frame(
-                            height:
-                                MessageBubble.getHeight(
-                                    photoType: FCAsyncImage(url: url).photoType,
-                                    width: UIScreen.main.bounds.size.width - 48)
+                        .aspectRatio(
+                            contentMode:
+                                FCAsyncImage(url: url).photoType == .portrait ? .fit : .fill
                         )
-                        .frame(maxWidth: UIScreen.main.bounds.size.width - 48)
                         .cornerRadius(6)
-                        .padding(.horizontal, 24)
+                        .frame(width: UIScreen.main.bounds.size.width - 32)
+                        .frame(
+                            maxHeight: MessageBubble.getHeight(
+                                        photoType: FCAsyncImage(url: url).photoType,
+                                        width: UIScreen.main.bounds.size.width - 32),
+                            alignment: .center
+                        )
+                        .padding(.horizontal, 16)
                 }
                 
                 VStack {
                     Button {
-                        showFullImageCover.toggle()
+                        withAnimation {
+                            showFullImageCover.toggle()
+                        }
                     } label: {
                         FCIcon.close
                             .frame(width: 24, height: 24)

@@ -8,7 +8,10 @@
 import Foundation
 import SwiftUI
 
-class UserViewModel: ObservableObject {
+class UserViewModel: ObservableObject, Equatable {
+    static func == (lhs: UserViewModel, rhs: UserViewModel) -> Bool {
+        lhs.userId == rhs.userId
+    }
     
     @AppStorage("UserId") var userId: String = ""
     

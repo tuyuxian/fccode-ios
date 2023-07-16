@@ -81,6 +81,7 @@ struct SelfIntroEditSheet: View {
             await vm.save(text: selfIntro)
             guard vm.state == .complete else { return }
             user.data?.selfIntro = selfIntro
+            user.objectWillChange.send()
             dismiss()
         }
     }

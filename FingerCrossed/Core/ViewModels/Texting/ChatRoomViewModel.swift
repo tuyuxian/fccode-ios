@@ -10,11 +10,14 @@ import SwiftUI
 class ChatRoomViewModel: ObservableObject {
     
     @AppStorage("UserId") var userId: String = ""
-
+    
+//    @Published var keyboardHeight: CGFloat = 0
+    @Published var keyboard = KeyboardAvoider()
+    
     /// View state
     @Published var state: ViewStatus = .none
     @Published var isKeyboardShowUp: Bool = false
-    @Published var showEditSheet: Bool = false
+    @Published var showImagePreview: Bool = false
     @Published var showCamera: Bool = false
     @Published var showImagePicker: Bool = false
     @Published var showUnmatchDialog: Bool = false
@@ -185,7 +188,6 @@ class ChatRoomViewModel: ObservableObject {
             isRead: false
         )
     ]
-
 }
 
 extension ChatRoomViewModel {

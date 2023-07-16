@@ -122,6 +122,7 @@ extension User {
 
 extension User {
     public func getCandidate() -> CandidateModel {
+        print("get: \(String(describing: self.selfIntro))")
         return .init(
             userId: self.id,
             username: self.username,

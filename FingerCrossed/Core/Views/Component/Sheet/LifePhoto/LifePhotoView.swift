@@ -69,6 +69,13 @@ extension LifePhotoEditSheet {
                             currentOffset: $vm.currentOffset,
                             currentScale: $vm.currentScale
                         )
+                        .onChange(of: vm.currentOffset, perform: { newValue in
+                            print("onChangeX: \(newValue.x)")
+                            print("onChangeY: \(newValue.y)")
+                        })
+                        .onChange(of: vm.currentScale, perform: { newValue in
+                            print("onChangeScale: \(newValue)")
+                        })
                         .frame(
                             width: UIScreen.main.bounds.width - 48,
                             height: UIScreen.main.bounds.height - 320

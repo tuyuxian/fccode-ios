@@ -14,7 +14,7 @@ struct CandidateDetailView: View {
 
     @StateObject private var vm = ViewModel()
     
-    @State var candidate: CandidateModel
+    @ObservedObject var candidate: CandidateModel
     
     @State var showIndicator: Bool = true
     

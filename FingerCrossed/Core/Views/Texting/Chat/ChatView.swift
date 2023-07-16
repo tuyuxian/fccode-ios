@@ -19,6 +19,8 @@ struct ChatView: View {
     
     @State private var startOffset: CGFloat = 0
     
+    @ObservedObject var vm: ChatRoomViewModel
+    
     var body: some View {
         ScrollViewReader { scrollViewReader in
             ScrollView(
@@ -83,7 +85,7 @@ struct ChatView: View {
                                 .foregroundColor(Color.white)
                                 .frame(width: 24, height: 24)
                         }
-                        .opacity(scrollViewOffset > UIScreen.main.bounds.size.height / 2 ? 1 :0)
+                        .opacity(scrollViewOffset > UIScreen.main.bounds.size.height ? 1 : 0)
                         .onTapGesture {
                             withAnimation(.spring()) {
                                 scrollViewReader.scrollTo("SCROLL_TO_BOTTOM", anchor: .top)
@@ -91,9 +93,9 @@ struct ChatView: View {
                     }
                 }
                 .padding(.bottom, 15)
-                
                 , alignment: .bottom
             )
+//            .padding(.bottom, vm.keyboard.currentHeight)
         }
     }
     
@@ -120,7 +122,8 @@ struct ChatView: View {
         static var previews: some View {
             ChatView(
                 avatarUrl: .constant("https://i.pravatar.cc/150?img=5"),
-                messageCellList: demoData
+                messageCellList: demoData,
+                vm: ChatRoomViewModel()
             )
             
         }
